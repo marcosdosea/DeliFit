@@ -1,0 +1,156 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\mathe\\Documents\\SyncThing\\Estudos\\Obsidian Vault\\Visual Studio\\DeliFit\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{E8DB3AD3-B5E5-A7B6-DF73-86BB2E328D04}|DeliFitWeb\\DeliFitWeb.csproj|c:\\users\\mathe\\documents\\syncthing\\estudos\\obsidian vault\\visual studio\\delifit\\delifitweb\\models\\restauranteviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E8DB3AD3-B5E5-A7B6-DF73-86BB2E328D04}|DeliFitWeb\\DeliFitWeb.csproj|solutionrelative:delifitweb\\models\\restauranteviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B19E24DB-218C-48F7-830C-75CA57018CA2}|Service\\Service.csproj|c:\\users\\mathe\\documents\\syncthing\\estudos\\obsidian vault\\visual studio\\delifit\\service\\restauranteservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B19E24DB-218C-48F7-830C-75CA57018CA2}|Service\\Service.csproj|solutionrelative:service\\restauranteservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5ED06CAD-956C-C94D-BC0C-E89E30A887C2}|Core\\Core.csproj|c:\\users\\mathe\\documents\\syncthing\\estudos\\obsidian vault\\visual studio\\delifit\\core\\service\\irestauranteservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5ED06CAD-956C-C94D-BC0C-E89E30A887C2}|Core\\Core.csproj|solutionrelative:core\\service\\irestauranteservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B19E24DB-218C-48F7-830C-75CA57018CA2}|Service\\Service.csproj|c:\\users\\mathe\\documents\\syncthing\\estudos\\obsidian vault\\visual studio\\delifit\\service\\service.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{B19E24DB-218C-48F7-830C-75CA57018CA2}|Service\\Service.csproj|solutionrelative:service\\service.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5ED06CAD-956C-C94D-BC0C-E89E30A887C2}|Core\\Core.csproj|c:\\users\\mathe\\documents\\syncthing\\estudos\\obsidian vault\\visual studio\\delifit\\core\\restaurante.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5ED06CAD-956C-C94D-BC0C-E89E30A887C2}|Core\\Core.csproj|solutionrelative:core\\restaurante.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5ED06CAD-956C-C94D-BC0C-E89E30A887C2}|Core\\Core.csproj|c:\\users\\mathe\\documents\\syncthing\\estudos\\obsidian vault\\visual studio\\delifit\\core\\dto\\restaurantedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5ED06CAD-956C-C94D-BC0C-E89E30A887C2}|Core\\Core.csproj|solutionrelative:core\\dto\\restaurantedto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5ED06CAD-956C-C94D-BC0C-E89E30A887C2}|Core\\Core.csproj|c:\\users\\mathe\\documents\\syncthing\\estudos\\obsidian vault\\visual studio\\delifit\\core\\delifitcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5ED06CAD-956C-C94D-BC0C-E89E30A887C2}|Core\\Core.csproj|solutionrelative:core\\delifitcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E8DB3AD3-B5E5-A7B6-DF73-86BB2E328D04}|DeliFitWeb\\DeliFitWeb.csproj|c:\\users\\mathe\\documents\\syncthing\\estudos\\obsidian vault\\visual studio\\delifit\\delifitweb\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{E8DB3AD3-B5E5-A7B6-DF73-86BB2E328D04}|DeliFitWeb\\DeliFitWeb.csproj|solutionrelative:delifitweb\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "RestauranteViewModel.cs",
+              "DocumentMoniker": "C:\\Users\\mathe\\Documents\\SyncThing\\Estudos\\Obsidian Vault\\Visual Studio\\DeliFit\\DeliFitWeb\\Models\\RestauranteViewModel.cs",
+              "RelativeDocumentMoniker": "DeliFitWeb\\Models\\RestauranteViewModel.cs",
+              "ToolTip": "C:\\Users\\mathe\\Documents\\SyncThing\\Estudos\\Obsidian Vault\\Visual Studio\\DeliFit\\DeliFitWeb\\Models\\RestauranteViewModel.cs",
+              "RelativeToolTip": "DeliFitWeb\\Models\\RestauranteViewModel.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T13:39:23.736Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "RestauranteService.cs",
+              "DocumentMoniker": "C:\\Users\\mathe\\Documents\\SyncThing\\Estudos\\Obsidian Vault\\Visual Studio\\DeliFit\\Service\\RestauranteService.cs",
+              "RelativeDocumentMoniker": "Service\\RestauranteService.cs",
+              "ToolTip": "C:\\Users\\mathe\\Documents\\SyncThing\\Estudos\\Obsidian Vault\\Visual Studio\\DeliFit\\Service\\RestauranteService.cs",
+              "RelativeToolTip": "Service\\RestauranteService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-18T13:02:00.039Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Service",
+              "DocumentMoniker": "C:\\Users\\mathe\\Documents\\SyncThing\\Estudos\\Obsidian Vault\\Visual Studio\\DeliFit\\Service\\Service.csproj",
+              "RelativeDocumentMoniker": "Service\\Service.csproj",
+              "ToolTip": "C:\\Users\\mathe\\Documents\\SyncThing\\Estudos\\Obsidian Vault\\Visual Studio\\DeliFit\\Service\\Service.csproj",
+              "RelativeToolTip": "Service\\Service.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-12-18T12:38:59.845Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "DeliFitContext.cs",
+              "DocumentMoniker": "C:\\Users\\mathe\\Documents\\SyncThing\\Estudos\\Obsidian Vault\\Visual Studio\\DeliFit\\Core\\DeliFitContext.cs",
+              "RelativeDocumentMoniker": "Core\\DeliFitContext.cs",
+              "ToolTip": "C:\\Users\\mathe\\Documents\\SyncThing\\Estudos\\Obsidian Vault\\Visual Studio\\DeliFit\\Core\\DeliFitContext.cs",
+              "RelativeToolTip": "Core\\DeliFitContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-16T15:37:41.599Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\mathe\\Documents\\SyncThing\\Estudos\\Obsidian Vault\\Visual Studio\\DeliFit\\DeliFitWeb\\appsettings.json",
+              "RelativeDocumentMoniker": "DeliFitWeb\\appsettings.json",
+              "ToolTip": "C:\\Users\\mathe\\Documents\\SyncThing\\Estudos\\Obsidian Vault\\Visual Studio\\DeliFit\\DeliFitWeb\\appsettings.json",
+              "RelativeToolTip": "DeliFitWeb\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-12-16T15:37:29.556Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "IRestauranteService.cs",
+              "DocumentMoniker": "C:\\Users\\mathe\\Documents\\SyncThing\\Estudos\\Obsidian Vault\\Visual Studio\\DeliFit\\Core\\Service\\IRestauranteService.cs",
+              "RelativeDocumentMoniker": "Core\\Service\\IRestauranteService.cs",
+              "ToolTip": "C:\\Users\\mathe\\Documents\\SyncThing\\Estudos\\Obsidian Vault\\Visual Studio\\DeliFit\\Core\\Service\\IRestauranteService.cs",
+              "RelativeToolTip": "Core\\Service\\IRestauranteService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-16T13:55:27.734Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Restaurante.cs",
+              "DocumentMoniker": "C:\\Users\\mathe\\Documents\\SyncThing\\Estudos\\Obsidian Vault\\Visual Studio\\DeliFit\\Core\\Restaurante.cs",
+              "RelativeDocumentMoniker": "Core\\Restaurante.cs",
+              "ToolTip": "C:\\Users\\mathe\\Documents\\SyncThing\\Estudos\\Obsidian Vault\\Visual Studio\\DeliFit\\Core\\Restaurante.cs",
+              "RelativeToolTip": "Core\\Restaurante.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-16T13:52:47.459Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "RestauranteDTO.cs",
+              "DocumentMoniker": "C:\\Users\\mathe\\Documents\\SyncThing\\Estudos\\Obsidian Vault\\Visual Studio\\DeliFit\\Core\\DTO\\RestauranteDTO.cs",
+              "RelativeDocumentMoniker": "Core\\DTO\\RestauranteDTO.cs",
+              "ToolTip": "C:\\Users\\mathe\\Documents\\SyncThing\\Estudos\\Obsidian Vault\\Visual Studio\\DeliFit\\Core\\DTO\\RestauranteDTO.cs",
+              "RelativeToolTip": "Core\\DTO\\RestauranteDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-12-16T13:53:20.583Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
