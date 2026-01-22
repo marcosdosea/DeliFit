@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ShaolinMataPorco\\Desktop\\ImplementaçãoDeliFit\\DeliFit\\Core\\Core.csproj": {}
+    "C:\\Users\\ph304\\Desktop\\FACULDADE\\SEXTO PERÍODO\\ENGENHARIA DE SOFTWARE 2\\DeliFit\\Codigo\\Core\\Core.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ShaolinMataPorco\\Desktop\\ImplementaçãoDeliFit\\DeliFit\\Core\\Core.csproj": {
+    "C:\\Users\\ph304\\Desktop\\FACULDADE\\SEXTO PERÍODO\\ENGENHARIA DE SOFTWARE 2\\DeliFit\\Codigo\\Core\\Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ShaolinMataPorco\\Desktop\\ImplementaçãoDeliFit\\DeliFit\\Core\\Core.csproj",
+        "projectUniqueName": "C:\\Users\\ph304\\Desktop\\FACULDADE\\SEXTO PERÍODO\\ENGENHARIA DE SOFTWARE 2\\DeliFit\\Codigo\\Core\\Core.csproj",
         "projectName": "Core",
-        "projectPath": "C:\\Users\\ShaolinMataPorco\\Desktop\\ImplementaçãoDeliFit\\DeliFit\\Core\\Core.csproj",
-        "packagesPath": "C:\\Users\\ShaolinMataPorco\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ShaolinMataPorco\\Desktop\\ImplementaçãoDeliFit\\DeliFit\\Core\\obj\\",
+        "projectPath": "C:\\Users\\ph304\\Desktop\\FACULDADE\\SEXTO PERÍODO\\ENGENHARIA DE SOFTWARE 2\\DeliFit\\Codigo\\Core\\Core.csproj",
+        "packagesPath": "C:\\Users\\ph304\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ph304\\Desktop\\FACULDADE\\SEXTO PERÍODO\\ENGENHARIA DE SOFTWARE 2\\DeliFit\\Codigo\\Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\ShaolinMataPorco\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ph304\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],

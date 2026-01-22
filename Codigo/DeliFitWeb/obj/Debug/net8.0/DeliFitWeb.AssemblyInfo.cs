@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DeliFitWeb")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4acf3aab59988b0a194d6f0813dd86ef79924d85")]
 [assembly: System.Reflection.AssemblyProductAttribute("DeliFitWeb")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DeliFitWeb")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
