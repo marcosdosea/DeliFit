@@ -1,5 +1,0 @@
-<Solution>
-  <Project Path="Core/Core.csproj" />
-  <Project Path="DeliFitWeb/DeliFitWeb.csproj" />
-  <Project Path="Service/Service.csproj" />
-</Solution>
