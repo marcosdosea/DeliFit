@@ -16,7 +16,11 @@ public partial class Carrinho
     /// </summary>
     public string FormaDePagamento { get; set; } = null!;
 
-    public virtual ICollection<Cartao> Cartaos { get; set; } = new List<Cartao>();
+    public decimal ValorFrete { get; set; }
+
+    public uint? IdCartao { get; set; }
+
+    public virtual Cartao? IdCartaoNavigation { get; set; }
 
     public virtual Cliente IdClienteNavigation { get; set; } = null!;
 

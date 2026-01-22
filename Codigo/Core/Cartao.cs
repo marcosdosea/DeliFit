@@ -19,9 +19,7 @@ public partial class Cartao
 
     public uint IdCliente { get; set; }
 
-    public uint IdCarrinho { get; set; }
-
-    public virtual Carrinho IdCarrinhoNavigation { get; set; } = null!;
+    public virtual ICollection<Carrinho> Carrinhos { get; set; } = new List<Carrinho>();
 
     public virtual Cliente IdClienteNavigation { get; set; } = null!;
 }
