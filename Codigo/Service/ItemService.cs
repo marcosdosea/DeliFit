@@ -1,5 +1,6 @@
 ﻿using Core;
 using Core.Service;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service;
 
@@ -14,9 +15,9 @@ public class ItemService : IItemService
 
     public uint Create(Item item)
     { 
-        var entry = _context.Items.Add(item);
+        _context.Add(item);
         _context.SaveChanges();
-        return entry.Entity.Id;
+        return item.Id;
     }
 
     public void Delete(uint id)
@@ -42,6 +43,6 @@ public class ItemService : IItemService
 
     public IEnumerable<Item> GetAll()
     {
-        return _context.Items.ToList();
+        return _context.Items.AsNoTracking();
     }
 }
