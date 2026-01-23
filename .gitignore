@@ -21,6 +21,13 @@ nupkg/
 # Code Rush
 .cr/
 
+# .NET
+bin/
+obj/
+
+# Logs e temporários
+*.log
+
 # User-specific files
 *.suo
 *.user
