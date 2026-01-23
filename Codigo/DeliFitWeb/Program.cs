@@ -3,13 +3,11 @@ using Core.Service;
 using Microsoft.EntityFrameworkCore;
 using Service;
 
-<<<<<<< HEAD
-namespace DeliFitWeb
-=======
+
 namespace DeliFitWeb;
 
 public class Program
->>>>>>> 2d5f6fbb724caabff9d32faf0eed3a2bb9171e6e
+
 {
     public static void Main(string[] args)
     {
