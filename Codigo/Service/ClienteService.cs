@@ -27,8 +27,7 @@ public class ClienteService : IClienteService
 
     public Cliente? Get(uint id)
     {
-        return _context.Clientes.FirstOrDefault(a => a.Id == id);
-        // qual o melhor? return _context.Clientes.Find(id);
+       return _context.Clientes.Find(id);
     }
 
     public void Edit(Cliente cliente)
@@ -40,13 +39,13 @@ public class ClienteService : IClienteService
         }
         else
         {
-            throw new Exception("Cliente não encontrado");
+            throw new ServiceException("Cliente não encontrado");
         }
     }
 
     public void Delete(uint id)
     {
-        var Cliente = _context.Clientes.Find(id);
+        var Cliente = _context.Clientes.FirstOrDefault(a => a.Id == id);
         if(Cliente != null)
         {
             _context.Remove(Cliente);

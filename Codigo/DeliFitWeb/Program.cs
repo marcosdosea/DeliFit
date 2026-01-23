@@ -1,3 +1,8 @@
+using Core;
+using Core.Service;
+using Microsoft.EntityFrameworkCore;
+using Service;
+
 namespace DeliFitWeb
 {
     public class Program
@@ -8,6 +13,10 @@ namespace DeliFitWeb
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            var connectionString = builder.Configuration.GetConnectionString("DeliFitConnection");
+            builder.Services.AddDbContext<DeliFitContext>(options => options.UseMySQL(connectionString));
+            builder.Services.AddTransient<IClienteService, ClienteService>();
 
             var app = builder.Build();
 

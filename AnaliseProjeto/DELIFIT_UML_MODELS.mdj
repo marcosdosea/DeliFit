@@ -168807,7 +168807,7 @@
 											"top": 599,
 											"width": 132.17724609375,
 											"height": 13,
-											"text": "PerfilService"
+											"text": "ClienteService"
 										},
 										{
 											"_type": "LabelView",
@@ -168929,7 +168929,7 @@
 											"top": 227,
 											"width": 75.9052734375,
 											"height": 13,
-											"text": "+Login()",
+											"text": "+Create()",
 											"horizontalAlignment": 0
 										},
 										{
@@ -168946,7 +168946,7 @@
 											"top": 242,
 											"width": 75.9052734375,
 											"height": 13,
-											"text": "+Autenticate()",
+											"text": "+Get()",
 											"horizontalAlignment": 0
 										}
 									],
@@ -170663,7 +170663,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": -723,
-											"top": 4,
+											"top": -11,
 											"width": 69.00537109375,
 											"height": 13,
 											"text": "+Create()",
@@ -170680,7 +170680,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": -723,
-											"top": 19,
+											"top": 4,
 											"width": 69.00537109375,
 											"height": 13,
 											"text": "+Get()",
@@ -170697,7 +170697,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": -723,
-											"top": 34,
+											"top": 19,
 											"width": 69.00537109375,
 											"height": 13,
 											"text": "+Delete()",
@@ -170709,7 +170709,7 @@
 									"left": -728,
 									"top": -16,
 									"width": 79.00537109375,
-									"height": 68
+									"height": 53
 								},
 								{
 									"_type": "UMLReceptionCompartmentView",
@@ -174828,9 +174828,9 @@
 														"$ref": "AAAAAAGbDca5zLSo1Ho="
 													},
 													"font": "Arial;13;0",
-													"left": 24.72998046875,
+													"left": 22.55908203125,
 													"top": 13,
-													"width": 144.79345703125,
+													"width": 130.21923828125,
 													"height": 13,
 													"text": "SequenceDiagramInserir"
 												},
@@ -174843,7 +174843,7 @@
 													"font": "Arial;13;1",
 													"left": 5,
 													"top": 13,
-													"width": 14.72998046875,
+													"width": 12.55908203125,
 													"height": 13,
 													"text": "sd"
 												}
@@ -189915,9 +189915,9 @@
 														"$ref": "AAAAAAGbDca50bfX/Fc="
 													},
 													"font": "Arial;13;0",
-													"left": 32.72998046875,
+													"left": 30.55908203125,
 													"top": 13,
-													"width": 149.13525390625,
+													"width": 134.5419921875,
 													"height": 13,
 													"text": "SequenceDiagramAceitar"
 												},
@@ -189930,7 +189930,7 @@
 													"font": "Arial;13;1",
 													"left": 13,
 													"top": 13,
-													"width": 14.72998046875,
+													"width": 12.55908203125,
 													"height": 13,
 													"text": "sd"
 												}
@@ -191008,9 +191008,9 @@
 														"$ref": "AAAAAAGbDca50rgOJ/I="
 													},
 													"font": "Arial;13;0",
-													"left": 32.72998046875,
+													"left": 30.55908203125,
 													"top": 13,
-													"width": 157.08251953125,
+													"width": 138.16015625,
 													"height": 13,
 													"text": "SequenceDiagramRecusar"
 												},
@@ -191023,7 +191023,7 @@
 													"font": "Arial;13;1",
 													"left": 13,
 													"top": 13,
-													"width": 14.72998046875,
+													"width": 12.55908203125,
 													"height": 13,
 													"text": "sd"
 												}
@@ -191975,9 +191975,9 @@
 														"$ref": "AAAAAAGbDca50rhF4V8="
 													},
 													"font": "Arial;13;0",
-													"left": 32.72998046875,
+													"left": 30.55908203125,
 													"top": 13,
-													"width": 128.18798828125,
+													"width": 114.33740234375,
 													"height": 13,
 													"text": "SequenceDiagramVer"
 												},
@@ -191990,7 +191990,7 @@
 													"font": "Arial;13;1",
 													"left": 13,
 													"top": 13,
-													"width": 14.72998046875,
+													"width": 12.55908203125,
 													"height": 13,
 													"text": "sd"
 												}
@@ -206140,7 +206140,7 @@
 														"$ref": "AAAAAAGbDca51rscDf4="
 													},
 													"edgePosition": 1,
-													"text": "4 : Create()"
+													"text": "4 : Message3"
 												},
 												{
 													"_type": "EdgeLabelView",
@@ -207821,7 +207821,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 285,
-											"top": 735,
+											"top": 720,
 											"width": 156.7490234375,
 											"height": 13,
 											"text": "+Create()",
@@ -207838,7 +207838,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 285,
-											"top": 750,
+											"top": 735,
 											"width": 156.7490234375,
 											"height": 13,
 											"text": "+Get()",
@@ -207855,7 +207855,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 285,
-											"top": 765,
+											"top": 750,
 											"width": 156.7490234375,
 											"height": 13,
 											"text": "+Delete()",
@@ -207866,7 +207866,7 @@
 									"left": 280,
 									"top": 715,
 									"width": 166.7490234375,
-									"height": 68
+									"height": 53
 								},
 								{
 									"_type": "UMLReceptionCompartmentView",
@@ -209510,7 +209510,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 269,
-											"top": 567,
+											"top": 552,
 											"width": 156.7490234375,
 											"height": 13,
 											"text": "+Create()",
@@ -209527,7 +209527,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 269,
-											"top": 582,
+											"top": 567,
 											"width": 156.7490234375,
 											"height": 13,
 											"text": "+Get()",
@@ -209544,7 +209544,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 269,
-											"top": 597,
+											"top": 582,
 											"width": 156.7490234375,
 											"height": 13,
 											"text": "+Delete()",
@@ -209555,7 +209555,7 @@
 									"left": 264,
 									"top": 547,
 									"width": 166.7490234375,
-									"height": 68
+									"height": 53
 								},
 								{
 									"_type": "UMLReceptionCompartmentView",
@@ -222760,9 +222760,9 @@
 														"$ref": "AAAAAAGbDca53r7oO2U="
 													},
 													"font": "Arial;13;0",
-													"left": 30.55908203125,
+													"left": 32.72998046875,
 													"top": 5,
-													"width": 133.10107421875,
+													"width": 146.96435546875,
 													"height": 13,
 													"text": "SequenceDiagramAlterar"
 												},
@@ -222775,7 +222775,7 @@
 													"font": "Arial;13;1",
 													"left": 13,
 													"top": 5,
-													"width": 12.55908203125,
+													"width": 14.72998046875,
 													"height": 13,
 													"text": "sd"
 												}
@@ -223067,7 +223067,7 @@
 															"top": 47,
 															"width": 177.68359375,
 															"height": 13,
-															"text": ": PerfilService"
+															"text": ": ClienteService"
 														},
 														{
 															"_type": "LabelView",
@@ -224162,7 +224162,7 @@
 															"top": 47,
 															"width": 177.68359375,
 															"height": 13,
-															"text": ": PerfilService"
+															"text": ": ClienteService"
 														},
 														{
 															"_type": "LabelView",
@@ -225513,7 +225513,7 @@
 											"top": 503,
 											"width": 117.00634765625,
 											"height": 13,
-											"text": "PerfilService"
+											"text": "ClienteService"
 										},
 										{
 											"_type": "LabelView",
@@ -225634,7 +225634,7 @@
 											"top": 566,
 											"width": 117.00634765625,
 											"height": 13,
-											"text": "+Login()",
+											"text": "+Create()",
 											"horizontalAlignment": 0
 										},
 										{
@@ -225651,7 +225651,7 @@
 											"top": 581,
 											"width": 117.00634765625,
 											"height": 13,
-											"text": "+Autenticate()",
+											"text": "+Get()",
 											"horizontalAlignment": 0
 										}
 									],
@@ -228212,7 +228212,7 @@
 															"top": 47,
 															"width": 177.68359375,
 															"height": 13,
-															"text": ": PerfilService"
+															"text": ": ClienteService"
 														},
 														{
 															"_type": "LabelView",
@@ -228886,7 +228886,7 @@
 														"$ref": "AAAAAAGbDca54MAn4o0="
 													},
 													"edgePosition": 1,
-													"text": "4 : Login()"
+													"text": "4 : Create()"
 												},
 												{
 													"_type": "EdgeLabelView",
@@ -229571,7 +229571,7 @@
 															"top": 47,
 															"width": 177.68359375,
 															"height": 13,
-															"text": ": PerfilService"
+															"text": ": ClienteService"
 														},
 														{
 															"_type": "LabelView",
@@ -230008,9 +230008,9 @@
 														"$ref": "AAAAAAGbDca54cBskTA="
 													},
 													"font": "Arial;13;0",
-													"left": 437,
+													"left": 434,
 													"top": 144,
-													"width": 85.185546875,
+													"width": 91.76806640625,
 													"height": 13,
 													"alpha": 1.5707963267948966,
 													"distance": 10,
@@ -230018,7 +230018,7 @@
 														"$ref": "AAAAAAGbDca54cBhwxA="
 													},
 													"edgePosition": 1,
-													"text": "2 : Autenticate()"
+													"text": "2 : Get()"
 												},
 												{
 													"_type": "EdgeLabelView",
@@ -230200,14 +230200,14 @@
 													"left": 852,
 													"top": 80,
 													"width": 1,
-													"height": 138
+													"height": 139
 												}
 											],
 											"font": "Arial;13;0",
 											"left": 768,
 											"top": 40,
 											"width": 168.7890625,
-											"height": 178,
+											"height": 179,
 											"nameCompartment": {
 												"$ref": "AAAAAAGbKYA4vFTodcU="
 											},
@@ -230541,7 +230541,7 @@
 											"top": 439,
 											"width": 117.00634765625,
 											"height": 13,
-											"text": "PerfilService"
+											"text": "ClienteService"
 										},
 										{
 											"_type": "LabelView",
@@ -230662,7 +230662,7 @@
 											"top": 502,
 											"width": 117.00634765625,
 											"height": 13,
-											"text": "+Login()",
+											"text": "+Create()",
 											"horizontalAlignment": 0
 										},
 										{
@@ -230679,7 +230679,7 @@
 											"top": 517,
 											"width": 117.00634765625,
 											"height": 13,
-											"text": "+Autenticate()",
+											"text": "+Get()",
 											"horizontalAlignment": 0
 										}
 									],
@@ -243779,7 +243779,7 @@
 															"top": 47,
 															"width": 177.68359375,
 															"height": 13,
-															"text": ": PerfilService"
+															"text": ": RestauranteService"
 														},
 														{
 															"_type": "LabelView",
@@ -244331,7 +244331,7 @@
 										"$ref": "AAAAAAGbDca55cMkueM="
 									},
 									"signature": {
-										"$ref": "AAAAAAGbDca59MviitA="
+										"$ref": "AAAAAAGb7RJA/4HTm6E="
 									}
 								},
 								{
@@ -244449,9 +244449,9 @@
 														"$ref": "AAAAAAGbDca55cMn/tM="
 													},
 													"font": "Arial;13;0",
-													"left": 32.72998046875,
+													"left": 30.55908203125,
 													"top": 13,
-													"width": 161.41162109375,
+													"width": 143.94287109375,
 													"height": 13,
 													"text": "SequenceDiagramRemover"
 												},
@@ -244464,7 +244464,7 @@
 													"font": "Arial;13;1",
 													"left": 13,
 													"top": 13,
-													"width": 14.72998046875,
+													"width": 12.55908203125,
 													"height": 13,
 													"text": "sd"
 												}
@@ -244866,7 +244866,7 @@
 															"top": 47,
 															"width": 177.68359375,
 															"height": 13,
-															"text": ": PerfilService"
+															"text": ": ClienteService"
 														},
 														{
 															"_type": "LabelView",
@@ -245546,7 +245546,7 @@
 							},
 							"name": "controlador",
 							"type": {
-								"$ref": "AAAAAAGbDca59MvZoOs="
+								"$ref": "AAAAAAGbDca59MwmWpo="
 							}
 						}
 					]
@@ -245603,7 +245603,7 @@
 											"top": 703,
 											"width": 117.00634765625,
 											"height": 13,
-											"text": "PerfilService"
+											"text": "ClienteService"
 										},
 										{
 											"_type": "LabelView",
@@ -245724,7 +245724,7 @@
 											"top": 766,
 											"width": 117.00634765625,
 											"height": 13,
-											"text": "+Login()",
+											"text": "+Create()",
 											"horizontalAlignment": 0
 										},
 										{
@@ -245741,7 +245741,7 @@
 											"top": 781,
 											"width": 117.00634765625,
 											"height": 13,
-											"text": "+Autenticate()",
+											"text": "+Get()",
 											"horizontalAlignment": 0
 										}
 									],
@@ -266156,9 +266156,9 @@
 														"$ref": "AAAAAAGbDca57cdvdlQ="
 													},
 													"font": "Arial;13;0",
-													"left": 32.72998046875,
+													"left": 30.55908203125,
 													"top": 13,
-													"width": 162.87158203125,
+													"width": 148.27197265625,
 													"height": 13,
 													"text": "SequenceDiagramAdicionar"
 												},
@@ -266171,7 +266171,7 @@
 													"font": "Arial;13;1",
 													"left": 13,
 													"top": 13,
-													"width": 14.72998046875,
+													"width": 12.55908203125,
 													"height": 13,
 													"text": "sd"
 												}
@@ -270106,7 +270106,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 397,
-											"top": 623,
+											"top": 608,
 											"width": 156.7490234375,
 											"height": 13,
 											"text": "+Create()",
@@ -270123,7 +270123,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 397,
-											"top": 638,
+											"top": 623,
 											"width": 156.7490234375,
 											"height": 13,
 											"text": "+Get()",
@@ -270140,7 +270140,7 @@
 											},
 											"font": "Arial;13;0",
 											"left": 397,
-											"top": 653,
+											"top": 638,
 											"width": 156.7490234375,
 											"height": 13,
 											"text": "+Delete()",
@@ -270151,7 +270151,7 @@
 									"left": 392,
 									"top": 603,
 									"width": 166.7490234375,
-									"height": 68
+									"height": 53
 								},
 								{
 									"_type": "UMLReceptionCompartmentView",
@@ -277023,9 +277023,9 @@
 														"$ref": "AAAAAAGbDca58MmP3PY="
 													},
 													"font": "Arial;13;0",
-													"left": 24.72998046875,
+													"left": 22.55908203125,
 													"top": 13,
-													"width": 188.87158203125,
+													"width": 172.11376953125,
 													"height": 13,
 													"text": "SequenceDiagramAdministrador"
 												},
@@ -277038,7 +277038,7 @@
 													"font": "Arial;13;1",
 													"left": 5,
 													"top": 13,
-													"width": 14.72998046875,
+													"width": 12.55908203125,
 													"height": 13,
 													"text": "sd"
 												}
@@ -277733,9 +277733,9 @@
 														"$ref": "AAAAAAGbDca58Mm4RIk="
 													},
 													"font": "Arial;13;0",
-													"left": 32.72998046875,
+													"left": 30.55908203125,
 													"top": 13,
-													"width": 179.49609375,
+													"width": 157.65380859375,
 													"height": 13,
 													"text": "SequenceDiagramRestaurante"
 												},
@@ -277748,7 +277748,7 @@
 													"font": "Arial;13;1",
 													"left": 13,
 													"top": 13,
-													"width": 14.72998046875,
+													"width": 12.55908203125,
 													"height": 13,
 													"text": "sd"
 												}
@@ -286355,7 +286355,7 @@
 							"_parent": {
 								"$ref": "AAAAAAGbD0Onam9G7Cc="
 							},
-							"name": "Service",
+							"name": "ClienteService",
 							"ownedElements": [
 								{
 									"_type": "UMLDependency",
@@ -286466,7 +286466,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGbDca59MvZoOs="
 									},
-									"name": "Login"
+									"name": "Create"
 								},
 								{
 									"_type": "UMLOperation",
@@ -286474,7 +286474,7 @@
 									"_parent": {
 										"$ref": "AAAAAAGbDca59MvZoOs="
 									},
-									"name": "Autenticate"
+									"name": "Get"
 								}
 							]
 						},
@@ -287294,6 +287294,14 @@
 										"$ref": "AAAAAAGbDca59MwmWpo="
 									},
 									"name": "Delete"
+								},
+								{
+									"_type": "UMLOperation",
+									"_id": "AAAAAAGb7RJA/4HTm6E=",
+									"_parent": {
+										"$ref": "AAAAAAGbDca59MwmWpo="
+									},
+									"name": "Edit"
 								}
 							]
 						},
@@ -287413,9 +287421,9 @@
 														"$ref": "AAAAAAGbD1K27YKIgds="
 													},
 													"font": "Arial;13;0",
-													"left": 24.72998046875,
+													"left": 22.55908203125,
 													"top": 5,
-													"width": 148.1767578125,
+													"width": 133.8310546875,
 													"height": 13,
 													"text": "SequenceDiagramValidar"
 												},
@@ -287428,7 +287436,7 @@
 													"font": "Arial;13;1",
 													"left": 5,
 													"top": 5,
-													"width": 14.72998046875,
+													"width": 12.55908203125,
 													"height": 13,
 													"text": "sd"
 												}
@@ -288760,9 +288768,9 @@
 														"$ref": "AAAAAAGbD1K27YLNSZI="
 													},
 													"font": "Arial;13;0",
-													"left": 24.72998046875,
+													"left": 22.55908203125,
 													"top": 5,
-													"width": 157.8125,
+													"width": 143.212890625,
 													"height": 13,
 													"text": "SequenceDiagramInvalidar"
 												},
@@ -288775,7 +288783,7 @@
 													"font": "Arial;13;1",
 													"left": 5,
 													"top": 5,
-													"width": 14.72998046875,
+													"width": 12.55908203125,
 													"height": 13,
 													"text": "sd"
 												}
