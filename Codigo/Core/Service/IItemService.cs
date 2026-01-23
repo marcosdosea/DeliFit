@@ -1,6 +1,6 @@
 ﻿namespace Core.Service;
 
-public interface IClienteService
+public interface IItemService
 {
 
 }

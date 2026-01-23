@@ -1,6 +1,6 @@
-using System.Diagnostics;
 using DeliFitWeb.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace DeliFitWeb.Controllers
 {
