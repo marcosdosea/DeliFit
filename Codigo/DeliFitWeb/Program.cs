@@ -16,6 +16,7 @@ public class Program
         builder.Services.AddDbContext<DeliFitContext>(options => options.UseMySQL(connectionString));
         builder.Services.AddTransient<IItemService, ItemService>();
         builder.Services.AddTransient<IClienteService, ClienteService>();
+        builder.Services.AddTransient<IPedidoService, PedidoService>();
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
