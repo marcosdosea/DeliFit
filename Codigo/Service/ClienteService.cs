@@ -1,14 +1,5 @@
-<<<<<<< HEAD
-﻿using Core;
+using Core;
 using Core.Service;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-=======
-﻿using Core.Service;
->>>>>>> 2d5f6fbb724caabff9d32faf0eed3a2bb9171e6e
 
 namespace Service;
 
