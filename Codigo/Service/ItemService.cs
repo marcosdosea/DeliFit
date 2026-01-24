@@ -28,12 +28,24 @@ public class ItemService : IItemService
             _context.Remove(item);
             _context.SaveChanges();
         }
+        else
+        {
+            throw new ServiceException("Item não encontrado");
+        }
     }
 
     public void Edit(Item item)
     {
-        _context.Items.Update(item);
-        _context.SaveChanges();
+        if(Get(item.Id) != null)
+        {
+            _context.Items.Update(item);
+            _context.SaveChanges();
+        }
+        else
+        {
+            throw new ServiceException("Item não encontrado");
+        }
+
     }
 
     public Item? Get(uint id)

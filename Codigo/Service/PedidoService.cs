@@ -38,6 +38,10 @@ namespace Service
                 _context.Remove(pedido);
                 _context.SaveChanges();
             }
+            else
+            {
+                throw new ServiceException("Pedido não encontrado");
+            }
         }
 
 
