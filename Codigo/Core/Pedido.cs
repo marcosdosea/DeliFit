@@ -21,5 +21,5 @@ public partial class Pedido
 
     public virtual Restaurante IdRestauranteNavigation { get; set; } = null!;
 
-    public virtual ICollection<Item> Items { get; set; } = new List<Item>();
+    public virtual ICollection<Pedidoitem> Pedidoitems { get; set; } = new List<Pedidoitem>();
 }

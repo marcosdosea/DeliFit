@@ -29,9 +29,7 @@ public partial class Item
 
     public uint IdConsumoCalorico { get; set; }
 
-    public uint IdPedido { get; set; }
-
-    public virtual Pedido IdPedidoNavigation { get; set; } = null!;
-
     public virtual Restaurante IdRestauranteNavigation { get; set; } = null!;
+
+    public virtual ICollection<Pedidoitem> Pedidoitems { get; set; } = new List<Pedidoitem>();
 }
