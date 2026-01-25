@@ -1,5 +1,6 @@
 ﻿using Core;
 using Core.Service;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service
 {
@@ -49,6 +50,15 @@ namespace Service
         public Restaurante? Get(uint id)
         {
             return _context.Restaurantes.Find(id);
+        }
+
+        public IEnumerable<Restaurante> GetAll(int page, int pageSize)
+        {
+            return _context.Restaurantes
+            .AsNoTracking()
+            .OrderBy(a => a.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize);
         }
     }
 }

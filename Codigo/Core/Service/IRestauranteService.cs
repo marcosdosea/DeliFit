@@ -2,11 +2,13 @@
 
 public interface IRestauranteService
 {
-    uint Create(Restaurante restaurante);
+    public uint Create(Restaurante restaurante);
 
-    void Delete(uint id);
+    public void Delete(uint id);
 
-    void Edit(Restaurante restaurante);
+    public void Edit(Restaurante restaurante);
 
-    Restaurante? Get(uint id);
+    public Restaurante? Get(uint id);
+
+    public IEnumerable<Restaurante> GetAll(int page, int pageSize);
 }
