@@ -1,4 +1,7 @@
-﻿namespace Core;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Core;
 
 public partial class Carrinho
 {
@@ -12,8 +15,6 @@ public partial class Carrinho
     /// P para PIX,C para CARTÃO, D para DINHEIRO 
     /// </summary>
     public string FormaDePagamento { get; set; } = null!;
-
-    public decimal ValorFrete { get; set; }
 
     public uint? IdCartao { get; set; }
 

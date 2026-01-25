@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace Core;
 
@@ -31,11 +33,10 @@ public partial class DeliFitContext : DbContext
 
     public virtual DbSet<Pedido> Pedidos { get; set; }
 
-    public virtual DbSet<Pedidoitem> Pedidoitems { get; set; }
-
     public virtual DbSet<Restaurante> Restaurantes { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=123456;database=DeliFit");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -53,13 +54,13 @@ public partial class DeliFitContext : DbContext
                 .HasComment("1-Domingo\n2-Segunda\n3-Terça\n4-Quarta\n5-Quinta\n6-Sexta\n7-Sabado")
                 .HasColumnType("enum('1','2','3','4','5','6','7')")
                 .HasColumnName("diaSemana");
-            entity.Property(e => e.HorarioFim)
+            entity.Property(e => e.Horario)
                 .HasColumnType("datetime")
-                .HasColumnName("horarioFim");
-            entity.Property(e => e.HorarioInicio)
-                .HasColumnType("datetime")
-                .HasColumnName("horarioInicio");
+                .HasColumnName("horario");
             entity.Property(e => e.IdRestaurante).HasColumnName("idRestaurante");
+            entity.Property(e => e.ValorFrete)
+                .HasPrecision(10)
+                .HasColumnName("valorFrete");
 
             entity.HasOne(d => d.IdRestauranteNavigation).WithMany(p => p.Atendimentos)
                 .HasForeignKey(d => d.IdRestaurante)
@@ -115,9 +116,6 @@ public partial class DeliFitContext : DbContext
             entity.Property(e => e.IdCartao).HasColumnName("idCartao");
             entity.Property(e => e.IdCliente).HasColumnName("idCliente");
             entity.Property(e => e.Observação).HasMaxLength(100);
-            entity.Property(e => e.ValorFrete)
-                .HasPrecision(10)
-                .HasColumnName("valorFrete");
 
             entity.HasOne(d => d.IdCartaoNavigation).WithMany(p => p.Carrinhos)
                 .HasForeignKey(d => d.IdCartao)
@@ -236,6 +234,8 @@ public partial class DeliFitContext : DbContext
 
             entity.ToTable("item");
 
+            entity.HasIndex(e => e.IdPedido, "fk_Item_Pedido1_idx");
+
             entity.HasIndex(e => e.IdRestaurante, "fk_Item_Restaurante1_idx");
 
             entity.Property(e => e.Id).HasColumnName("id");
@@ -246,6 +246,7 @@ public partial class DeliFitContext : DbContext
                 .HasColumnName("descricao");
             entity.Property(e => e.Gordura).HasColumnName("gordura");
             entity.Property(e => e.IdConsumoCalorico).HasColumnName("idConsumoCalorico");
+            entity.Property(e => e.IdPedido).HasColumnName("idPedido");
             entity.Property(e => e.IdRestaurante).HasColumnName("idRestaurante");
             entity.Property(e => e.Preco)
                 .HasPrecision(10)
@@ -260,6 +261,11 @@ public partial class DeliFitContext : DbContext
             entity.Property(e => e.Volume)
                 .HasMaxLength(10)
                 .HasColumnName("volume");
+
+            entity.HasOne(d => d.IdPedidoNavigation).WithMany(p => p.Items)
+                .HasForeignKey(d => d.IdPedido)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("fk_Item_Pedido1");
 
             entity.HasOne(d => d.IdRestauranteNavigation).WithMany(p => p.Items)
                 .HasForeignKey(d => d.IdRestaurante)
@@ -326,34 +332,6 @@ public partial class DeliFitContext : DbContext
                 .HasForeignKey(d => d.IdRestaurante)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("fk_Pedido_Restaurante1");
-        });
-
-        modelBuilder.Entity<Pedidoitem>(entity =>
-        {
-            entity.HasKey(e => new { e.IdPedido, e.IdItem }).HasName("PRIMARY");
-
-            entity.ToTable("pedidoitem");
-
-            entity.HasIndex(e => e.IdItem, "fk_PedidoItem_Item1_idx");
-
-            entity.HasIndex(e => e.IdPedido, "fk_PedidoItem_Pedido1_idx");
-
-            entity.Property(e => e.IdPedido).HasColumnName("idPedido");
-            entity.Property(e => e.IdItem).HasColumnName("idItem");
-            entity.Property(e => e.Preco)
-                .HasPrecision(10)
-                .HasColumnName("preco");
-            entity.Property(e => e.Quantidade).HasColumnName("quantidade");
-
-            entity.HasOne(d => d.IdItemNavigation).WithMany(p => p.Pedidoitems)
-                .HasForeignKey(d => d.IdItem)
-                .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("fk_PedidoItem_Item1");
-
-            entity.HasOne(d => d.IdPedidoNavigation).WithMany(p => p.Pedidoitems)
-                .HasForeignKey(d => d.IdPedido)
-                .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("fk_PedidoItem_Pedido1");
         });
 
         modelBuilder.Entity<Restaurante>(entity =>

@@ -1,4 +1,7 @@
-﻿namespace Core;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Core;
 
 public partial class Item
 {
@@ -26,7 +29,9 @@ public partial class Item
 
     public uint IdConsumoCalorico { get; set; }
 
-    public virtual Restaurante IdRestauranteNavigation { get; set; } = null!;
+    public uint IdPedido { get; set; }
 
-    public virtual ICollection<Pedidoitem> Pedidoitems { get; set; } = new List<Pedidoitem>();
+    public virtual Pedido IdPedidoNavigation { get; set; } = null!;
+
+    public virtual Restaurante IdRestauranteNavigation { get; set; } = null!;
 }
