@@ -14,6 +14,8 @@ public partial class Item
 
     public string? Restricao { get; set; }
 
+    public string Nome { get; set; } = null!;
+
     public string? Descricao { get; set; }
 
     public decimal Preco { get; set; }
@@ -23,8 +25,6 @@ public partial class Item
     public string? Volume { get; set; }
 
     public uint IdRestaurante { get; set; }
-
-    public uint IdConsumoCalorico { get; set; }
 
     public virtual Restaurante IdRestauranteNavigation { get; set; } = null!;
 

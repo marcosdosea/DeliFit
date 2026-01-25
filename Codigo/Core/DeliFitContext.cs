@@ -36,6 +36,7 @@ public partial class DeliFitContext : DbContext
     public virtual DbSet<Restaurante> Restaurantes { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=123456;database=DeliFit");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -245,8 +246,10 @@ public partial class DeliFitContext : DbContext
                 .HasMaxLength(200)
                 .HasColumnName("descricao");
             entity.Property(e => e.Gordura).HasColumnName("gordura");
-            entity.Property(e => e.IdConsumoCalorico).HasColumnName("idConsumoCalorico");
             entity.Property(e => e.IdRestaurante).HasColumnName("idRestaurante");
+            entity.Property(e => e.Nome)
+                .HasMaxLength(50)
+                .HasColumnName("nome");
             entity.Property(e => e.Preco)
                 .HasPrecision(10)
                 .HasColumnName("preco");
