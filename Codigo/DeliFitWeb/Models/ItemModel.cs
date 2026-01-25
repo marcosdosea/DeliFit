@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DeliFitWeb.Models;
 
-public class ItemViewModel
+public class ItemModel
 {
     [Key]
     public uint Id { get; set; }

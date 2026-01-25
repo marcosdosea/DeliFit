@@ -11,4 +11,6 @@ public interface IItemService
     Item? Get(uint id);
 
     IEnumerable<Item> GetAll();
+
+    IEnumerable<Item> GetByName(string nome);
 }
