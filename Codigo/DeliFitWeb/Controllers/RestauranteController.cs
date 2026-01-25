@@ -1,0 +1,105 @@
+﻿using AutoMapper;
+using Core;
+using Core.Service;
+using DeliFitWeb.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace DeliFitWeb.Controllers
+{
+    public class RestauranteController : Controller
+    {
+        private readonly IRestauranteService _restauranteService;
+        private readonly IMapper _mapper;
+
+        public RestauranteController(IRestauranteService restauranteService, IMapper mapper)
+        {
+            _restauranteService = restauranteService;
+            _mapper = mapper;
+        }
+
+        // GET: RestauranteController
+        public ActionResult Index(int page = 1, int pageSize = 10)
+        {
+            var listaRestaurantes = _restauranteService.GetAll(page, pageSize);
+            var listaRestaurantesModel = _mapper.Map<IEnumerable<RestauranteModel>>(listaRestaurantes);
+
+            ViewBag.Page = page;
+            ViewBag.PageSize = pageSize;
+            ViewBag.TotalCount = listaRestaurantes.Count();
+
+            return View(listaRestaurantesModel);
+        }
+
+        // GET: RestauranteController/Details/5
+        public ActionResult Details(uint id)
+        {
+            Restaurante? restaurante = _restauranteService.Get(id);
+            RestauranteModel restauranteModel = _mapper.Map<RestauranteModel>(restaurante);
+
+            return View(restauranteModel);
+        }
+
+        // GET: RestauranteController/Create
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        // POST: RestauranteController/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(RestauranteModel restauranteModel)
+        {
+            if(ModelState.IsValid)
+            {
+                var restaurante = _mapper.Map<Restaurante>(restauranteModel);
+                _restauranteService.Create(restaurante);
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        // GET: RestauranteController/Edit/5
+        public ActionResult Edit(uint id)
+        {
+            Restaurante? restaurante = _restauranteService.Get(id);
+            RestauranteModel restauranteModel = _mapper.Map<RestauranteModel>(restaurante);
+
+            return View(restauranteModel);
+        }
+
+        // POST: RestauranteController/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(uint id, RestauranteModel restauranteModel)
+        {
+            if(ModelState.IsValid)
+            {
+                var restaurante = _mapper.Map<Restaurante>(restauranteModel);
+                _restauranteService.Edit(restaurante);
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        // GET: RestauranteController/Delete/5
+        public ActionResult Delete(uint id)
+        {
+            Restaurante? restaurante = _restauranteService.Get(id);
+            RestauranteModel restauranteModel = _mapper.Map<RestauranteModel>(restaurante);
+            
+            return View(restauranteModel);
+        }
+
+        // POST: RestauranteController/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(uint id, RestauranteModel restauranteModel)
+        {
+            _restauranteService.Delete(id);
+
+            return RedirectToAction(nameof(Index));
+        }
+    }
+}
