@@ -2,9 +2,9 @@
 {
     public interface IPedidoService
     {
-        uint Create(Pedido pedido);
+        public uint Create(Pedido pedido);
         public IEnumerable<Pedido> GetAll();
-        Pedido? Get(uint id);
-        void Delete(uint id);
+        public Pedido? Get(uint id);
+        public void Delete(uint id);
     }
 }

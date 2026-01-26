@@ -3,12 +3,14 @@
 public interface IClienteService
 {
     //esses dois se referem ao caso de uso autenticar cliente
-    uint Create(Cliente cliente);
+    public uint Create(Cliente cliente);
 
-    Cliente? Get(uint id);
+    public Cliente? Get(uint id);
 
     //esses dois metodos sao para o caso de uso manter perfil
-    void Edit(Cliente cliente);
+    public void Edit(Cliente cliente);
 
-    void Delete(uint id);
+     public void Delete(uint id);
+
+    public IEnumerable<Cliente> GetAll();
 }

@@ -14,7 +14,7 @@ public class Program
         builder.Services.AddControllersWithViews();
         var connectionString = builder.Configuration
             .GetConnectionString("DeliFitConnection")
-            ?? throw new InvalidOperationException("Connection string n„o configurada.");
+            ?? throw new InvalidOperationException("Connection string n√£o configurada.");
         IServiceCollection serviceCollection = builder.Services.AddDbContext<DeliFitContext>(options => options.UseMySQL(connectionString));
         builder.Services.AddTransient<IItemService, ItemService>();
         builder.Services.AddTransient<IClienteService, ClienteService>();

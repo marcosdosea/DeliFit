@@ -1,5 +1,6 @@
 using Core;
 using Core.Service;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service;
 
@@ -50,6 +51,11 @@ public class ClienteService : IClienteService
         {
             throw new ServiceException("Cliente não encontrado");
         }
+    }
+
+    public IEnumerable<Cliente> GetAll()
+    {
+        return _context.Clientes.AsNoTracking();
     }
 
 }
