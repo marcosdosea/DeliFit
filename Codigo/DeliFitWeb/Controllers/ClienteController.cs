@@ -1,19 +1,37 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Core.Service;
+using Microsoft.AspNetCore.Mvc;
+using DeliFitWeb.Models;
+using Core;
 
 namespace DeliFitWeb.Controllers
 {
     public class ClienteController : Controller
     {
+
+        private readonly IClienteService _clienteService;
+        private readonly IMapper _mapper;
+
+        public ClienteController(IClienteService clienteService, IMapper mapper)
+        {
+            _clienteService = clienteService;
+            _mapper = mapper;
+        }
         // GET: ClienteController
         public ActionResult Index()
         {
-            return View();
+            var listaClientes = _clienteService.GetAll();
+            var listaClientesViewModel = _mapper.Map<List<ClienteModel>>(listaClientes);
+
+            return View(listaClientesViewModel);
         }
 
         // GET: ClienteController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(uint id)
         {
-            return View();
+            Cliente? cliente = _clienteService.Get(id);
+            ClienteModel clienteModel = _mapper.Map<ClienteModel>(cliente);
+            return View(clienteModel);
         }
 
         // GET: ClienteController/Create
@@ -25,58 +43,54 @@ namespace DeliFitWeb.Controllers
         // POST: ClienteController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(ClienteModel clienteModel)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                var cliente = _mapper.Map<Cliente>(clienteModel);
+                _clienteService.Create(cliente);
             }
-            catch
-            {
-                return View();
-            }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: ClienteController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(uint id)
         {
-            return View();
+            Cliente? cliente = _clienteService.Get(id);
+            ClienteModel clienteModel = _mapper.Map<ClienteModel>(cliente);
+
+            return View(clienteModel);
         }
 
         // POST: ClienteController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(int id, ClienteModel clienteModel)
         {
-            try
+            if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                var cliente = _mapper.Map<Cliente>(clienteModel);
+                _clienteService.Edit(cliente);
             }
-            catch
-            {
-                return View();
-            }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: ClienteController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(uint id)
         {
-            return View();
+            Cliente? cliente = _clienteService.Get(id);
+            ClienteModel clienteModel = _mapper.Map<ClienteModel>(cliente);
+
+            return View(clienteModel);
         }
 
         // POST: ClienteController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(uint id, ClienteModel clienteModel)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            _clienteService.Delete(id);
+            return RedirectToAction(nameof(Index));
         }
     }
 }
