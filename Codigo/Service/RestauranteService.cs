@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Service
 {
-    class RestauranteService : IRestauranteService
+    public class RestauranteService : IRestauranteService
     {
         private readonly DeliFitContext _context;
 
