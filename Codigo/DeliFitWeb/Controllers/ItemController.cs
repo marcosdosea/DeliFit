@@ -21,7 +21,7 @@ namespace DeliFitWeb.Controllers
         {
             var listaItens = _itemService.GetAll();
             var listaItensModel = _mapper.Map<List<ItemModel>>(listaItens);
-            return View(listaItensModel);//TO-DO
+            return View(listaItensModel);
         }
 
         // GET: ItemController/Details/5
@@ -29,13 +29,13 @@ namespace DeliFitWeb.Controllers
         {
             Item? item = _itemService.Get(id);
             ItemModel itemModel = _mapper.Map<ItemModel>(item);
-            return View(itemModel);//TO-DO
+            return View(itemModel);
         }
 
         // GET: ItemController/Create
         public ActionResult Create()
         {
-            return View();//TO-DO
+            return View();
         }
 
         // POST: ItemController/Create
@@ -48,26 +48,26 @@ namespace DeliFitWeb.Controllers
                 var item = _mapper.Map<Item>(itemModel);
                 _itemService.Create(item);
             }
-            return RedirectToAction(nameof(Index));//TO-DO
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: ItemController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();//TO-DO
+            return View();
         }
 
         // POST: ItemController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, ItemModel itemModel)
+        public ActionResult Edit(ItemModel itemModel)
         {
             if (ModelState.IsValid)
             {
                 var item = _mapper.Map<Item>(itemModel);
                 _itemService.Edit(item);
             }
-            return RedirectToAction(nameof(Index));//TO-DO
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: ItemController/Delete/5
