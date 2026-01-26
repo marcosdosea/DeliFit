@@ -1,16 +1,13 @@
 ﻿using AutoMapper;
-using Core;
+using Core.DTO;
 using DeliFitWeb.Models;
 
-namespace DeliFitWeb.Mappers
+namespace DeliFitWeb.Mappers;
 
-
+public class ClienteProfile : Profile
 {
-    public class ClienteProfile : Profile
+    public ClienteProfile()
     {
-        public ClienteProfile()
-        {
-            CreateMap<ClienteModel, Cliente>().ReverseMap();
-        }
+        CreateMap<ClienteDTO, ClienteModel>().ReverseMap();
     }
 }

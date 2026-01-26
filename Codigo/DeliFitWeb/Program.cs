@@ -12,16 +12,14 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
         // Add services to the container.
         builder.Services.AddControllersWithViews();
-
-        builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-        var connectionString = builder.Configuration.GetConnectionString("DeliFitConnection");
-        builder.Services.AddDbContext<DeliFitContext>(options => options.UseMySQL(connectionString));
+        var connectionString = builder.Configuration
+            .GetConnectionString("DeliFitConnection")
+            ?? throw new InvalidOperationException("Connection string não configurada.");
+        IServiceCollection serviceCollection = builder.Services.AddDbContext<DeliFitContext>(options => options.UseMySQL(connectionString));
         builder.Services.AddTransient<IItemService, ItemService>();
         builder.Services.AddTransient<IClienteService, ClienteService>();
         builder.Services.AddTransient<IPedidoService, PedidoService>();
-        
-
+        builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
