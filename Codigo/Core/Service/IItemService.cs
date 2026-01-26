@@ -10,5 +10,7 @@ public interface IItemService
 
     public Item? Get(uint id);
 
-    public IEnumerable<Item> GetAll();
+    IEnumerable<Item> GetAll();
+
+    IEnumerable<Item> GetByName(string nome);
 }

@@ -248,8 +248,10 @@ public partial class DeliFitContext : DbContext
                 .HasMaxLength(200)
                 .HasColumnName("descricao");
             entity.Property(e => e.Gordura).HasColumnName("gordura");
-            entity.Property(e => e.IdConsumoCalorico).HasColumnName("idConsumoCalorico");
             entity.Property(e => e.IdRestaurante).HasColumnName("idRestaurante");
+            entity.Property(e => e.Nome)
+                .HasMaxLength(50)
+                .HasColumnName("nome");
             entity.Property(e => e.Preco)
                 .HasPrecision(10)
                 .HasColumnName("preco");

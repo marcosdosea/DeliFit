@@ -14,7 +14,7 @@ public class ItemService : IItemService
     }
 
     public uint Create(Item item)
-    { 
+    {
         _context.Add(item);
         _context.SaveChanges();
         return item.Id;
@@ -23,7 +23,7 @@ public class ItemService : IItemService
     public void Delete(uint id)
     {
         var item = _context.Items.FirstOrDefault(i => i.Id == id);
-        if(item != null)
+        if (item != null)
         {
             _context.Remove(item);
             _context.SaveChanges();
@@ -36,7 +36,7 @@ public class ItemService : IItemService
 
     public void Edit(Item item)
     {
-        if(Get(item.Id) != null)
+        if (Get(item.Id) != null)
         {
             _context.Items.Update(item);
             _context.SaveChanges();
@@ -56,5 +56,12 @@ public class ItemService : IItemService
     public IEnumerable<Item> GetAll()
     {
         return _context.Items.AsNoTracking();
+    }
+
+    public IEnumerable<Item> GetByName(string nome)
+    {
+        return _context.Items
+            .AsNoTracking()
+            .Where(i => EF.Functions.Like(i.Nome, $"%{nome}%"));//ignora maiuscula e minuscula
     }
 }
