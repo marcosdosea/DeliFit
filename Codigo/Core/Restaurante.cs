@@ -23,7 +23,7 @@ public partial class Restaurante
 
     public string Email { get; set; } = null!;
 
-    public byte Validado { get; set; }
+    public bool Validado { get; set; }
 
     public string Rua { get; set; } = null!;
 

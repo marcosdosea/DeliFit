@@ -1,6 +1,6 @@
 ﻿using Core;
+using Core.DTO;
 using Core.Service;
-using Microsoft.EntityFrameworkCore;
 
 namespace Service
 {
@@ -43,15 +43,21 @@ namespace Service
         public Restaurante? Get(uint id)
         {
             return _context.Restaurantes
-                    .FirstOrDefault
-                    (a => a.Id == id);
+                    .FirstOrDefault(a => a.Id == id);
         }
 
-        public IEnumerable<Restaurante> GetAll()
+        public IEnumerable<RestauranteDTO> GetAll()
         {
             return _context.Restaurantes
-            .OrderBy(a => a.Id)
-            .AsNoTracking();
+                .Select(r => new RestauranteDTO
+                {
+                    Id = r.Id,
+                    NomeRestaurante = r.NomeRestaurante,
+                    Validado= r.Validado,
+                    Cidade = r.Cidade,
+                    Estado = r.Estado
+                })
+                .ToList();
         }
     }
 }

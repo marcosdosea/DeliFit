@@ -1,4 +1,6 @@
-﻿namespace Core.Service;
+﻿using Core.DTO;
+
+namespace Core.Service;
 
 public interface IRestauranteService
 {
@@ -10,5 +12,5 @@ public interface IRestauranteService
 
     public Restaurante? Get(uint id);
 
-    public IEnumerable<Restaurante> GetAll();
+    public IEnumerable<RestauranteDTO> GetAll();
 }
