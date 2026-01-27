@@ -18,9 +18,9 @@ public partial class Atendimento
     /// </summary>
     public string DiaSemana { get; set; } = null!;
 
-    public DateTime HorarioInicio { get; set; }
+    public DateTime? HorarioInicio { get; set; }
 
-    public DateTime HorarioFim { get; set; }
+    public DateTime? HorarioFim { get; set; }
 
     public uint IdRestaurante { get; set; }
 

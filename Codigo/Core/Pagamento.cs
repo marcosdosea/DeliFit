@@ -9,9 +9,9 @@ public partial class Pagamento
 
     public decimal ValorMensalidade { get; set; }
 
-    public DateTime DataPagamento { get; set; }
+    public DateTime? DataPagamento { get; set; }
 
-    public DateTime DataVencimento { get; set; }
+    public DateTime? DataVencimento { get; set; }
 
     /// <summary>
     /// P : Pago
