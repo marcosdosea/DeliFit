@@ -15,7 +15,7 @@ public class Program
         var connectionString = builder.Configuration
             .GetConnectionString("DeliFitConnection")
             ?? throw new InvalidOperationException("Connection string não configurada.");
-        IServiceCollection serviceCollection = builder.Services.AddDbContext<DeliFitContext>(options => options.UseMySQL(connectionString));
+        IServiceCollection serviceCollection = builder.Services.AddDbContext<DeliFitContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
         builder.Services.AddTransient<IItemService, ItemService>();
         builder.Services.AddTransient<IClienteService, ClienteService>();
         builder.Services.AddTransient<IPedidoService, PedidoService>();
