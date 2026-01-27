@@ -10,5 +10,5 @@ public interface IRestauranteService
 
     public Restaurante? Get(uint id);
 
-    public IEnumerable<Restaurante> GetAll(int page, int pageSize);
+    public IEnumerable<Restaurante> GetAll();
 }

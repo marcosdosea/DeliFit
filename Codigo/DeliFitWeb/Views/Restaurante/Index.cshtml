@@ -1,113 +1,86 @@
 ﻿@model IEnumerable<DeliFitWeb.Models.RestauranteModel>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NomeRestaurante)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NomeProprietario)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CpfProprietario)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Cnpj)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Descricao)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TelefoneProprietario)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TelefoneRestaurante)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Rua)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Numero)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Bairro)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Cep)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Cidade)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Estado)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NomeRestaurante)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NomeProprietario)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CpfProprietario)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cnpj)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Descricao)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TelefoneProprietario)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TelefoneRestaurante)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rua)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Numero)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Bairro)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cep)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cidade)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Estado)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-            </td>
-        </tr>
+@{
+    ViewData["Title"] = "Listagem de Restaurantes";
 }
-    </tbody>
-</table>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
+        <h2 class="fw-bold">DELIFIT</h2>
+        <h4 class="text-muted">| Restaurantes |</h4>
+        <div class="d-flex align-items-center">
+            <span class="badge bg-secondary rounded-circle p-2 me-2">ADM</span>
+            <span>Administrador</span>
+        </div>
+    </div>
+
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-4">
+            <a href="javascript:history.back()" class="text-decoration-none text-dark fs-5">
+                <i class="bi bi-chevron-left"></i> &lt; Voltar
+            </a>
+        </div>
+        <div class="col-md-8">
+            <form asp-action="Index" method="get" class="d-flex justify-content-end">
+                <div class="input-group" style="max-width: 400px;">
+                    <input type="text" name="searchString" class="form-control border-dark" placeholder="Pesquisar Restaurante">
+                    <button class="btn btn-outline-dark" type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-dark">
+        <div class="card-body p-0">
+            <table class="table table-striped table-hover mb-0 align-middle">
+                <thead class="table-light border-bottom border-dark">
+                    <tr>
+                        <th class="ps-4 py-3">ID</th>
+                        <th class="ps-4 py-3">Nome</th>
+                        <th>Status</th>
+                        <th>Cidade / UF</th>
+                        <th class="text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4 fw-bold">@item.Id</td>
+                                <td class="ps-4 fw-bold">@item.NomeRestaurante</td>
+                                <td>
+                                    @if(item.Validado) 
+                                    {
+                                        <span class="text-success fw-bold">Ativo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-secondary">Inativo</span>
+                                    }
+                                </td>
+                                <td>@item.Cidade / @item.Estado</td>
+                                <td class="text-center">
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-dark btn-sm px-4">
+                                        Visualizar
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center py-4 text-muted">Nenhum restaurante encontrado.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
