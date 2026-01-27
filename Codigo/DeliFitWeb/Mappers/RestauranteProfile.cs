@@ -8,9 +8,9 @@ namespace DeliFitWeb.Mappers
     {
         public RestauranteProfile()
         {
-            CreateMap<RestauranteModel, Restaurante>().ReverseMap();
+            CreateMap<RestauranteViewModel, Restaurante>().ReverseMap();
 
-            CreateMap<RestauranteModel, RestauranteDTO>().ReverseMap();
+            CreateMap<RestauranteViewModel, RestauranteDTO>().ReverseMap();
         }
 
     }

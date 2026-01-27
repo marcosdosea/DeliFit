@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DeliFitWeb.Models
 {
-    public class RestauranteModel
+    public class RestauranteViewModel
     {
         [Key]
         public uint Id { get; set; }

@@ -21,7 +21,7 @@ namespace DeliFitWeb.Controllers
         public ActionResult Index()
         {
             var listaRestaurantes = _restauranteService.GetAll();
-            var listaRestaurantesModel = _mapper.Map<List<RestauranteModel>>(listaRestaurantes);
+            var listaRestaurantesModel = _mapper.Map<List<RestauranteViewModel>>(listaRestaurantes);
 
             return View(listaRestaurantesModel);
         }
@@ -30,7 +30,7 @@ namespace DeliFitWeb.Controllers
         public ActionResult Details(uint id)
         {
             Restaurante? restaurante = _restauranteService.Get(id);
-            RestauranteModel restauranteModel = _mapper.Map<RestauranteModel>(restaurante);
+            RestauranteViewModel restauranteModel = _mapper.Map<RestauranteViewModel>(restaurante);
 
             return View(restauranteModel);
         }
@@ -44,7 +44,7 @@ namespace DeliFitWeb.Controllers
         // POST: RestauranteController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(RestauranteModel restauranteModel)
+        public ActionResult Create(RestauranteViewModel restauranteModel)
         {
 
             if (ModelState.IsValid)
@@ -60,7 +60,7 @@ namespace DeliFitWeb.Controllers
         public ActionResult Edit(uint id)
         {
             Restaurante? restaurante = _restauranteService.Get(id);
-            RestauranteModel restauranteModel = _mapper.Map<RestauranteModel>(restaurante);
+            RestauranteViewModel restauranteModel = _mapper.Map<RestauranteViewModel>(restaurante);
 
             return View(restauranteModel);
         }
@@ -68,7 +68,7 @@ namespace DeliFitWeb.Controllers
         // POST: RestauranteController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(RestauranteModel restauranteModel)
+        public ActionResult Edit(RestauranteViewModel restauranteModel)
         {
             if (ModelState.IsValid)
             {
@@ -83,7 +83,7 @@ namespace DeliFitWeb.Controllers
         public ActionResult Delete(uint id)
         {
             Restaurante? restaurante = _restauranteService.Get(id);
-            RestauranteModel restauranteModel = _mapper.Map<RestauranteModel>(restaurante);
+            RestauranteViewModel restauranteModel = _mapper.Map<RestauranteViewModel>(restaurante);
             
             return View(restauranteModel);
         }
@@ -91,7 +91,7 @@ namespace DeliFitWeb.Controllers
         // POST: RestauranteController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(uint id, RestauranteModel restauranteModel)
+        public ActionResult Delete(uint id, RestauranteViewModel restauranteModel)
         {
             _restauranteService.Delete(id);
 
