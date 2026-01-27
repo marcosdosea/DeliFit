@@ -65,7 +65,7 @@ namespace DeliFitWeb.Controllers
         // POST: ClienteController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, ClienteModel clienteModel)
+        public ActionResult Edit(ClienteModel clienteModel)
         {
             if (ModelState.IsValid)
             {
