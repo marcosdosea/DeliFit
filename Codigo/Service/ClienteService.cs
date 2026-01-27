@@ -1,4 +1,5 @@
 using Core;
+using Core.DTO;
 using Core.Service;
 using Microsoft.EntityFrameworkCore;
 
@@ -50,11 +51,21 @@ public class ClienteService : IClienteService
         }
     }
 
-    public IEnumerable<Cliente> GetAll()
+    public IEnumerable<ClienteDTO> GetAll()
     {
         return _context.Clientes
-            .OrderBy(a => a.Id)
-            .AsNoTracking();
+            .Select(r => new ClienteDTO
+        {
+            Id = r.Id,
+            Nome = r.Nome,
+            Telefone = r.Telefone,
+            Email = r.Email
+        })
+            .ToList();
     }
 
 }
+
+     
+
+

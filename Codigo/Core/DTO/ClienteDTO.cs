@@ -10,6 +10,4 @@ public class ClienteDTO
 
     public string Email { get; set; } = null!;
 
-    public DateTime DataNascimento { get; set; }
-
 }

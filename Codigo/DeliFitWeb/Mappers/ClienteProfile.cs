@@ -9,7 +9,7 @@ public class ClienteProfile : Profile
 {
     public ClienteProfile()
     {
-        CreateMap<ClienteDTO, ClienteModel>().ReverseMap();
-        CreateMap<Cliente, ClienteModel>().ReverseMap();
+        CreateMap<ClienteDTO, ClienteViewModel>().ReverseMap();
+        CreateMap<Cliente, ClienteViewModel>().ReverseMap();
     }
 }

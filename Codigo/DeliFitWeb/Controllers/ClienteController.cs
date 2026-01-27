@@ -21,7 +21,7 @@ namespace DeliFitWeb.Controllers
         public ActionResult Index()
         {
             var listaClientes = _clienteService.GetAll();
-            var listaClientesViewModel = _mapper.Map<List<ClienteModel>>(listaClientes);
+            var listaClientesViewModel = _mapper.Map<List<ClienteViewModel>>(listaClientes);
 
             return View(listaClientesViewModel);
         }
@@ -30,7 +30,7 @@ namespace DeliFitWeb.Controllers
         public ActionResult Details(uint id)
         {
             Cliente? cliente = _clienteService.Get(id);
-            ClienteModel clienteModel = _mapper.Map<ClienteModel>(cliente);
+            ClienteViewModel clienteModel = _mapper.Map<ClienteViewModel>(cliente);
             return View(clienteModel);
         }
 
@@ -43,7 +43,7 @@ namespace DeliFitWeb.Controllers
         // POST: ClienteController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(ClienteModel clienteModel)
+        public ActionResult Create(ClienteViewModel clienteModel)
         {
             if (ModelState.IsValid)
             {
@@ -57,7 +57,7 @@ namespace DeliFitWeb.Controllers
         public ActionResult Edit(uint id)
         {
             Cliente? cliente = _clienteService.Get(id);
-            ClienteModel clienteModel = _mapper.Map<ClienteModel>(cliente);
+            ClienteViewModel clienteModel = _mapper.Map<ClienteViewModel>(cliente);
 
             return View(clienteModel);
         }
@@ -65,7 +65,7 @@ namespace DeliFitWeb.Controllers
         // POST: ClienteController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(ClienteModel clienteModel)
+        public ActionResult Edit(ClienteViewModel clienteModel)
         {
             if (ModelState.IsValid)
             {
@@ -79,7 +79,7 @@ namespace DeliFitWeb.Controllers
         public ActionResult Delete(uint id)
         {
             Cliente? cliente = _clienteService.Get(id);
-            ClienteModel clienteModel = _mapper.Map<ClienteModel>(cliente);
+            ClienteViewModel clienteModel = _mapper.Map<ClienteViewModel>(cliente);
 
             return View(clienteModel);
         }
@@ -87,7 +87,7 @@ namespace DeliFitWeb.Controllers
         // POST: ClienteController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(uint id, ClienteModel clienteModel)
+        public ActionResult Delete(uint id, ClienteViewModel clienteModel)
         {
             _clienteService.Delete(id);
             return RedirectToAction(nameof(Index));

@@ -1,4 +1,6 @@
-﻿namespace Core.Service;
+﻿using Core.DTO;
+
+namespace Core.Service;
 
 public interface IClienteService
 {
@@ -12,5 +14,5 @@ public interface IClienteService
 
      public void Delete(uint id);
 
-    public IEnumerable<Cliente> GetAll();
+    public IEnumerable<ClienteDTO> GetAll();
 }

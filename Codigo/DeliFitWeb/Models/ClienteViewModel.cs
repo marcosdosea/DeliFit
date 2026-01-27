@@ -2,7 +2,7 @@
 
 namespace DeliFitWeb.Models
 {
-    public class ClienteModel
+    public class ClienteViewModel
     {
         [Key]
         public uint Id { get; set; }
@@ -31,7 +31,7 @@ namespace DeliFitWeb.Models
         [Required(ErrorMessage = "Campo requerido")]
         [DataType(DataType.Date, ErrorMessage = "Data válida requirida")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime DataNascimento { get; set; } 
+        public DateOnly DataNascimento { get; set; } 
 
 
         
