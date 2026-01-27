@@ -1,4 +1,4 @@
-﻿@model DeliFitWeb.Models.EnderecoModel
+﻿@model DeliFitWeb.Models.EnderecoViewModel
 
 @{
     ViewData["Title"] = "Detalhes do Endereço";
@@ -8,74 +8,90 @@
     <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
         <h2 class="fw-bold">DELIFIT</h2>
         <h4 class="text-muted">| Detalhes do Endereço |</h4>
-        <div class="d-flex align-items-center">
-            <span class="badge bg-secondary rounded-circle p-2 me-2">ADM</span>
-            <span>Administrador</span>
         </div>
-    </div>
 
     <div class="card shadow-sm border-0">
         <div class="card-body">
-
             <h5 class="mb-3 text-decoration-underline text-primary">
                 Dados do Endereço
             </h5>
 
-            <div class="row mb-3">
+            <div class="row g-3 mb-3">
                 <div class="col-md-3">
-                    <label class="fw-bold text-muted small">CEP</label>
-                    <p class="form-control-plaintext">@Model.Cep</p>
+                    <div class="border rounded p-2 h-100 bg-light">
+                        <label class="fw-bold text-muted small">CEP</label>
+                        <p class="mb-0 fw-bold">@Model.Cep</p>
+                    </div>
                 </div>
 
                 <div class="col-md-6">
-                    <label class="fw-bold text-muted small">Rua</label>
-                    <p class="form-control-plaintext fs-5">@Model.Rua</p>
+                    <div class="border rounded p-2 h-100 bg-light">
+                        <label class="fw-bold text-muted small">Rua</label>
+                        <p class="mb-0 fs-5">@Model.Rua</p>
+                    </div>
                 </div>
 
                 <div class="col-md-3">
-                    <label class="fw-bold text-muted small">Número</label>
-                    <p class="form-control-plaintext">@Model.Numero</p>
+                    <div class="border rounded p-2 h-100 bg-light">
+                        <label class="fw-bold text-muted small">Número</label>
+                        <p class="mb-0">@Model.Numero</p>
+                    </div>
                 </div>
             </div>
 
-            <div class="row mb-3">
+            <div class="row g-3 mb-3">
                 <div class="col-md-4">
-                    <label class="fw-bold text-muted small">Bairro</label>
-                    <p class="form-control-plaintext">@Model.Bairro</p>
+                    <div class="border rounded p-2 h-100 bg-light">
+                        <label class="fw-bold text-muted small">Bairro</label>
+                        <p class="mb-0">@Model.Bairro</p>
+                    </div>
                 </div>
 
                 <div class="col-md-4">
-                    <label class="fw-bold text-muted small">Cidade</label>
-                    <p class="form-control-plaintext">@Model.Cidade</p>
+                    <div class="border rounded p-2 h-100 bg-light">
+                        <label class="fw-bold text-muted small">Cidade</label>
+                        <p class="mb-0">@Model.Cidade</p>
+                    </div>
                 </div>
 
                 <div class="col-md-4">
-                    <label class="fw-bold text-muted small">Estado</label>
-                    <p class="form-control-plaintext">@Model.Estado</p>
+                    <div class="border rounded p-2 h-100 bg-light">
+                        <label class="fw-bold text-muted small">Estado</label>
+                        <p class="mb-0">@Model.Estado</p>
+                    </div>
                 </div>
             </div>
 
-            <div class="row mb-2">
+            <div class="row g-3">
                 <div class="col-md-12">
-                    <label class="fw-bold text-muted small">Label</label>
-                    <p class="form-control-plaintext">
-                        @(string.IsNullOrWhiteSpace(Model.Label) ? "-" : Model.Label)
-                    </p>
+                    <div class="border rounded p-2 h-100 bg-light">
+                        <label class="fw-bold text-muted small">Label</label>
+                        <p class="mb-0">
+                            @(string.IsNullOrWhiteSpace(Model.Label) ? "-" : Model.Label)
+                        </p>
+                    </div>
                 </div>
             </div>
-
         </div>
 
         <div class="card-footer bg-white border-top-0 d-flex justify-content-end gap-2 py-3">
-            <a asp-action="Index" class="btn btn-outline-secondary px-4">
+            <a asp-action="Index"
+               asp-route-idCliente="@Model.IdCliente"
+               class="btn btn-outline-secondary px-4">
                 Voltar
             </a>
 
-            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger px-4">
+            <a asp-action="Delete"
+               asp-route-id="@Model.Id"
+               asp-route-idCliente="@Model.IdCliente"
+               class="btn btn-danger px-4">
                 Excluir
             </a>
 
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-dark px-4">
+            <a asp-action="Edit"
+               asp-route-id="@Model.Id"
+               asp-route-idCliente="@Model.IdCliente"
+               class="btn btn-dark px-4">
                 Editar
             </a>
         </div>

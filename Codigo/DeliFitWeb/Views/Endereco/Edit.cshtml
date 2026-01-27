@@ -1,4 +1,4 @@
-﻿@model DeliFitWeb.Models.EnderecoModel
+﻿@model DeliFitWeb.Models.EnderecoViewModel
 
 @{
     ViewData["Title"] = "Editar Endereço";
@@ -18,6 +18,7 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
         <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="IdCliente" />
 
         <h5 class="mb-3 text-decoration-underline">Dados do Endereço</h5>
 

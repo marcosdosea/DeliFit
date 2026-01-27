@@ -8,7 +8,7 @@ namespace DeliFitWeb.Mappers
     {
         public EnderecoProfile()
         {
-            CreateMap<EnderecoModel, Endereco>().ReverseMap();
+            CreateMap<EnderecoViewModel, Endereco>().ReverseMap();
         }
     }
 }

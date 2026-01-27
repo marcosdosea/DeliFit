@@ -1,8 +1,10 @@
-﻿@model DeliFitWeb.Models.EnderecoModel
+﻿@model DeliFitWeb.Models.EnderecoViewModel
 
 @{
     ViewData["Title"] = "Cadastrar Endereço";
 }
+
+
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
@@ -16,6 +18,8 @@
 
     <form asp-action="Create">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <input asp-for="IdCliente" type="hidden" />
 
         <h5 class="mb-3 text-decoration-underline">Dados do Endereço</h5>
 

@@ -2,11 +2,13 @@
 
 namespace DeliFitWeb.Models
 {
-    public class EnderecoModel
+    public class EnderecoViewModel
     {
         [Key]
         public uint Id { get; set; }
 
+        [Required]
+        public uint IdCliente { get; set; }
 
         [Display(Name = "Rua")]
         [Required(ErrorMessage = "O campo Rua é obrigatório.")]

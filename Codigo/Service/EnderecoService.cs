@@ -23,20 +23,13 @@ public class EnderecoService : IEnderecoService
 
     public Endereco? Get(uint id)
     {
-        return _context.Enderecos.Find(id);
+        return _context.Enderecos.FirstOrDefault(a => a.Id == id);
     }
 
     public void Edit(Endereco endereco)
     {
-        if (Get(endereco.Id) != null)
-        {
-            _context.Update(endereco);
-            _context.SaveChanges();
-        }
-        else
-        {
-            throw new ServiceException("Endereco não encontrado");
-        }
+        _context.Update(endereco);
+        _context.SaveChanges();
     }
 
     public void Delete(uint id)

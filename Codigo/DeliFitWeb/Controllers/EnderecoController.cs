@@ -19,10 +19,13 @@ namespace DeliFitWeb.Controllers
         }
 
         // GET: EnderecoController
-        public ActionResult Index()
+        public ActionResult Index(uint idCliente)
         {
-            var listaEnderecos = _enderecoService.GetAll();
-            var listaEnderecosViewModel = _mapper.Map<List<EnderecoModel>>(listaEnderecos);
+            var listaEnderecos = _enderecoService.GetAll().Where(e => e.IdCliente == idCliente);
+            var listaEnderecosViewModel = _mapper.Map<List<EnderecoViewModel>>(listaEnderecos);
+
+            ViewBag.IdCliente = idCliente;
+
             return View(listaEnderecosViewModel);
         }
 
@@ -30,34 +33,43 @@ namespace DeliFitWeb.Controllers
         public ActionResult Details(uint id)
         {
             Endereco? endereco = _enderecoService.Get(id);
-            EnderecoModel enderecoModel = _mapper.Map<EnderecoModel>(endereco);
+            EnderecoViewModel enderecoModel = _mapper.Map<EnderecoViewModel>(endereco);
             return View(enderecoModel);
         }
 
         // GET: EnderecoController/Create
-        public ActionResult Create()
+        public ActionResult Create(uint? idCliente)
         {
-            return View();
+            var model = new EnderecoViewModel();
+            if (idCliente.HasValue)
+            {
+                model.IdCliente = idCliente.Value; // recebe pela rota/query
+            }
+            return View(model);
         }
 
         // POST: EnderecoController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(EnderecoModel enderecoModel)
+        public ActionResult Create(EnderecoViewModel enderecoModel)
         {
             if (ModelState.IsValid)
             {
                 var endereco = _mapper.Map<Endereco>(enderecoModel);
                 _enderecoService.Create(endereco);
+
+                return RedirectToAction(nameof(Index),
+                    new { idCliente = enderecoModel.IdCliente });
             }
-            return RedirectToAction(nameof(Index));
+
+            return View(enderecoModel);
         }
 
         // GET: EnderecoController/Edit/5
         public ActionResult Edit(uint id)
         {
             Endereco? endereco = _enderecoService.Get(id);
-            EnderecoModel enderecoModel = _mapper.Map<EnderecoModel>(endereco);
+            EnderecoViewModel enderecoModel = _mapper.Map<EnderecoViewModel>(endereco);
 
             return View(enderecoModel);
         }
@@ -65,21 +77,26 @@ namespace DeliFitWeb.Controllers
         // POST: EnderecoController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, EnderecoModel enderecoModel)
+        public ActionResult Edit(int id, EnderecoViewModel enderecoModel)
         {
             if (ModelState.IsValid)
             {
                 var endereco = _mapper.Map<Endereco>(enderecoModel);
                 _enderecoService.Edit(endereco);
+
+                return RedirectToAction(nameof(Index),
+                    new { idCliente = enderecoModel.IdCliente });
             }
-            return RedirectToAction(nameof(Index));
+
+            return View(enderecoModel);
         }
+
 
         // GET: EnderecoController/Delete/5
         public ActionResult Delete(uint id)
         {
             Endereco? endereco = _enderecoService.Get(id);
-            EnderecoModel enderecoModel = _mapper.Map<EnderecoModel>(endereco);
+            EnderecoViewModel enderecoModel = _mapper.Map<EnderecoViewModel>(endereco);
 
             return View(enderecoModel);
         }
@@ -87,10 +104,13 @@ namespace DeliFitWeb.Controllers
         // POST: EnderecoController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(uint id, EnderecoModel enderecoModel)
+        public ActionResult Delete(uint id, EnderecoViewModel enderecoModel)
         {
             _enderecoService.Delete(id);
-            return RedirectToAction(nameof(Index));
+
+            return RedirectToAction(nameof(Index),
+                new { idCliente = enderecoModel.IdCliente });
         }
+
     }
 }
