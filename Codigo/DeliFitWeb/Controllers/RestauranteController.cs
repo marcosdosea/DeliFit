@@ -18,7 +18,7 @@ namespace DeliFitWeb.Controllers
         }
 
         // GET: RestauranteController
-        public ActionResult Index(int page = 1, int pageSize = 10)
+        public ActionResult Index()
         {
             var listaRestaurantes = _restauranteService.GetAll();
             var listaRestaurantesModel = _mapper.Map<IEnumerable<RestauranteModel>>(listaRestaurantes);

@@ -7,7 +7,7 @@ namespace Service
     public class RestauranteService : IRestauranteService
     {
         private readonly DeliFitContext _context;
-
+        
         public RestauranteService(DeliFitContext context)
         {
             _context = context;
@@ -22,7 +22,7 @@ namespace Service
 
         public void Delete(uint id)
         {
-            var restaurante = _context.Restaurantes.FirstOrDefault(a => a.Id == id);
+            var restaurante = _context.Restaurantes.Find(id);
             if(restaurante != null)
             {
                 _context.Remove(restaurante);
@@ -36,12 +36,6 @@ namespace Service
 
         public void Edit(Restaurante restaurante)
         {
-            var tracked = _context.ChangeTracker
-            .Entries<Restaurante>()
-            .FirstOrDefault(e => e.Entity.Id == restaurante.Id);
-
-            if (tracked != null) tracked.State = EntityState.Detached;
-
             _context.Update(restaurante);
             _context.SaveChanges();
         }
@@ -49,15 +43,15 @@ namespace Service
         public Restaurante? Get(uint id)
         {
             return _context.Restaurantes
-                    .AsNoTracking()
-                    .FirstOrDefault(a => a.Id == id);
+                    .FirstOrDefault
+                    (a => a.Id == id);
         }
 
         public IEnumerable<Restaurante> GetAll()
         {
             return _context.Restaurantes
-            .AsNoTracking()
-            .OrderBy(a => a.Id);
+            .OrderBy(a => a.Id)
+            .AsNoTracking();
         }
     }
 }
