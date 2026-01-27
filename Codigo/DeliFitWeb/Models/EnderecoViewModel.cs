@@ -2,11 +2,13 @@
 
 namespace DeliFitWeb.Models
 {
-    public class EnderecoModel
+    public class EnderecoViewModel
     {
         [Key]
         public uint Id { get; set; }
 
+        [Required]
+        public uint IdCliente { get; set; }
 
         [Display(Name = "Rua")]
         [Required(ErrorMessage = "O campo Rua é obrigatório.")]
@@ -38,9 +40,9 @@ namespace DeliFitWeb.Models
         [StringLength(15, ErrorMessage = "O estado deve ter no máximo 15 caracteres.")]
         public string Estado { get; set; } = string.Empty;
 
-        [Display(Name = "Complemento")]
+        [Display(Name = "Label")]
         [StringLength(50, ErrorMessage = "O complemento deve ter no máximo 50 caracteres.")]
-        public string Complemento { get; set; } = string.Empty;
+        public string Label { get; set; } = string.Empty;
 
     }
 }

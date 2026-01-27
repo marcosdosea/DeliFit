@@ -1,60 +1,98 @@
-﻿@model DeliFitWeb.Models.EnderecoModel
+﻿@model DeliFitWeb.Models.EnderecoViewModel
 
-<div>
-    <h4>EnderecoModel</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Rua)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Rua)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Numero)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Numero)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Bairro)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Bairro)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Cep)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Cep)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Cidade)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Cidade)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Complemento)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Complemento)
-        </dd>
-    </dl>
-</div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    <a asp-action="Index">Back to List</a>
+@{
+    ViewData["Title"] = "Detalhes do Endereço";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
+        <h2 class="fw-bold">DELIFIT</h2>
+        <h4 class="text-muted">| Detalhes do Endereço |</h4>
+        </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <h5 class="mb-3 text-decoration-underline text-primary">
+                Dados do Endereço
+            </h5>
+            <div class="row g-3 mb-3">
+                <div class="col-md-3">
+                    <div class="border rounded p-2 h-100 bg-light">
+                        <label class="fw-bold text-muted small">CEP</label>
+                        <p class="mb-0 fw-bold">@Model.Cep</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="border rounded p-2 h-100 bg-light">
+                        <label class="fw-bold text-muted small">Rua</label>
+                        <p class="mb-0 fs-5">@Model.Rua</p>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="border rounded p-2 h-100 bg-light">
+                        <label class="fw-bold text-muted small">Número</label>
+                        <p class="mb-0">@Model.Numero</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-4">
+                    <div class="border rounded p-2 h-100 bg-light">
+                        <label class="fw-bold text-muted small">Bairro</label>
+                        <p class="mb-0">@Model.Bairro</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="border rounded p-2 h-100 bg-light">
+                        <label class="fw-bold text-muted small">Cidade</label>
+                        <p class="mb-0">@Model.Cidade</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="border rounded p-2 h-100 bg-light">
+                        <label class="fw-bold text-muted small">Estado</label>
+                        <p class="mb-0">@Model.Estado</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-12">
+                    <div class="border rounded p-2 h-100 bg-light">
+                        <label class="fw-bold text-muted small">Label</label>
+                        <p class="mb-0">
+                            @(string.IsNullOrWhiteSpace(Model.Label) ? "-" : Model.Label)
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer bg-white border-top-0 d-flex justify-content-end gap-2 py-3">
+            <a asp-action="Index"
+               asp-route-idCliente="@Model.IdCliente"
+               class="btn btn-outline-secondary px-4">
+                Voltar
+            </a>
+
+            <a asp-action="Delete"
+               asp-route-id="@Model.Id"
+               asp-route-idCliente="@Model.IdCliente"
+               class="btn btn-danger px-4">
+                Excluir
+            </a>
+
+            <a asp-action="Edit"
+               asp-route-id="@Model.Id"
+               asp-route-idCliente="@Model.IdCliente"
+               class="btn btn-dark px-4">
+                Editar
+            </a>
+        </div>
+    </div>
 </div>
