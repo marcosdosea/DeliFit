@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql.Scaffolding.Internal;
 
 namespace Core;
 
@@ -39,10 +40,14 @@ public partial class DeliFitContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseMySQL("server=localhost;port=3306;user=root;password=123456;database=DeliFit");
+        => optionsBuilder.UseMySql("server=localhost;port=3306;user=root;password=123456;database=DeliFit;treattinyasboolean=true", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.44-mysql"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder
+            .UseCollation("utf8mb3_general_ci")
+            .HasCharSet("utf8mb3");
+
         modelBuilder.Entity<Atendimento>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -66,7 +71,7 @@ public partial class DeliFitContext : DbContext
 
             entity.HasOne(d => d.IdRestauranteNavigation).WithMany(p => p.Atendimentos)
                 .HasForeignKey(d => d.IdRestaurante)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_Atendimento_Restaurante1");
         });
 
@@ -92,12 +97,12 @@ public partial class DeliFitContext : DbContext
 
             entity.HasOne(d => d.IdClienteNavigation).WithMany(p => p.Avaliacaos)
                 .HasForeignKey(d => d.IdCliente)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_Avaliacao_Cliente1");
 
             entity.HasOne(d => d.IdPedidoNavigation).WithMany(p => p.Avaliacaos)
                 .HasForeignKey(d => d.IdPedido)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_Avaliacao_Pedido1");
         });
 
@@ -124,12 +129,11 @@ public partial class DeliFitContext : DbContext
 
             entity.HasOne(d => d.IdCartaoNavigation).WithMany(p => p.Carrinhos)
                 .HasForeignKey(d => d.IdCartao)
-                .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("fk_Carrinho_Cartao1");
 
             entity.HasOne(d => d.IdClienteNavigation).WithMany(p => p.Carrinhos)
                 .HasForeignKey(d => d.IdCliente)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_Carrinho_Cliente1");
         });
 
@@ -164,7 +168,7 @@ public partial class DeliFitContext : DbContext
 
             entity.HasOne(d => d.IdClienteNavigation).WithMany(p => p.Cartaos)
                 .HasForeignKey(d => d.IdCliente)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_Cartao_Cliente1");
         });
 
@@ -179,9 +183,7 @@ public partial class DeliFitContext : DbContext
                 .HasMaxLength(11)
                 .IsFixedLength()
                 .HasColumnName("cpf");
-            entity.Property(e => e.DataNascimento)
-                .HasColumnType("date")
-                .HasColumnName("dataNascimento");
+            entity.Property(e => e.DataNascimento).HasColumnName("dataNascimento");
             entity.Property(e => e.Email)
                 .HasMaxLength(50)
                 .HasColumnName("email");
@@ -229,7 +231,7 @@ public partial class DeliFitContext : DbContext
 
             entity.HasOne(d => d.IdClienteNavigation).WithMany(p => p.Enderecos)
                 .HasForeignKey(d => d.IdCliente)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_Endereco_Cliente1");
         });
 
@@ -268,7 +270,7 @@ public partial class DeliFitContext : DbContext
 
             entity.HasOne(d => d.IdRestauranteNavigation).WithMany(p => p.Items)
                 .HasForeignKey(d => d.IdRestaurante)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_Item_Restaurante1");
         });
 
@@ -298,7 +300,7 @@ public partial class DeliFitContext : DbContext
 
             entity.HasOne(d => d.IdRestauranteNavigation).WithMany(p => p.Pagamentos)
                 .HasForeignKey(d => d.IdRestaurante)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_pagamento_Restaurante1");
         });
 
@@ -324,18 +326,20 @@ public partial class DeliFitContext : DbContext
 
             entity.HasOne(d => d.IdCarrinhoNavigation).WithMany(p => p.Pedidos)
                 .HasForeignKey(d => d.IdCarrinho)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_Pedido_Carrinho1");
 
             entity.HasOne(d => d.IdRestauranteNavigation).WithMany(p => p.Pedidos)
                 .HasForeignKey(d => d.IdRestaurante)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_Pedido_Restaurante1");
         });
 
         modelBuilder.Entity<Pedidoitem>(entity =>
         {
-            entity.HasKey(e => new { e.IdPedido, e.IdItem }).HasName("PRIMARY");
+            entity.HasKey(e => new { e.IdPedido, e.IdItem })
+                .HasName("PRIMARY")
+                .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
             entity.ToTable("pedidoitem");
 
@@ -352,12 +356,12 @@ public partial class DeliFitContext : DbContext
 
             entity.HasOne(d => d.IdItemNavigation).WithMany(p => p.Pedidoitems)
                 .HasForeignKey(d => d.IdItem)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_PedidoItem_Item1");
 
             entity.HasOne(d => d.IdPedidoNavigation).WithMany(p => p.Pedidoitems)
                 .HasForeignKey(d => d.IdPedido)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("fk_PedidoItem_Pedido1");
         });
 

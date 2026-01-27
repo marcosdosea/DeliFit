@@ -7,6 +7,8 @@ public partial class Item
 {
     public uint Id { get; set; }
 
+    public string Nome { get; set; } = null!;
+
     public float Calorias { get; set; }
 
     public float? Carboidratos { get; set; }
@@ -16,8 +18,6 @@ public partial class Item
     public float? Proteina { get; set; }
 
     public string? Restricao { get; set; }
-
-    public string Nome { get; set; } = null!;
 
     public string? Descricao { get; set; }
 

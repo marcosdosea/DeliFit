@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core;
+using Core.DTO;
 using DeliFitWeb.Models;
 namespace DeliFitWeb.Mappers
 {
@@ -7,7 +8,9 @@ namespace DeliFitWeb.Mappers
     {
         public RestauranteProfile()
         {
-            CreateMap<RestauranteModel, Restaurante>().ReverseMap();
+            CreateMap<RestauranteViewModel, Restaurante>().ReverseMap();
+
+            CreateMap<RestauranteViewModel, RestauranteDTO>().ReverseMap();
         }
 
     }
