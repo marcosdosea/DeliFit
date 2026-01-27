@@ -83,10 +83,12 @@
                             @(string.IsNullOrWhiteSpace(Model.Label) ? "-" : Model.Label)
                         </p>
                     </div>
+
                 </div>
             </div>
         </div>
 
+<<<<<<< HEAD
         <div class="card-footer bg-white d-flex justify-content-end gap-3 py-3">
             <a asp-action="Index"
                asp-route-idCliente="@Model.IdCliente"
@@ -116,6 +118,7 @@
             </div>
 
             <div class="modal-body text-center py-4">
+
                 <p class="fs-5">
                     Tem certeza que deseja excluir este endereço?
                 </p>
@@ -134,6 +137,7 @@
                 <form asp-action="Delete">
                     <input type="hidden" asp-for="Id" />
                     <input type="hidden" asp-for="IdCliente" />
+
                     <button type="submit" class="btn btn-danger px-4 fw-bold">
                         Sim, excluir definitivamente
                     </button>
