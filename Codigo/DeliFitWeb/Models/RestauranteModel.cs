@@ -8,6 +8,8 @@ namespace DeliFitWeb.Models
         [Key]
         public uint Id { get; set; }
 
+        public bool Validado { get; set; }
+
         [Display(Name = "Nome do Restaurante")]
         [Required(ErrorMessage = "Preenchimento do campo Nome do Restaurante é obrigatório.")]
         [StringLength(50, ErrorMessage = "O nome deve ter no máximo 50 caracteres.")]

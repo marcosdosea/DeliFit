@@ -1,104 +1,152 @@
 ﻿@model DeliFitWeb.Models.RestauranteModel
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>RestauranteModel</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NomeRestaurante)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NomeRestaurante)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NomeProprietario)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NomeProprietario)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CpfProprietario)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CpfProprietario)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Cnpj)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Cnpj)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Descricao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Descricao)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TelefoneProprietario)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TelefoneProprietario)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TelefoneRestaurante)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TelefoneRestaurante)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Rua)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Rua)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Numero)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Numero)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Bairro)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Bairro)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Cep)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Cep)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Cidade)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Cidade)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+@{
+    ViewData["Title"] = "Excluir Restaurante";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
+        <h2 class="fw-bold text-danger">DELIFIT</h2>
+        <h4 class="text-muted">| Excluir Restaurante |</h4>
+        <div class="d-flex align-items-center">
+            <span class="badge bg-secondary rounded-circle p-2 me-2">ADM</span>
+            <span>Administrador</span>
+        </div>
+    </div>
+
+    <div class="alert alert-danger shadow-sm d-flex align-items-center" role="alert">
+        <i class="bi bi-exclamation-triangle-fill fs-2 me-3"></i>
+        <div>
+            <h4 class="alert-heading fw-bold mb-1">Atenção! Zona de Perigo.</h4>
+            <p class="mb-0">
+                Você está na área de exclusão. Confira os dados abaixo com cuidado antes de prosseguir.
+            </p>
+        </div>
+    </div>
+
+    <div class="card border-danger shadow-sm mb-4">
+        <div class="card-header bg-danger text-white fw-bold">
+            Revisão dos Dados
+        </div>
+
+        <div class="card-body">
+            <h5 class="mb-3 text-decoration-underline text-secondary">Dados do Proprietário</h5>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="fw-bold text-muted small">Nome do Proprietário</label>
+                    <p class="form-control-plaintext fw-bold">@Model.NomeProprietario</p>
+                </div>
+                <div class="col-md-3">
+                    <label class="fw-bold text-muted small">CPF</label>
+                    <p class="form-control-plaintext">@Model.CpfProprietario</p>
+                </div>
+                <div class="col-md-3">
+                    <label class="fw-bold text-muted small">Telefone</label>
+                    <p class="form-control-plaintext">@Model.TelefoneProprietario</p>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <label class="fw-bold text-muted small">E-mail</label>
+                    <p class="form-control-plaintext">@Model.Email</p>
+                </div>
+            </div>
+
+            <hr class="text-muted" />
+
+            <h5 class="mb-3 text-decoration-underline text-secondary">Dados do Restaurante</h5>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="fw-bold text-muted small">Nome do Restaurante</label>
+                    <p class="form-control-plaintext fs-5">@Model.NomeRestaurante</p>
+                </div>
+                <div class="col-md-3">
+                    <label class="fw-bold text-muted small">CNPJ</label>
+                    <p class="form-control-plaintext">@Model.Cnpj</p>
+                </div>
+                <div class="col-md-3">
+                    <label class="fw-bold text-muted small">Telefone Comercial</label>
+                    <p class="form-control-plaintext">@Model.TelefoneRestaurante</p>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.Descricao))
+            {
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <label class="fw-bold text-muted small">Descrição</label>
+                        <p class="form-control-plaintext fst-italic">"@Model.Descricao"</p>
+                    </div>
+                </div>
+            }
+
+            <div class="bg-light p-3 rounded border">
+                <h6 class="fw-bold mb-3 text-secondary"><i class="bi bi-geo-alt"></i> Localização</h6>
+                <div class="row">
+                    <div class="col-md-2">
+                        <label class="fw-bold text-muted small">CEP</label>
+                        <p class="form-control-plaintext">@Model.Cep</p>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="fw-bold text-muted small">Rua</label>
+                        <p class="form-control-plaintext">@Model.Rua</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="fw-bold text-muted small">Bairro</label>
+                        <p class="form-control-plaintext">@Model.Bairro</p>
+                    </div>
+                    <div class="col-md-1">
+                        <label class="fw-bold text-muted small">Nº</label>
+                        <p class="form-control-plaintext">@Model.Numero</p>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="fw-bold text-muted small">Cidade/UF</label>
+                        <p class="form-control-plaintext">@Model.Cidade / @Model.Estado</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer bg-white d-flex justify-content-end align-items-center gap-3 py-3">
+            <a asp-action="Index" class="btn btn-outline-secondary px-4">Cancelar</a>
+
+            <button type="button" class="btn btn-danger px-4 fw-bold" data-bs-toggle="modal" data-bs-target="#modalConfirmacaoFinal">
+                <i class="bi bi-trash"></i> Excluir Restaurante
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalConfirmacaoFinal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-danger">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title fw-bold" id="modalLabel">
+                    <i class="bi bi-shield-exclamation"></i> Confirmação de Segurança
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body text-center py-4">
+                <p class="fs-5 text-dark">Tem certeza absoluta que deseja apagar o restaurante<br><strong>"@Model.NomeRestaurante"</strong>?</p>
+                <p class="text-danger small fw-bold mb-0">
+                    <i class="bi bi-x-circle"></i> Esta ação é irreversível e apagará o histórico.
+                </p>
+            </div>
+
+            <div class="modal-footer justify-content-center bg-light">
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Não, voltar</button>
+
+                <form asp-action="Delete">
+                    <input type="hidden" asp-for="Id" />
+                    <button type="submit" class="btn btn-danger px-4 fw-bold">
+                        Sim, excluir definitivamente
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>

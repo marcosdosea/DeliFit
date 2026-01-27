@@ -36,29 +36,28 @@ namespace Service
 
         public void Edit(Restaurante restaurante)
         {
-            if(Get(restaurante.Id) != null)
-            {
-                _context.Update(restaurante);
-                _context.SaveChanges();
-            }
-            else
-            {
-                throw new ServiceException("Restaurante não encontrado");
-            }
+            var tracked = _context.ChangeTracker
+            .Entries<Restaurante>()
+            .FirstOrDefault(e => e.Entity.Id == restaurante.Id);
+
+            if (tracked != null) tracked.State = EntityState.Detached;
+
+            _context.Update(restaurante);
+            _context.SaveChanges();
         }
         
         public Restaurante? Get(uint id)
         {
-            return _context.Restaurantes.Find(id);
+            return _context.Restaurantes
+                    .AsNoTracking()
+                    .FirstOrDefault(a => a.Id == id);
         }
 
-        public IEnumerable<Restaurante> GetAll(int page, int pageSize)
+        public IEnumerable<Restaurante> GetAll()
         {
             return _context.Restaurantes
             .AsNoTracking()
-            .OrderBy(a => a.Id)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize);
+            .OrderBy(a => a.Id);
         }
     }
 }

@@ -1,102 +1,110 @@
 ﻿@model DeliFitWeb.Models.RestauranteModel
 
-<div>
-    <h4>RestauranteModel</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NomeRestaurante)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NomeRestaurante)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NomeProprietario)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NomeProprietario)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.CpfProprietario)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.CpfProprietario)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Cnpj)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Cnpj)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Descricao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Descricao)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TelefoneProprietario)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TelefoneProprietario)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TelefoneRestaurante)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TelefoneRestaurante)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Rua)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Rua)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Numero)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Numero)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Bairro)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Bairro)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Cep)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Cep)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Cidade)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Cidade)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Estado)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Estado)
-        </dd>
-    </dl>
-</div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    <a asp-action="Index">Back to List</a>
+@{
+    ViewData["Title"] = "Detalhes do Restaurante";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
+        <h2 class="fw-bold">DELIFIT</h2>
+        <h4 class="text-muted">| Detalhes do Restaurante |</h4>
+        <div class="d-flex align-items-center">
+            <span class="badge bg-secondary rounded-circle p-2 me-2">ADM</span>
+            <span>Administrador</span>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+
+            <div class="d-flex justify-content-end mb-3">
+                @if (Model.Validado)
+                {
+                    <span class="badge bg-success fs-6">Status: Ativo</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger fs-6">Status: Inativo</span>
+                }
+            </div>
+
+            <h5 class="mb-3 text-decoration-underline text-primary">Dados do Proprietário</h5>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="fw-bold text-muted small">Nome do Proprietário</label>
+                    <p class="form-control-plaintext fs-5">@Model.NomeProprietario</p>
+                </div>
+                <div class="col-md-3">
+                    <label class="fw-bold text-muted small">CPF</label>
+                    <p class="form-control-plaintext">@Model.CpfProprietario</p>
+                </div>
+                <div class="col-md-3">
+                    <label class="fw-bold text-muted small">Telefone</label>
+                    <p class="form-control-plaintext">@Model.TelefoneProprietario</p>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <label class="fw-bold text-muted small">E-mail</label>
+                    <p class="form-control-plaintext">@Model.Email</p>
+                </div>
+            </div>
+
+            <hr class="text-muted" />
+
+            <h5 class="mb-3 text-decoration-underline text-primary">Dados do Restaurante</h5>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="fw-bold text-muted small">Nome do Restaurante</label>
+                    <p class="form-control-plaintext fs-5">@Model.NomeRestaurante</p>
+                </div>
+                <div class="col-md-3">
+                    <label class="fw-bold text-muted small">CNPJ</label>
+                    <p class="form-control-plaintext">@Model.Cnpj</p>
+                </div>
+                <div class="col-md-3">
+                    <label class="fw-bold text-muted small">Telefone Comercial</label>
+                    <p class="form-control-plaintext">@Model.TelefoneRestaurante</p>
+                </div>
+            </div>
+
+            <div class="bg-light p-3 rounded">
+                <h6 class="fw-bold mb-3"><i class="bi bi-geo-alt"></i> Endereço</h6>
+                <div class="row">
+                    <div class="col-md-2">
+                        <label class="fw-bold text-muted small">CEP</label>
+                        <p class="form-control-plaintext">@Model.Cep</p>
+                    </div>
+                    <div class="col-md-5">
+                        <label class="fw-bold text-muted small">Rua</label>
+                        <p class="form-control-plaintext">@Model.Rua</p>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="fw-bold text-muted small">Número</label>
+                        <p class="form-control-plaintext">@Model.Numero</p>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="fw-bold text-muted small">Cidade / UF</label>
+                        <p class="form-control-plaintext">@Model.Cidade / @Model.Estado</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="card-footer bg-white border-top-0 d-flex justify-content-end gap-2 py-3">
+            <a asp-action="Index" class="btn btn-outline-secondary px-4">Voltar</a>
+
+            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger px-4">
+                Excluir
+            </a>
+
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-dark px-4">
+                Editar Dados
+            </a>
+        </div>
+    </div>
 </div>

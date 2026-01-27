@@ -20,12 +20,8 @@ namespace DeliFitWeb.Controllers
         // GET: RestauranteController
         public ActionResult Index(int page = 1, int pageSize = 10)
         {
-            var listaRestaurantes = _restauranteService.GetAll(page, pageSize);
+            var listaRestaurantes = _restauranteService.GetAll();
             var listaRestaurantesModel = _mapper.Map<IEnumerable<RestauranteModel>>(listaRestaurantes);
-
-            ViewBag.Page = page;
-            ViewBag.PageSize = pageSize;
-            ViewBag.TotalCount = listaRestaurantes.Count();
 
             return View(listaRestaurantesModel);
         }
@@ -50,7 +46,8 @@ namespace DeliFitWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(RestauranteModel restauranteModel)
         {
-            if(ModelState.IsValid)
+
+            if (ModelState.IsValid)
             {
                 var restaurante = _mapper.Map<Restaurante>(restauranteModel);
                 _restauranteService.Create(restaurante);
@@ -71,9 +68,9 @@ namespace DeliFitWeb.Controllers
         // POST: RestauranteController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(uint id, RestauranteModel restauranteModel)
+        public ActionResult Edit(RestauranteModel restauranteModel)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var restaurante = _mapper.Map<Restaurante>(restauranteModel);
                 _restauranteService.Edit(restaurante);
