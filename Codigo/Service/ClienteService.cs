@@ -23,26 +23,23 @@ public class ClienteService : IClienteService
 
     public Cliente? Get(uint id)
     {
-       return _context.Clientes.Find(id);
+        return _context.Clientes
+                    .FirstOrDefault
+                    (a => a.Id == id);
     }
 
     public void Edit(Cliente cliente)
     {
-        if(Get(cliente.Id) != null)
-        {
-            _context.Update(cliente);
-            _context.SaveChanges();
-        }
-        else
-        {
-            throw new ServiceException("Cliente não encontrado");
-        }
+
+        _context.Update(cliente);
+        _context.SaveChanges();
+
     }
 
     public void Delete(uint id)
     {
         var Cliente = _context.Clientes.FirstOrDefault(a => a.Id == id);
-        if(Cliente != null)
+        if (Cliente != null)
         {
             _context.Remove(Cliente);
             _context.SaveChanges();
@@ -55,7 +52,9 @@ public class ClienteService : IClienteService
 
     public IEnumerable<Cliente> GetAll()
     {
-        return _context.Clientes.AsNoTracking();
+        return _context.Clientes
+            .OrderBy(a => a.Id)
+            .AsNoTracking();
     }
 
 }
