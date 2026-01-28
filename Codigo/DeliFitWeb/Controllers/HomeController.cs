@@ -13,9 +13,27 @@ namespace DeliFitWeb.Controllers
             _logger = logger;
         }
 
+        // C#
         public IActionResult Index()
         {
-            return View();
+            var model = new RestauranteViewModel
+            {
+                Id = 1,
+                NomeRestaurante = "Restaurante 1",
+                Cidade = "Cidade 1",
+                Bairro = "Bairro",
+                Cep = "12345-789",
+                Cnpj = "12345678910121",
+                CpfProprietario = "12345678901",
+                Email = "teste@gmail.com",
+                Estado = "Estado",
+                Numero = "123",
+                Rua = "Rua",
+                TelefoneProprietario = "79999419916",
+                TelefoneRestaurante = "79999419916",
+                NomeProprietario = "NomeTeste"
+            }; // preencher conforme necessário
+            return View(model);
         }
 
         public IActionResult Privacy()
