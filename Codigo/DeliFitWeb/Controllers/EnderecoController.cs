@@ -77,7 +77,7 @@ namespace DeliFitWeb.Controllers
         // POST: EnderecoController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, EnderecoViewModel enderecoModel)
+        public ActionResult Edit(uint id, EnderecoViewModel enderecoModel)
         {
             if (ModelState.IsValid)
             {

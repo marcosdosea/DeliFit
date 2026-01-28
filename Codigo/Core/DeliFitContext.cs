@@ -48,6 +48,7 @@ public partial class DeliFitContext : DbContext
             );
         }
     }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder
