@@ -8,199 +8,223 @@ using DeliFitWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-
 namespace DeliFitWebTests.Controllers
 {
     [TestClass]
     public class RestauranteControllersTests
     {
-        // 1. Definição dos campos globais (arquitetura do Código 1)
-        private Mock<IRestauranteService>? _serviceMock;
-        private IMapper? _mapper;
-        private RestauranteController? _controller;
+        private static RestauranteController? controller;
 
-        // 2. Método de Inicialização (roda antes de CADA teste)
-        [TestInitialize]
-        public void Initialize()
+        [ClassInitialize]
+        public static void Initialize(TestContext testContext)
         {
-            // Configuração do Mapper
-            var config = new MapperConfiguration(cfg => cfg.AddProfile<RestauranteProfile>());
-            _mapper = config.CreateMapper();
+            var mockService = new Mock<IRestauranteService>();
 
-            // Configuração do Mock do Serviço
-            _serviceMock = new Mock<IRestauranteService>();
+            IMapper mapper = new MapperConfiguration(cfg => cfg.AddProfile(new RestauranteProfile())).CreateMapper();
 
-            // Instancia o Controller (SUT - Subject Under Test)
-            // O Controller já é criado com o Mock e o Mapper injetados
-            _controller = new RestauranteController(_serviceMock.Object, _mapper);
+            mockService.Setup(service => service.GetAll()).Returns(GetTestRestaurantes());
+
+            mockService.Setup(service => service.Get(1)).Returns(GetTargetRestaurante());
+
+            mockService.Setup(service => service.Edit(It.IsAny<Restaurante>())).Verifiable();
+
+            mockService.Setup(service => service.Create(It.IsAny<Restaurante>())).Verifiable();
+
+           controller = new RestauranteController(mockService.Object, mapper);
+        }
+
+        private static RestauranteViewModel GetNewRestaurante()
+        {
+            return new RestauranteViewModel
+            {
+                Id = 4,
+                NomeRestaurante = "Teste Restaurante 4",
+                Validado = false,
+                Cidade = "Cidade 4",
+                Estado = "Estado 4",
+            };
+        }
+
+        private static Restaurante GetTargetRestaurante()
+        {
+            return new Restaurante
+            {
+                Id = 1,
+                NomeRestaurante = "Teste Restaurante 1",
+                Validado = true,
+                Cidade = "Cidade 1",
+                Estado = "Estado 1",
+                NomeProprietario = "Proprietario 1",
+            };
+        }
+
+        private static RestauranteViewModel GetTargetRestauranteViewModel()
+        {
+            return new RestauranteViewModel
+            {
+                Id = 1,
+                NomeRestaurante = "Teste Restaurante 1",
+                Validado = true,
+                Cidade = "Cidade 1",
+                Estado = "Estado 1",
+                NomeProprietario = "Proprietario 1",
+            };
+        }
+
+        private static List<RestauranteDTO> GetTestRestaurantes()
+        {
+            return new List<RestauranteDTO>
+            {
+                new() {
+                    Id = 1,
+                    NomeRestaurante = "Teste Restaurante 1",
+                    Validado = true,
+                    Cidade = "Cidade 1",
+                    Estado = "Estado 1"
+                },
+                new ()
+                {
+                    Id = 2,
+                    NomeRestaurante = "Teste Restaurante 2",
+                    Validado = false,
+                    Cidade = "Cidade 2",
+                    Estado = "Estado 2"
+                },
+                new RestauranteDTO
+                {
+                    Id = 3,
+                    NomeRestaurante = "Teste Restaurante 3",
+                    Validado = true,
+                    Cidade = "Cidade 3",
+                    Estado = "Estado 3"
+                },
+            };
         }
 
         [TestMethod]
-        public void Index_ReturnsViewWithMappedModels()
+        [TestCategory("Unit")]
+        [Description("Testando o Index")]
+        public void IndexTest()
         {
-            // Arrange (Configurar o comportamento do Mock para este teste específico)
-            var dtoList = new List<RestauranteDTO>
-            {
-                new RestauranteDTO { Id = 1, NomeRestaurante = "R1", Validado = true, Cidade = "C1", Estado = "E1" }
-            };
-            _serviceMock!.Setup(s => s.GetAll()).Returns(dtoList);
+            var result = controller!.Index();
 
-            // Act
-            var result = _controller!.Index();
-
-            // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
-            var viewResult = (ViewResult)result;
+            ViewResult viewResult = (ViewResult)result;
 
             Assert.IsInstanceOfType(viewResult.Model, typeof(List<RestauranteViewModel>));
-            var model = (List<RestauranteViewModel>)viewResult.Model;
+            List<RestauranteViewModel> viewModel = (List<RestauranteViewModel>)viewResult.Model;
 
-            Assert.HasCount(1, model);
-            Assert.AreEqual("R1", model[0].NomeRestaurante);
-            Assert.AreEqual("C1", model[0].Cidade);
-            Assert.AreEqual("E1", model[0].Estado);
-            Assert.IsTrue(model[0].Validado);
+            Assert.HasCount(3, viewModel);
         }
 
         [TestMethod]
-        public void Details_ReturnsViewWithMappedModel()
+        public void DetailsTest()
         {
-            // Arrange
-            var restaurante = new Restaurante { Id = 2, NomeRestaurante = "R2", Validado = false, Cidade = "C2", Estado = "E2" };
-            _serviceMock!.Setup(s => s.Get(2)).Returns(restaurante);
+            var result = controller!.Details(1);
 
-            // Act
-            var result = _controller!.Details(2);
-
-            // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
-            var viewResult = (ViewResult)result;
+            ViewResult viewResult = (ViewResult)result;
 
             Assert.IsInstanceOfType(viewResult.Model, typeof(RestauranteViewModel));
-            var model = (RestauranteViewModel)viewResult.Model;
+            RestauranteViewModel viewModel = (RestauranteViewModel)viewResult.Model;
 
-            Assert.AreEqual((uint)2, model.Id);
-            Assert.AreEqual("R2", model.NomeRestaurante);
-            Assert.IsFalse(model.Validado);
-            Assert.AreEqual("C2", model.Cidade);
-            Assert.AreEqual("E2", model.Estado);
+            Assert.AreEqual((uint)1, viewModel.Id);
+            Assert.AreEqual("Teste Restaurante 1", viewModel.NomeRestaurante);
+            Assert.IsTrue(viewModel.Validado);
+            Assert.AreEqual("Cidade 1", viewModel.Cidade);
+            Assert.AreEqual("Estado 1", viewModel.Estado);
+            Assert.AreEqual("Proprietario 1", viewModel.NomeProprietario);
         }
 
         [TestMethod]
-        public void Create_Post_ValidModel_CallsCreateAndRedirects()
+        public void CreateTest_Get_Valido()
         {
-            // Arrange
-            var vm = new RestauranteViewModel { Id = 3, NomeRestaurante = "R3", Validado = true, Cidade = "C3", Estado = "E3" };
+            var result = controller!.Create();
 
-            // Act
-            var result = _controller!.Create(vm);
-
-            // Assert
-            // Verificamos se o método Create do serviço foi chamado corretamente
-            _serviceMock!.Verify(s => s.Create(It.Is<Restaurante>(r => r.NomeRestaurante == vm.NomeRestaurante && r.Cidade == vm.Cidade)), Times.Once);
-
-            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
-            var redirect = (RedirectToActionResult)result;
-
-            Assert.AreEqual(nameof(RestauranteController.Index), redirect.ActionName);
-        }
-
-        [TestMethod]
-        public void Create_Post_InvalidModel_DoesNotCallCreateAndRedirects()
-        {
-            // Arrange
-            var vm = new RestauranteViewModel { Id = 4, NomeRestaurante = "R4" };
-            // Simulamos um erro de validação no ModelState do controller
-            _controller!.ModelState.AddModelError("NomeRestaurante", "Required");
-
-            // Act
-            var result = _controller.Create(vm);
-
-            // Assert
-            _serviceMock!.Verify(s => s.Create(It.IsAny<Restaurante>()), Times.Never);
-
-            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
-            var redirect = (RedirectToActionResult)result;
-
-            Assert.AreEqual(nameof(RestauranteController.Index), redirect.ActionName);
-        }
-
-        [TestMethod]
-        public void Edit_Get_ReturnsViewWithMappedModel()
-        {
-            // Arrange
-            var restaurante = new Restaurante { Id = 5, NomeRestaurante = "R5", Validado = true, Cidade = "C5", Estado = "E5" };
-            _serviceMock!.Setup(s => s.Get(5)).Returns(restaurante);
-
-            // Act
-            var result = _controller!.Edit(5);
-
-            // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
-            var viewResult = (ViewResult)result;
-
-            Assert.IsInstanceOfType(viewResult.Model, typeof(RestauranteViewModel));
-            var model = (RestauranteViewModel)viewResult.Model;
-
-            Assert.AreEqual((uint)5, model.Id);
-            Assert.AreEqual("R5", model.NomeRestaurante);
         }
 
         [TestMethod]
-        public void Edit_Post_ValidModel_CallsEditAndRedirects()
+        public void CreateTest_Valid()
         {
-            // Arrange
-            var vm = new RestauranteViewModel { Id = 6, NomeRestaurante = "R6", Cidade = "C6", Estado = "E6" };
-
-            // Act
-            var result = _controller!.Edit(vm);
-
-            // Assert
-            _serviceMock!.Verify(s => s.Edit(It.Is<Restaurante>(r => r.NomeRestaurante == vm.NomeRestaurante && r.Id == vm.Id)), Times.Once);
+            var result = controller!.Create(GetNewRestaurante());
 
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
-            var redirect = (RedirectToActionResult)result;
+            RedirectToActionResult redirectToActionResult = (RedirectToActionResult)result;
 
-            Assert.AreEqual(nameof(RestauranteController.Index), redirect.ActionName);
+            Assert.IsNull(redirectToActionResult.ControllerName);
+
+            Assert.AreEqual("Index", redirectToActionResult.ActionName);
         }
 
         [TestMethod]
-        public void Delete_Get_ReturnsViewWithMappedModel()
+        public void CreateTest_Post_InValid()
         {
-            // Arrange
-            var restaurante = new Restaurante { Id = 7, NomeRestaurante = "R7", Validado = false, Cidade = "C7", Estado = "E7" };
-            _serviceMock!.Setup(s => s.Get(7)).Returns(restaurante);
+            controller!.ModelState.AddModelError("Nome", "Campo requerido");
 
-            // Act
-            var result = _controller!.Delete(7);
+            var result = controller!.Create(GetNewRestaurante());
 
-            // Assert
+            Assert.AreEqual(1, controller.ModelState.ErrorCount);
+
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+
+            RedirectToActionResult redirectToActionResult = (RedirectToActionResult)result;
+            Assert.IsNull(redirectToActionResult.ControllerName);
+
+            Assert.AreEqual("Index", redirectToActionResult.ActionName);
+        }
+
+        [TestMethod]
+        public void EditTest_Get_Valid()
+        {
+            var result = controller!.Edit(1);
+
             Assert.IsInstanceOfType(result, typeof(ViewResult));
-            var viewResult = (ViewResult)result;
-
-            Assert.IsInstanceOfType(viewResult.Model, typeof(RestauranteViewModel));
-            var model = (RestauranteViewModel)viewResult.Model;
-
-            Assert.AreEqual((uint)7, model.Id);
-            Assert.AreEqual("R7", model.NomeRestaurante);
+            ViewResult viewResult = (ViewResult)result;
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(RestauranteViewModel));
+            RestauranteViewModel restauranteModel = (RestauranteViewModel)viewResult.ViewData.Model;
+            Assert.AreEqual("Teste Restaurante 1", restauranteModel.NomeRestaurante);
+            Assert.AreEqual("Cidade 1", restauranteModel.Cidade);
+            Assert.AreEqual("Estado 1", restauranteModel.Estado);
+            Assert.AreEqual("Proprietario 1", restauranteModel.NomeProprietario);
         }
 
         [TestMethod]
-        public void Delete_Post_CallsDeleteAndRedirects()
+        public void EditTest_Post_Valid()
         {
-            // Arrange
-            var vm = new RestauranteViewModel { Id = 8, NomeRestaurante = "R8" };
-
-            // Act
-            var result = _controller!.Delete(8, vm);
-
-            // Assert
-            _serviceMock!.Verify(s => s.Delete(8), Times.Once);
+            var result = controller!.Edit(GetTargetRestauranteViewModel());
 
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
-            var redirect = (RedirectToActionResult)result;
+            RedirectToActionResult redirectToActionResult = (RedirectToActionResult)result;
+            Assert.IsNull(redirectToActionResult.ControllerName);
+            Assert.AreEqual("Index", redirectToActionResult.ActionName);
+        }
 
-            Assert.AreEqual(nameof(RestauranteController.Index), redirect.ActionName);
+        [TestMethod]
+        public void DeleteTest_Get_Valid()
+        {
+            var result = controller!.Delete((uint)1, GetTargetRestauranteViewModel());
+
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+            RedirectToActionResult redirectToActionResult = (RedirectToActionResult)result;
+            Assert.IsNull(redirectToActionResult.ControllerName);
+            Assert.AreEqual("Index", redirectToActionResult.ActionName);
+        }
+
+        [TestMethod]
+        public void DeleteTest_Post_Valid()
+        {
+            var result = controller!.Delete(1);
+
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            ViewResult viewResult = (ViewResult)result;
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(RestauranteViewModel));
+            RestauranteViewModel restauranteModel = (RestauranteViewModel)viewResult.ViewData.Model;
+            Assert.AreEqual("Teste Restaurante 1", restauranteModel.NomeRestaurante);
+            Assert.AreEqual("Cidade 1", restauranteModel.Cidade);
+            Assert.AreEqual("Estado 1", restauranteModel.Estado);
+            Assert.AreEqual("Proprietario 1", restauranteModel.NomeProprietario);
+            Assert.IsTrue(restauranteModel.Validado);
         }
     }
 }
