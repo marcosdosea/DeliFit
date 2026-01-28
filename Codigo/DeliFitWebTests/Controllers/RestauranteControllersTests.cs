@@ -2,13 +2,12 @@ using AutoMapper;
 using Core;
 using Core.DTO;
 using Core.Service;
-using DeliFitWeb.Controllers;
 using DeliFitWeb.Mappers;
 using DeliFitWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace DeliFitWebTests.Controllers
+namespace DeliFitWeb.Controllers.Tests
 {
     [TestClass]
     public class RestauranteControllersTests

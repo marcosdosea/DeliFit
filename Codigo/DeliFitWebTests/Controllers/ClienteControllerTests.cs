@@ -12,7 +12,7 @@ namespace DeliFitWeb.Controllers.Tests
     [TestClass()]
     public class ClienteControllerTests
     {
-        private static ClienteController controller;
+        private static ClienteController? controller;
 
         [TestInitialize]
         public void Initialize()
@@ -40,7 +40,7 @@ namespace DeliFitWeb.Controllers.Tests
         public void IndexTest_Valido()
         {
             // Act
-            var result = controller.Index();
+            var result = controller?.Index();
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
@@ -55,7 +55,7 @@ namespace DeliFitWeb.Controllers.Tests
         public void DetailsTest_Valido()
         {
             // Act
-            var result = controller.Details(1);
+            var result = controller?.Details(1);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
@@ -70,7 +70,7 @@ namespace DeliFitWeb.Controllers.Tests
         public void CreateTest_Get_Valido()
         {
             // Act
-            var result = controller.Create();
+            var result = controller?.Create();
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
@@ -79,7 +79,7 @@ namespace DeliFitWeb.Controllers.Tests
         public void CreateTest_Valid()
         {
             // Act
-            var result = controller.Create(GetNewCliente());
+            var result = controller?.Create(GetNewCliente());
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
@@ -92,13 +92,13 @@ namespace DeliFitWeb.Controllers.Tests
         public void CreateTest_Post_Invalid()
         {
             // Arrange
-            controller.ModelState.AddModelError("Nome", "Nome é obrigatório.");
+            controller?.ModelState.AddModelError("Nome", "Nome é obrigatório.");
 
             // Act
-            var result = controller.Create(GetNewCliente());
+            var result = controller?.Create(GetNewCliente());
 
             // Assert
-            Assert.AreEqual(1, controller.ModelState.ErrorCount);
+            Assert.AreEqual(1, controller?.ModelState.ErrorCount);
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
             RedirectToActionResult redirectToActionResult = (RedirectToActionResult)result;
             Assert.IsNull(redirectToActionResult.ControllerName);
@@ -109,7 +109,7 @@ namespace DeliFitWeb.Controllers.Tests
         public void EditTest_Get_Valid()
         {
             // Act
-            var result = controller.Edit(1);
+            var result = controller?.Edit(1);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
@@ -124,7 +124,7 @@ namespace DeliFitWeb.Controllers.Tests
         public void EditTest_Post_Valid()
         {
             // Act
-            var result = controller.Edit(GetTargetClienteModel());
+            var result = controller?.Edit(GetTargetClienteModel());
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
@@ -137,7 +137,7 @@ namespace DeliFitWeb.Controllers.Tests
         public void DeleteTest_Post_Valid()
         {
             // Act
-            var result = controller.Delete(1);
+            var result = controller?.Delete(1);
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
@@ -152,7 +152,7 @@ namespace DeliFitWeb.Controllers.Tests
         public void DeleteTest_Get_Valid()
         {
             // Act
-            var result = controller.Delete(GetTargetClienteModel());
+            var result = controller?.Delete(GetTargetClienteModel());
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
