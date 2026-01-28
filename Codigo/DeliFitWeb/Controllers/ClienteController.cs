@@ -87,9 +87,9 @@ namespace DeliFitWeb.Controllers
         // POST: ClienteController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(uint id, ClienteViewModel clienteModel)
+        public ActionResult Delete(ClienteViewModel clienteModel)
         {
-            _clienteService.Delete(id);
+            _clienteService.Delete(clienteModel.Id);
             return RedirectToAction(nameof(Index));
         }
     }

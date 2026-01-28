@@ -1,5 +1,7 @@
 <Solution>
   <Project Path="Core/Core.csproj" />
   <Project Path="DeliFitWeb/DeliFitWeb.csproj" />
+  <Project Path="DeliFitWebTests/DeliFitWebTests.csproj" Id="8a021c96-e27b-413b-9aa9-36df2ebf7106" />
   <Project Path="Service/Service.csproj" />
+  <Project Path="ServiceTests/ServiceTests.csproj" Id="f2df81d8-fa28-403c-a590-8d6b0df4c2ff" />
 </Solution>
