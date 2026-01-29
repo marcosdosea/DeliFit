@@ -1,49 +1,181 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - DeliFitWeb</title>
+    <title>@ViewData["Title"] - DeliFit</title>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/DeliFitWeb.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <style>
+        /* Variáveis de Cor DeliFit */
+        :root {
+            --delifit-orange: #ff6600;
+            --delifit-dark-orange: #e65c00;
+            --sidebar-width: 260px;
+        }
+
+        body {
+            overflow-x: hidden;
+            background-color: #f8f9fa;
+        }
+
+        /* Estrutura Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background-color: #ffffff;
+            border-right: 1px solid #dee2e6;
+            padding: 20px 0;
+            z-index: 1000;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+            color: var(--delifit-orange) !important;
+            text-align: center;
+            display: block;
+            margin-bottom: 30px;
+            padding: 0 15px;
+        }
+
+        /* Links do Menu */
+        .nav-pills .nav-link {
+            color: #495057;
+            border-radius: 0 25px 25px 0;
+            margin-right: 15px;
+            padding: 12px 25px;
+            transition: all 0.3s;
+        }
+
+            .nav-pills .nav-link:hover {
+                background-color: #fff3e6;
+                color: var(--delifit-orange);
+            }
+
+            .nav-pills .nav-link.active {
+                background-color: var(--delifit-orange) !important;
+                color: white !important;
+            }
+
+        .nav-link i {
+            margin-right: 10px;
+        }
+
+        /* Área de Conteúdo Principal */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 30px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Botões e Links Gerais */
+        a {
+            color: var(--delifit-orange);
+            text-decoration: none;
+        }
+
+            a:hover {
+                color: var(--delifit-dark-orange);
+            }
+
+        .btn-primary {
+            background-color: var(--delifit-orange);
+            border-color: var(--delifit-dark-orange);
+        }
+
+            .btn-primary:hover {
+                background-color: var(--delifit-dark-orange);
+                border-color: #cc5200;
+            }
+
+        footer {
+            margin-top: auto;
+            padding: 20px 0;
+            font-size: 0.9rem;
+        }
+
+        /* Responsividade Básica */
+        @@media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .nav-pills .nav-link {
+                border-radius: 25px;
+                margin: 5px 15px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">DeliFitWeb</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Restaurante" asp-action="Privacy">Restaurante</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
+
+    <div class="sidebar">
+        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+            <i class="bi bi-fire"></i> DeliFit
+        </a>
+
+        <ul class="nav nav-pills flex-column">
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")"
+                   asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-house-door"></i> Início
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-area="" asp-controller="Cliente" asp-action="Index">
+                    <i class="bi bi-list"></i> Listar Clientes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-area="" asp-controller="Restaurante" asp-action="Index">
+                    <i class="bi bi-list"></i> Listar Restaurantes
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-area="" asp-controller="Cliente" asp-action="Create">
+                    <i class="bi bi-plus"></i> Adicionar Cliente
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-area="" asp-controller="Restaurante" asp-action="Create">
+                    <i class="bi bi-plus"></i> Adicionar Restaurante
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">
+                    <i class="bi bi-shield-check"></i> Privacidade
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
+
+        <footer class="border-top text-muted text-center">
+            <div class="container">
+                &copy; 2026 - <strong>DeliFit</strong> - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacidade</a>
+            </div>
+        </footer>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - DeliFitWeb - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

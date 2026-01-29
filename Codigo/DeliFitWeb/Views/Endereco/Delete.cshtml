@@ -4,145 +4,127 @@
     ViewData["Title"] = "Excluir Endereço";
 }
 
-<div class="container mt-4">
-    <input type="hidden" asp-for="IdCliente" />
-
-    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
-        <h2 class="fw-bold text-danger">DELIFIT</h2>
-        <h4 class="text-muted">| Excluir Endereço |</h4>
-    </div>
-
-    <div class="alert alert-danger shadow-sm d-flex align-items-center" role="alert">
-        <div>
-            <h4 class="alert-heading fw-bold mb-1">Atenção! Zona de Perigo.</h4>
-            <p class="mb-0">
-                Você está prestes a excluir este endereço. Confira os dados abaixo antes de continuar.
-            </p>
-        </div>
-    </div>
-
-    <div class="card border-danger shadow-sm mb-4">
-        <div class="card-header bg-danger text-white fw-bold">
-            Revisão dos Dados
-        </div>
-
-        <div class="card-body">
-            <h5 class="mb-3 text-decoration-underline text-secondary">
-                Dados do Endereço
-            </h5>
-
-            <div class="row g-3 mb-3">
-                <div class="col-md-3">
-                    <div class="border rounded p-2 h-100 bg-light">
-                        <label class="fw-bold text-muted small">CEP</label>
-                        <p class="mb-0 fw-bold">@Model.Cep</p>
-                    </div>
-                </div>
-
-                <div class="col-md-5">
-                    <div class="border rounded p-2 h-100 bg-light">
-                        <label class="fw-bold text-muted small">Rua</label>
-                        <p class="mb-0 fw-bold">@Model.Rua</p>
-                    </div>
-                </div>
-
-                <div class="col-md-2">
-                    <div class="border rounded p-2 h-100 bg-light">
-                        <label class="fw-bold text-muted small">Número</label>
-                        <p class="mb-0">@Model.Numero</p>
-                    </div>
-                </div>
-
-                <div class="col-md-2">
-                    <div class="border rounded p-2 h-100 bg-light">
-                        <label class="fw-bold text-muted small">Bairro</label>
-                        <p class="mb-0">@Model.Bairro</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row g-3 mb-3">
-                <div class="col-md-4">
-                    <div class="border rounded p-2 h-100 bg-light">
-                        <label class="fw-bold text-muted small">Cidade</label>
-                        <p class="mb-0">@Model.Cidade</p>
-                    </div>
-                </div>
-
-                <div class="col-md-2">
-                    <div class="border rounded p-2 h-100 bg-light">
-                        <label class="fw-bold text-muted small">Estado</label>
-                        <p class="mb-0">@Model.Estado</p>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="border rounded p-2 h-100 bg-light">
-                        <label class="fw-bold text-muted small">Label</label>
-                        <p class="mb-0">
-                            @(string.IsNullOrWhiteSpace(Model.Label) ? "-" : Model.Label)
-                        </p>
-                    </div>
-
-                </div>
+<div class="container mt-5">
+    <div class="container" style="max-width: 800px;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold text-dark">Excluir Endereço</h2>
             </div>
         </div>
 
-<<<<<<< HEAD
-        <div class="card-footer bg-white d-flex justify-content-end gap-3 py-3">
-            <a asp-action="Index"
-               asp-route-idCliente="@Model.IdCliente"
-               class="btn btn-outline-secondary px-4">
-                Cancelar
-            </a>
+        <div class="row mb-4 align-items-center">
+            <div class="col-md-6">
+                <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary px-3">
+                    <i class="bi bi-chevron-left"></i> Voltar
+                </a>
+            </div>
+        </div>
 
-            <button type="button"
-                    class="btn btn-danger px-4 fw-bold"
-                    data-bs-toggle="modal"
-                    data-bs-target="#modalConfirmacaoFinal">
-                Excluir Endereço
-            </button>
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white py-3">
+                        <h5 class="mb-0 fw-bold text-secondary"><i class="bi bi-geo-alt-fill me-2"></i>Dados de Localização</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label class="small text-uppercase fw-bold text-muted">Logradouro</label>
+                                <p class="fs-4 fw-bold text-danger border-bottom pb-1">@Model.Rua, @Model.Numero</p>
+                            </div>
+                            <div class="col-md-4 text-md-end">
+                                <label class="small text-uppercase fw-bold text-muted d-block">CEP</label>
+                                <span class="badge bg-secondary border text-white p-2 fs-6">@Model.Cep</span>
+                            </div>
+
+                            <div class="col-12 mt-2">
+                                <div class="p-3 bg-light rounded border">
+                                    <h6 class="small fw-bold text-uppercase text-muted mb-3"><i class="bi bi-map me-1"></i> Detalhes</h6>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <span class="d-block small text-muted text-uppercase fw-bold">Bairro</span>
+                                            <span class="text-dark">@Model.Bairro</span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <span class="d-block small text-muted text-uppercase fw-bold">Cidade/UF</span>
+                                            <span class="text-dark">@Model.Cidade / @Model.Estado</span>
+                                        </div>
+                                        @if (!string.IsNullOrEmpty(Model.Label))
+                                        {
+                                            <div class="col-12 border-top pt-2 mt-2">
+                                                <span class="d-block small text-muted text-uppercase fw-bold">Complemento</span>
+                                                <span class="text-dark">@Model.Label</span>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white border-top-0 p-4 d-flex justify-content-end gap-2 rounded-bottom">
+                        <a asp-action="Index" asp-route-idCliente="@Model.IdCliente" class="btn btn-light px-4 border fw-bold text-muted">
+                            Cancelar
+                        </a>
+                        <button type="button" class="btn btn-danger shadow-sm px-4 fw-bold" data-bs-toggle="modal" data-bs-target="#modalConfirmacaoFinal">
+                            <i class="bi bi-trash3 me-2"></i>Excluir Endereço
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="modalConfirmacaoFinal" tabindex="-1">
+<div class="modal fade" id="modalConfirmacaoFinal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-danger">
-            <div class="modal-header bg-danger text-white">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-danger text-white border-0">
                 <h5 class="modal-title fw-bold">
-                    Confirmação de Segurança
+                    <i class="bi bi-shield-exclamation me-2"></i>Confirmação Final
                 </h5>
-                <button type="button" class="btn-close btn-close-white"
-                        data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <div class="modal-body text-center py-4">
-
-                <p class="fs-5">
-                    Tem certeza que deseja excluir este endereço?
-                </p>
-                <p class="text-danger small fw-bold mb-0">
-                    Esta ação é irreversível.
+            <div class="modal-body text-center py-5">
+                <div class="mb-3 text-danger">
+                    <i class="bi bi-x-circle-fill" style="font-size: 3rem;"></i>
+                </div>
+                <h5 class="fw-bold text-dark mb-3">Tem certeza absoluta?</h5>
+                <p class="text-muted mb-0">
+                    O endereço <strong>"@Model.Rua, @Model.Numero"</strong> será apagado.<br>
+                    <span class="text-danger fw-bold small">ESTA OPERAÇÃO NÃO PODE SER DESFEITA.</span>
                 </p>
             </div>
 
-            <div class="modal-footer justify-content-center bg-light">
-                <button type="button"
-                        class="btn btn-secondary px-4"
-                        data-bs-dismiss="modal">
-                    Não, voltar
-                </button>
+            <div class="modal-footer justify-content-center bg-light border-0 py-3">
+                <button type="button" class="btn btn-outline-secondary px-4 fw-bold border-0" data-bs-dismiss="modal">Cancelar</button>
 
                 <form asp-action="Delete">
                     <input type="hidden" asp-for="Id" />
                     <input type="hidden" asp-for="IdCliente" />
 
-                    <button type="submit" class="btn btn-danger px-4 fw-bold">
-                        Sim, excluir definitivamente
+                    <button type="submit" class="btn btn-danger px-5 fw-bold shadow-sm">
+                        Sim, Excluir
                     </button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <style>
+        .bg-danger-subtle {
+            background-color: #fdf2f2 !important;
+        }
+
+        .card {
+            border-radius: 12px;
+        }
+
+        .modal-content {
+            border-radius: 16px;
+            overflow: hidden;
+        }
+    </style>
+}

@@ -2,6 +2,7 @@
 using Core.DTO;
 using Core.Service;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using MySqlX.XDevAPI;
 
 namespace Service
 {
@@ -26,7 +27,9 @@ namespace Service
             var restaurante = _context.Restaurantes.Find(id);
             if(restaurante != null)
             {
-                _context.Remove(restaurante);
+                _context.Entry(restaurante).Collection(c => c.Items).Load(); 
+                _context.Items.RemoveRange(restaurante.Items); 
+                _context.Restaurantes.Remove(restaurante); 
                 _context.SaveChanges();
             }
             else

@@ -4,131 +4,193 @@
     ViewData["Title"] = "Editar Restaurante";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
-        <h2 class="fw-bold">DELIFIT</h2>
-        <h4 class="text-muted">| Editar Restaurante |</h4>
-        <div class="d-flex align-items-center">
-            <span class="badge bg-secondary rounded-circle p-2 me-2">ADM</span>
-            <span>Administrador</span>
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold">Editar Cadastro</h2>
+            <p class="text-muted">Atualize as informações do estabelecimento ou altere o status de exibição.</p>
+        </div>
+        <div class="row mb-4 align-items-center">
+            <div class="col-md-6">
+                <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary px-3">
+                    <i class="bi bi-chevron-left"></i> Voltar
+                </a>
+            </div>
         </div>
     </div>
 
     <form asp-action="Edit">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-        
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger shadow-sm border-0" role="alert"></div>
         <input type="hidden" asp-for="Id" />
 
-        <div class="card bg-light mb-4 border-secondary">
-            <div class="card-body d-flex align-items-center justify-content-between">
+        <div class="card border-0 shadow-sm mb-4 overflow-hidden">
+            <div class="card-body p-4 d-flex align-items-center justify-content-between bg-status-light">
                 <div>
-                    <h6 class="fw-bold mb-0">Situação do Cadastro</h6>
-                    <small class="text-muted">Defina se este restaurante deve aparecer no sistema.</small>
+                    <h6 class="fw-bold mb-1 text-dark"><i class="bi bi-shield-check me-2"></i>Situação do Cadastro</h6>
+                    <small class="text-muted">Controle se este restaurante está visível para os usuários no aplicativo.</small>
                 </div>
-                <div class="form-check form-switch">
+                <div class="form-check form-switch custom-switch-orange">
                     <input class="form-check-input" type="checkbox" role="switch" asp-for="Validado" id="flexSwitchCheckChecked">
-                    <label class="form-check-label fw-bold" for="flexSwitchCheckChecked">Cadastro Ativo</label>
+                    <label class="form-check-label fw-bold ms-2" for="flexSwitchCheckChecked">Cadastro Ativo</label>
                 </div>
             </div>
         </div>
 
-        <h5 class="mb-3 text-decoration-underline">Dados proprietário</h5>
-
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label asp-for="NomeProprietario" class="form-label"></label>
-                <input asp-for="NomeProprietario" class="form-control" />
-                <span asp-validation-for="NomeProprietario" class="text-danger"></span>
-            </div>
-            <div class="col-md-3">
-                <label asp-for="CpfProprietario" class="form-label"></label>
-                <input asp-for="CpfProprietario" class="form-control" />
-                <span asp-validation-for="CpfProprietario" class="text-danger"></span>
-            </div>
-            <div class="col-md-3">
-                <label asp-for="TelefoneProprietario" class="form-label"></label>
-                <input asp-for="TelefoneProprietario" class="form-control" />
-                <span asp-validation-for="TelefoneProprietario" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <label asp-for="Email" class="form-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-        </div>
-
-        <h5 class="mb-3 text-decoration-underline">Dados Restaurante</h5>
-
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label asp-for="NomeRestaurante" class="form-label"></label>
-                <input asp-for="NomeRestaurante" class="form-control" />
-                <span asp-validation-for="NomeRestaurante" class="text-danger"></span>
-            </div>
-            <div class="col-md-3">
-                <label asp-for="Cnpj" class="form-label"></label>
-                <input asp-for="Cnpj" class="form-control" />
-                <span asp-validation-for="Cnpj" class="text-danger"></span>
-            </div>
-            <div class="col-md-3">
-                <label asp-for="TelefoneRestaurante" class="form-label"></label>
-                <input asp-for="TelefoneRestaurante" class="form-control" />
-                <span asp-validation-for="TelefoneRestaurante" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            <div class="col-md-3">
-                <label asp-for="Cep" class="form-label"></label>
-                <input asp-for="Cep" class="form-control" />
-                <span asp-validation-for="Cep" class="text-danger"></span>
-            </div>
-            <div class="col-md-6">
-                <label asp-for="Rua" class="form-label"></label>
-                <input asp-for="Rua" class="form-control" />
-                <span asp-validation-for="Rua" class="text-danger"></span>
-            </div>
-            <div class="col-md-3">
-                <label asp-for="Numero" class="form-label"></label>
-                <input asp-for="Numero" class="form-control" />
-                <span asp-validation-for="Numero" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="row mb-5">
-                <div class="col-md-6">
-                    <label asp-for="Cidade" class="form-label"></label>
-                    <input asp-for="Cidade" class="form-control" />
-                    <span asp-validation-for="Cidade" class="text-danger"></span>
+        <div class="row">
+            <div class="col-lg-12 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0 pt-4 ps-4">
+                        <h5 class="fw-bold mb-0 text-orange"><i class="bi bi-person-badge me-2"></i>Dados do Proprietário</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="NomeProprietario" class="form-label fw-semibold"></label>
+                                <input asp-for="NomeProprietario" class="form-control" />
+                                <span asp-validation-for="NomeProprietario" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="CpfProprietario" class="form-label fw-semibold"></label>
+                                <input asp-for="CpfProprietario" class="form-control" />
+                                <span asp-validation-for="CpfProprietario" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="TelefoneProprietario" class="form-label fw-semibold"></label>
+                                <input asp-for="TelefoneProprietario" class="form-control" />
+                                <span asp-validation-for="TelefoneProprietario" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Email" class="form-label fw-semibold"></label>
+                                <input asp-for="Email" class="form-control" />
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <label asp-for="Bairro" class="form-label"></label>
-                    <input asp-for="Bairro" class="form-control" />
-                    <span asp-validation-for="Bairro" class="text-danger"></span>
+            </div>
+
+            <div class="col-lg-12 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0 pt-4 ps-4">
+                        <h5 class="fw-bold mb-0 text-orange"><i class="bi bi-shop me-2"></i>Dados do Restaurante</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label asp-for="NomeRestaurante" class="form-label fw-semibold"></label>
+                                <input asp-for="NomeRestaurante" class="form-control" />
+                                <span asp-validation-for="NomeRestaurante" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="Cnpj" class="form-label fw-semibold"></label>
+                                <input asp-for="Cnpj" class="form-control" />
+                                <span asp-validation-for="Cnpj" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="TelefoneRestaurante" class="form-label fw-semibold"></label>
+                                <input asp-for="TelefoneRestaurante" class="form-control" />
+                                <span asp-validation-for="TelefoneRestaurante" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <hr class="my-4 text-muted opacity-25">
+
+                        <div class="row g-3">
+                            <div class="col-md-3">
+                                <label asp-for="Cep" class="form-label fw-semibold"></label>
+                                <input asp-for="Cep" class="form-control" />
+                                <span asp-validation-for="Cep" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Rua" class="form-label fw-semibold"></label>
+                                <input asp-for="Rua" class="form-control" />
+                                <span asp-validation-for="Rua" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="Numero" class="form-label fw-semibold"></label>
+                                <input asp-for="Numero" class="form-control" />
+                                <span asp-validation-for="Numero" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-5">
+                                <label asp-for="Cidade" class="form-label fw-semibold"></label>
+                                <input asp-for="Cidade" class="form-control" />
+                                <span asp-validation-for="Cidade" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="Bairro" class="form-label fw-semibold"></label>
+                                <input asp-for="Bairro" class="form-control" />
+                                <span asp-validation-for="Bairro" class="text-danger small"></span>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="Estado" class="form-label fw-semibold"></label>
+                                <select asp-for="Estado" class="form-select">
+                                    <option value="">Selecione...</option>
+                                    <option value="SP">São Paulo</option>
+                                    <option value="RJ">Rio de Janeiro</option>
+                                    <option value="MG">Minas Gerais</option>
+                                    <option value="SE">Sergipe</option>
+                                </select>
+                                <span asp-validation-for="Estado" class="text-danger small"></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <label asp-for="Estado" class="form-label"></label>
-                    <select asp-for="Estado" class="form-select">
-                        <option value="">Selecione...</option>
-                        <option value="SP">São Paulo</option>
-                        <option value="RJ">Rio de Janeiro</option>
-                        <option value="MG">Minas Gerais</option>
-                        <option value="SE">Sergipe</option>
-                    </select>
-                    <span asp-validation-for="Estado" class="text-danger"></span>
-                </div>
+            </div>
         </div>
 
-        <div class="d-flex justify-content-end align-items-center gap-3">
-            <a asp-action="Index" class="text-decoration-none text-secondary fw-bold">Cancelar</a>
-            <button type="submit" class="btn btn-dark px-4 py-2">Salvar Alterações</button>
+        <div class="d-flex justify-content-end align-items-center mt-2 mb-5 gap-3">
+            <a asp-action="Index" class="text-decoration-none text-secondary fw-bold">Cancelar Alterações</a>
+            <button type="submit" class="btn btn-orange btn-lg px-5 py-2 shadow-sm">
+                <i class="bi bi-save me-2"></i>Salvar Alterações
+            </button>
         </div>
     </form>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <style>
+        .text-orange {
+            color: #ff6600 !important;
+        }
+
+        .bg-status-light {
+            background-color: #fcfcfc;
+            border-left: 5px solid #ff6600;
+        }
+
+        /* Custom Orange Switch */
+        .custom-switch-orange .form-check-input:checked {
+            background-color: #ff6600;
+            border-color: #e65c00;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+            color: #495057;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #ff6600;
+            box-shadow: 0 0 0 0.25rem rgba(255, 102, 0, 0.15);
+        }
+
+        .btn-orange {
+            background-color: #ff6600;
+            border-color: #e65c00;
+            color: white;
+            font-weight: 600;
+        }
+
+            .btn-orange:hover {
+                background-color: #e65c00;
+                color: white;
+            }
+
+        .card {
+            border-radius: 12px;
+        }
+    </style>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

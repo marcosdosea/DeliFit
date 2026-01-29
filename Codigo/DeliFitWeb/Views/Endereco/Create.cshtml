@@ -2,88 +2,150 @@
 
 @{
     ViewData["Title"] = "Cadastrar Endereço";
+    // Captura o ID do cliente da URL para manter a consistência se houver erro e retorno da view
+    var idClienteContexto = Context.Request.Query["idCliente"];
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
-        <h2 class="fw-bold">DELIFIT</h2>
-        <h4 class="text-muted">| Cadastrar Endereço |</h4>
+<div class="container-fluid p-0 bg-white">
+    <div class="row g-0">
+        <main class="col-12 p-5 bg-light">
+            <div class="container">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="fw-bold m-0">Novo Endereço</h2>
+                        <p class="text-muted">Adicione um novo local de entrega para este cliente.</p>
+                    </div>
+                </div>
+
+                <div class="row mb-4 align-items-center">
+                    <div class="col-md-6">
+                        <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary px-3">
+                            <i class="bi bi-chevron-left"></i> Voltar
+                        </a>
+                    </div>
+                </div>
+
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger shadow-sm border-0 small" role="alert"></div>
+
+                    <input asp-for="IdCliente" type="hidden" value="@(Model?.IdCliente ?? uint.Parse(idClienteContexto))" />
+
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white border-0 pt-4 ps-4">
+                            <h5 class="fw-bold mb-0 text-orange">
+                                <i class="bi bi-geo-alt me-2"></i>Dados de Localização
+                            </h5>
+                        </div>
+
+                        <div class="card-body p-4">
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-3">
+                                    <label asp-for="Cep" class="form-label fw-semibold"></label>
+                                    <input asp-for="Cep" class="form-control" placeholder="00000-000" />
+                                    <span asp-validation-for="Cep" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="Rua" class="form-label fw-semibold"></label>
+                                    <input asp-for="Rua" class="form-control" placeholder="Nome da rua" />
+                                    <span asp-validation-for="Rua" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label asp-for="Numero" class="form-label fw-semibold"></label>
+                                    <input asp-for="Numero" class="form-control" placeholder="123" />
+                                    <span asp-validation-for="Numero" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-4">
+                                    <label asp-for="Bairro" class="form-label fw-semibold"></label>
+                                    <input asp-for="Bairro" class="form-control" placeholder="Bairro" />
+                                    <span asp-validation-for="Bairro" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-5">
+                                    <label asp-for="Cidade" class="form-label fw-semibold"></label>
+                                    <input asp-for="Cidade" class="form-control" placeholder="Cidade" />
+                                    <span asp-validation-for="Cidade" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-3">
+                                    <label asp-for="Estado" class="form-label fw-semibold"></label>
+                                    <select asp-for="Estado" class="form-select">
+                                        <option value="">UF</option>
+                                        <option value="SP">SP</option>
+                                        <option value="RJ">RJ</option>
+                                        <option value="MG">MG</option>
+                                        <option value="SE">SE</option>
+                                    </select>
+                                    <span asp-validation-for="Estado" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label asp-for="Label" class="form-label fw-semibold">Complemento / Referência</label>
+                                    <input asp-for="Label" class="form-control" placeholder="Ex: Apto 101, Próximo ao mercado..." />
+                                    <span asp-validation-for="Label" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end align-items-center mt-2 mb-5 gap-2">
+                        <a asp-action="Index" asp-route-idCliente="@(Model?.IdCliente ?? uint.Parse(idClienteContexto))" class="btn btn-light px-4 border text-muted fw-bold shadow-sm">
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-orange px-5 py-2 fw-bold shadow-sm">
+                            <i class="bi bi-check-circle me-2"></i>Salvar Endereço
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </main>
     </div>
-
-    <form asp-action="Create">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-        <input asp-for="IdCliente" type="hidden" />
-
-
-        <h5 class="mb-3 text-decoration-underline">Dados do Endereço</h5>
-
-        <div class="row mb-3">
-            <div class="col-md-3">
-                <label asp-for="Cep" class="form-label"></label>
-                <input asp-for="Cep" class="form-control" placeholder="00000-000" />
-                <span asp-validation-for="Cep" class="text-danger"></span>
-            </div>
-
-            <div class="col-md-6">
-                <label asp-for="Rua" class="form-label"></label>
-                <input asp-for="Rua" class="form-control" placeholder="Nome da rua" />
-                <span asp-validation-for="Rua" class="text-danger"></span>
-            </div>
-
-            <div class="col-md-3">
-                <label asp-for="Numero" class="form-label"></label>
-                <input asp-for="Numero" class="form-control" placeholder="Número" />
-                <span asp-validation-for="Numero" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label asp-for="Bairro" class="form-label"></label>
-                <input asp-for="Bairro" class="form-control" placeholder="Bairro" />
-                <span asp-validation-for="Bairro" class="text-danger"></span>
-            </div>
-
-            <div class="col-md-4">
-                <label asp-for="Cidade" class="form-label"></label>
-                <input asp-for="Cidade" class="form-control" placeholder="Cidade" />
-                <span asp-validation-for="Cidade" class="text-danger"></span>
-            </div>
-
-            <div class="col-md-4">
-                <label asp-for="Estado" class="form-label"></label>
-                <select asp-for="Estado" class="form-select">
-                    <option value="">Selecione...</option>
-                    <option value="SP">São Paulo</option>
-                    <option value="RJ">Rio de Janeiro</option>
-                    <option value="MG">Minas Gerais</option>
-                    <option value="SE">Sergipe</option>
-                </select>
-                <span asp-validation-for="Estado" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="row mb-5">
-            <div class="col-md-12">
-                <label asp-for="Label" class="form-label"></label>
-                <input asp-for="Label" class="form-control" placeholder="Apartamento, bloco, referência..." />
-                <span asp-validation-for="Label" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="d-flex justify-content-end align-items-center gap-3">
-            <a asp-action="Index" class="text-decoration-none text-secondary fw-bold">
-                Voltar
-            </a>
-            <button type="submit" class="btn btn-outline-dark px-4 py-2">
-                Cadastrar endereço
-            </button>
-        </div>
-    </form>
 </div>
 
 @section Scripts {
+    <style>
+        /* Estilos Padronizados DeliFit */
+        .text-orange {
+            color: #ff6600 !important;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+            color: #495057;
+        }
+
+        .form-control, .form-select {
+            border: 1px solid #dee2e6;
+            padding: 0.6rem 0.75rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: #ff6600;
+                box-shadow: 0 0 0 0.25rem rgba(255, 102, 0, 0.15);
+            }
+
+        .btn-orange {
+            background-color: #ff6600;
+            border-color: #e65c00;
+            color: white;
+            transition: all 0.2s;
+        }
+
+            .btn-orange:hover {
+                background-color: #e65c00;
+                color: white;
+                transform: translateY(-1px);
+            }
+
+        .card {
+            border-radius: 12px;
+        }
+    </style>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }

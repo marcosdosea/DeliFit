@@ -1,110 +1,98 @@
 ﻿@model DeliFitWeb.Models.RestauranteViewModel
 
 @{
-    ViewData["Title"] = "Detalhes do Restaurante";
+    ViewData["Title"] = "Perfil do Restaurante";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
-        <h2 class="fw-bold">DELIFIT</h2>
-        <h4 class="text-muted">| Detalhes do Restaurante |</h4>
-        <div class="d-flex align-items-center">
-            <span class="badge bg-secondary rounded-circle p-2 me-2">ADM</span>
-            <span>Administrador</span>
-        </div>
-    </div>
-
-    <div class="card shadow-sm border-0">
-        <div class="card-body">
-
-            <div class="d-flex justify-content-end mb-3">
-                @if (Model.Validado)
-                {
-                    <span class="badge bg-success fs-6">Status: Ativo</span>
-                }
-                else
-                {
-                    <span class="badge bg-danger fs-6">Status: Inativo</span>
-                }
+<div class="container-fluid p-0">
+    <div class="row g-0">
+        <aside class="col-md-2 bg-white border-end min-vh-100 shadow-sm p-3">
+            <div class="mb-4">
+                <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Voltar
+                </a>
             </div>
 
-            <h5 class="mb-3 text-decoration-underline text-primary">Dados do Proprietário</h5>
+            <ul class="nav flex-column gap-1">
+                <li class="nav-item mb-2">
+                    <span class="nav-link fw-bold text-dark fs-5">Início</span>
+                </li>
+                <li><a href="#" class="nav-link fw-bold py-1 small" style="color: #ff6600;">- Perfil</a></li>
+                <li><a asp-controller="Item" asp-action="Index" asp-route-idRestaurante="@Model.Id" class="nav-link text-muted py-1 small">- Gestor de Cardápio</a></li>
+            </ul>
+        </aside>
 
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label class="fw-bold text-muted small">Nome do Proprietário</label>
-                    <p class="form-control-plaintext fs-5">@Model.NomeProprietario</p>
-                </div>
-                <div class="col-md-3">
-                    <label class="fw-bold text-muted small">CPF</label>
-                    <p class="form-control-plaintext">@Model.CpfProprietario</p>
-                </div>
-                <div class="col-md-3">
-                    <label class="fw-bold text-muted small">Telefone</label>
-                    <p class="form-control-plaintext">@Model.TelefoneProprietario</p>
-                </div>
-            </div>
-
-            <div class="row mb-4">
-                <div class="col-md-12">
-                    <label class="fw-bold text-muted small">E-mail</label>
-                    <p class="form-control-plaintext">@Model.Email</p>
-                </div>
-            </div>
-
-            <hr class="text-muted" />
-
-            <h5 class="mb-3 text-decoration-underline text-primary">Dados do Restaurante</h5>
-
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label class="fw-bold text-muted small">Nome do Restaurante</label>
-                    <p class="form-control-plaintext fs-5">@Model.NomeRestaurante</p>
-                </div>
-                <div class="col-md-3">
-                    <label class="fw-bold text-muted small">CNPJ</label>
-                    <p class="form-control-plaintext">@Model.Cnpj</p>
-                </div>
-                <div class="col-md-3">
-                    <label class="fw-bold text-muted small">Telefone Comercial</label>
-                    <p class="form-control-plaintext">@Model.TelefoneRestaurante</p>
-                </div>
-            </div>
-
-            <div class="bg-light p-3 rounded">
-                <h6 class="fw-bold mb-3"><i class="bi bi-geo-alt"></i> Endereço</h6>
-                <div class="row">
-                    <div class="col-md-2">
-                        <label class="fw-bold text-muted small">CEP</label>
-                        <p class="form-control-plaintext">@Model.Cep</p>
+        <main class="col-md-10">
+            <div class="bg-white border-bottom px-4 py-2 d-flex justify-content-between align-items-center shadow-sm">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-circle border d-flex justify-content-center align-items-center" style="width:35px;height:35px;">
+                        <span class="fw-bold small">R</span>
                     </div>
-                    <div class="col-md-5">
-                        <label class="fw-bold text-muted small">Rua</label>
-                        <p class="form-control-plaintext">@Model.Rua</p>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="fw-bold text-muted small">Número</label>
-                        <p class="form-control-plaintext">@Model.Numero</p>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="fw-bold text-muted small">Cidade / UF</label>
-                        <p class="form-control-plaintext">@Model.Cidade / @Model.Estado</p>
+                    <span class="fw-bold">@Model.NomeRestaurante</span>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="badge border text-dark fw-normal">Status: @(Model.Validado ? "Ativo" : "Inativo")</span>
+                </div>
+            </div>
+
+            <div class="position-relative">
+                <div class="w-100 bg-light d-flex justify-content-center align-items-center overflow-hidden" style="height: 180px; background: linear-gradient(to bottom, #f8f9fa, #e9ecef);">
+                    <i class="bi bi-mountains display-1 text-secondary opacity-25"></i>
+                    <button class="btn btn-sm btn-white position-absolute top-0 end-0 m-3 shadow-sm border">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                </div>
+
+                <div class="position-absolute translate-middle-y start-0 ms-5 shadow-sm rounded-circle bg-white border d-flex justify-content-center align-items-center" style="width: 120px; height: 120px; bottom: -40px;">
+                    <span class="display-4 fw-bold text-orange" style="color: #ff9800;">R</span>
+                </div>
+            </div>
+
+            <div class="px-5 pt-5 mt-4">
+                <div class="d-flex justify-content-between align-items-start mb-4">
+                    <div class="flex-grow-1 row g-3">
+                        <div class="col-md-5">
+                            <label class="small fw-bold text-muted">Nome restaurante</label>
+                            <input class="form-control bg-white" value="@Model.NomeRestaurante" disabled />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="small fw-bold text-muted">Telefone</label>
+                            <input class="form-control bg-white" value="@Model.TelefoneRestaurante" disabled />
+                        </div>
+                        <div class="col-md-1 text-end pt-4">
+                            <span class="fw-bold fs-5">4,4 <i class="bi bi-star text-warning"></i></span>
+                        </div>
                     </div>
                 </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-10">
+                        <label class="small fw-bold text-muted">Endereço</label>
+                        <input class="form-control bg-white" value="@Model.Rua, @Model.Numero, @Model.Bairro, @Model.Cidade - @Model.Estado" disabled />
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-5">
+                    <div class="col-md-10">
+                        <label class="small fw-bold text-muted">Descrição</label>
+                        <textarea class="form-control bg-white" rows="4" disabled>@Model.Descricao</textarea>
+                    </div>
+                </div>
+
+                <div class="text-end pe-5 pb-5">
+                    <a asp-controller="Restaurante"
+                       asp-action="Edit"
+                       asp-route-id="@Model.Id"
+                       class="btn btn-warning px-5 fw-bold text-white shadow-sm text-decoration-none"
+                       style="background-color: #ff6600; border: none;">
+                        <i class="bi bi-pencil-square me-2"></i> Editar Perfil
+                    </a>
+                </div>
             </div>
-
-        </div>
-
-        <div class="card-footer bg-white border-top-0 d-flex justify-content-end gap-2 py-3">
-            <a asp-action="Index" class="btn btn-outline-secondary px-4">Voltar</a>
-
-            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger px-4">
-                Excluir
-            </a>
-
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-dark px-4">
-                Editar Dados
-            </a>
-        </div>
+        </main>
     </div>
 </div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+}

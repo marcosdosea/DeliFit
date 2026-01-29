@@ -3,7 +3,7 @@ using Core.Service;
 using Microsoft.EntityFrameworkCore;
 using Service;
 
-namespace ServiceTests
+namespace Service.Tests
 {
     [TestClass]
     public class EnderecoServiceTests

@@ -1,97 +1,132 @@
 ﻿@model DeliFitWeb.Models.ClienteViewModel
 
-
 @{
     ViewData["Title"] = "Excluir Cliente";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
-        <h2 class="fw-bold text-danger">DELIFIT</h2>
-        <h4 class="text-muted">| Excluir Cliente |</h4>
-    </div>
+<div class="bg-light min-vh-100 py-5">
+    <div class="container" style="max-width: 800px;">
 
-    <div class="alert alert-danger shadow-sm d-flex align-items-center" role="alert">
-        <i class="bi bi-exclamation-triangle-fill fs-2 me-3"></i>
-        <div>
-            <h4 class="alert-heading fw-bold mb-1">Atenção! Zona de Perigo.</h4>
-            <p class="mb-0">
-                Você está na área de exclusão. Confira os dados abaixo com cuidado antes de prosseguir.
-            </p>
-        </div>
-    </div>
-
-    <div class="card border-danger shadow-sm mb-4">
-        <div class="card-header bg-danger text-white fw-bold">
-            Revisão dos Dados
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold text-dark">Excluir Cliente</h2>
+            </div>
         </div>
 
-        <div class="card-body">
-            <h5 class="mb-3 text-decoration-underline text-secondary">Dados da Conta</h5>
+        <div class="row mb-4 align-items-center">
+            <div class="col-md-6">
+                <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary px-3">
+                    <i class="bi bi-chevron-left"></i> Voltar
+                </a>
+            </div>
+        </div>
 
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label class="fw-bold text-muted small">Nome</label>
-                    <p class="form-control-plaintext fw-bold">@Model.Nome</p>
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4 p-md-5">
+
+                <h5 class="fw-bold mb-4 text-dark border-bottom pb-2">
+                    <i class="bi bi-person-badge me-2 text-muted"></i>Dados da Conta
+                </h5>
+
+                <div class="row g-4">
+                    <div class="col-md-12">
+                        <label class="form-label small fw-bold text-muted text-uppercase mb-1">Nome Completo</label>
+                        <div class="bg-light p-3 rounded text-dark fw-bold border-0">
+                            @Model.Nome
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label small fw-bold text-muted text-uppercase mb-1">CPF</label>
+                        <div class="bg-light p-3 rounded text-dark border-0">
+                            @Model.Cpf
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label small fw-bold text-muted text-uppercase mb-1">Telefone</label>
+                        <div class="bg-light p-3 rounded text-dark border-0">
+                            @Model.Telefone
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label small fw-bold text-muted text-uppercase mb-1">E-mail</label>
+                        <div class="bg-light p-3 rounded text-dark border-0 text-truncate" title="@Model.Email">
+                            @Model.Email
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <label class="fw-bold text-muted small">CPF</label>
-                    <p class="form-control-plaintext">@Model.Cpf</p>
+
+                <div class="alert alert-warning mt-4 d-flex align-items-center border-0 small" role="alert">
+                    <i class="bi bi-info-circle-fill me-2 fs-5"></i>
+                    <div>
+                        Ao excluir este cliente, <strong>todo o histórico de pedidos e endereços</strong> associados a ele será permanentemente removido.
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <label class="fw-bold text-muted small">Telefone</label>
-                    <p class="form-control-plaintext">@Model.Telefone</p>
-                </div>
+
             </div>
 
-            <div class="row mb-4">
-                <div class="col-md-12">
-                    <label class="fw-bold text-muted small">E-mail</label>
-                    <p class="form-control-plaintext">@Model.Email</p>
-                </div>
+            <div class="card-footer bg-white border-top-0 p-4 d-flex justify-content-end gap-2 rounded-bottom">
+                <a asp-action="Index" class="btn btn-light px-4 border fw-bold text-muted">
+                    Cancelar
+                </a>
+                <button type="button" class="btn btn-danger px-4 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#modalConfirmacaoFinal">
+                    <i class="bi bi-trash3 me-2"></i>Excluir Cliente
+                </button>
             </div>
-
-            <hr class="text-muted" />
-
-            
-
-        <div class="card-footer bg-white d-flex justify-content-end align-items-center gap-3 py-3">
-            <a asp-action="Index" class="btn btn-outline-secondary px-4">Cancelar</a>
-
-            <button type="button" class="btn btn-danger px-4 fw-bold" data-bs-toggle="modal" data-bs-target="#modalConfirmacaoFinal">
-                <i class="bi bi-trash"></i> Excluir Cliente
-            </button>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="modalConfirmacaoFinal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+<div class="modal fade" id="modalConfirmacaoFinal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-danger">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title fw-bold" id="modalLabel">
-                    <i class="bi bi-shield-exclamation"></i> Confirmação de Segurança
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-danger text-white border-0">
+                <h5 class="modal-title fw-bold">
+                    <i class="bi bi-shield-exclamation me-2"></i>Confirmação Final
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <div class="modal-body text-center py-4">
-                <p class="fs-5 text-dark">Tem certeza absoluta que deseja apagar o cliente<br><strong>"@Model.Nome"</strong>?</p>
-                <p class="text-danger small fw-bold mb-0">
-                    <i class="bi bi-x-circle"></i> Esta ação é irreversível e apagará o histórico.
+            <div class="modal-body text-center py-5">
+                <div class="mb-3 text-danger">
+                    <i class="bi bi-x-circle-fill" style="font-size: 3rem;"></i>
+                </div>
+                <h5 class="fw-bold text-dark mb-3">Tem certeza absoluta?</h5>
+                <p class="text-muted mb-0">
+                    O cliente <strong>"@Model.Nome"</strong> será apagado do sistema.<br>
+                    Esta ação não poderá ser desfeita.
                 </p>
             </div>
 
-            <div class="modal-footer justify-content-center bg-light">
-                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Não, voltar</button>
+            <div class="modal-footer justify-content-center bg-light border-0 py-3">
+                <button type="button" class="btn btn-outline-secondary px-4 fw-bold border-0" data-bs-dismiss="modal">Cancelar</button>
 
                 <form asp-action="Delete">
                     <input type="hidden" asp-for="Id" />
-                    <button type="submit" class="btn btn-danger px-4 fw-bold">
-                        Sim, excluir definitivamente
+                    <button type="submit" class="btn btn-danger px-5 fw-bold shadow-sm">
+                        Sim, Excluir
                     </button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <style>
+        .bg-danger-subtle {
+            background-color: #fdf2f2 !important;
+        }
+
+        .card {
+            border-radius: 12px;
+        }
+
+        .modal-content {
+            border-radius: 16px;
+            overflow: hidden;
+        }
+    </style>
+}

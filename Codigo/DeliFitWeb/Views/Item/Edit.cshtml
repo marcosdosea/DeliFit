@@ -1,192 +1,136 @@
 ﻿@model DeliFitWeb.Models.ItemViewModel
+
 @{
     ViewData["Title"] = "Editar Item";
+    var idRestauranteContexto = Model.IdRestaurante;
 }
 
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <div class="card shadow">
-                <div class="card-header bg-warning text-dark">
-                    <h4 class="mb-0">
-                        <i class="bi bi-pencil-square me-2"></i>Editar Item do Cardápio
-                    </h4>
-                </div>
+<div class="container-fluid p-0 bg-white">
+    <div class="row g-0">
+        <aside class="col-md-2 border-end min-vh-100 p-3 bg-white">
+            <div class="mb-4">
+                <a asp-action="Index" asp-route-idRestaurante="@idRestauranteContexto" class="text-decoration-none text-muted small fw-bold">
+                    <i class="bi bi-chevron-left"></i> Voltar ao Cardápio
+                </a>
+            </div>
 
-                <div class="card-body">
+            <ul class="nav flex-column gap-1">
+                <li class="nav-item mb-2">
+                    <span class="nav-link fw-bold text-dark fs-5 p-0">Início</span>
+                </li>
+                <li><a asp-controller="Restaurante" asp-action="Details" asp-route-id="@idRestauranteContexto" class="nav-link text-muted py-1 small">- Perfil</a></li>
+                <li><a href="#" class="nav-link fw-bold py-1 small" style="color: #ff6600;">-Gestor de Cardápio</a></li>
+            </ul>
+        </aside>
+
+        <main class="col-md-10 p-5 bg-light">
+            <div class="row justify-content-center">
+                <div class="col-lg-11">
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h2 class="fw-bold m-0">Editar Item</h2>
+                            <p class="text-muted">Ajuste os detalhes e informações nutricionais do prato.</p>
+                        </div>
+                        <span class="badge bg-white text-dark border p-2 px-3 shadow-sm">ID do Item: #@Model.Id</span>
+                    </div>
+
                     <form asp-action="Edit" class="needs-validation" novalidate>
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
-
-                        <!-- Campo ID oculto -->
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger shadow-sm"></div>
                         <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="IdRestaurante" />
 
-                        <!-- Seção 1: Informações Básicas -->
-                        <div class="row mb-4">
+                        <div class="row g-4">
                             <div class="col-md-8">
-                                <h5 class="text-primary mb-3">Informações Básicas</h5>
+                                <div class="card border-0 shadow-sm p-4 mb-4">
+                                    <h5 class="fw-bold mb-4" style="color: #ff6600;"><i class="bi bi-info-circle me-2"></i>Informações Básicas</h5>
 
-                                <div class="mb-3">
-                                    <label asp-for="Nome" class="form-label fw-bold">Nome do Item *</label>
-                                    <input asp-for="Nome" class="form-control" placeholder="Ex: Bife à Parmegiana" required />
-                                    <span asp-validation-for="Nome" class="text-danger"></span>
-                                    <div class="form-text">Nome completo do item como será exibido no cardápio.</div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label asp-for="Descricao" class="form-label fw-bold">Descrição</label>
-                                    <textarea asp-for="Descricao" class="form-control" rows="3" placeholder="Descreva o item, ingredientes principais, etc."></textarea>
-                                    <span asp-validation-for="Descricao" class="text-danger"></span>
-                                    <div class="form-text">Descrição detalhada para os clientes.</div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6 mb-3">
-                                        <label asp-for="Preco" class="form-label fw-bold">Preço (R$) *</label>
-                                        <div class="input-group">
-                                            <span class="input-group-text">R$</span>
-                                            <input asp-for="Preco"
-                                                   type="number"
-                                                   step="0.01"
-                                                   min="0.01"
-                                                   class="form-control"
-                                                   placeholder="20.00"
-                                                   required />
-                                        </div>
-                                        <span asp-validation-for="Preco" class="text-danger"></span>
-                                        <div class="form-text">Use ponto decimal. Ex: 20.00</div>
+                                    <div class="mb-3">
+                                        <label asp-for="Nome" class="form-label small fw-bold text-muted">NOME DO ITEM</label>
+                                        <input asp-for="Nome" class="form-control border-0 bg-light p-3" placeholder="Ex: Salada Tropical" required />
+                                        <span asp-validation-for="Nome" class="text-danger small"></span>
                                     </div>
 
-                                    <div class="col-md-6 mb-3">
-                                        <label asp-for="IdRestaurante" class="form-label fw-bold">ID do Restaurante *</label>
-                                        <input asp-for="IdRestaurante" class="form-control" required readonly />
-                                        <span asp-validation-for="IdRestaurante" class="text-danger"></span>
-                                        <div class="form-text">ID do restaurante (não pode ser alterado).</div>
+                                    <div class="mb-3">
+                                        <label asp-for="Descricao" class="form-label small fw-bold text-muted">DESCRIÇÃO DETALHADA</label>
+                                        <textarea asp-for="Descricao" class="form-control border-0 bg-light p-3" rows="4" placeholder="Descreva os ingredientes e o preparo..."></textarea>
+                                        <span asp-validation-for="Descricao" class="text-danger small"></span>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label asp-for="Preco" class="form-label small fw-bold text-muted">PREÇO DE VENDA (R$)</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text border-0 bg-orange-subtle fw-bold" style="color: #ff6600;">R$</span>
+                                                <input asp-for="Preco" type="number" step="0.01" class="form-control border-0 bg-light p-3" required />
+                                            </div>
+                                            <span asp-validation-for="Preco" class="text-danger small"></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label asp-for="Restricao" class="form-label small fw-bold text-muted">RESTRIÇÃO ALIMENTAR</label>
+                                            <select asp-for="Restricao" class="form-select border-0 bg-light p-3">
+                                                <option value="">Nenhuma</option>
+                                                <option value="Vegetariano">Vegetariano</option>
+                                                <option value="Vegano">Vegano</option>
+                                                <option value="Sem Glúten">Sem Glúten</option>
+                                                <option value="Sem Lactose">Sem Lactose</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
-                                <h5 class="text-primary mb-3">Medidas</h5>
+                                <div class="card border-0 shadow-sm p-4 mb-4 h-100">
+                                    <h5 class="fw-bold mb-4" style="color: #ff6600;"><i class="bi bi-heart-pulse me-2"></i>Nutrição e Medidas</h5>
 
-                                <div class="mb-3">
-                                    <label asp-for="Tamanho" class="form-label fw-bold">Tamanho</label>
-                                    <input asp-for="Tamanho" class="form-control" placeholder="Ex: Grande, Médio, Pequeno" />
-                                    <span asp-validation-for="Tamanho" class="text-danger"></span>
-                                    <div class="form-text">Tamanho ou porção.</div>
-                                </div>
+                                    <div class="mb-3">
+                                        <label asp-for="Calorias" class="form-label small fw-bold text-muted">CALORIAS (KCAL)</label>
+                                        <input asp-for="Calorias" type="number" class="form-control border-0 bg-light p-3" required />
+                                    </div>
 
-                                <div class="mb-3">
-                                    <label asp-for="Volume" class="form-label fw-bold">Volume</label>
-                                    <input asp-for="Volume" class="form-control" placeholder="Ex: 500ml, 1L" />
-                                    <span asp-validation-for="Volume" class="text-danger"></span>
-                                    <div class="form-text">Volume para bebidas.</div>
-                                </div>
+                                    <div class="row g-2 mb-3">
+                                        <div class="col-6">
+                                            <label asp-for="Proteina" class="form-label small fw-bold text-muted">PROT. (G)</label>
+                                            <input asp-for="Proteina" type="number" step="0.1" class="form-control border-0 bg-light p-3" />
+                                        </div>
+                                        <div class="col-6">
+                                            <label asp-for="Carboidratos" class="form-label small fw-bold text-muted">CARB. (G)</label>
+                                            <input asp-for="Carboidratos" type="number" step="0.1" class="form-control border-0 bg-light p-3" />
+                                        </div>
+                                    </div>
 
-                                <div class="mb-3">
-                                    <label asp-for="Restricao" class="form-label fw-bold">Restrições Alimentares</label>
-                                    <select asp-for="Restricao" class="form-select">
-                                        <option value="">Selecione uma opção...</option>
-                                        <option value="Vegetariano">Vegetariano</option>
-                                        <option value="Vegano">Vegano</option>
-                                        <option value="Sem Glúten">Sem Glúten</option>
-                                        <option value="Sem Lactose">Sem Lactose</option>
-                                        <option value="Contém Glúten">Contém Glúten</option>
-                                        <option value="Contém Lactose">Contém Lactose</option>
-                                        <option value="Contém Açúcar">Contém Açúcar</option>
-                                        <option value="Contém Soja">Contém Soja</option>
-                                        <option value="Contém Amendoim">Contém Amendoim</option>
-                                        <option value="Contém Frutos do Mar">Contém Frutos do Mar</option>
-                                    </select>
-                                    <span asp-validation-for="Restricao" class="text-danger"></span>
+                                    <div class="mb-3">
+                                        <label asp-for="Tamanho" class="form-label small fw-bold text-muted">TAMANHO</label>
+                                        <select asp-for="Tamanho" class="form-select border-0 bg-light p-3">
+                                            <option value="">Nenhum (Vazio)</option>
+                                            <option value="P">P - Pequeno</option>
+                                            <option value="M">M - Médio</option>
+                                            <option value="G">G - Grande</option>
+                                        </select>
+                                        <span asp-validation-for="Tamanho" class="text-danger small"></span>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label asp-for="Volume" class="form-label small fw-bold text-muted">VOLUME</label>
+                                        <input asp-for="Volume" class="form-control border-0 bg-light p-3" placeholder="Ex: 350ml" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Seção 2: Informações Nutricionais -->
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <h5 class="text-primary mb-3">Informações Nutricionais</h5>
-                                <div class="alert alert-info">
-                                    <i class="bi bi-info-circle me-2"></i>
-                                    Atualize as informações nutricionais para ajudar os clientes com suas escolhas.
-                                </div>
-                            </div>
-
-                            <div class="col-md-3 col-sm-6 mb-3">
-                                <label asp-for="Calorias" class="form-label fw-bold">Calorias (kcal) *</label>
-                                <div class="input-group">
-                                    <input asp-for="Calorias"
-                                           type="number"
-                                           step="1"
-                                           min="0"
-                                           class="form-control"
-                                           placeholder="Ex: 350"
-                                           required />
-                                    <span class="input-group-text">kcal</span>
-                                </div>
-                                <span asp-validation-for="Calorias" class="text-danger"></span>
-                            </div>
-
-                            <div class="col-md-3 col-sm-6 mb-3">
-                                <label asp-for="Proteina" class="form-label fw-bold">Proteínas (g)</label>
-                                <div class="input-group">
-                                    <input asp-for="Proteina"
-                                           type="number"
-                                           step="0.1"
-                                           min="0"
-                                           class="form-control"
-                                           placeholder="Ex: 25" />
-                                    <span class="input-group-text">g</span>
-                                </div>
-                                <span asp-validation-for="Proteina" class="text-danger"></span>
-                            </div>
-
-                            <div class="col-md-3 col-sm-6 mb-3">
-                                <label asp-for="Carboidratos" class="form-label fw-bold">Carboidratos (g)</label>
-                                <div class="input-group">
-                                    <input asp-for="Carboidratos"
-                                           type="number"
-                                           step="0.1"
-                                           min="0"
-                                           class="form-control"
-                                           placeholder="Ex: 45" />
-                                    <span class="input-group-text">g</span>
-                                </div>
-                                <span asp-validation-for="Carboidratos" class="text-danger"></span>
-                            </div>
-
-                            <div class="col-md-3 col-sm-6 mb-3">
-                                <label asp-for="Gordura" class="form-label fw-bold">Gorduras (g)</label>
-                                <div class="input-group">
-                                    <input asp-for="Gordura"
-                                           type="number"
-                                           step="0.1"
-                                           min="0"
-                                           class="form-control"
-                                           placeholder="Ex: 15" />
-                                    <span class="input-group-text">g</span>
-                                </div>
-                                <span asp-validation-for="Gordura" class="text-danger"></span>
-                            </div>
-                        </div>
-
-                        <!-- Botões de Ação -->
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="d-flex justify-content-between">
-                                    <a asp-action="Index" class="btn btn-outline-secondary">
-                                        <i class="bi bi-arrow-left me-2"></i>Cancelar
+                        <div class="d-flex justify-content-between mt-4 pb-5">
+                            <a asp-action="Index" asp-route-idRestaurante="@idRestauranteContexto" class="btn btn-outline-secondary px-4 fw-bold border-0">
+                                <i class="bi bi-x-lg me-2"></i>Descartar
+                            </a>
+                            <div class="d-flex gap-2">
+                                <div class="d-flex justify-content-between mt-4 pb-5">
+                                    <a asp-action="Index" asp-route-idRestaurante="@idRestauranteContexto" class="btn btn-outline-secondary px-4 fw-bold border-0">
+                                        <i class="bi bi-x-lg me-2"></i>Descartar
                                     </a>
-
-                                    <div class="btn-group">
-                                        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-outline-info">
-                                            <i class="bi bi-eye me-2"></i>Ver Detalhes
-                                        </a>
-                                        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger">
-                                            <i class="bi bi-trash me-2"></i>Excluir
-                                        </a>
-                                        <button type="submit" class="btn btn-warning">
-                                            <i class="bi bi-check-circle me-2"></i>Salvar Alterações
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn text-white px-5 fw-bold shadow-sm" style="background-color: #ff6600;">
+                                            <i class="bi bi-check2-all me-2"></i>Salvar Alterações
                                         </button>
                                     </div>
                                 </div>
@@ -195,128 +139,29 @@
                     </form>
                 </div>
             </div>
-
-            <!-- Informações do Item -->
-            <div class="card mt-4 border-info">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">
-                        <i class="bi bi-card-checklist me-2"></i>Informações Atuais do Item
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <dl class="row">
-                                <dt class="col-sm-4">ID do Item:</dt>
-                                <dd class="col-sm-8">@Model.Id</dd>
-
-                                <dt class="col-sm-4">Criado em:</dt>
-                                <dd class="col-sm-8">@DateTime.Now.ToString("dd/MM/yyyy HH:mm")</dd>
-
-                                <dt class="col-sm-4">Restaurante ID:</dt>
-                                <dd class="col-sm-8">@Model.IdRestaurante</dd>
-                            </dl>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="alert alert-light">
-                                <small>
-                                    <i class="bi bi-lightbulb me-1"></i>
-                                    <strong>Dica:</strong> Todas as alterações serão registradas no sistema.
-                                    Certifique-se de que as informações estão corretas antes de salvar.
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        </main>
     </div>
 </div>
+
+<style>
+    .bg-orange-subtle {
+        background-color: #fff3e0;
+    }
+
+    .form-control:focus, .form-select:focus {
+        background-color: #fdfdfd;
+        box-shadow: 0 0 0 0.25rem rgba(255, 102, 0, 0.15);
+        border: 1px solid #ff6600 !important;
+    }
+
+    input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Validação do formulário
-            const forms = document.querySelectorAll('.needs-validation');
-
-            Array.from(forms).forEach(function(form) {
-                form.addEventListener('submit', function(event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-
-                    form.classList.add('was-validated');
-                }, false);
-            });
-
-            // Formatação do campo de preço ao enviar
-            const precoInput = document.querySelector('input[name="Preco"]');
-            const form = document.querySelector('form');
-
-            if (form && precoInput) {
-                form.addEventListener('submit', function() {
-                    if (precoInput.value) {
-                        const valor = parseFloat(precoInput.value);
-                        if (!isNaN(valor)) {
-                            precoInput.value = valor.toFixed(2);
-                        }
-                    }
-                });
-
-                // Formata valor inicial se existir
-                if (precoInput.value) {
-                    const valor = parseFloat(precoInput.value);
-                    if (!isNaN(valor)) {
-                        precoInput.value = valor.toFixed(2);
-                    }
-                }
-            }
-
-            // Previne edição do ID do restaurante
-            const restauranteIdInput = document.querySelector('input[name="IdRestaurante"]');
-            if (restauranteIdInput) {
-                restauranteIdInput.addEventListener('keydown', function(e) {
-                    e.preventDefault();
-                });
-
-                restauranteIdInput.addEventListener('click', function(e) {
-                    this.blur();
-                });
-            }
-        });
-    </script>
-
-    <style>
-        .card {
-            border-radius: 10px;
-        }
-
-        .card-header {
-            border-radius: 10px 10px 0 0 !important;
-        }
-
-        .btn-group .btn {
-            border-radius: 6px;
-        }
-
-        input[readonly] {
-            background-color: #f8f9fa;
-            cursor: not-allowed;
-        }
-
-        .form-control:focus {
-            border-color: #ffc107;
-            box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
-        }
-
-        .form-select:focus {
-            border-color: #ffc107;
-            box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25);
-        }
-    </style>
 }

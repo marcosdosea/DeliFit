@@ -11,9 +11,10 @@
                 <h4 class="mb-0">
                     <i class="bi bi-info-circle me-2"></i>Detalhes do Item
                 </h4>
-                <div>
-                    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-warning btn-sm" })
-                    <a asp-action="Index" class="btn btn-light btn-sm">Voltar</a>
+                <div class="mb-4">
+                    <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Voltar
+                    </a>
                 </div>
             </div>
         </div>
