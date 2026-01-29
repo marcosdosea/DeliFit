@@ -15,6 +15,9 @@ nupkg/
 # Visual Studio
 .vs/
 
+# Scaffold
+**/Scaffold.txt
+
 # Fleet
 .fleet/
 
