@@ -6,13 +6,13 @@
 
 <div class="container mt-4">
     <div class="card shadow">
-        <div class="card-header bg-primary text-white">
+        <div class="card-header text-white">
             <div class="d-flex justify-content-between align-items-center">
                 <h4 class="mb-0">
                     <i class="bi bi-info-circle me-2"></i>Detalhes do Item
                 </h4>
                 <div class="mb-4">
-                    <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                    <a href="javascript:history.back()" class="btn btn-outline-secondary" style="background-color: #FFFFFF">
                         <i class="bi bi-arrow-left"></i> Voltar
                     </a>
                 </div>
@@ -103,7 +103,7 @@
                         @if (Model.Proteina.HasValue)
                         {
                             <div class="col-md-3 col-sm-6">
-                                <div class="card bg-success bg-opacity-10 border-success h-100">
+                                <div class="card  bg-success bg-opacity-10 border-success h-100">
                                     <div class="card-body text-center d-flex flex-column justify-content-center">
                                         <h6 class="text-muted mb-2">Proteínas</h6>
                                         <h3 class="text-success mb-1">@Model.Proteina.Value.ToString("N1")</h3>
@@ -139,45 +139,6 @@
                             </div>
                         }
                     </div>
-
-                    <!-- Resumo Nutricional -->
-                    @if (Model.Proteina.HasValue || Model.Carboidratos.HasValue || Model.Gordura.HasValue)
-                    {
-                        <div class="mt-4">
-                            <h6 class="text-muted">Resumo Nutricional por porção:</h6>
-                            <div class="row">
-                                @if (Model.Proteina.HasValue)
-                                {
-                                    <div class="col-md-4">
-                                        <div class="d-flex align-items-center">
-                                            <div class="bg-success rounded-circle me-2" style="width: 12px; height: 12px;"></div>
-                                            <small>Proteínas: @Model.Proteina.Value.ToString("N1")g</small>
-                                        </div>
-                                    </div>
-                                }
-
-                                @if (Model.Carboidratos.HasValue)
-                                {
-                                    <div class="col-md-4">
-                                        <div class="d-flex align-items-center">
-                                            <div class="bg-warning rounded-circle me-2" style="width: 12px; height: 12px;"></div>
-                                            <small>Carboidratos: @Model.Carboidratos.Value.ToString("N1")g</small>
-                                        </div>
-                                    </div>
-                                }
-
-                                @if (Model.Gordura.HasValue)
-                                {
-                                    <div class="col-md-4">
-                                        <div class="d-flex align-items-center">
-                                            <div class="bg-danger rounded-circle me-2" style="width: 12px; height: 12px;"></div>
-                                            <small>Gorduras: @Model.Gordura.Value.ToString("N1")g</small>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    }
                 </div>
             </div>
         </div>
@@ -189,9 +150,7 @@
                 </small>
                 <div class="btn-group">
                     @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-outline-primary" })
-                    <a asp-action="Index" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left me-1"></i>Voltar para a Lista
-                    </a>
+                   
                 </div>
             </div>
         </div>
@@ -212,6 +171,10 @@
                 transform: translateY(-3px);
             }
 
+    .card-header{
+        background-color: #ff6600;
+    }
+
     h3 {
         margin-bottom: 0.2rem;
     }
@@ -223,7 +186,7 @@
 
     /* Estilo para os campos de especificação */
     .specification-item {
-        border-left: 3px solid #0d6efd;
+        border-left: 3px solid #ff6600;
         padding-left: 1rem;
         margin-bottom: 1rem;
     }
@@ -232,6 +195,7 @@
     .col-md-4 .col-12 {
         margin-bottom: 1.5rem;
     }
+   
 
     /* Ajuste para telas menores */
     @@media (max-width: 768px) {

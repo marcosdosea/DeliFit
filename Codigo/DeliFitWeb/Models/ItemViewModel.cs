@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeliFitWeb.Models;
@@ -7,6 +8,9 @@ public class ItemViewModel
 {
     [Key]
     public uint Id { get; set; }
+
+    [NotMapped]
+    public byte[]? Foto { get; set; } = null;
 
     [Display(Name = "Quantidade de Calorias")]
     [Required(ErrorMessage = "Preenchimento do campo Quantidade de Calorias é obrigatório.")]

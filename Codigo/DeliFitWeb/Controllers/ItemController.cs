@@ -20,16 +20,8 @@ namespace DeliFitWeb.Controllers
         // GET: ItemController
         public ActionResult Index(int v)
         {
-            // 1. Buscamos no serviço filtrando pelo ID do restaurante
-            // Certifique-se de que seu serviço possua um método que aceite o filtro
-            var listaItens = _itemService.GetAll().Where(i => i.IdRestaurante == idRestaurante).ToList();
-
-            // 2. Mapeamos apenas os itens filtrados para a ViewModel
+            var listaItens = _itemService.GetAll();
             var listaItensModel = _mapper.Map<List<ItemViewModel>>(listaItens);
-
-            // 3. (Opcional) Passamos o ID para a View via ViewBag para facilitar o uso nos links
-            ViewBag.IdRestaurante = idRestaurante;
-
             return View(listaItensModel);
         }
 

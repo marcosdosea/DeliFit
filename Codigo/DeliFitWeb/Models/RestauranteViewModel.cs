@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DeliFitWeb.Models
 {
@@ -7,7 +8,11 @@ namespace DeliFitWeb.Models
         [Key]
         public uint Id { get; set; }
 
+
         public bool Validado { get; set; }
+
+        [NotMapped]
+        public byte[]? Foto{ get; set; } = null;
 
         [Display(Name = "Nome do Restaurante")]
         [Required(ErrorMessage = "Preenchimento do campo Nome do Restaurante é obrigatório.")]
