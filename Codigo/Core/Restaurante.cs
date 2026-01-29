@@ -37,6 +37,8 @@ public partial class Restaurante
 
     public string Estado { get; set; } = null!;
 
+    public byte[]? Foto { get; set; }
+
     public virtual ICollection<Atendimento> Atendimentos { get; set; } = new List<Atendimento>();
 
     public virtual ICollection<Item> Items { get; set; } = new List<Item>();

@@ -31,7 +31,7 @@ namespace DeliFitWeb.Models
         [Required(ErrorMessage = "Campo requerido")]
         [DataType(DataType.Date, ErrorMessage = "Data válida requirida")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        public DateOnly DataNascimento { get; set; } 
+        public DateTime DataNascimento { get; set; } 
 
 
         
