@@ -2,150 +2,97 @@
 
 @{
     ViewData["Title"] = "Gestor de Cardápio";
+    // Capturamos o ID da URL para garantir a consistência da navegação
+    var idRestauranteContexto = Context.Request.Query["idRestaurante"];
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Gestor de Cardápio</h1>
-       <a asp-action="Create"
-           asp-route-idRestaurante="@Context.Request.Query["idRestaurante"]" class="btn btn-dark">
-            <i class="bi bi-plus-circle"></i> Novo Item
-        </a>
-    </div>
+<div class="container-fluid p-0 bg-white">
+    <div class="row g-0">
+         <aside class="col-md-2 bg-white border-end min-vh-100 shadow-sm p-3">
+         
+                <div class="mb-4">
+                    <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Voltar
+                    </a>
+                </div>
 
-    @if (!Model.Any())
-    {
-        <div class="alert alert-info">
-            Nenhum item encontrado no cardápio. <a asp-action="Create">Adicione seu primeiro item</a>.
-        </div>
-    }
-    else
-    {
-        <div class="row">
-            @foreach (var item in Model)
+
+            <ul class="nav flex-column gap-1">
+                <li class="nav-item mb-2">
+                    <span class="nav-link fw-bold text-dark fs-5 p-0">Início</span>
+                </li>
+                <li><a asp-controller="Restaurante" asp-action="Details" asp-route-id="@idRestauranteContexto" class="nav-link text-muted py-1 small">- Perfil</a></li>
+                <li><a href="#" class="nav-link fw-bold py-1 small" style="color: #ff6600;">-Gestor de Cardápio</a></li>
+            </ul>
+        </aside>
+
+        <main class="col-md-10 p-5">
+            <div class="d-flex justify-content-between align-items-center mb-5 border-bottom pb-3">
+                <div>
+                    <h2 class="fw-bold m-0">Gestor de Cardápio</h2>
+                </div>
+
+                <a asp-action="Create" asp-route-idRestaurante="@idRestauranteContexto"
+                   class="btn fw-bold text-white px-4 shadow-sm" style="background-color: #ff6600; border: none;">
+                    <i class="bi bi-plus-lg me-2"></i>Novo Item
+                </a>
+            </div>
+
+            @if (!Model.Any())
             {
-                <div class="col-md-6 col-lg-4 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-header bg-light">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <h5 class="card-title mb-0 text-primary">@Html.DisplayFor(modelItem => item.Nome)</h5>
-                                <span class="badge bg-primary">ID: @Html.DisplayFor(modelItem => item.Id)</span>
-                            </div>
-                        </div>
-
-                        <div class="card-body">
-                            <!-- Informações nutricionais -->
-                            <div class="nutrition-info mb-3">
-                                <h6 class="text-muted mb-2">Informações Nutricionais</h6>
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <div class="nutrition-card bg-info bg-opacity-10 p-2 rounded">
-                                            <small class="text-muted d-block">Calorias</small>
-                                            <strong>@Html.DisplayFor(modelItem => item.Calorias) kcal</strong>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="nutrition-card bg-success bg-opacity-10 p-2 rounded">
-                                            <small class="text-muted d-block">Proteínas</small>
-                                            <strong>@(item.Proteina?.ToString("F1") ?? "N/A") g</strong>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="nutrition-card bg-warning bg-opacity-10 p-2 rounded">
-                                            <small class="text-muted d-block">Carboidratos</small>
-                                            <strong>@(item.Carboidratos?.ToString("F1") ?? "N/A") g</strong>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="nutrition-card bg-danger bg-opacity-10 p-2 rounded">
-                                            <small class="text-muted d-block">Gorduras</small>
-                                            <strong>@(item.Gordura?.ToString("F1") ?? "N/A") g</strong>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Descrição e detalhes -->
-                            @if (!string.IsNullOrEmpty(item.Descricao))
-                            {
-                                <p class="card-text text-muted small">
-                                    @Html.DisplayFor(modelItem => item.Descricao)
-                                </p>
-                            }
-
-                            <div class="item-details mt-3">
-                                <div class="row">
-                                    <div class="col-12 mb-2">
-                                        <span class="text-muted">Preço:</span>
-                                        <span class="fw-bold text-success">R$ @Html.DisplayFor(modelItem => item.Preco)</span>
-                                    </div>
-                                    @if (!string.IsNullOrEmpty(item.Tamanho))
-                                    {
-                                        <div class="col-6">
-                                            <span class="text-muted">Tamanho:</span>
-                                            <span class="fw-bold">@Html.DisplayFor(modelItem => item.Tamanho)</span>
-                                        </div>
-                                    }
-                                    @if (!string.IsNullOrEmpty(item.Volume))
-                                    {
-                                        <div class="col-6">
-                                            <span class="text-muted">Volume:</span>
-                                            <span class="fw-bold">@Html.DisplayFor(modelItem => item.Volume)</span>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-
-                            <!-- Restrições -->
-                            @if (!string.IsNullOrEmpty(item.Restricao))
-                            {
-                                <div class="mt-3">
-                                    <small class="text-muted d-block">Restrições:</small>
-                                    <span class="badge bg-secondary">@Html.DisplayFor(modelItem => item.Restricao)</span>
-                                </div>
-                            }
-                        </div>
-
-                        <div class="card-footer bg-white">
-                            <div class="d-flex justify-content-between">
-                                <small class="text-muted">
-                                    Restaurante: @Html.DisplayFor(modelItem => item.IdRestaurante)
-                                </small>
-                                <div class="btn-group">
-                                    @Html.ActionLink("Editar", "Edit", new { id = item.Id }, new { @class = "btn btn-sm btn-outline-primary" })
-                                    @Html.ActionLink("Detalhes", "Details", new { id = item.Id }, new { @class = "btn btn-sm btn-outline-info" })
-                                    @Html.ActionLink("Excluir", "Delete", new { id = item.Id }, new { @class = "btn btn-sm btn-outline-danger" })
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="text-center py-5 border rounded bg-light shadow-sm">
+                    <i class="bi bi-basket2 fs-1 text-muted"></i>
+                    <p class="mt-3 text-muted">Ainda não há itens cadastrados para este restaurante.</p>
                 </div>
             }
-        </div>
-    }
+            else
+            {
+                <div class="list-group shadow-sm border-top border-bottom">
+                    @foreach (var item in Model)
+                    {
+                        <div class="list-group-item list-group-item-action p-4 border-start-0 border-end-0">
+                            <div class="row align-items-center">
+                                <div class="col-md-5">
+                                    <h5 class="fw-bold mb-1 text-dark">@item.Nome</h5>
+                                    <p class="text-muted small mb-0 text-truncate">@item.Descricao</p>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="d-flex gap-2">
+                                        <span class="badge bg-light text-dark border fw-normal shadow-sm">@item.Calorias kcal</span>
+                                        <span class="badge bg-light text-dark border fw-normal shadow-sm">@item.Proteina g Prot.</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2 text-center border-start border-end">
+                                    <span class="fw-bold fs-5" style="color: #ff6600;">R$ @item.Preco</span>
+                                </div>
+
+                                <div class="col-md-2 text-end">
+                                    <div class="btn-group">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary border-0"><i class="bi bi-pencil"></i></a>
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary border-0"><i class="bi bi-eye"></i></a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger border-0"><i class="bi bi-trash"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </main>
+    </div>
 </div>
 
 <style>
-    .nutrition-card {
-        transition: transform 0.2s;
+    /* Ajustes para suavizar a lista e evitar que fique torto */
+    .list-group-item {
+        border-color: #f0f0f0;
+        transition: all 0.2s ease;
     }
 
-        .nutrition-card:hover {
-            transform: translateY(-2px);
+        .list-group-item:hover {
+            background-color: #fffaf5;
+            border-left: 4px solid #ff6600 !important;
         }
-
-    .card {
-        transition: all 0.3s ease;
-        border: 1px solid #e0e0e0;
-    }
-
-        .card:hover {
-            box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
-            transform: translateY(-3px);
-        }
-
-    .nutrition-info h6 {
-        border-bottom: 1px solid #e0e0e0;
-        padding-bottom: 5px;
-    }
 </style>

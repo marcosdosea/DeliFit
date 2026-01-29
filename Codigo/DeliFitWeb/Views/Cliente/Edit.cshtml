@@ -4,95 +4,109 @@
     ViewData["Title"] = "Editar Dados Pessoais";
 }
 
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-12 col-md-10 col-lg-8">
+<div class="bg-light min-vh-100 py-5">
+    <div class="container" style="max-width: 800px;">
 
-            <!-- Voltar -->
-            <a asp-action="Index" class="btn btn-link px-0 mb-3">
-                ← Voltar
+        <div class="mb-4">
+            <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Voltar
             </a>
+        </div>
 
-            <!-- Card principal -->
-            <div class="card shadow-sm">
-                <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold m-0 text-dark">Editar Perfil</h2>
+                <p class="text-muted small mb-0">Atualize suas informações pessoais e de contato.</p>
+            </div>
+            <div class="rounded-circle bg-orange-subtle d-flex justify-content-center align-items-center shadow-sm" style="width: 50px; height: 50px; background-color: #fff3e6;">
+                <i class="bi bi-pencil-square text-orange" style="color: #ff6600; font-size: 1.5rem;"></i>
+            </div>
+        </div>
 
-                    <h4 class="card-title mb-4">Dados Pessoais</h4>
+        <form asp-action="Edit" method="post" novalidate>
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="DataNascimento" />
 
-                    <form asp-action="Edit" method="post" novalidate>
-                        <input type="hidden" asp-for="Id" />
-                        <input type="hidden" asp-for="DataNascimento" />
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4 p-md-5">
 
-                        <div class="row g-3">
+                    <h5 class="fw-bold mb-4 text-orange" style="color: #ff6600;">
+                        <i class="bi bi-person-circle me-2"></i>Dados Pessoais
+                    </h5>
 
-                            <!-- Nome -->
-                            <div class="col-12">
-                                <label asp-for="Nome" class="form-label"></label>
-                                <input asp-for="Nome"
-                                       class="form-control"
-                                       autocomplete="name"
-                                       placeholder="Nome completo" />
-                                <span asp-validation-for="Nome" class="text-danger"></span>
-                            </div>
-
-                            <!-- CPF -->
-                            <div class="col-12 col-md-6">
-                                <label asp-for="Cpf" class="form-label"></label>
-                                <input asp-for="Cpf"
-                                       class="form-control"
-                                       placeholder="000.000.000-00" />
-                                <span asp-validation-for="Cpf" class="text-danger"></span>
-                            </div>
-
-                            <!-- Telefone -->
-                            <div class="col-12 col-md-6">
-                                <label asp-for="Telefone" class="form-label"></label>
-                                <input asp-for="Telefone"
-                                       class="form-control"
-                                       inputmode="tel"
-                                       autocomplete="tel"
-                                       placeholder="(99) 99999-9999" />
-                                <span asp-validation-for="Telefone" class="text-danger"></span>
-                            </div>
-
-                            <!-- Email -->
-                            <div class="col-12">
-                                <label asp-for="Email" class="form-label"></label>
-                                <input asp-for="Email"
-                                       type="email"
-                                       class="form-control"
-                                       autocomplete="email"
-                                       placeholder="email@exemplo.com" />
-                                <span asp-validation-for="Email" class="text-danger"></span>
-                            </div>
-
+                    <div class="row g-4">
+                        <div class="col-12">
+                            <label asp-for="Nome" class="form-label small fw-bold text-muted text-uppercase">Nome Completo</label>
+                            <input asp-for="Nome" class="form-control border-0 bg-light p-3" autocomplete="name" placeholder="Seu nome completo" />
+                            <span asp-validation-for="Nome" class="text-danger small"></span>
                         </div>
 
-                        <hr class="my-4" />
-
-                        <!-- Ações -->
-                        <div class="d-flex flex-column flex-sm-row justify-content-between gap-2">
-                            <button type="submit" class="btn btn-success px-4">
-                                Salvar alterações
-                            </button>
-
-                            <a asp-action="Delete"
-                               asp-route-id="@Model.Id"
-                               class="btn btn-outline-danger">
-                                Excluir conta
-                            </a>
+                        <div class="col-md-6">
+                            <label asp-for="Cpf" class="form-label small fw-bold text-muted text-uppercase">CPF</label>
+                            <input asp-for="Cpf" class="form-control border-0 bg-light p-3" placeholder="000.000.000-00" readonly style="background-color: #f8f9fa; cursor: not-allowed;" />
+                            <span asp-validation-for="Cpf" class="text-danger small"></span>
                         </div>
 
-                    </form>
+                        <div class="col-md-6">
+                            <label asp-for="Telefone" class="form-label small fw-bold text-muted text-uppercase">Telefone</label>
+                            <input asp-for="Telefone" class="form-control border-0 bg-light p-3" inputmode="tel" autocomplete="tel" placeholder="(99) 99999-9999" />
+                            <span asp-validation-for="Telefone" class="text-danger small"></span>
+                        </div>
 
+                        <div class="col-12">
+                            <label asp-for="Email" class="form-label small fw-bold text-muted text-uppercase">E-mail</label>
+                            <input asp-for="Email" type="email" class="form-control border-0 bg-light p-3" autocomplete="email" placeholder="email@exemplo.com" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-        </div>
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger px-3 border-0 fw-bold small opacity-75">
+                    <i class="bi bi-trash3 me-2"></i>Excluir Conta
+                </a>
+
+                <div class="d-flex gap-2">
+                    <a asp-action="Index" class="btn btn-light px-4 border fw-bold text-muted">
+                        Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-orange px-5 fw-bold shadow-sm" style="background-color: #ff6600; color: white; border: none;">
+                        <i class="bi bi-check-circle me-2"></i>Salvar Alterações
+                    </button>
+                </div>
+            </div>
+        </form>
+
     </div>
 </div>
 
 @section Scripts {
+    <style>
+        /* Estilos Padronizados */
+        .text-orange {
+            color: #ff6600 !important;
+        }
+
+        .bg-orange-subtle {
+            background-color: #fff3e6;
+        }
+
+        .form-control:focus {
+            background-color: #ffffff;
+            box-shadow: 0 0 0 0.25rem rgba(255, 102, 0, 0.15);
+            border: 1px solid #ff6600 !important;
+        }
+
+        .btn-orange:hover {
+            background-color: #e65c00 !important;
+            transform: translateY(-1px);
+        }
+
+        .card {
+            border-radius: 12px;
+        }
+    </style>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }

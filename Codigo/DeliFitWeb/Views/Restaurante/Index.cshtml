@@ -10,15 +10,14 @@
             <h2 class="fw-bold">Restaurantes</h2>
             <p class="text-muted">Gerencie todos os estabelecimentos cadastrados na plataforma DeliFit.</p>
         </div>
+    </div>
 
-        <form asp-action="Index" method="get" class="d-flex">
-            <div class="input-group shadow-sm">
-                <input type="text" name="searchString" class="form-control border-end-0" placeholder="Buscar por nome..." aria-label="Pesquisar">
-                <button class="btn btn-outline-secondary border-start-0 bg-white text-orange" type="submit">
-                    <i class="bi bi-search"></i>
-                </button>
-            </div>
-        </form>
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-6">
+            <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary px-3">
+                <i class="bi bi-chevron-left"></i> Voltar
+            </a>
+        </div>
     </div>
 
     <div class="card border-0 shadow-sm">
