@@ -29,6 +29,8 @@ public partial class Item
 
     public uint IdRestaurante { get; set; }
 
+    public byte[]? Foto { get; set; }
+
     public virtual Restaurante IdRestauranteNavigation { get; set; } = null!;
 
     public virtual ICollection<Pedidoitem> Pedidoitems { get; set; } = new List<Pedidoitem>();

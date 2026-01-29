@@ -15,7 +15,7 @@ public partial class Cliente
 
     public string Email { get; set; } = null!;
 
-    public DateOnly DataNascimento { get; set; }
+    public DateTime DataNascimento { get; set; }
 
     public virtual ICollection<Avaliacao> Avaliacaos { get; set; } = new List<Avaliacao>();
 
