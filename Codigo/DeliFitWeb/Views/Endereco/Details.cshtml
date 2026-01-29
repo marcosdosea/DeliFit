@@ -4,95 +4,105 @@
     ViewData["Title"] = "Detalhes do Endereço";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
-        <h2 class="fw-bold">DELIFIT</h2>
-        <h4 class="text-muted">| Detalhes do Endereço |</h4>
-        </div>
+<div class="container-fluid p-0 bg-white">
+    <div class="row g-0">
+        <main class="col-12 p-5 bg-light">
+            <div class="container">
 
-    <div class="card shadow-sm border-0">
-        <div class="card-body">
-            <h5 class="mb-3 text-decoration-underline text-primary">
-                Dados do Endereço
-            </h5>
-            <div class="row g-3 mb-3">
-                <div class="col-md-3">
-                    <div class="border rounded p-2 h-100 bg-light">
-                        <label class="fw-bold text-muted small">CEP</label>
-                        <p class="mb-0 fw-bold">@Model.Cep</p>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="fw-bold m-0">Detalhes do Endereço</h2>
+                        <p class="text-muted small">Visualizando informações cadastradas para entrega.</p>
                     </div>
                 </div>
 
-                <div class="col-md-6">
-                    <div class="border rounded p-2 h-100 bg-light">
-                        <label class="fw-bold text-muted small">Rua</label>
-                        <p class="mb-0 fs-5">@Model.Rua</p>
+                <div class="row mb-4 align-items-center">
+                    <div class="col-md-6">
+                        <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary px-3">
+                            <i class="bi bi-chevron-left"></i> Voltar
+                        </a>
                     </div>
                 </div>
 
-                <div class="col-md-3">
-                    <div class="border rounded p-2 h-100 bg-light">
-                        <label class="fw-bold text-muted small">Número</label>
-                        <p class="mb-0">@Model.Numero</p>
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-0 pt-4 ps-4">
+                        <h5 class="fw-bold mb-0 text-orange" style="color: #ff6600;">
+                            <i class="bi bi-geo-alt me-2"></i>Dados de Localização
+                        </h5>
+                    </div>
+
+                    <div class="card-body p-4">
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold text-muted text-uppercase">CEP</label>
+                                <input class="form-control border-0 bg-white p-3 fw-bold" value="@Model.Cep" disabled />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label small fw-bold text-muted text-uppercase">Logradouro (Rua)</label>
+                                <input class="form-control border-0 bg-white p-3" value="@Model.Rua" disabled />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold text-muted text-uppercase">Número</label>
+                                <input class="form-control border-0 bg-white p-3" value="@Model.Numero" disabled />
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-4">
+                                <label class="form-label small fw-bold text-muted text-uppercase">Bairro</label>
+                                <input class="form-control border-0 bg-white p-3" value="@Model.Bairro" disabled />
+                            </div>
+                            <div class="col-md-5">
+                                <label class="form-label small fw-bold text-muted text-uppercase">Cidade</label>
+                                <input class="form-control border-0 bg-white p-3" value="@Model.Cidade" disabled />
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small fw-bold text-muted text-uppercase">Estado</label>
+                                <input class="form-control border-0 bg-white p-3 text-center" value="@Model.Estado" disabled />
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label class="form-label small fw-bold text-muted text-uppercase">Complemento / Referência</label>
+                                <textarea class="form-control border-0 bg-white p-3" rows="2" disabled>@(string.IsNullOrWhiteSpace(Model.Label) ? "Nenhum complemento informado." : Model.Label)</textarea>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                <div class="d-flex justify-content-end align-items-center mt-4 gap-3 pe-2">
+                    <a asp-action="Index" asp-route-idCliente="@Model.IdCliente" class="btn btn-light px-4 border text-muted fw-bold">
+                        Fechar
+                    </a>
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-orange px-5 py-2 fw-bold shadow-sm" style="background-color: #ff6600; color: white; border: none; border-radius: 8px;">
+                        <i class="bi bi-pencil-square me-2"></i>Editar Endereço
+                    </a>
+                </div>
+
             </div>
-
-            <div class="row g-3 mb-3">
-                <div class="col-md-4">
-                    <div class="border rounded p-2 h-100 bg-light">
-                        <label class="fw-bold text-muted small">Bairro</label>
-                        <p class="mb-0">@Model.Bairro</p>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="border rounded p-2 h-100 bg-light">
-                        <label class="fw-bold text-muted small">Cidade</label>
-                        <p class="mb-0">@Model.Cidade</p>
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="border rounded p-2 h-100 bg-light">
-                        <label class="fw-bold text-muted small">Estado</label>
-                        <p class="mb-0">@Model.Estado</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="row g-3">
-                <div class="col-md-12">
-                    <div class="border rounded p-2 h-100 bg-light">
-                        <label class="fw-bold text-muted small">Label</label>
-                        <p class="mb-0">
-                            @(string.IsNullOrWhiteSpace(Model.Label) ? "-" : Model.Label)
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card-footer bg-white border-top-0 d-flex justify-content-end gap-2 py-3">
-            <a asp-action="Index"
-               asp-route-idCliente="@Model.IdCliente"
-               class="btn btn-outline-secondary px-4">
-                Voltar
-            </a>
-
-            <a asp-action="Delete"
-               asp-route-id="@Model.Id"
-               asp-route-idCliente="@Model.IdCliente"
-               class="btn btn-danger px-4">
-                Excluir
-            </a>
-
-            <a asp-action="Edit"
-               asp-route-id="@Model.Id"
-               asp-route-idCliente="@Model.IdCliente"
-               class="btn btn-dark px-4">
-                Editar
-            </a>
-        </div>
+        </main>
     </div>
 </div>
+
+@section Scripts {
+    <style>
+        /* Estilos Padronizados para Visualização */
+        .form-control:disabled {
+            background-color: #ffffff !important; /* Mantém fundo branco mesmo desativado */
+            opacity: 1; /* Remove o efeito de transparência padrão */
+            cursor: default;
+            color: #212529;
+            border-bottom: 1px solid #f0f0f0 !important; /* Leve linha inferior para separação */
+        }
+
+        .card {
+            border-radius: 12px;
+        }
+
+        .btn-orange:hover {
+            background-color: #e65c00 !important;
+            transform: translateY(-1px);
+        }
+    </style>
+}

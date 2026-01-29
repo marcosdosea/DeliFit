@@ -5,30 +5,18 @@
 }
 
 <div class="container mt-5">
+ 
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb mb-1">
-                    <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none">Restaurantes</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Exclusão</li>
-                </ol>
-            </nav>
-            <h2 class="fw-bold text-dark">Confirmar Exclusão</h2>
-        </div>
-        <div class="text-end">
-            <span class="badge bg-danger p-2 px-3 shadow-sm">
-                <i class="bi bi-shield-lock-fill me-1"></i> Acesso Administrativo
-            </span>
+            <h2 class="fw-bold text-dark">Excluir Restaurante</h2>
         </div>
     </div>
 
-    <div class="card border-0 shadow-sm mb-4 bg-light">
-        <div class="card-body d-flex align-items-center border-start border-danger border-5 rounded">
-            <i class="bi bi-exclamation-octagon-fill text-danger fs-1 me-4"></i>
-            <div>
-                <h5 class="fw-bold text-danger mb-1">Zona de Perigo</h5>
-                <p class="text-muted mb-0">Esta ação não pode ser desfeita. Por favor, revise os dados do restaurante <strong>@Model.NomeRestaurante</strong> antes de prosseguir.</p>
-            </div>
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-6">
+            <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary px-3">
+                <i class="bi bi-chevron-left"></i> Voltar
+            </a>
         </div>
     </div>
 
@@ -93,26 +81,19 @@
                     </div>
                 </div>
                 <div class="card-footer bg-white border-0 py-3 d-flex justify-content-between">
-                    <a asp-action="Index" class="btn btn-light px-4 border">
-                        <i class="bi bi-arrow-left me-2"></i>Voltar
-                    </a>
+                    <div class="row mb-4 align-items-center">
+                        <div class="col-md-6">
+                            <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary px-3">
+                                <i class="bi bi-chevron-left"></i> Voltar
+                            </a>
+                        </div>
+                    </div>
                     <button type="button" class="btn btn-danger shadow-sm px-4 fw-bold" data-bs-toggle="modal" data-bs-target="#modalConfirmacaoFinal">
                         <i class="bi bi-trash3-fill me-2"></i>Remover Restaurante
                     </button>
                 </div>
             </div>
         </div>
-
-        <div class="col-lg-4">
-            <div class="card border-0 shadow-sm bg-dark text-white p-2">
-                <div class="card-body text-center">
-                    <i class="bi bi-info-circle fs-1 text-warning mb-3 d-block"></i>
-                    <h5 class="fw-bold">Impacto da Exclusão</h5>
-                    <p class="small opacity-75">Ao confirmar, todos os dados de cardápio, pedidos e usuários vinculados a este restaurante serão removidos permanentemente do banco de dados.</p>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <div class="modal fade" id="modalConfirmacaoFinal" tabindex="-1" aria-hidden="true">
