@@ -42,15 +42,16 @@
                                         <label asp-for="Preco" class="form-label fw-bold">Preço (R$) *</label>
                                         <div class="input-group">
                                             <span class="input-group-text">R$</span>
-                                            <input asp-for="Preco" class="form-control" placeholder="0,00" required />
+                                            <input asp-for="Preco"
+                                                   type="text"
+                                                   class="form-control money-input"
+                                                   placeholder="20,00"
+                                                   required
+                                                   pattern="^\d+(,\d{1,2})?$"
+                                                   title="Formato: 20,00 ou 20,50" />
                                         </div>
                                         <span asp-validation-for="Preco" class="text-danger"></span>
-                                    </div>
-
-                                    <div class="col-md-6 mb-3">
-                                        <label asp-for="IdRestaurante" class="form-label fw-bold">ID do Restaurante *</label>
-                                        <input asp-for="IdRestaurante" class="form-control" placeholder="Ex: 1" required />
-                                        <span asp-validation-for="IdRestaurante" class="text-danger"></span>
+                                        <div class="form-text">Use vírgula para centavos. Ex: 20,00</div>
                                     </div>
                                 </div>
                             </div>
@@ -167,38 +168,46 @@
     }
 
     <script>
-        // Validação do formulário
-        (function () {
-            'use strict'
-
-            // Fetch all the forms we want to apply custom Bootstrap validation styles to
-            var forms = document.querySelectorAll('.needs-validation')
-
-            // Loop over them and prevent submission
-            Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault()
-                            event.stopPropagation()
-                        }
-
-                        form.classList.add('was-validated')
-                    }, false)
-                })
-        })()
-
-        // Formatação do campo de preço
         document.addEventListener('DOMContentLoaded', function() {
-            const precoInput = document.getElementById('Preco');
+            // Formatação para campos de dinheiro
+            const precoInput = document.querySelector('input[name="Preco"], .money-input');
 
             if (precoInput) {
-                precoInput.addEventListener('blur', function() {
-                    let value = parseFloat(this.value.replace(',', '.'));
-                    if (!isNaN(value)) {
-                        this.value = value.toFixed(2);
+                // Formatação quando o usuário digita
+                precoInput.addEventListener('input', function(e) {
+                    let value = e.target.value;
+
+                    // Remove tudo que não é número
+                    value = value.replace(/\D/g, '');
+
+                    // Adiciona zeros à esquerda se necessário
+                    while (value.length < 3) {
+                        value = '0' + value;
                     }
+
+                    // Formata: 2000 -> 20,00
+                    const parteInteira = value.slice(0, -2) || '0';
+                    const parteDecimal = value.slice(-2);
+
+                    e.target.value = parteInteira + ',' + parteDecimal;
                 });
+
+                // Converte para formato do banco de dados antes de enviar
+                const form = precoInput.closest('form');
+                if (form) {
+                    form.addEventListener('submit', function() {
+                        const valorFormatado = precoInput.value.replace(',', '.');
+                        precoInput.value = valorFormatado;
+                    });
+                }
+
+                // Formata o valor inicial se já existir
+                if (precoInput.value) {
+                    const valor = parseFloat(precoInput.value);
+                    if (!isNaN(valor)) {
+                        precoInput.value = valor.toFixed(2).replace('.', ',');
+                    }
+                }
             }
         });
     </script>

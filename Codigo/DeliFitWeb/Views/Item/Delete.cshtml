@@ -1,86 +1,219 @@
 ﻿@model DeliFitWeb.Models.ItemViewModel
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>ItemModel</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Calorias)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Calorias)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Carboidratos)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Carboidratos)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Gordura)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Gordura)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Proteina)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Proteina)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Restricao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Restricao)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Descricao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Descricao)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Preco)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Preco)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Tamanho)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Tamanho)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Volume)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Volume)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdRestaurante)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdRestaurante)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
+@{
+    ViewData["Title"] = "Excluir Item";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-exclamation-triangle me-2"></i>Confirmar Exclusão
+                    </h4>
+                </div>
+
+                <div class="card-body">
+                    <!-- Alerta de aviso -->
+                    <div class="alert alert-danger" role="alert">
+                        <h5 class="alert-heading">
+                            <i class="bi bi-exclamation-octagon me-2"></i>Atenção!
+                        </h5>
+                        <p class="mb-0">
+                            Você está prestes a excluir permanentemente este item do cardápio.
+                            Esta ação não pode ser desfeita.
+                        </p>
+                    </div>
+
+                    <!-- Resumo do item a ser excluído -->
+                    <div class="card mb-4 border">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0 text-muted">Item que será excluído:</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h4 class="text-danger">@Model.Nome</h4>
+
+                                    @if (!string.IsNullOrEmpty(Model.Descricao))
+                                    {
+                                        <p class="text-muted mb-3">@Model.Descricao</p>
+                                    }
+
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span class="fw-bold me-2">Preço:</span>
+                                        <span class="fs-5 text-success">R$ @Model.Preco.ToString("N2")</span>
+                                    </div>
+
+                                    <div class="d-flex align-items-center mb-2">
+                                        <span class="fw-bold me-2">Calorias:</span>
+                                        <span class="badge bg-info">@Model.Calorias.ToString("N0") kcal</span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <!-- Informações nutricionais resumidas -->
+                                    <div class="nutrition-summary">
+                                        @if (Model.Proteina.HasValue)
+                                        {
+                                            <div class="mb-2">
+                                                <small class="text-muted d-block">Proteínas</small>
+                                                <span class="fw-bold">@Model.Proteina.Value.ToString("N1") g</span>
+                                            </div>
+                                        }
+
+                                        @if (Model.Carboidratos.HasValue)
+                                        {
+                                            <div class="mb-2">
+                                                <small class="text-muted d-block">Carboidratos</small>
+                                                <span class="fw-bold">@Model.Carboidratos.Value.ToString("N1") g</span>
+                                            </div>
+                                        }
+
+                                        @if (Model.Gordura.HasValue)
+                                        {
+                                            <div class="mb-2">
+                                                <small class="text-muted d-block">Gorduras</small>
+                                                <span class="fw-bold">@Model.Gordura.Value.ToString("N1") g</span>
+                                            </div>
+                                        }
+                                    </div>
+
+                                    @if (!string.IsNullOrEmpty(Model.Restricao))
+                                    {
+                                        <div class="mt-3">
+                                            <small class="text-muted d-block">Restrições:</small>
+                                            <span class="badge bg-warning">@Model.Restricao</span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Detalhes adicionais -->
+                            <div class="row mt-3 border-top pt-3">
+                                @if (!string.IsNullOrEmpty(Model.Tamanho))
+                                {
+                                    <div class="col-md-6">
+                                        <small class="text-muted d-block">Tamanho:</small>
+                                        <span class="fw-bold">@Model.Tamanho</span>
+                                    </div>
+                                }
+
+                                @if (!string.IsNullOrEmpty(Model.Volume))
+                                {
+                                    <div class="col-md-6">
+                                        <small class="text-muted d-block">Volume:</small>
+                                        <span class="fw-bold">@Model.Volume</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Formulário de confirmação -->
+                    <form asp-action="Delete" id="deleteForm">
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="alert alert-warning">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="confirmDelete" required>
+                                <label class="form-check-label fw-bold" for="confirmDelete">
+                                    Sim, eu entendo que esta ação é permanente e não pode ser desfeita.
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Botões de ação -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Cancelar e Voltar
+                            </a>
+
+                            <button type="submit"
+                                    class="btn btn-danger"
+                                    id="deleteButton"
+                                    disabled>
+                                <i class="bi bi-trash me-2"></i>Excluir Permanentemente
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card-footer bg-light text-muted">
+                    <small>
+                        <i class="bi bi-info-circle me-1"></i>
+                        ID do item: @Model.Id | Restaurante: @Model.IdRestaurante
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const confirmCheckbox = document.getElementById('confirmDelete');
+            const deleteButton = document.getElementById('deleteButton');
+            const deleteForm = document.getElementById('deleteForm');
+
+            // Habilita/desabilita o botão baseado no checkbox
+            if (confirmCheckbox && deleteButton) {
+                confirmCheckbox.addEventListener('change', function() {
+                    deleteButton.disabled = !this.checked;
+                });
+            }
+
+            // Confirmação adicional antes de enviar
+            if (deleteForm) {
+                deleteForm.addEventListener('submit', function(e) {
+                    if (!confirm('Tem certeza absoluta que deseja excluir este item?\n\nEsta ação é IRREVERSÍVEL.')) {
+                        e.preventDefault();
+                        return false;
+                    }
+
+                    // Adiciona animação de carregamento
+                    deleteButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Excluindo...';
+                    deleteButton.disabled = true;
+                });
+            }
+        });
+    </script>
+
+    <style>
+        .card {
+            border-radius: 10px;
+        }
+
+            .card.border-danger {
+                border-width: 2px;
+            }
+
+        .nutrition-summary {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #6c757d;
+        }
+
+        #deleteButton:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #deleteButton:not(:disabled):hover {
+            transform: scale(1.02);
+            transition: transform 0.2s;
+        }
+
+        .alert {
+            border-radius: 8px;
+        }
+
+        .form-check-input:checked {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+    </style>
+}
