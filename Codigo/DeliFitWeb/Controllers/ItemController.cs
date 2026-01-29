@@ -18,7 +18,7 @@ namespace DeliFitWeb.Controllers
             _mapper = mapper;
         }
         // GET: ItemController
-        public ActionResult Index(int idRestaurante)
+        public ActionResult Index(int v)
         {
             // 1. Buscamos no serviço filtrando pelo ID do restaurante
             // Certifique-se de que seu serviço possua um método que aceite o filtro
@@ -61,8 +61,9 @@ namespace DeliFitWeb.Controllers
             {
                 var item = _mapper.Map<Item>(itemModel);
                 _itemService.Create(item);
+                return RedirectToAction(nameof(Index));
             }
-            return RedirectToAction(nameof(Index));
+            return View(itemModel);
         }
 
         // GET: ItemController/Edit/5
@@ -83,8 +84,9 @@ namespace DeliFitWeb.Controllers
             {
                 var item = _mapper.Map<Item>(itemModel);
                 _itemService.Edit(item);
+                return RedirectToAction(nameof(Index));
             }
-            return RedirectToAction(nameof(Index));
+            return View(itemModel);
         }
 
         // GET: ItemController/Delete/5
@@ -92,7 +94,7 @@ namespace DeliFitWeb.Controllers
         {
             Item item = _itemService.Get(id);
             ItemViewModel itemModel = _mapper.Map<ItemViewModel>(item);
-            return View(itemModel);//TO-DO
+            return View(itemModel);
         }
 
         // POST: ItemController/Delete/5
@@ -101,7 +103,7 @@ namespace DeliFitWeb.Controllers
         public ActionResult Delete(uint id, ItemViewModel itemModel)
         {
             _itemService.Delete(id);
-            return RedirectToAction(nameof(Index));//TO-DO
+            return RedirectToAction(nameof(Index));
         }
     }
 }
