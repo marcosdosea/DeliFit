@@ -13,7 +13,7 @@ public class ItemControllerTests
 {
 
     private ItemController controller = null!;
-    private new Mock<IItemService> mockService = null!;
+    private Mock<IItemService> mockService = null!;
 
     [TestInitialize]
     public void Initialize()
@@ -27,8 +27,15 @@ public class ItemControllerTests
         mockService.Setup(s => s.GetAll())
             .Returns(GetTestItems());
 
-        mockService.Setup(s => s.Get(It.IsAny<uint>()))
-            .Returns(GetTargetItem());
+        //mockService.Setup(s => s.Get(It.IsAny<uint>()))
+        //    .Returns(GetTargetItem());
+
+        //Enviezamento necessário para rodar por enquanto que não temos autenticação
+        mockService.Setup(s => s.Get(1))
+            .Returns(GetTargetItem()); // Retorna apenas para ID = 1
+
+        mockService.Setup(s => s.Get(It.Is<uint>(id => id != 1)))
+            .Returns((Item?)null); // Retorna null para outros IDs
 
         mockService.Setup(s => s.Create(It.IsAny<Item>()));
         mockService.Setup(s => s.Edit(It.IsAny<Item>()));
@@ -104,11 +111,12 @@ public class ItemControllerTests
     public void EditTest_Post_Valid()
     {
         var model = GetTargetItemViewModel();
-        var result = controller.Edit(model.Id, model);
+        // Chamar a ação POST que aceita apenas o modelo
+        var result = controller.Edit(model);
 
         Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
     }
-        
+
     [TestMethod()]
     public void DeleteTest_Get_Valid()
     {

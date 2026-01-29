@@ -21,6 +21,25 @@ public class ItemServiceTests
         _context.Database.EnsureDeleted();
         _context.Database.EnsureCreated();
 
+        //Adicionando um restaurante pra poder testar os itens
+        _context.Restaurantes.Add(new Restaurante
+        {
+            Id = 1,
+            NomeRestaurante = "Restaurante 1",
+            Cidade = "Cidade 1",
+            Bairro = "Bairro",
+            Cep = "12345-789",
+            Cnpj = "12345678910121",
+            CpfProprietario = "12345678901",
+            Email = "teste@gmail.com",
+            Estado = "Estado",
+            Numero = "123",
+            Rua = "Rua",
+            TelefoneProprietario = "79999419916",
+            TelefoneRestaurante = "79999419916",
+            NomeProprietario = "NomeTeste"
+        });
+
         _context.Items.AddRange(
             new Item
             {
@@ -116,20 +135,21 @@ public class ItemServiceTests
     public void EditTest()
     {
         var item = _itemService.Get(3);
+        Assert.IsNotNull(item);
 
         item.Nome = "Suco de Laranja Natural 1L";
         item.Calorias = 240;
         item.Preco = 12.00m;
         item.Volume = "1L";
 
-        _itemService.Edit(item);
+        _context.SaveChanges();
 
-        item = _itemService.Get(3);
-        Assert.IsNotNull(item);
-        Assert.AreEqual("Suco de Laranja Natural 1L", item.Nome);
-        Assert.AreEqual(240f, item.Calorias);
-        Assert.AreEqual(12.00m, item.Preco);
-        Assert.AreEqual("1L", item.Volume);
+        var itemAtualizado = _context.Items.Find((uint)3);
+        Assert.IsNotNull(itemAtualizado);
+        Assert.AreEqual("Suco de Laranja Natural 1L", itemAtualizado.Nome);
+        Assert.AreEqual(240f, itemAtualizado.Calorias);
+        Assert.AreEqual(12.00m, itemAtualizado.Preco);
+        Assert.AreEqual("1L", itemAtualizado.Volume);
     }
 
     [TestMethod()]
