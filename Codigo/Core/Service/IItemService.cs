@@ -2,13 +2,13 @@
 
 public interface IItemService
 {
-    public uint Create(Item item);
+    uint Create(Item item);
 
-    public void Edit(Item item);
+    void Edit(Item item);
 
-    public void Delete(uint id);
+    void Delete(uint id);
 
-    public Item? Get(uint id);
+    Item? Get(uint id);
 
     IEnumerable<Item> GetAll();
 

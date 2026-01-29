@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Service;
 
+/// <summary>
+/// Implementa os serviços para manter os dados de itens
+/// </summary>
 public class ItemService : IItemService
 {
     private readonly DeliFitContext _context;
@@ -13,6 +16,11 @@ public class ItemService : IItemService
         _context = context;
     }
 
+    /// <summary>
+    /// Cria um novo item na base de dados
+    /// </summary>
+    /// <param name="item">dados do item</param>
+    /// <returns>id do novo item</returns>
     public uint Create(Item item)
     {
         if (item == null) throw new ArgumentNullException(nameof(item));
@@ -26,6 +34,10 @@ public class ItemService : IItemService
         return item.Id;
     }
 
+    /// <summary>
+    /// Remover dados de um item da base de dados
+    /// </summary>
+    /// <param name="id">id do item</param>
     public void Delete(uint id)
     {
         var item = _context.Items.FirstOrDefault(i => i.Id == id);
@@ -40,6 +52,10 @@ public class ItemService : IItemService
         }
     }
 
+    /// <summary>
+    /// Atualizar dados de um item da base de dados
+    /// </summary>
+    /// <param name="item">novos dados do item</param>
     public void Edit(Item item)
     {
         var existingItem = _context.Items
@@ -55,16 +71,31 @@ public class ItemService : IItemService
         _context.SaveChanges();
     }
 
+    /// <summary>
+    /// Obter os dados de um item da base de dados
+    /// </summary>
+    /// <param name="id">id do item</param>
+    /// <returns>dados do item</returns>
     public Item? Get(uint id)
     {
         return _context.Items.Find(id);
     }
 
+    /// <summary>
+    /// Obter dados de todos os itens da base de dados
+    /// </summary>
+    /// <returns>dados dos itens</returns>
     public IEnumerable<Item> GetAll()
     {
         return _context.Items.AsNoTracking();
     }
 
+
+    /// <summary>
+    /// Obter dados dos itens que iniciam com um nome
+    /// </summary>
+    /// <param name="nome">nome a ser buscado</param>
+    /// <returns>lista de itens</returns>
     public IEnumerable<Item> GetByName(string nome)
     {
         return _context.Items

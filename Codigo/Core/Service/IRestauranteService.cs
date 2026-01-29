@@ -4,13 +4,13 @@ namespace Core.Service;
 
 public interface IRestauranteService
 {
-    public uint Create(Restaurante restaurante);
+    uint Create(Restaurante restaurante);
 
-    public void Delete(uint id);
+    void Delete(uint id);
 
-    public void Edit(Restaurante restaurante);
+    void Edit(Restaurante restaurante);
 
-    public Restaurante? Get(uint id);
+    Restaurante? Get(uint id);
 
-    public IEnumerable<RestauranteDTO> GetAll();
+    IEnumerable<RestauranteDTO> GetAll();
 }

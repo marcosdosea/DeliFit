@@ -6,6 +6,9 @@ using MySqlX.XDevAPI;
 
 namespace Service;
 
+/// <summary>
+/// Implementa os serviços para manter os dados de clientes
+/// </summary>
 public class ClienteService : IClienteService
 {
     private readonly DeliFitContext _context;
@@ -16,6 +19,11 @@ public class ClienteService : IClienteService
 
     }
 
+    /// <summary>
+    /// Cria um novo cliente na base de dados
+    /// </summary>
+    /// <param name="cliente">dados do cliente</param>
+    /// <returns>id do novo cliente</returns>
     public uint Create(Cliente cliente)
     {
         _context.Add(cliente);
@@ -23,6 +31,11 @@ public class ClienteService : IClienteService
         return cliente.Id;
     }
 
+    /// <summary>
+    /// Obter os dados de um cliente da base de dados
+    /// </summary>
+    /// <param name="id">id do cliente</param>
+    /// <returns>dados do cliente</returns>
     public Cliente? Get(uint id)
     {
         return _context.Clientes
@@ -30,6 +43,10 @@ public class ClienteService : IClienteService
                     (a => a.Id == id);
     }
 
+    /// <summary>
+    /// Atualizar dados de um cliente da base de dados
+    /// </summary>
+    /// <param name="cliente">novos dados do cliente</param>
     public void Edit(Cliente cliente)
     {
 
@@ -38,6 +55,10 @@ public class ClienteService : IClienteService
 
     }
 
+    /// <summary>
+    /// Remover dados de um cliente da base de dados
+    /// </summary>
+    /// <param name="id">id do cliente</param>
     public void Delete(uint id)
     {
         var Cliente = _context.Clientes.FirstOrDefault(a => a.Id == id);
@@ -54,6 +75,10 @@ public class ClienteService : IClienteService
         }
     }
 
+    /// <summary>
+    /// Obter dados de todos os clientes da base de dados
+    /// </summary>
+    /// <returns>dados dos clientes</returns>
     public IEnumerable<ClienteDTO> GetAll()
     {
         return _context.Clientes
