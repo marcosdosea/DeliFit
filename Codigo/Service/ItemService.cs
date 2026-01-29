@@ -15,6 +15,12 @@ public class ItemService : IItemService
 
     public uint Create(Item item)
     {
+        var restaurante = _context.Restaurantes.Find(item.IdRestaurante);
+        if (restaurante == null)
+        {
+            throw new Exception($"Restaurante com ID {item.IdRestaurante} não encontrado");
+        }
+        item.IdRestauranteNavigation = restaurante;
         _context.Add(item);
         _context.SaveChanges();
         return item.Id;
@@ -36,16 +42,17 @@ public class ItemService : IItemService
 
     public void Edit(Item item)
     {
-        if (Get(item.Id) != null)
+        var existingItem = _context.Items
+            .Include(i => i.IdRestauranteNavigation)
+            .FirstOrDefault(i => i.Id == item.Id);
+
+        if (existingItem == null)
         {
-            _context.Items.Update(item);
-            _context.SaveChanges();
-        }
-        else
-        {
-            throw new ServiceException("Item não encontrado");
+            throw new Exception($"Item com ID {item.Id} não encontrado");
         }
 
+        _context.Entry(existingItem).CurrentValues.SetValues(item);
+        _context.SaveChanges();
     }
 
     public Item? Get(uint id)

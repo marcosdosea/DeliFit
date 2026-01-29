@@ -3,6 +3,7 @@ using Core;
 using Core.Service;
 using DeliFitWeb.Models;
 using Microsoft.AspNetCore.Mvc;
+using Service;
 
 namespace DeliFitWeb.Controllers
 {
@@ -20,7 +21,7 @@ namespace DeliFitWeb.Controllers
         public ActionResult Index()
         {
             var listaItens = _itemService.GetAll();
-            var listaItensModel = _mapper.Map<List<ItemModel>>(listaItens);
+            var listaItensModel = _mapper.Map<List<ItemViewModel>>(listaItens);
             return View(listaItensModel);
         }
 
@@ -28,20 +29,25 @@ namespace DeliFitWeb.Controllers
         public ActionResult Details(uint id)
         {
             Item? item = _itemService.Get(id);
-            ItemModel itemModel = _mapper.Map<ItemModel>(item);
+            ItemViewModel itemModel = _mapper.Map<ItemViewModel>(item);
             return View(itemModel);
         }
 
         // GET: ItemController/Create
-        public ActionResult Create()
+        public ActionResult Create(uint? idRestaurante)
         {
-            return View();
+            var model = new ItemViewModel();
+            if (idRestaurante.HasValue)
+            {
+                model.IdRestaurante = idRestaurante.Value;
+            }
+            return View(model);
         }
 
         // POST: ItemController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(ItemModel itemModel)
+        public ActionResult Create(ItemViewModel itemModel)
         {
             if (ModelState.IsValid)
             {
@@ -52,15 +58,18 @@ namespace DeliFitWeb.Controllers
         }
 
         // GET: ItemController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(uint id)
         {
-            return View();
+            Item? item = _itemService.Get(id);
+            ItemViewModel itemModel = _mapper.Map<ItemViewModel>(item);
+
+            return View(itemModel);
         }
 
         // POST: ItemController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(ItemModel itemModel)
+        public ActionResult Edit(ItemViewModel itemModel)
         {
             if (ModelState.IsValid)
             {
@@ -74,14 +83,14 @@ namespace DeliFitWeb.Controllers
         public ActionResult Delete(uint id)
         {
             Item item = _itemService.Get(id);
-            ItemModel itemModel = _mapper.Map<ItemModel>(item);
+            ItemViewModel itemModel = _mapper.Map<ItemViewModel>(item);
             return View(itemModel);//TO-DO
         }
 
         // POST: ItemController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(uint id, ItemModel itemModel)
+        public ActionResult Delete(uint id, ItemViewModel itemModel)
         {
             _itemService.Delete(id);
             return RedirectToAction(nameof(Index));//TO-DO

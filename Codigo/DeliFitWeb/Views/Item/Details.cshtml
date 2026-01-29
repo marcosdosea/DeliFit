@@ -1,84 +1,241 @@
-﻿@model DeliFitWeb.Models.ItemModel
+﻿@model DeliFitWeb.Models.ItemViewModel
 
-<div>
-    <h4>ItemModel</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Calorias)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Calorias)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Carboidratos)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Carboidratos)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Gordura)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Gordura)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Proteina)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Proteina)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Restricao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Restricao)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Nome)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Nome)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Descricao)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Descricao)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Preco)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Preco)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Tamanho)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Tamanho)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Volume)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Volume)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdRestaurante)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdRestaurante)
-        </dd>
-    </dl>
+@{
+    ViewData["Title"] = "Detalhes do Item";
+}
+
+<div class="container mt-4">
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">
+                    <i class="bi bi-info-circle me-2"></i>Detalhes do Item
+                </h4>
+                <div>
+                    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-warning btn-sm" })
+                    <a asp-action="Index" class="btn btn-light btn-sm">Voltar</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <!-- Informações Principais -->
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <h5 class="text-primary mb-3">Informações do Produto</h5>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted">Nome</label>
+                        <p class="fs-5">@Model.Nome</p>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Descricao))
+                    {
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-muted">Descrição</label>
+                            <p class="text-muted">@Model.Descricao</p>
+                        </div>
+                    }
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-muted">Preço</label>
+                        <p class="fs-4 text-success">R$ @Model.Preco.ToString("N2")</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <h5 class="text-primary mb-3">Especificações</h5>
+
+                    <!-- Tamanho e Restrições alinhados -->
+                    <div class="row g-3">
+                        @if (!string.IsNullOrEmpty(Model.Tamanho))
+                        {
+                            <div class="col-12">
+                                <label class="form-label fw-bold text-muted">Tamanho</label>
+                                <p class="fs-6">
+                                    <i class="bi bi-rulers me-2 text-primary"></i>@Model.Tamanho
+                                </p>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.Volume))
+                        {
+                            <div class="col-12">
+                                <label class="form-label fw-bold text-muted">Volume</label>
+                                <p class="fs-6">
+                                    <i class="bi bi-cup me-2 text-primary"></i>@Model.Volume
+                                </p>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.Restricao))
+                        {
+                            <div class="col-12">
+                                <label class="form-label fw-bold text-muted">Restrições Alimentares</label>
+                                <div>
+                                    <span class="badge bg-info fs-6 py-2 px-3">
+                                        <i class="bi bi-shield-exclamation me-1"></i>@Model.Restricao
+                                    </span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informações Nutricionais -->
+            <div class="row">
+                <div class="col-12">
+                    <h5 class="text-primary mb-3">Informações Nutricionais</h5>
+
+                    <div class="row g-3">
+                        <div class="col-md-3 col-sm-6">
+                            <div class="card bg-info bg-opacity-10 border-info h-100">
+                                <div class="card-body text-center d-flex flex-column justify-content-center">
+                                    <h6 class="text-muted mb-2">Calorias</h6>
+                                    <h3 class="text-primary mb-1">@Model.Calorias.ToString("N0")</h3>
+                                    <small class="text-muted">kcal</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (Model.Proteina.HasValue)
+                        {
+                            <div class="col-md-3 col-sm-6">
+                                <div class="card bg-success bg-opacity-10 border-success h-100">
+                                    <div class="card-body text-center d-flex flex-column justify-content-center">
+                                        <h6 class="text-muted mb-2">Proteínas</h6>
+                                        <h3 class="text-success mb-1">@Model.Proteina.Value.ToString("N1")</h3>
+                                        <small class="text-muted">gramas</small>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        @if (Model.Carboidratos.HasValue)
+                        {
+                            <div class="col-md-3 col-sm-6">
+                                <div class="card bg-warning bg-opacity-10 border-warning h-100">
+                                    <div class="card-body text-center d-flex flex-column justify-content-center">
+                                        <h6 class="text-muted mb-2">Carboidratos</h6>
+                                        <h3 class="text-warning mb-1">@Model.Carboidratos.Value.ToString("N1")</h3>
+                                        <small class="text-muted">gramas</small>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        @if (Model.Gordura.HasValue)
+                        {
+                            <div class="col-md-3 col-sm-6">
+                                <div class="card bg-danger bg-opacity-10 border-danger h-100">
+                                    <div class="card-body text-center d-flex flex-column justify-content-center">
+                                        <h6 class="text-muted mb-2">Gorduras</h6>
+                                        <h3 class="text-danger mb-1">@Model.Gordura.Value.ToString("N1")</h3>
+                                        <small class="text-muted">gramas</small>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Resumo Nutricional -->
+                    @if (Model.Proteina.HasValue || Model.Carboidratos.HasValue || Model.Gordura.HasValue)
+                    {
+                        <div class="mt-4">
+                            <h6 class="text-muted">Resumo Nutricional por porção:</h6>
+                            <div class="row">
+                                @if (Model.Proteina.HasValue)
+                                {
+                                    <div class="col-md-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-success rounded-circle me-2" style="width: 12px; height: 12px;"></div>
+                                            <small>Proteínas: @Model.Proteina.Value.ToString("N1")g</small>
+                                        </div>
+                                    </div>
+                                }
+
+                                @if (Model.Carboidratos.HasValue)
+                                {
+                                    <div class="col-md-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-warning rounded-circle me-2" style="width: 12px; height: 12px;"></div>
+                                            <small>Carboidratos: @Model.Carboidratos.Value.ToString("N1")g</small>
+                                        </div>
+                                    </div>
+                                }
+
+                                @if (Model.Gordura.HasValue)
+                                {
+                                    <div class="col-md-4">
+                                        <div class="d-flex align-items-center">
+                                            <div class="bg-danger rounded-circle me-2" style="width: 12px; height: 12px;"></div>
+                                            <small>Gorduras: @Model.Gordura.Value.ToString("N1")g</small>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+                <small class="text-muted">
+                    <i class="bi bi-clock me-1"></i>Última atualização: @DateTime.Now.ToString("dd/MM/yyyy")
+                </small>
+                <div class="btn-group">
+                    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-outline-primary" })
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-1"></i>Voltar para a Lista
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    <a asp-action="Index">Back to List</a>
-</div>
+
+<style>
+    .card {
+        border-radius: 10px;
+    }
+
+        .card .card {
+            transition: transform 0.2s;
+            min-height: 120px;
+        }
+
+            .card .card:hover {
+                transform: translateY(-3px);
+            }
+
+    h3 {
+        margin-bottom: 0.2rem;
+    }
+
+    .badge {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+    }
+
+    /* Estilo para os campos de especificação */
+    .specification-item {
+        border-left: 3px solid #0d6efd;
+        padding-left: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Alinhamento vertical para os campos */
+    .col-md-4 .col-12 {
+        margin-bottom: 1.5rem;
+    }
+
+    /* Ajuste para telas menores */
+    @@media (max-width: 768px) {
+        .col-md-4 .col-12 {
+            margin-bottom: 1rem;
+        }
+    }
+</style>

@@ -43,7 +43,7 @@ namespace DeliFitWeb.Controllers
             var model = new EnderecoViewModel();
             if (idCliente.HasValue)
             {
-                model.IdCliente = idCliente.Value; // recebe pela rota/query
+                model.IdCliente = idCliente.Value;
             }
             return View(model);
         }
