@@ -1,86 +1,142 @@
 ﻿@model IEnumerable<DeliFitWeb.Models.RestauranteViewModel>
 
 @{
-    ViewData["Title"] = "Listagem de Restaurantes";
+    ViewData["Title"] = "Gestão de Restaurantes";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
-        <h2 class="fw-bold">DELIFIT</h2>
-        <h4 class="text-muted">| Restaurantes |</h4>
-        <div class="d-flex align-items-center">
-            <span class="badge bg-secondary rounded-circle p-2 me-2">ADM</span>
-            <span>Administrador</span>
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold">Restaurantes</h2>
+            <p class="text-muted">Gerencie todos os estabelecimentos cadastrados na plataforma DeliFit.</p>
         </div>
+
+        <form asp-action="Index" method="get" class="d-flex">
+            <div class="input-group shadow-sm">
+                <input type="text" name="searchString" class="form-control border-end-0" placeholder="Buscar por nome..." aria-label="Pesquisar">
+                <button class="btn btn-outline-secondary border-start-0 bg-white text-orange" type="submit">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </form>
     </div>
 
-    <div class="row mb-4 align-items-center">
-        <div class="col-md-4">
-            <a href="javascript:history.back()" class="text-decoration-none text-dark fs-5">
-                <i class="bi bi-chevron-left"></i> &lt; Voltar
-            </a>
-        </div>
-        <div class="col-md-8">
-            <form asp-action="Index" method="get" class="d-flex justify-content-end">
-                <div class="input-group" style="max-width: 400px;">
-                    <input type="text" name="searchString" class="form-control border-dark" placeholder="Pesquisar Restaurante">
-                    <button class="btn btn-outline-dark" type="submit">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                        </svg>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <div class="card shadow-sm border-dark">
+    <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
-            <table class="table table-striped table-hover mb-0 align-middle">
-                <thead class="table-light border-bottom border-dark">
-                    <tr>
-                        <th class="ps-4 py-3">ID</th>
-                        <th class="ps-4 py-3">Nome</th>
-                        <th>Status</th>
-                        <th>Cidade / UF</th>
-                        <th class="text-center">Ações</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model != null && Model.Any())
-                    {
-                        @foreach (var item in Model)
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4 py-3">ID</th>
+                            <th class="py-3">Restaurante</th>
+                            <th class="py-3">Localização</th>
+                            <th class="py-3">Status</th>
+                            <th class="text-center py-3">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4 fw-bold text-muted">#@item.Id</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-sm bg-light-orange rounded-circle me-3 d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-shop text-orange"></i>
+                                            </div>
+                                            <span class="fw-bold">@item.NomeRestaurante</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <i class="bi bi-geo-alt text-muted me-1"></i> @item.Cidade / @item.Estado
+                                    </td>
+                                    <td>
+                                        @if (item.Validado)
+                                        {
+                                            <span class="badge rounded-pill bg-success-light text-success px-3">
+                                                <i class="bi bi-check-circle-fill me-1"></i> Ativo
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge rounded-pill bg-secondary-light text-secondary px-3">
+                                                <i class="bi bi-pause-circle-fill me-1"></i> Inativo
+                                            </span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-orange-outline px-3">
+                                            Visualizar Perfil
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
                         {
                             <tr>
-                                <td class="ps-4 fw-bold">@item.Id</td>
-                                <td class="ps-4 fw-bold">@item.NomeRestaurante</td>
-                                <td>
-                                    @if(item.Validado) 
-                                    {
-                                        <span class="text-success fw-bold">Ativo</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="text-secondary">Inativo</span>
-                                    }
-                                </td>
-                                <td>@item.Cidade / @item.Estado</td>
-                                <td class="text-center">
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-dark btn-sm px-4">
-                                        Visualizar
-                                    </a>
+                                <td colspan="5" class="text-center py-5">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" width="80" class="opacity-25 mb-3" /><br />
+                                    <span class="text-muted">Nenhum restaurante encontrado na base de dados.</span>
                                 </td>
                             </tr>
                         }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="4" class="text-center py-4 text-muted">Nenhum restaurante encontrado.</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <style>
+        /* Estilos específicos para a listagem */
+        .text-orange {
+            color: #ff6600 !important;
+        }
+
+        .bg-light-orange {
+            background-color: #fff3e6;
+        }
+
+        /* Badges customizados */
+        .bg-success-light {
+            background-color: #e6f4ea;
+        }
+
+        .bg-secondary-light {
+            background-color: #f1f3f4;
+        }
+
+        .avatar-sm {
+            width: 35px;
+            height: 35px;
+        }
+
+        /* Botão de ação padrão DeliFit */
+        .btn-orange-outline {
+            border: 1px solid #ff6600;
+            color: #ff6600;
+            background: transparent;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+            .btn-orange-outline:hover {
+                background-color: #ff6600;
+                color: white;
+            }
+
+        .table thead th {
+            font-size: 0.85rem;
+            color: #6c757d;
+            border-bottom: 2px solid #f8f9fa;
+        }
+
+        .table tbody tr:hover {
+            background-color: #fffaf5;
+        }
+    </style>
+}

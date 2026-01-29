@@ -4,148 +4,137 @@
     ViewData["Title"] = "Excluir Restaurante";
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center border-bottom pb-2 mb-4">
-        <h2 class="fw-bold text-danger">DELIFIT</h2>
-        <h4 class="text-muted">| Excluir Restaurante |</h4>
-        <div class="d-flex align-items-center">
-            <span class="badge bg-secondary rounded-circle p-2 me-2">ADM</span>
-            <span>Administrador</span>
-        </div>
-    </div>
-
-    <div class="alert alert-danger shadow-sm d-flex align-items-center" role="alert">
-        <i class="bi bi-exclamation-triangle-fill fs-2 me-3"></i>
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h4 class="alert-heading fw-bold mb-1">Atenção! Zona de Perigo.</h4>
-            <p class="mb-0">
-                Você está na área de exclusão. Confira os dados abaixo com cuidado antes de prosseguir.
-            </p>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-1">
+                    <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none">Restaurantes</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Exclusão</li>
+                </ol>
+            </nav>
+            <h2 class="fw-bold text-dark">Confirmar Exclusão</h2>
+        </div>
+        <div class="text-end">
+            <span class="badge bg-danger p-2 px-3 shadow-sm">
+                <i class="bi bi-shield-lock-fill me-1"></i> Acesso Administrativo
+            </span>
         </div>
     </div>
 
-    <div class="card border-danger shadow-sm mb-4">
-        <div class="card-header bg-danger text-white fw-bold">
-            Revisão dos Dados
+    <div class="card border-0 shadow-sm mb-4 bg-light">
+        <div class="card-body d-flex align-items-center border-start border-danger border-5 rounded">
+            <i class="bi bi-exclamation-octagon-fill text-danger fs-1 me-4"></i>
+            <div>
+                <h5 class="fw-bold text-danger mb-1">Zona de Perigo</h5>
+                <p class="text-muted mb-0">Esta ação não pode ser desfeita. Por favor, revise os dados do restaurante <strong>@Model.NomeRestaurante</strong> antes de prosseguir.</p>
+            </div>
         </div>
+    </div>
 
-        <div class="card-body">
-            <h5 class="mb-3 text-decoration-underline text-secondary">Dados do Proprietário</h5>
-
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label class="fw-bold text-muted small">Nome do Proprietário</label>
-                    <p class="form-control-plaintext fw-bold">@Model.NomeProprietario</p>
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold text-secondary"><i class="bi bi-person-badge me-2"></i>Informações do Proprietário</h5>
                 </div>
-                <div class="col-md-3">
-                    <label class="fw-bold text-muted small">CPF</label>
-                    <p class="form-control-plaintext">@Model.CpfProprietario</p>
-                </div>
-                <div class="col-md-3">
-                    <label class="fw-bold text-muted small">Telefone</label>
-                    <p class="form-control-plaintext">@Model.TelefoneProprietario</p>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="small text-uppercase fw-bold text-muted">Nome Completo</label>
+                            <p class="fs-5 text-dark border-bottom pb-1">@Model.NomeProprietario</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="small text-uppercase fw-bold text-muted">E-mail de Contato</label>
+                            <p class="fs-5 text-dark border-bottom pb-1">@Model.Email</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="small text-uppercase fw-bold text-muted">CPF</label>
+                            <p class="text-dark">@Model.CpfProprietario</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="small text-uppercase fw-bold text-muted">Telefone</label>
+                            <p class="text-dark">@Model.TelefoneProprietario</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="row mb-4">
-                <div class="col-md-12">
-                    <label class="fw-bold text-muted small">E-mail</label>
-                    <p class="form-control-plaintext">@Model.Email</p>
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold text-secondary"><i class="bi bi-shop me-2"></i>Dados do Estabelecimento</h5>
                 </div>
-            </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label class="small text-uppercase fw-bold text-muted">Razão Social / Nome</label>
+                            <p class="fs-4 fw-bold text-danger">@Model.NomeRestaurante</p>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <label class="small text-uppercase fw-bold text-muted d-block">CNPJ</label>
+                            <span class="badge bg-outline-secondary border text-dark p-2">@Model.Cnpj</span>
+                        </div>
 
-            <hr class="text-muted" />
-
-            <h5 class="mb-3 text-decoration-underline text-secondary">Dados do Restaurante</h5>
-
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label class="fw-bold text-muted small">Nome do Restaurante</label>
-                    <p class="form-control-plaintext fs-5">@Model.NomeRestaurante</p>
-                </div>
-                <div class="col-md-3">
-                    <label class="fw-bold text-muted small">CNPJ</label>
-                    <p class="form-control-plaintext">@Model.Cnpj</p>
-                </div>
-                <div class="col-md-3">
-                    <label class="fw-bold text-muted small">Telefone Comercial</label>
-                    <p class="form-control-plaintext">@Model.TelefoneRestaurante</p>
-                </div>
-            </div>
-
-            @if (!string.IsNullOrEmpty(Model.Descricao))
-            {
-                <div class="row mb-3">
-                    <div class="col-md-12">
-                        <label class="fw-bold text-muted small">Descrição</label>
-                        <p class="form-control-plaintext fst-italic">"@Model.Descricao"</p>
+                        <div class="col-12 mt-3">
+                            <div class="p-3 bg-light rounded border">
+                                <h6 class="small fw-bold text-uppercase text-muted mb-3"><i class="bi bi-geo-alt-fill me-1"></i> Localização</h6>
+                                <div class="row g-2">
+                                    <div class="col-md-8">
+                                        <span class="d-block small text-muted">Endereço</span>
+                                        <span>@Model.Rua, @Model.Numero - @Model.Bairro</span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <span class="d-block small text-muted">Cidade/UF</span>
+                                        <span>@Model.Cidade / @Model.Estado</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            }
-
-            <div class="bg-light p-3 rounded border">
-                <h6 class="fw-bold mb-3 text-secondary"><i class="bi bi-geo-alt"></i> Localização</h6>
-                <div class="row">
-                    <div class="col-md-2">
-                        <label class="fw-bold text-muted small">CEP</label>
-                        <p class="form-control-plaintext">@Model.Cep</p>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="fw-bold text-muted small">Rua</label>
-                        <p class="form-control-plaintext">@Model.Rua</p>
-                    </div>
-                    <div class="col-md-3">
-                        <label class="fw-bold text-muted small">Bairro</label>
-                        <p class="form-control-plaintext">@Model.Bairro</p>
-                    </div>
-                    <div class="col-md-1">
-                        <label class="fw-bold text-muted small">Nº</label>
-                        <p class="form-control-plaintext">@Model.Numero</p>
-                    </div>
-                    <div class="col-md-2">
-                        <label class="fw-bold text-muted small">Cidade/UF</label>
-                        <p class="form-control-plaintext">@Model.Cidade / @Model.Estado</p>
-                    </div>
+                <div class="card-footer bg-white border-0 py-3 d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-light px-4 border">
+                        <i class="bi bi-arrow-left me-2"></i>Voltar
+                    </a>
+                    <button type="button" class="btn btn-danger shadow-sm px-4 fw-bold" data-bs-toggle="modal" data-bs-target="#modalConfirmacaoFinal">
+                        <i class="bi bi-trash3-fill me-2"></i>Remover Restaurante
+                    </button>
                 </div>
             </div>
         </div>
 
-        <div class="card-footer bg-white d-flex justify-content-end align-items-center gap-3 py-3">
-            <a asp-action="Index" class="btn btn-outline-secondary px-4">Cancelar</a>
-
-            <button type="button" class="btn btn-danger px-4 fw-bold" data-bs-toggle="modal" data-bs-target="#modalConfirmacaoFinal">
-                <i class="bi bi-trash"></i> Excluir Restaurante
-            </button>
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm bg-dark text-white p-2">
+                <div class="card-body text-center">
+                    <i class="bi bi-info-circle fs-1 text-warning mb-3 d-block"></i>
+                    <h5 class="fw-bold">Impacto da Exclusão</h5>
+                    <p class="small opacity-75">Ao confirmar, todos os dados de cardápio, pedidos e usuários vinculados a este restaurante serão removidos permanentemente do banco de dados.</p>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="modalConfirmacaoFinal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+<div class="modal fade" id="modalConfirmacaoFinal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-danger">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title fw-bold" id="modalLabel">
-                    <i class="bi bi-shield-exclamation"></i> Confirmação de Segurança
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-
-            <div class="modal-body text-center py-4">
-                <p class="fs-5 text-dark">Tem certeza absoluta que deseja apagar o restaurante<br><strong>"@Model.NomeRestaurante"</strong>?</p>
-                <p class="text-danger small fw-bold mb-0">
-                    <i class="bi bi-x-circle"></i> Esta ação é irreversível e apagará o histórico.
+        <div class="modal-content border-0 shadow">
+            <div class="modal-body p-5 text-center">
+                <div class="mb-4">
+                    <i class="bi bi-exclamation-circle text-danger display-1"></i>
+                </div>
+                <h3 class="fw-bold text-dark">Você tem certeza?</h3>
+                <p class="text-muted mb-4">
+                    Você está prestes a excluir <strong>@Model.NomeRestaurante</strong>.
+                    <br><span class="text-danger fw-bold small">ESTA OPERAÇÃO NÃO PODE SER DESFEITA.</span>
                 </p>
-            </div>
 
-            <div class="modal-footer justify-content-center bg-light">
-                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Não, voltar</button>
-
-                <form asp-action="Delete">
-                    <input type="hidden" asp-for="Id" />
-                    <button type="submit" class="btn btn-danger px-4 fw-bold">
-                        Sim, excluir definitivamente
-                    </button>
-                </form>
+                <div class="d-grid gap-2">
+                    <form asp-action="Delete">
+                        <input type="hidden" asp-for="Id" />
+                        <button type="submit" class="btn btn-danger btn-lg w-100 fw-bold mb-2">Sim, excluir permanentemente</button>
+                    </form>
+                    <button type="button" class="btn btn-outline-secondary w-100" data-bs-dismiss="modal">Não, cancelar</button>
+                </div>
             </div>
         </div>
     </div>
