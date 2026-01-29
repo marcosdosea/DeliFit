@@ -15,6 +15,12 @@ public class ItemService : IItemService
 
     public uint Create(Item item)
     {
+        var restaurante = _context.Restaurantes.Find(item.IdRestaurante);
+        if (restaurante == null)
+        {
+            throw new Exception($"Restaurante com ID {item.IdRestaurante} não encontrado");
+        }
+        item.IdRestauranteNavigation = restaurante;
         _context.Add(item);
         _context.SaveChanges();
         return item.Id;

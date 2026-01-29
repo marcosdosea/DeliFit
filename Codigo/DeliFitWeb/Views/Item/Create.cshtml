@@ -1,82 +1,205 @@
-﻿@model DeliFitWeb.Models.ItemModel
+﻿@model DeliFitWeb.Models.ItemViewModel
 
-<h4>ItemModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" />
-                <span asp-validation-for="Id" class="text-danger"></span>
+@{
+    ViewData["Title"] = "Novo Item do Cardápio";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-plus-circle me-2"></i>Adicionar Novo Item ao Cardápio
+                    </h4>
+                </div>
+
+                <div class="card-body">
+                    <form asp-action="Create" class="needs-validation" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                        <input asp-for="IdRestaurante" type="hidden" />
+                        <!-- Seção 1: Informações Básicas -->
+                        <div class="row mb-4">
+                            <div class="col-md-8">
+                                <h5 class="text-primary mb-3">Informações Básicas</h5>
+
+                                <div class="mb-3">
+                                    <label asp-for="Nome" class="form-label fw-bold">Nome do Item *</label>
+                                    <input asp-for="Nome" class="form-control" placeholder="Ex: Bife à Parmegiana" required />
+                                    <span asp-validation-for="Nome" class="text-danger"></span>
+                                    <div class="form-text">Nome completo do item como será exibido no cardápio.</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Descricao" class="form-label fw-bold">Descrição</label>
+                                    <textarea asp-for="Descricao" class="form-control" rows="3" placeholder="Descreva o item, ingredientes principais, etc."></textarea>
+                                    <span asp-validation-for="Descricao" class="text-danger"></span>
+                                    <div class="form-text">Descrição detalhada para os clientes.</div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Preco" class="form-label fw-bold">Preço (R$) *</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">R$</span>
+                                            <input asp-for="Preco" class="form-control" placeholder="0,00" required />
+                                        </div>
+                                        <span asp-validation-for="Preco" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="IdRestaurante" class="form-label fw-bold">ID do Restaurante *</label>
+                                        <input asp-for="IdRestaurante" class="form-control" placeholder="Ex: 1" required />
+                                        <span asp-validation-for="IdRestaurante" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <h5 class="text-primary mb-3">Medidas</h5>
+
+                                <div class="mb-3">
+                                    <label asp-for="Tamanho" class="form-label fw-bold">Tamanho</label>
+                                    <input asp-for="Tamanho" class="form-control" placeholder="Ex: Grande, Médio, Pequeno" />
+                                    <span asp-validation-for="Tamanho" class="text-danger"></span>
+                                    <div class="form-text">Tamanho ou porção.</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Volume" class="form-label fw-bold">Volume</label>
+                                    <input asp-for="Volume" class="form-control" placeholder="Ex: 500ml, 1L" />
+                                    <span asp-validation-for="Volume" class="text-danger"></span>
+                                    <div class="form-text">Volume para bebidas.</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Restricao" class="form-label fw-bold">Restrições Alimentares</label>
+                                    <select asp-for="Restricao" class="form-select">
+                                        <option value="">Selecione uma opção...</option>
+                                        <option value="Vegetariano">Vegetariano</option>
+                                        <option value="Vegano">Vegano</option>
+                                        <option value="Sem Glúten">Sem Glúten</option>
+                                        <option value="Sem Lactose">Sem Lactose</option>
+                                        <option value="Contém Glúten">Contém Glúten</option>
+                                        <option value="Contém Lactose">Contém Lactose</option>
+                                        <option value="Contém Açúcar">Contém Açúcar</option>
+                                    </select>
+                                    <span asp-validation-for="Restricao" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Seção 2: Informações Nutricionais -->
+                        <div class="row mb-4">
+                            <div class="col-12">
+                                <h5 class="text-primary mb-3">Informações Nutricionais</h5>
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    Preencha as informações nutricionais para ajudar os clientes com suas escolhas.
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label asp-for="Calorias" class="form-label fw-bold">Calorias (kcal) *</label>
+                                <div class="input-group">
+                                    <input asp-for="Calorias" class="form-control" placeholder="Ex: 350" required />
+                                    <span class="input-group-text">kcal</span>
+                                </div>
+                                <span asp-validation-for="Calorias" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label asp-for="Proteina" class="form-label fw-bold">Proteínas (g)</label>
+                                <div class="input-group">
+                                    <input asp-for="Proteina" class="form-control" placeholder="Ex: 25" />
+                                    <span class="input-group-text">g</span>
+                                </div>
+                                <span asp-validation-for="Proteina" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label asp-for="Carboidratos" class="form-label fw-bold">Carboidratos (g)</label>
+                                <div class="input-group">
+                                    <input asp-for="Carboidratos" class="form-control" placeholder="Ex: 45" />
+                                    <span class="input-group-text">g</span>
+                                </div>
+                                <span asp-validation-for="Carboidratos" class="text-danger"></span>
+                            </div>
+
+                            <div class="col-md-3 mb-3">
+                                <label asp-for="Gordura" class="form-label fw-bold">Gorduras (g)</label>
+                                <div class="input-group">
+                                    <input asp-for="Gordura" class="form-control" placeholder="Ex: 15" />
+                                    <span class="input-group-text">g</span>
+                                </div>
+                                <span asp-validation-for="Gordura" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Botões de Ação -->
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between">
+                                    <a asp-action="Index" class="btn btn-outline-secondary">
+                                        <i class="bi bi-arrow-left me-2"></i>Voltar para a Lista
+                                    </a>
+                                    <div class="btn-group">
+                                        <button type="reset" class="btn btn-outline-danger">
+                                            <i class="bi bi-x-circle me-2"></i>Limpar
+                                        </button>
+                                        <button type="submit" class="btn btn-success">
+                                            <i class="bi bi-check-circle me-2"></i>Criar Item
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Calorias" class="control-label"></label>
-                <input asp-for="Calorias" class="form-control" />
-                <span asp-validation-for="Calorias" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Carboidratos" class="control-label"></label>
-                <input asp-for="Carboidratos" class="form-control" />
-                <span asp-validation-for="Carboidratos" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Gordura" class="control-label"></label>
-                <input asp-for="Gordura" class="form-control" />
-                <span asp-validation-for="Gordura" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Proteina" class="control-label"></label>
-                <input asp-for="Proteina" class="form-control" />
-                <span asp-validation-for="Proteina" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Restricao" class="control-label"></label>
-                <input asp-for="Restricao" class="form-control" />
-                <span asp-validation-for="Restricao" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Nome" class="control-label"></label>
-                <input asp-for="Nome" class="form-control" />
-                <span asp-validation-for="Nome" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Descricao" class="control-label"></label>
-                <input asp-for="Descricao" class="form-control" />
-                <span asp-validation-for="Descricao" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Preco" class="control-label"></label>
-                <input asp-for="Preco" class="form-control" />
-                <span asp-validation-for="Preco" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Tamanho" class="control-label"></label>
-                <input asp-for="Tamanho" class="form-control" />
-                <span asp-validation-for="Tamanho" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Volume" class="control-label"></label>
-                <input asp-for="Volume" class="form-control" />
-                <span asp-validation-for="Volume" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdRestaurante" class="control-label"></label>
-                <input asp-for="IdRestaurante" class="form-control" />
-                <span asp-validation-for="IdRestaurante" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // Validação do formulário
+        (function () {
+            'use strict'
+
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.querySelectorAll('.needs-validation')
+
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
+
+        // Formatação do campo de preço
+        document.addEventListener('DOMContentLoaded', function() {
+            const precoInput = document.getElementById('Preco');
+
+            if (precoInput) {
+                precoInput.addEventListener('blur', function() {
+                    let value = parseFloat(this.value.replace(',', '.'));
+                    if (!isNaN(value)) {
+                        this.value = value.toFixed(2);
+                    }
+                });
+            }
+        });
+    </script>
 }

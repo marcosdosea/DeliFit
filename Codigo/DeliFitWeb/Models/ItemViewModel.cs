@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DeliFitWeb.Models;
 
-public class ItemModel
+public class ItemViewModel
 {
     [Key]
     public uint Id { get; set; }
@@ -22,7 +22,6 @@ public class ItemModel
     public float? Proteina { get; set; }
 
     [Display(Name = "Restricao Alimentar")]
-    [Required(ErrorMessage = "Preenchimento do campo Quantidade de Carboidratos é obrigatório.")]
     [StringLength(50, ErrorMessage = "A restricao deve ter no máximo 50 caracteres.")]
     public string? Restricao { get; set; }
 
@@ -47,5 +46,7 @@ public class ItemModel
     public string? Volume { get; set; }
 
     [HiddenInput(DisplayValue = false)]
+
+    [Required]
     public uint IdRestaurante { get; set; }
 }

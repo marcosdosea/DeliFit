@@ -8,7 +8,7 @@ namespace DeliFitWeb.Mappers
     {
         public ItemProfile()
         {
-            CreateMap<ItemModel,Item>().ReverseMap();
+            CreateMap<ItemViewModel,Item>().ReverseMap();
         }
     }
 }
