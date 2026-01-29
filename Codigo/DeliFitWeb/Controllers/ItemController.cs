@@ -3,6 +3,7 @@ using Core;
 using Core.Service;
 using DeliFitWeb.Models;
 using Microsoft.AspNetCore.Mvc;
+using Service;
 
 namespace DeliFitWeb.Controllers
 {
@@ -57,9 +58,12 @@ namespace DeliFitWeb.Controllers
         }
 
         // GET: ItemController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(uint id)
         {
-            return View();
+            Item? item = _itemService.Get(id);
+            ItemViewModel itemModel = _mapper.Map<ItemViewModel>(item);
+
+            return View(itemModel);
         }
 
         // POST: ItemController/Edit/5
