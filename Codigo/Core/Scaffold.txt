@@ -1,3 +1,0 @@
-﻿dotnet ef dbcontext scaffold "server=localhost;port=3306;user=root;password=123456;database=DeliFit" MySql.EntityFrameworkCore -p Core -c DeliFitContext -f -v
-
-LEMBRAR DE EXCLUIR O METODO ONCONFIGURING DO DELIFITCONTEXT
