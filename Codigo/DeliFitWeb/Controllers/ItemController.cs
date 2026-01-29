@@ -18,7 +18,7 @@ namespace DeliFitWeb.Controllers
             _mapper = mapper;
         }
         // GET: ItemController
-        public ActionResult Index()
+        public ActionResult Index(int v)
         {
             var listaItens = _itemService.GetAll();
             var listaItensModel = _mapper.Map<List<ItemViewModel>>(listaItens);
@@ -58,7 +58,7 @@ namespace DeliFitWeb.Controllers
         }
 
         // GET: ItemController/Edit/5
-        public ActionResult Edit(uint id)
+        public ActionResult Edit(uint id, ItemViewModel model)
         {
             Item? item = _itemService.Get(id);
             ItemViewModel itemModel = _mapper.Map<ItemViewModel>(item);
@@ -94,6 +94,11 @@ namespace DeliFitWeb.Controllers
         {
             _itemService.Delete(id);
             return RedirectToAction(nameof(Index));//TO-DO
+        }
+
+        public object Edit(int v)
+        {
+            throw new NotImplementedException();
         }
     }
 }
