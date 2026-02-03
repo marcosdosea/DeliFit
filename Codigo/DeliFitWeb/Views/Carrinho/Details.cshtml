@@ -1,0 +1,163 @@
+﻿<!-- CODIGO NAO TERMINADO, FOI SO UM TESTE COM A IA
+
+@* @model DeliFitWeb.Models.CarrinhoViewModel
+
+@{
+    ViewData["Title"] = "Carrinho";
+}
+
+<div class="container-fluid p-0 bg-white">
+    <div class="row g-0">
+        <main class="col-12 p-5 bg-light">
+            <div class="container">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="fw-bold m-0">Carrinho</h2>
+                        <p class="text-muted small">Revise seu pedido antes de finalizar a compra.</p>
+                    </div>
+                </div>
+
+                <div class="row mb-4 align-items-center">
+                    <div class="col-md-6">
+                        <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary px-3">
+                            <i class="bi bi-chevron-left"></i> Voltar
+                        </a>
+                    </div>
+                </div>
+
+                <!-- RESUMO DO PEDIDO -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-0 pt-4 ps-4">
+                        <h5 class="fw-bold mb-0" style="color:#ff6600;">
+                            <i class="bi bi-receipt me-2"></i>Resumo do Pedido
+                        </h5>
+                    </div>
+
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center gap-4">
+                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:80px;height:80px;">
+                                <i class="bi bi-bag-check fs-1 text-muted"></i>
+                            </div>
+
+                            <div>
+                                <h5 class="fw-bold mb-1">@Model.Restaurante</h5>
+                                <p class="text-muted small mb-0">
+                                    @Model.QuantidadeItens itens • R$ @Model.ValorSubtotal.ToString("F2")
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ENDEREÇO -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-0 pt-4 ps-4">
+                        <h5 class="fw-bold mb-0" style="color:#ff6600;">
+                            <i class="bi bi-geo-alt me-2"></i>Endereço de Entrega
+                        </h5>
+                    </div>
+
+                    <div class="card-body p-4">
+                        <p class="mb-1 fw-bold">@Model.Endereco.Rua, @Model.Endereco.Numero</p>
+                        <p class="text-muted small mb-0">
+                            @Model.Endereco.Bairro • @Model.Endereco.Cidade - @Model.Endereco.Estado
+                        </p>
+                    </div>
+                </div>
+
+                <!-- FRETE -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4 d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="fw-bold mb-1">Entrega</h6>
+                            <p class="text-muted small mb-0">Tempo estimado: @Model.TempoEntrega</p>
+                        </div>
+                        <span class="fw-bold">R$ @Model.TaxaEntrega.ToString("F2")</span>
+                    </div>
+                </div>
+
+                <!-- ITENS -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-0 pt-4 ps-4">
+                        <h5 class="fw-bold mb-0" style="color:#ff6600;">
+                            <i class="bi bi-list-ul me-2"></i>Itens do Pedido
+                        </h5>
+                    </div>
+
+                    <div class="card-body p-0">
+                        @foreach (var item in Model.Itens)
+                        {
+                            <div class="d-flex justify-content-between align-items-center p-4 border-bottom">
+                                <div>
+                                    <h6 class="fw-bold mb-1">@item.NomeProduto</h6>
+                                    <p class="text-muted small mb-0">Qtd: @item.Quantidade</p>
+                                </div>
+
+                                <div class="d-flex align-items-center gap-3">
+                                    <span class="fw-bold">R$ @item.Valor.ToString("F2")</span>
+                                    <a asp-action="RemoverItem" asp-route-id="@item.Id" class="text-danger">
+                                        <i class="bi bi-x-lg"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- TOTAIS -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Subtotal</span>
+                            <span>R$ @Model.ValorSubtotal.ToString("F2")</span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="text-muted">Taxa de entrega</span>
+                            <span>R$ @Model.TaxaEntrega.ToString("F2")</span>
+                        </div>
+
+                        <hr />
+
+                        <div class="d-flex justify-content-between fw-bold fs-5">
+                            <span>Total</span>
+                            <span>R$ @Model.ValorTotal.ToString("F2")</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PAGAMENTO -->
+                <div class="card border-0 shadow-sm mb-5">
+                    <div class="card-body p-4 d-flex justify-content-between align-items-center">
+                        <span class="fw-bold">Forma de Pagamento</span>
+                        <a asp-controller="Cartao" asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                            Selecionar
+                        </a>
+                    </div>
+                </div>
+
+                <!-- FINALIZAR -->
+                <div class="d-flex justify-content-center">
+                    <a asp-action="Finalizar" class="btn px-5 py-3 fw-bold shadow-sm"
+                       style="background-color:#ff6600;color:white;border-radius:30px;">
+                        Fazer Pedido
+                    </a>
+                </div>
+
+            </div>
+        </main>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        .card {
+            border-radius: 12px;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+    </style>
+} *@
