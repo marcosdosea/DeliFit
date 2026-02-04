@@ -44,18 +44,6 @@ public class CartaoService : ICartaoService
     }
 
     /// <summary>
-    /// Atualizar dados de um Cartao da base de dados
-    /// </summary>
-    /// <param name="Cartao">novos dados do Cartao</param>
-    public void Edit(Cartao Cartao)
-    {
-
-        _context.Update(Cartao);
-        _context.SaveChanges();
-
-    }
-
-    /// <summary>
     /// Remover dados de um Cartao da base de dados
     /// </summary>
     /// <param name="id">id do Cartao</param>
@@ -79,9 +67,18 @@ public class CartaoService : ICartaoService
     /// <returns>dados dos Cartaos</returns>
     public IEnumerable<Cartao> GetAll()
     {
+        return _context.Cartaos.AsNoTracking().ToList();
+    }
+
+    public IEnumerable<Cartao> GetByCliente(uint idCliente)
+    {
         return _context.Cartaos
+            .AsNoTracking()
+            .Where(c => c.IdCliente == idCliente)
             .ToList();
     }
+
+
 
 }
 
