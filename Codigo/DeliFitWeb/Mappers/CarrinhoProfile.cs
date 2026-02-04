@@ -9,6 +9,6 @@ public class CarrinhoProfile : Profile
 {
     public CarrinhoProfile()
     {
-        CreateMap<Cliente, CarrinhoViewModel>().ReverseMap();
+        CreateMap<Carrinho, CarrinhoViewModel>().ReverseMap();
     }
 }

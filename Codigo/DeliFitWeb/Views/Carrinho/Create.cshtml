@@ -1,0 +1,74 @@
+﻿@model DeliFitWeb.Models.CarrinhoViewModel
+
+@{
+    ViewBag.Title = "Create";
+}
+
+
+<h4>Criar Carrinho</h4>
+
+<form asp-action="Create" method="post">
+
+    <div class="form-group">
+        <label>Cliente</label>
+        <select asp-for="IdCliente"
+                asp-items="@(new SelectList(ViewBag.Clientes, "Id", "Nome"))"
+                class="form-control">
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Forma de Pagamento</label>
+        <select asp-for="FormaDePagamento"
+                class="form-control"
+                id="formaPagamento">
+            <option value="">Selecione</option>
+            <option value="P">PIX</option>
+            <option value="C">Cartão</option>
+            <option value="D">Dinheiro</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Valor do Frete</label>
+        <input asp-for="ValorFrete" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label>Observação</label>
+        <textarea asp-for="Observacao" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group" id="cartaoDiv" style="display:none">
+        <label>Cartão</label>
+        <select asp-for="IdCartao"
+                asp-items="@(new SelectList(ViewBag.Cartoes, "Id", "Numero"))"
+                class="form-control">
+            <option value="">Selecione um cartão</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">
+        Salvar
+    </button>
+
+</form>
+
+<script>
+    const forma = document.getElementById("formaPagamento");
+    const cartaoDiv = document.getElementById("cartaoDiv");
+
+    function toggleCartao() {
+        cartaoDiv.style.display = forma.value === "C" ? "block" : "none";
+    }
+
+    forma.addEventListener("change", toggleCartao);
+    toggleCartao();
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    
+}
+

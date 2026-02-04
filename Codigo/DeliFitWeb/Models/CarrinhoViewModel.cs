@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace DeliFitWeb.Models
 {
@@ -13,7 +14,6 @@ namespace DeliFitWeb.Models
         [Required]
         public uint IdCliente { get; set; }
 
-        //ISSO AQ É SO IMPROVISO, TEM Q VER COMO FAZ CERTINHO DEPOIS
         [Required]
         [Display(Name = "Forma de Pagamento")]
         [RegularExpression("[PCD]", ErrorMessage = "Use P (PIX), C (Cartão) ou D (Dinheiro).")]
@@ -28,5 +28,11 @@ namespace DeliFitWeb.Models
         public uint? IdCartao { get; set; }
 
         public List<uint> IdsPedidos { get; set; } = [];
+
+        public ClienteViewModel? Cliente { get; set; }
+
+        public CartaoViewModel? Cartao { get; set; }
+
+  
     }
 }
