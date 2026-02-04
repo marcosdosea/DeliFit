@@ -24,11 +24,14 @@ public class CarrinhoService : ICarrinhoService
     /// </summary>
     /// <param name="Carrinho">dados do Carrinho</param>
     /// <returns>id do novo Carrinho</returns>
-    public uint Create(Carrinho Carrinho)
+    public uint Create(Carrinho carrinho)
     {
-        _context.Add(Carrinho);
+        ValidarCarrinho(carrinho);
+
+
+        _context.Add(carrinho);
         _context.SaveChanges();
-        return Carrinho.Id;
+        return carrinho.Id;
     }
 
     /// <summary>
@@ -47,10 +50,20 @@ public class CarrinhoService : ICarrinhoService
     /// Atualizar dados de um Carrinho da base de dados
     /// </summary>
     /// <param name="Carrinho">novos dados do Carrinho</param>
-    public void Edit(Carrinho Carrinho)
+    public void Edit(Carrinho carrinho)
     {
+        ValidarCarrinho(carrinho);
 
-        _context.Update(Carrinho);
+        var existente = _context.Carrinhos.FirstOrDefault(c => c.Id == carrinho.Id);
+        if (existente == null)
+            throw new ServiceException("Carrinho não encontrado");
+
+        existente.Observação = carrinho.Observação;
+        existente.FormaDePagamento = carrinho.FormaDePagamento;
+        existente.IdCliente = carrinho.IdCliente;
+        existente.IdCartao = carrinho.IdCartao;
+        existente.ValorFrete = carrinho.ValorFrete;
+
         _context.SaveChanges();
 
     }
@@ -80,9 +93,27 @@ public class CarrinhoService : ICarrinhoService
     public IEnumerable<Carrinho> GetAll()
     {
         return _context.Carrinhos
+            .AsNoTracking()
             .ToList();
     }
 
+    public void ValidarCarrinho(Carrinho carrinho)
+    {
+        if (carrinho.FormaDePagamento == "C" && carrinho.IdCartao == null)
+            throw new ServiceException("Pagamento com cartão exige um cartão válido.");
+
+
+        var  cartao = _context.Cartaos
+            .AsNoTracking()
+            .FirstOrDefault(c => c.Id == carrinho.IdCartao);
+        if (cartao.IdCliente != carrinho.IdCliente)
+            throw new ServiceException("O cartão não pertence ao cliente selecionado.");
+
+        if (carrinho.FormaDePagamento != "C")
+            carrinho.IdCartao = null;
+    }
+
+    
 }
 
 

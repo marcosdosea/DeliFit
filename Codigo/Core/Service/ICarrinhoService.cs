@@ -16,6 +16,8 @@ namespace Core.Service
 
         public void Delete(uint id);
 
+        public void ValidarCarrinho(Carrinho Carrinho);
+
         public IEnumerable<Carrinho> GetAll();
     }
 }
