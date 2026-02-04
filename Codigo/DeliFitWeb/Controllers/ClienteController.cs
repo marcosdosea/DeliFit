@@ -80,7 +80,6 @@ namespace DeliFitWeb.Controllers
         {
             Cliente? cliente = _clienteService.Get(id);
             ClienteViewModel clienteModel = _mapper.Map<ClienteViewModel>(cliente);
-
             return View(clienteModel);
         }
 
