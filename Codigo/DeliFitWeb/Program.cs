@@ -16,6 +16,8 @@ public class Program
             .GetConnectionString("DeliFitConnection")
             ?? throw new InvalidOperationException("Connection string não configurada.");
         IServiceCollection serviceCollection = builder.Services.AddDbContext<DeliFitContext>(options => options.UseMySQL(connectionString));
+        builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
         builder.Services.AddTransient<IItemService, ItemService>();
         builder.Services.AddTransient<IClienteService, ClienteService>();
         builder.Services.AddTransient<IPedidoService, PedidoService>();
@@ -24,6 +26,9 @@ public class Program
         builder.Services.AddTransient<IPagamentoService, PagamentoService>();
         builder.Services.AddTransient<ICategoriaService, CategoriaService>();
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        builder.Services.AddTransient<ICartaoService, CartaoService>();
+        builder.Services.AddTransient<ICarrinhoService, CarrinhoService>();
+        
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.

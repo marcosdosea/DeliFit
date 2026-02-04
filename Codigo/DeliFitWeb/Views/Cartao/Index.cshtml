@@ -1,0 +1,169 @@
+﻿@model IEnumerable<DeliFitWeb.Models.CartaoViewModel>
+
+@{
+    ViewData["Title"] = "Pagamentos";
+    var idCliente = Context.Request.Query["idCliente"];
+}
+
+<div class="container-fluid p-0 bg-white">
+    <div class="row g-0">
+        <main class="col-12 p-5 bg-light">
+            <div class="container-fluid">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="fw-bold m-0">Cartões Cadastrados</h2>
+                    </div>
+
+                    <a asp-action="Create"
+                       asp-route-idCliente="@idCliente"
+                       class="btn btn-orange text-white px-4 py-2 shadow-sm fw-bold">
+                        <i class="bi bi-plus-lg me-2"></i>Novo Cartão
+                    </a>
+                </div>
+
+                <div class="row mb-4 align-items-center">
+                    <div class="col-md-6">
+                        <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary px-3">
+                            <i class="bi bi-chevron-left"></i> Voltar
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="bg-light">
+                                    <tr>
+                                        <th class="ps-4 py-3 text-muted small fw-bold text-uppercase">Titular</th>
+                                        <th class="py-3 text-muted small fw-bold text-uppercase">Número</th>
+                                        <th class="py-3 text-muted small fw-bold text-uppercase">Validade</th>
+                                        <th class="py-3 text-muted small fw-bold text-uppercase">CPF</th>
+                                        <th class="text-center py-3 text-muted small fw-bold text-uppercase">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        foreach (var item in Model)
+                                        {
+                                            <tr>
+                                                <td class="ps-4">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="avatar-sm bg-orange-subtle rounded-circle me-2 d-flex align-items-center justify-content-center">
+                                                            <i class="bi bi-credit-card text-orange small"></i>
+                                                        </div>
+                                                        <span class="fw-bold text-dark">@item.Nome</span>
+                                                    </div>
+                                                </td>
+
+                                                <td class="text-muted">
+                                                    **** **** **** @item.Numero.Substring(item.Numero.Length - 4)
+                                                </td>
+
+                                                <td class="text-muted">
+                                                    @item.Validade.ToString("MM/yyyy")
+                                                </td>
+
+                                                <td>
+                                                    <span class="badge bg-light text-dark border">@item.Cpf</span>
+                                                </td>
+
+                                                <td class="text-center">
+                                                    <a asp-action="Details"
+                                                       asp-route-id="@item.Id"
+                                                       class="btn btn-sm btn-orange-outline px-3">
+                                                        Visualizar
+                                                    </a>
+
+                                                    <a asp-action="Delete"
+                                                       asp-route-id="@item.Id"
+                                                       class="btn btn-sm btn-red-outline px-3">
+                                                        Excluir
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="5" class="text-center py-5">
+                                                <i class="bi bi-credit-card text-muted opacity-25" style="font-size: 3rem;"></i><br />
+                                                <span class="text-muted mt-2 d-block">Nenhum cartão cadastrado.</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        .text-orange {
+            color: #ff6600 !important;
+        }
+
+        .bg-orange-subtle {
+            background-color: #fff3e6;
+        }
+
+        .btn-orange {
+            background-color: #ff6600;
+            border: none;
+            transition: all 0.2s;
+        }
+
+            .btn-orange:hover {
+                background-color: #e65c00;
+                transform: translateY(-1px);
+            }
+
+        .btn-orange-outline {
+            border: 1px solid #ff6600;
+            color: #ff6600;
+            background: transparent;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+            .btn-orange-outline:hover {
+                background-color: #ff6600;
+                color: white;
+            }
+
+        .btn-red-outline {
+            border: 0.5px solid #ff0000;
+            color: #ff0000;
+            background: transparent;
+            font-weight: 300;
+            transition: all 0.2s;
+        }
+
+            .btn-red-outline:hover {
+                background-color: #ff0000;
+                color: white;
+            }
+
+        .avatar-sm {
+            width: 32px;
+            height: 32px;
+        }
+
+        .table tbody tr:hover {
+            background-color: #fffaf5;
+        }
+
+        .table thead th {
+            border-bottom: 2px solid #f8f9fa;
+        }
+    </style>
+}
