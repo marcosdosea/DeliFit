@@ -1,57 +1,150 @@
 ﻿@model DeliFitWeb.Models.CartaoViewModel
 
-<h4>CartaoViewModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" />
-                <span asp-validation-for="Id" class="text-danger"></span>
+@{
+    ViewData["Title"] = "Editar Cartão";
+}
+
+<div class="container-fluid p-0 bg-white">
+    <div class="row g-0">
+        <main class="col-12 p-5 bg-light">
+            <div class="container">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="fw-bold m-0">Editar Cartão</h2>
+                        <p class="text-muted">Atualize os dados do cartão.</p>
+                    </div>
+                </div>
+
+                <div class="row mb-4 align-items-center">
+                    <div class="col-md-6">
+                        <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary px-3">
+                            <i class="bi bi-chevron-left"></i> Voltar
+                        </a>
+                    </div>
+                </div>
+
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly"
+                         class="alert alert-danger shadow-sm border-0 small"
+                         role="alert">
+                    </div>
+
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="IdCliente" />
+
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white border-0 pt-4 ps-4">
+                            <h5 class="fw-bold mb-0 text-orange">
+                                <i class="bi bi-credit-card me-2"></i>Dados do Cartão
+                            </h5>
+                        </div>
+
+                        <div class="card-body p-4">
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label asp-for="Nome" class="form-label fw-semibold"></label>
+                                    <input asp-for="Nome" class="form-control" />
+                                    <span asp-validation-for="Nome" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="Numero" class="form-label fw-semibold"></label>
+                                    <input asp-for="Numero" class="form-control" />
+                                    <span asp-validation-for="Numero" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Validade (MM/AA)</label>
+
+                                    <input type="text"
+                                           name="Validade"
+                                           class="form-control"
+                                           value="@Model.Validade.ToString("MM/yy")"
+                                           placeholder="MM/AA" />
+
+                                    <span asp-validation-for="Validade" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label asp-for="Cvv" class="form-label fw-semibold"></label>
+                                    <input asp-for="Cvv" class="form-control" />
+                                    <span asp-validation-for="Cvv" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label asp-for="Cpf" class="form-label fw-semibold"></label>
+                                    <input asp-for="Cpf" class="form-control" />
+                                    <span asp-validation-for="Cpf" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end align-items-center mt-2 mb-5 gap-2">
+                        <a asp-action="Index"
+                           asp-route-idCliente="@Model.IdCliente"
+                           class="btn btn-light px-4 border text-muted fw-bold shadow-sm">
+                            Cancelar
+                        </a>
+
+                        <button type="submit"
+                                class="btn btn-orange px-5 py-2 fw-bold shadow-sm">
+                            <i class="bi bi-save me-2"></i>Salvar Alterações
+                        </button>
+                    </div>
+                </form>
+
             </div>
-            <div class="form-group">
-                <label asp-for="Nome" class="control-label"></label>
-                <input asp-for="Nome" class="form-control" />
-                <span asp-validation-for="Nome" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Numero" class="control-label"></label>
-                <input asp-for="Numero" class="form-control" />
-                <span asp-validation-for="Numero" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Cvv" class="control-label"></label>
-                <input asp-for="Cvv" class="form-control" />
-                <span asp-validation-for="Cvv" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Validade" class="control-label"></label>
-                <input asp-for="Validade" class="form-control" />
-                <span asp-validation-for="Validade" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Cpf" class="control-label"></label>
-                <input asp-for="Cpf" class="form-control" />
-                <span asp-validation-for="Cpf" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdCliente" class="control-label"></label>
-                <input asp-for="IdCliente" class="form-control" />
-                <span asp-validation-for="IdCliente" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </main>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <style>
+        .text-orange {
+            color: #ff6600 !important;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+            color: #495057;
+        }
+
+        .form-control {
+            border: 1px solid #dee2e6;
+            padding: 0.6rem 0.75rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+            .form-control:focus {
+                border-color: #ff6600;
+                box-shadow: 0 0 0 0.25rem rgba(255, 102, 0, 0.15);
+            }
+
+        .btn-orange {
+            background-color: #ff6600;
+            border-color: #e65c00;
+            color: white;
+            transition: all 0.2s;
+        }
+
+            .btn-orange:hover {
+                background-color: #e65c00;
+                transform: translateY(-1px);
+            }
+
+        .card {
+            border-radius: 12px;
+        }
+    </style>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

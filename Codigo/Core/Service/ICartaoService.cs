@@ -12,10 +12,10 @@ namespace Core.Service
 
         public Cartao? Get(uint id);
 
-        public void Edit(Cartao Cartao);
-
         public void Delete(uint id);
 
         public IEnumerable<Cartao> GetAll();
+
+        IEnumerable<Cartao> GetByCliente(uint idCliente);
     }
 }
