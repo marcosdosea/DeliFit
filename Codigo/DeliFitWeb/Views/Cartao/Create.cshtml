@@ -1,0 +1,141 @@
+﻿@model DeliFitWeb.Models.CartaoViewModel
+
+@{
+    ViewData["Title"] = "Cadastrar Cartão";
+    var idClienteContexto = Context.Request.Query["idCliente"];
+}
+
+<div class="container-fluid p-0 bg-white">
+    <div class="row g-0">
+        <main class="col-12 p-5 bg-light">
+            <div class="container">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="fw-bold m-0">Novo Cartão</h2>
+                        <p class="text-muted">Cadastre um cartão para este cliente.</p>
+                    </div>
+                </div>
+
+                <div class="row mb-4 align-items-center">
+                    <div class="col-md-6">
+                        <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary px-3">
+                            <i class="bi bi-chevron-left"></i> Voltar
+                        </a>
+                    </div>
+                </div>
+
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger shadow-sm border-0 small"></div>
+
+                    <input asp-for="IdCliente" type="hidden" value="@(Model?.IdCliente ?? uint.Parse(idClienteContexto))" />
+
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white border-0 pt-4 ps-4">
+                            <h5 class="fw-bold mb-0 text-orange">
+                                <i class="bi bi-credit-card me-2"></i>Dados do Cartão
+                            </h5>
+                        </div>
+
+                        <div class="card-body p-4">
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label asp-for="Nome" class="form-label fw-semibold"></label>
+                                    <input asp-for="Nome" class="form-control" placeholder="Nome impresso no cartão" />
+                                    <span asp-validation-for="Nome" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="Cpf" class="form-label fw-semibold"></label>
+                                    <input asp-for="Cpf" class="form-control" placeholder="CPF do titular" />
+                                    <span asp-validation-for="Cpf" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label asp-for="Numero" class="form-label fw-semibold"></label>
+                                    <input asp-for="Numero" class="form-control" placeholder="Número do cartão" />
+                                    <span asp-validation-for="Numero" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label asp-for="Validade" class="form-label fw-semibold"></label>
+                                    <input asp-for="Validade" class="form-control" type="month" />
+                                    <span asp-validation-for="Validade" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label asp-for="Cvv" class="form-label fw-semibold"></label>
+                                    <input asp-for="Cvv" class="form-control" placeholder="CVV" />
+                                    <span asp-validation-for="Cvv" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end align-items-center mt-2 mb-5 gap-2">
+                        <a asp-action="Index"
+                           asp-route-idCliente="@(Model?.IdCliente ?? uint.Parse(idClienteContexto))"
+                           class="btn btn-light px-4 border text-muted fw-bold shadow-sm">
+                            Cancelar
+                        </a>
+
+                        <button type="submit" class="btn btn-orange px-5 py-2 fw-bold shadow-sm">
+                            <i class="bi bi-check-circle me-2"></i>Salvar Cartão
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </main>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        .text-orange {
+            color: #ff6600 !important;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+            color: #495057;
+        }
+
+        .form-control, .form-select {
+            border: 1px solid #dee2e6;
+            padding: 0.6rem 0.75rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: #ff6600;
+                box-shadow: 0 0 0 0.25rem rgba(255, 102, 0, 0.15);
+            }
+
+        .btn-orange {
+            background-color: #ff6600;
+            border-color: #e65c00;
+            color: white;
+            transition: all 0.2s;
+        }
+
+            .btn-orange:hover {
+                background-color: #e65c00;
+                color: white;
+                transform: translateY(-1px);
+            }
+
+        .card {
+            border-radius: 12px;
+        }
+    </style>
+
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
