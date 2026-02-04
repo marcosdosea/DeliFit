@@ -21,6 +21,8 @@ public class Program
         builder.Services.AddTransient<IPedidoService, PedidoService>();
         builder.Services.AddTransient<IEnderecoService, EnderecoService>();
         builder.Services.AddTransient<IRestauranteService, RestauranteService>();
+        builder.Services.AddTransient<IPagamentoService, PagamentoService>();
+        builder.Services.AddTransient<ICategoriaService, CategoriaService>();
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         var app = builder.Build();
 

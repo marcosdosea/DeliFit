@@ -78,10 +78,10 @@ namespace DeliFitWeb.Controllers
         // GET: ClienteController/Delete/5
         public ActionResult Delete(uint id)
         {
-            Cliente? cliente = _clienteService.Get(id);
-            ClienteViewModel clienteModel = _mapper.Map<ClienteViewModel>(cliente);
+                Cliente? cliente = _clienteService.Get(id);
+                ClienteViewModel clienteModel = _mapper.Map<ClienteViewModel>(cliente);
 
-            return View(clienteModel);
+                return View(clienteModel);
         }
 
         // POST: ClienteController/Delete/5

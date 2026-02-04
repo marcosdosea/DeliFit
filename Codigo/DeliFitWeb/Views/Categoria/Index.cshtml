@@ -1,0 +1,21 @@
+﻿@model IEnumerable<CategoriaViewModel>
+
+<h2>Categorias</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Categoria</th>
+            <th>Quantidade de Itens</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var categoria in Model)
+        {
+            <tr>
+                <td>@categoria.Nome</td>
+                <td>@categoria.QuantidadeItens</td>
+            </tr>
+        }
+    </tbody>
+</table>
