@@ -82,7 +82,7 @@ namespace DeliFitWeb.Controllers.Tests
 
             var result = controller.Create(GetNewCartao());
 
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
         }
 
 

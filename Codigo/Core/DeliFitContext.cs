@@ -37,6 +37,7 @@ public partial class DeliFitContext : DbContext
 
     public virtual DbSet<Restaurante> Restaurantes { get; set; }
 
+   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Atendimento>(entity =>
@@ -113,7 +114,7 @@ public partial class DeliFitContext : DbContext
                 .HasColumnType("enum('P','C','D')");
             entity.Property(e => e.IdCartao).HasColumnName("idCartao");
             entity.Property(e => e.IdCliente).HasColumnName("idCliente");
-            entity.Property(e => e.Observação).HasMaxLength(100);
+            entity.Property(e => e.Observacao).HasMaxLength(100);
             entity.Property(e => e.ValorFrete)
                 .HasPrecision(10)
                 .HasColumnName("valorFrete");

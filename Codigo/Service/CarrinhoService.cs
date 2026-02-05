@@ -58,7 +58,7 @@ public class CarrinhoService : ICarrinhoService
         if (existente == null)
             throw new ServiceException("Carrinho não encontrado");
 
-        existente.Observação = carrinho.Observação;
+        existente.Observacao = carrinho.Observacao;
         existente.FormaDePagamento = carrinho.FormaDePagamento;
         existente.IdCliente = carrinho.IdCliente;
         existente.IdCartao = carrinho.IdCartao;
@@ -97,23 +97,33 @@ public class CarrinhoService : ICarrinhoService
             .ToList();
     }
 
+    // C#
     public void ValidarCarrinho(Carrinho carrinho)
     {
         if (carrinho.FormaDePagamento == "C" && carrinho.IdCartao == null)
             throw new ServiceException("Pagamento com cartão exige um cartão válido.");
 
+        Cartao? cartao = null;
+        if (carrinho.IdCartao != null)
+        {
+            cartao = _context.Cartaos
+                .AsNoTracking()
+                .FirstOrDefault(c => c.Id == carrinho.IdCartao);
+        }
 
-        var  cartao = _context.Cartaos
-            .AsNoTracking()
-            .FirstOrDefault(c => c.Id == carrinho.IdCartao);
-        if (cartao.IdCliente != carrinho.IdCliente)
-            throw new ServiceException("O cartão não pertence ao cliente selecionado.");
+        if (carrinho.FormaDePagamento == "C")
+        {
+            if (cartao == null)
+                throw new ServiceException("Cartão não encontrado.");
+            if (cartao.IdCliente != carrinho.IdCliente)
+                throw new ServiceException("O cartão não pertence ao cliente selecionado.");
+        }
 
         if (carrinho.FormaDePagamento != "C")
             carrinho.IdCartao = null;
     }
 
-    
+
 }
 
 
