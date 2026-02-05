@@ -33,7 +33,7 @@ namespace DeliFitWeb.Controllers
             return View(viewModel);
         }
 
-        public ActionResult Create()
+        public ActionResult Create(uint id)
         {
             return View();
         }
@@ -59,7 +59,7 @@ namespace DeliFitWeb.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(CartaoViewModel viewModel)
+        public ActionResult Delete(uint id, CartaoViewModel viewModel)
         {
             _cartaoService.Delete(viewModel.Id);
             return RedirectToAction(nameof(Index), new { idCliente = viewModel.IdCliente });

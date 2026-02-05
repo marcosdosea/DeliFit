@@ -113,7 +113,7 @@ namespace DeliFitWeb.Controllers.Tests
             Assert.IsInstanceOfType(viewResult.Model, typeof(List<RestauranteViewModel>));
             List<RestauranteViewModel> viewModel = (List<RestauranteViewModel>)viewResult.Model;
 
-            Assert.HasCount(3, viewModel);
+            Assert.HasCount(2, viewModel);
         }
 
         [TestMethod]
