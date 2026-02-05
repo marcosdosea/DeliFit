@@ -46,8 +46,37 @@ namespace Service
 
         public IEnumerable<Atendimento> GetAll(uint idRestaurante)
         {
-            return _context.Atendimentos.Where(a => a.IdRestaurante == idRestaurante)
-                .ToList();
+            IEnumerable<Atendimento> listaAtendimentos = _context.Atendimentos.Where(a => a.IdRestaurante == idRestaurante);
+
+            foreach (Atendimento atendimento in listaAtendimentos)
+            {
+                switch(atendimento.DiaSemana)
+                {
+                    case "1":
+                        atendimento.DiaSemana = "Domingo";
+                        break;
+                    case "2":
+                        atendimento.DiaSemana = "Segunda-feira";
+                        break;
+                    case "3":
+                        atendimento.DiaSemana = "Terça-feira";
+                        break;
+                    case "4":
+                        atendimento.DiaSemana = "Quarta-feira";
+                        break;
+                    case "5":
+                        atendimento.DiaSemana = "Quinta-feira";
+                        break;
+                    case "6":
+                        atendimento.DiaSemana = "Sexta-feira";
+                        break;
+                    case "7":
+                        atendimento.DiaSemana = "Sábado";
+                        break;
+                }
+            }
+
+            return listaAtendimentos;
         }
 
     }

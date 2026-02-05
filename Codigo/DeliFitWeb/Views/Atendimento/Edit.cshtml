@@ -1,48 +1,133 @@
 ﻿@model DeliFitWeb.Models.AtendimentoViewModel
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Editar Horário";
 }
 
-<h1>Edit</h1>
+<div class="container-fluid p-0 bg-white">
+    <div class="row g-0">
+        <main class="col-12 p-5 bg-light">
+            <div class="container">
 
-<h4>AtendimentoViewModel</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" />
-                <span asp-validation-for="Id" class="text-danger"></span>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="fw-bold m-0">Editar Horário</h2>
+                        <p class="text-muted">Atualize os dados de funcionamento.</p>
+                    </div>
+                </div>
+
+                <div class="row mb-4 align-items-center">
+                    <div class="col-md-6">
+                        <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary px-3">
+                            <i class="bi bi-chevron-left"></i> Voltar
+                        </a>
+                    </div>
+                </div>
+
+                <form asp-action="Edit">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger shadow-sm border-0 small" role="alert"></div>
+
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="IdRestaurante" />
+
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white border-0 pt-4 ps-4">
+                            <h5 class="fw-bold mb-0 text-orange">
+                                <i class="bi bi-clock-history me-2"></i>Dados do Horário
+                            </h5>
+                        </div>
+
+                        <div class="card-body p-4">
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-12">
+                                    <label asp-for="DiaSemana" class="form-label fw-semibold">Dia da Semana</label>
+                                    <select asp-for="DiaSemana" class="form-select">
+                                        <option value="">Selecione...</option>
+                                        <option value="1">Domingo</option>
+                                        <option value="2">Segunda-feira</option>
+                                        <option value="3">Terça-feira</option>
+                                        <option value="4">Quarta-feira</option>
+                                        <option value="5">Quinta-feira</option>
+                                        <option value="6">Sexta-feira</option>
+                                        <option value="7">Sábado</option>
+                                    </select>
+                                    <span asp-validation-for="DiaSemana" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label asp-for="HorarioInicio" class="form-label fw-semibold">Abertura</label>
+                                    <input asp-for="HorarioInicio" type="time" class="form-control" />
+                                    <span asp-validation-for="HorarioInicio" class="text-danger small"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="HorarioFim" class="form-label fw-semibold">Fechamento</label>
+                                    <input asp-for="HorarioFim" type="time" class="form-control" />
+                                    <span asp-validation-for="HorarioFim" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end align-items-center mt-2 mb-5 gap-2">
+                        <a asp-action="Index" asp-route-idRestaurante="@Model.IdRestaurante" class="btn btn-light px-4 border text-muted fw-bold shadow-sm">
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-orange px-5 py-2 fw-bold shadow-sm">
+                            <i class="bi bi-save me-2"></i>Salvar Alterações
+                        </button>
+                    </div>
+                </form>
+
             </div>
-            <div class="form-group">
-                <label asp-for="DiaSemana" class="control-label"></label>
-                <input asp-for="DiaSemana" class="form-control" />
-                <span asp-validation-for="DiaSemana" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="HorarioInicio" class="control-label"></label>
-                <input asp-for="HorarioInicio" class="form-control" />
-                <span asp-validation-for="HorarioInicio" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="HorarioFim" class="control-label"></label>
-                <input asp-for="HorarioFim" class="form-control" />
-                <span asp-validation-for="HorarioFim" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </main>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <style>
+        /* Estilos Padronizados DeliFit (Copiados do Edit de Endereço) */
+        .text-orange {
+            color: #ff6600 !important;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+            color: #495057;
+        }
+
+        .form-control, .form-select {
+            border: 1px solid #dee2e6;
+            padding: 0.6rem 0.75rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+            .form-control:focus, .form-select:focus {
+                border-color: #ff6600;
+                box-shadow: 0 0 0 0.25rem rgba(255, 102, 0, 0.15);
+            }
+
+        .btn-orange {
+            background-color: #ff6600;
+            border-color: #e65c00;
+            color: white;
+            transition: all 0.2s;
+        }
+
+            .btn-orange:hover {
+                background-color: #e65c00;
+                color: white;
+                transform: translateY(-1px);
+            }
+
+        .card {
+            border-radius: 12px;
+        }
+    </style>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
