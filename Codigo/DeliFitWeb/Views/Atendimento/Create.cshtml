@@ -2,132 +2,160 @@
 
 @{
     ViewData["Title"] = "Novo Horário";
-    // Captura o ID da URL para manter a consistência
-    var idRestauranteContexto = Context.Request.Query["idRestaurante"];
+    // Captura o ID do restaurante da URL para manter a consistência
+    var idRestauranteContexto = uint.Parse(Context.Request.Query["idRestaurante"]);
 }
 
 <div class="container-fluid p-0 bg-white">
     <div class="row g-0">
-        <aside class="col-md-2 border-end min-vh-100 p-3 bg-white">
-            <div class="mb-4">
-                <a asp-action="Index" asp-route-idRestaurante="@idRestauranteContexto" class="text-decoration-none text-muted small fw-bold">
-                    <i class="bi bi-chevron-left"></i> Voltar à Lista
-                </a>
-            </div>
+        <main class="col-12 p-5 bg-light">
+            <div class="container">
 
-            <ul class="nav flex-column gap-1">
-                <li class="nav-item mb-2">
-                    <span class="nav-link fw-bold text-dark fs-5 p-0">Painel</span>
-                </li>
-                <li>
-                    <a asp-controller="Restaurante" asp-action="Details" asp-route-id="@idRestauranteContexto" class="nav-link text-muted py-1 small">
-                        - Perfil do Restaurante
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="nav-link fw-bold py-1 small" style="color: #ff6600;">
-                        - Horários de Atendimento
-                    </a>
-                </li>
-            </ul>
-        </aside>
-
-        <main class="col-md-10 p-5 bg-light">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div>
-                            <h2 class="fw-bold m-0">Novo Horário</h2>
-                            <p class="text-muted">Defina um dia e o turno de funcionamento.</p>
-                        </div>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="fw-bold m-0">Novo Horário</h2>
+                        <p class="text-muted">Defina um dia da semana e o turno de funcionamento.</p>
                     </div>
+                </div>
 
-                    <form asp-action="Create" class="needs-validation" novalidate>
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger shadow-sm"></div>
+                <div class="row mb-4 align-items-center">
+                    <div class="col-md-6">
+                        <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary px-3">
+                            <i class="bi bi-chevron-left"></i> Voltar
+                        </a>
+                    </div>
+                </div>
 
-                        <input type="hidden" asp-for="IdRestaurante" value="@idRestauranteContexto" />
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger shadow-sm border-0 small" role="alert"></div>
 
-                        <div class="card border-0 shadow-sm p-4 mb-4">
-                            <h5 class="fw-bold mb-4" style="color: #ff6600;">
+                    <input asp-for="IdRestaurante" type="hidden" value="@(Model?.IdRestaurante ?? idRestauranteContexto)" />
+
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-header bg-white border-0 pt-4 ps-4">
+                            <h5 class="fw-bold mb-0 text-orange">
                                 <i class="bi bi-clock-history me-2"></i>Configuração de Turno
                             </h5>
+                        </div>
 
-                            <div class="mb-4">
-                                <label asp-for="DiaSemana" class="form-label small fw-bold text-muted">DIA DA SEMANA</label>
-                                <select asp-for="DiaSemana" class="form-select border-0 bg-light p-3" required>
-                                    <option value="">Selecione o dia...</option>
-                                    <option value="Domingo">Domingo</option>
-                                    <option value="Segunda-feira">Segunda-feira</option>
-                                    <option value="Terça-feira">Terça-feira</option>
-                                    <option value="Quarta-feira">Quarta-feira</option>
-                                    <option value="Quinta-feira">Quinta-feira</option>
-                                    <option value="Sexta-feira">Sexta-feira</option>
-                                    <option value="Sábado">Sábado</option>
-                                </select>
-                                <span asp-validation-for="DiaSemana" class="text-danger small"></span>
+                        <div class="card-body p-4">
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-12">
+                                    <label asp-for="DiaSemana" class="form-label fw-semibold">Dia da Semana</label>
+                                    <select asp-for="DiaSemana" class="form-select">
+                                        <option value="">Selecione o dia...</option>
+                                        <option value="1">Domingo</option>
+                                        <option value="2">Segunda-feira</option>
+                                        <option value="3">Terça-feira</option>
+                                        <option value="4">Quarta-feira</option>
+                                        <option value="5">Quinta-feira</option>
+                                        <option value="6">Sexta-feira</option>
+                                        <option value="7">Sábado</option>
+                                    </select>
+                                    <span asp-validation-for="DiaSemana" class="text-danger small"></span>
+                                </div>
                             </div>
 
                             <div class="row g-3">
                                 <div class="col-md-6">
-                                    <label asp-for="HorarioInicio" class="form-label small fw-bold text-muted">ABERTURA</label>
+                                    <label asp-for="HorarioInicio" class="form-label fw-semibold">Abertura</label>
                                     <div class="input-group">
-                                        <span class="input-group-text border-0 bg-orange-subtle" style="color: #ff6600;">
+                                        <span class="input-group-text bg-white border-end-0 text-orange">
                                             <i class="bi bi-sun"></i>
                                         </span>
-                                        <input asp-for="HorarioInicio" type="time" class="form-control border-0 bg-light p-3" required />
+                                        <input asp-for="HorarioInicio" type="time" class="form-control border-start-0 ps-0" />
                                     </div>
                                     <span asp-validation-for="HorarioInicio" class="text-danger small"></span>
                                 </div>
 
                                 <div class="col-md-6">
-                                    <label asp-for="HorarioFim" class="form-label small fw-bold text-muted">FECHAMENTO</label>
+                                    <label asp-for="HorarioFim" class="form-label fw-semibold">Fechamento</label>
                                     <div class="input-group">
-                                        <span class="input-group-text border-0 bg-orange-subtle" style="color: #ff6600;">
+                                        <span class="input-group-text bg-white border-end-0 text-orange">
                                             <i class="bi bi-moon"></i>
                                         </span>
-                                        <input asp-for="HorarioFim" type="time" class="form-control border-0 bg-light p-3" required />
+                                        <input asp-for="HorarioFim" type="time" class="form-control border-start-0 ps-0" />
                                     </div>
                                     <span asp-validation-for="HorarioFim" class="text-danger small"></span>
                                 </div>
                             </div>
+
                         </div>
+                    </div>
 
-                        <div class="d-flex justify-content-between mt-4 pb-5">
-                            <a asp-action="Index" asp-route-idRestaurante="@idRestauranteContexto" class="btn btn-outline-secondary px-4 fw-bold border-0">
-                                <i class="bi bi-x-lg me-2"></i>Cancelar
-                            </a>
+                    <div class="d-flex justify-content-end align-items-center mt-2 mb-5 gap-2">
+                        <a asp-action="Index" asp-route-idRestaurante="@(Model?.IdRestaurante ?? idRestauranteContexto)" class="btn btn-light px-4 border text-muted fw-bold shadow-sm">
+                            Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-orange px-5 py-2 fw-bold shadow-sm">
+                            <i class="bi bi-check-circle me-2"></i>Salvar Horário
+                        </button>
+                    </div>
+                </form>
 
-                            <button type="submit" class="btn text-white px-5 fw-bold shadow-sm" style="background-color: #ff6600; border: none;">
-                                <i class="bi bi-check-lg me-2"></i>Salvar Horário
-                            </button>
-                        </div>
-                    </form>
-
-                </div>
             </div>
         </main>
     </div>
 </div>
 
-<style>
-    /* Reaproveitando os estilos do Gestor de Cardápio */
-    .bg-orange-subtle {
-        background-color: #fff3e0;
-    }
-
-    .form-control:focus, .form-select:focus {
-        background-color: #fdfdfd;
-        box-shadow: 0 0 0 0.25rem rgba(255, 102, 0, 0.15);
-        border: 1px solid #ff6600 !important;
-    }
-
-    /* Ajuste para inputs de tempo ficarem consistentes */
-    input[type="time"] {
-        min-height: 50px;
-    }
-</style>
-
 @section Scripts {
+    <style>
+        /* Estilos Padronizados DeliFit (Copiados do Endereço) */
+        .text-orange {
+            color: #ff6600 !important;
+        }
+
+        .form-label {
+            font-size: 0.9rem;
+            color: #495057;
+        }
+
+        .form-control, .form-select, .input-group-text {
+            border: 1px solid #dee2e6;
+            padding: 0.6rem 0.75rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        /* Ajuste específico para quando usamos input-group com ícone */
+        .input-group .form-control:focus {
+            border-color: #ff6600;
+            box-shadow: none; /* Remove shadow padrão para evitar conflito visual no group */
+            border-left: 1px solid #dee2e6; /* Restaura borda se necessário */
+        }
+
+        .input-group:focus-within {
+            box-shadow: 0 0 0 0.25rem rgba(255, 102, 0, 0.15);
+            border-radius: 0.375rem;
+        }
+
+            .input-group:focus-within .form-control,
+            .input-group:focus-within .input-group-text {
+                border-color: #ff6600;
+            }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #ff6600;
+            box-shadow: 0 0 0 0.25rem rgba(255, 102, 0, 0.15);
+        }
+
+        .btn-orange {
+            background-color: #ff6600;
+            border-color: #e65c00;
+            color: white;
+            transition: all 0.2s;
+        }
+
+            .btn-orange:hover {
+                background-color: #e65c00;
+                color: white;
+                transform: translateY(-1px);
+            }
+
+        .card {
+            border-radius: 12px;
+        }
+    </style>
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }

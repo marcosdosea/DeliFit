@@ -28,15 +28,6 @@ namespace DeliFitWeb.Controllers
             return View(listaAtendimentosViewModel);
         }
 
-        // GET: AtendimentoController/Details/5
-        public ActionResult Details(uint id)
-        {
-            Atendimento? atendimento = _atendimentoService.Get(id);
-            AtendimentoViewModel atendimentoModel = _mapper.Map<AtendimentoViewModel>(atendimento);
-            
-            return View(atendimentoModel);
-        }
-
         // GET: AtendimentoController/Create
         public ActionResult Create(uint? idRestaurante)
         {
