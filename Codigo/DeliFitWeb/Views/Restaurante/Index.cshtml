@@ -22,15 +22,15 @@
 
     <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
+            <div class="table-responsive px-3 pt-3 pb-4">
+                <table id="restaurantesTable" class="table align-middle mb-0">
                     <thead class="bg-light">
                         <tr>
-                            <th class="ps-4 py-3">ID</th>
-                            <th class="py-3">Restaurante</th>
-                            <th class="py-3">Localização</th>
-                            <th class="py-3">Status</th>
-                            <th class="text-center py-3">Ações</th>
+                            <th>ID</th>
+                            <th>Restaurante</th>
+                            <th>Localização</th>
+                            <th>Status</th>
+                            <th class="text-center">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -39,7 +39,7 @@
                             foreach (var item in Model)
                             {
                                 <tr>
-                                    <td class="ps-4 fw-bold text-muted">#@item.Id</td>
+                                    <td class="fw-bold text-muted">#@item.Id</td>
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <div class="avatar-sm bg-light-orange rounded-circle me-3 d-flex align-items-center justify-content-center">
@@ -49,7 +49,8 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <i class="bi bi-geo-alt text-muted me-1"></i> @item.Cidade / @item.Estado
+                                        <i class="bi bi-geo-alt text-muted me-1"></i>
+                                        @item.Cidade / @item.Estado
                                     </td>
                                     <td>
                                         @if (item.Validado)
@@ -66,8 +67,8 @@
                                         }
                                     </td>
                                     <td class="text-center">
-                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-orange-outline px-3">
-                                            Visualizar Perfil
+                                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-orange-outline px-3 me-1">
+                                            Visualizar
                                         </a>
                                         <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-red-outline px-3">
                                             Excluir
@@ -81,7 +82,7 @@
                             <tr>
                                 <td colspan="5" class="text-center py-5">
                                     <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" width="80" class="opacity-25 mb-3" /><br />
-                                    <span class="text-muted">Nenhum restaurante encontrado na base de dados.</span>
+                                    <span class="text-muted">Nenhum restaurante encontrado.</span>
                                 </td>
                             </tr>
                         }
@@ -93,17 +94,41 @@
 </div>
 
 @section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            $('#restaurantesTable').DataTable({
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.13.8/i18n/pt-BR.json'
+                },
+                pageLength: 8,
+                lengthChange: false,
+                ordering: true,
+                info: true,
+                searching: true,
+                pagingType: "simple_numbers",
+                dom:
+                    "<'row mb-3 align-items-center'<'col-md-6'f><'col-md-6 text-end'i>>" +
+                    "<'table-responsive't>" +
+                    "<'row mt-4'<'col-md-12 d-flex justify-content-center'p>>",
+                drawCallback: function () {
+                    $('.dataTables_paginate .pagination').addClass('pagination-modern');
+                }
+            });
+        });
+    </script>
+
+
+
     <style>
-        /* Estilos específicos para a listagem */
         .text-orange {
-            color: #ff6600 !important;
+            color: #ff6600;
         }
 
         .bg-light-orange {
             background-color: #fff3e6;
         }
 
-        /* Badges customizados */
         .bg-success-light {
             background-color: #e6f4ea;
         }
@@ -113,17 +138,15 @@
         }
 
         .avatar-sm {
-            width: 35px;
-            height: 35px;
+            width: 36px;
+            height: 36px;
         }
 
-        /* Botão de ação padrão DeliFit */
         .btn-orange-outline {
             border: 1px solid #ff6600;
             color: #ff6600;
             background: transparent;
-            transition: all 0.2s;
-            font-weight: 500;
+            transition: all 0.2s ease;
         }
 
             .btn-orange-outline:hover {
@@ -135,8 +158,7 @@
             border: 1px solid #ff0000;
             color: #ff0000;
             background: transparent;
-            transition: all 0.2s;
-            font-weight: 300;
+            transition: all 0.2s ease;
         }
 
             .btn-red-outline:hover {
@@ -144,14 +166,86 @@
                 color: white;
             }
 
-        .table thead th {
-            font-size: 0.85rem;
-            color: #6c757d;
-            border-bottom: 2px solid #f8f9fa;
+        table.dataTable {
+            border-collapse: separate;
+            border-spacing: 0 10px;
         }
 
-        .table tbody tr:hover {
-            background-color: #fffaf5;
+            table.dataTable tbody tr {
+                background-color: #fff;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+                transition: all 0.2s ease;
+            }
+
+                table.dataTable tbody tr:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 18px rgba(255, 102, 0, 0.15);
+                }
+
+            table.dataTable tbody td:first-child {
+                border-radius: 12px 0 0 12px;
+            }
+
+            table.dataTable tbody td:last-child {
+                border-radius: 0 12px 12px 0;
+            }
+
+        .dataTables_filter {
+            position: relative;
         }
+
+            .dataTables_filter label {
+                width: 100%;
+            }
+
+            .dataTables_filter input {
+                width: 100%;
+                border-radius: 30px;
+                padding: 10px 18px 10px 42px;
+                border: 1px solid #dee2e6;
+                font-size: 0.9rem;
+                transition: all 0.25s ease;
+            }
+
+            .dataTables_filter::before {
+                content: "\F52A";
+                font-family: "bootstrap-icons";
+                position: absolute;
+                left: 16px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #adb5bd;
+            }
+
+            .dataTables_filter input:focus {
+                border-color: #ff6600;
+                box-shadow: 0 0 0 0.2rem rgba(255, 102, 0, 0.2);
+            }
+
+        .pagination-modern {
+            gap: 8px;
+        }
+
+            .pagination-modern .page-link {
+                border-radius: 12px;
+                min-width: 38px;
+                height: 38px;
+                border: none;
+                background-color: #f8f9fa;
+                color: #495057;
+                font-weight: 500;
+                transition: all 0.2s ease;
+            }
+
+                .pagination-modern .page-link:hover {
+                    background-color: #fff3e6;
+                    color: #ff6600;
+                }
+
+            .pagination-modern .page-item.active .page-link {
+                background-color: #ff6600;
+                color: #fff;
+                box-shadow: 0 4px 12px rgba(255, 102, 0, 0.35);
+            }
     </style>
 }

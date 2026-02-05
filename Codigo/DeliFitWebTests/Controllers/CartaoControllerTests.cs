@@ -22,7 +22,7 @@ namespace DeliFitWeb.Controllers.Tests
             IMapper mapper = new MapperConfiguration(cfg =>
                 cfg.AddProfile(new CartaoProfile())).CreateMapper();
 
-            mockService.Setup(s => s.GetAll())
+            mockService.Setup(s => s.GetByCliente(It.IsAny<uint>()))
                 .Returns(GetTestCartaos());
 
             mockService.Setup(s => s.Get(It.IsAny<uint>()))
@@ -33,6 +33,7 @@ namespace DeliFitWeb.Controllers.Tests
 
             controller = new CartaoController(mockService.Object, mapper);
         }
+
 
         [TestMethod]
         public void IndexTest_Valido()
