@@ -1,7 +1,7 @@
 ﻿@model DeliFitWeb.Models.RestauranteViewModel
 
 @{
-    ViewData["Title"] = "Perfil do Restaurante";
+    ViewData["Title"] = "Detalhes do Restaurante - Solicitação";
 }
 
 <div class="container-fluid p-0">
@@ -19,7 +19,6 @@
                 </li>
                 <li><a href="#" class="nav-link fw-bold py-1 small" style="color: #ff6600;">- Perfil</a></li>
                 <li><a asp-controller="Item" asp-action="Index" asp-route-idRestaurante="@Model.Id" class="nav-link text-muted py-1 small">- Gestor de Cardápio</a></li>
-                <li><a asp-controller="Atendimento" asp-action="Index" asp-route-idRestaurante="@Model.Id" class="nav-link text-muted py-1 small">- Gestor de Atendimento</a></li>
             </ul>
         </aside>
 
@@ -30,6 +29,11 @@
                         <span class="fw-bold small">R</span>
                     </div>
                     <span class="fw-bold">@Model.NomeRestaurante</span>
+                </div>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="badge bg-warning text-dark">
+                        <i class="bi bi-clock-history me-1"></i> Pendente
+                    </span>
                 </div>
             </div>
 
@@ -55,7 +59,7 @@
                             <input class="form-control bg-white" value="@Model.TelefoneRestaurante" disabled />
                         </div>
                         <div class="col-md-1 text-end pt-4">
-                            <span class="fw-bold fs-5">4,4 <i class="bi bi-star text-warning"></i></span>
+                            <span class="fw-bold fs-5">-- <i class="bi bi-star text-warning"></i></span>
                         </div>
                     </div>
                 </div>
@@ -74,24 +78,20 @@
                     </div>
                 </div>
 
-                <div class="row g-3 mb-4">
-                    <div class="col-md-3">
-                        <label class="small fw-bold text-muted">Status</label>
-                        <input class="form-control bg-white" value="@(Model.Validado ? "Ativo" : "Inativo")" disabled />
-                    </div>
-                </div>
-
                 <div class="text-end pe-5 pb-5">
-                    <a asp-controller="Restaurante"
-                       asp-action="Edit"
-                       asp-route-id="@Model.Id"
-                       class="btn btn-warning px-5 fw-bold text-white shadow-sm text-decoration-none"
-                       style="background-color: #ff6600; border: none;">
-                        <i class="bi bi-pencil-square me-2"></i> Editar Perfil
-                    </a>
-                    <a asp-action="Index" class="btn btn-outline-secondary px-5 ms-2">
-                        <i class="bi bi-arrow-left me-2"></i> Voltar para Lista
-                    </a>
+                    <form asp-action="AprovarSolicitacao" asp-route-id="@Model.Id" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-success px-5 fw-bold text-white shadow-sm">
+                            <i class="bi bi-check-circle me-2"></i> Aprovar Solicitação
+                        </button>
+                    </form>
+
+                    <form asp-action="NegarSolicitacao" asp-route-id="@Model.Id" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger px-5 fw-bold text-white shadow-sm ms-2">
+                            <i class="bi bi-x-circle me-2"></i> Negar Solicitação
+                        </button>
+                    </form>
                 </div>
             </div>
         </main>
@@ -100,4 +100,28 @@
 
 @section Scripts {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Confirmação para NEGAR (excluir)
+            const negarForm = document.querySelector('form[asp-action="NegarSolicitacao"]');
+            if (negarForm) {
+                negarForm.addEventListener('submit', function(e) {
+                    if (!confirm('Tem certeza que deseja NEGAR esta solicitação?\n\nO restaurante será EXCLUÍDO permanentemente.')) {
+                        e.preventDefault();
+                    }
+                });
+            }
+
+            // Confirmação para APROVAR
+            const aprovarForm = document.querySelector('form[asp-action="AprovarSolicitacao"]');
+            if (aprovarForm) {
+                aprovarForm.addEventListener('submit', function(e) {
+                    if (!confirm('Tem certeza que deseja APROVAR esta solicitação?\n\nO restaurante será ativado e aparecerá na lista de restaurantes.')) {
+                        e.preventDefault();
+                    }
+                });
+            }
+        });
+    </script>
 }
