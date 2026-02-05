@@ -23,7 +23,7 @@
     <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
+                <table id="solicitacoesTable" class="table table-hover align-middle mb-0">
                     <thead class="bg-light">
                         <tr>
                             <th class="ps-4 py-3">ID</th>
@@ -90,8 +90,29 @@
 </div>
 
 @section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            new DataTable('#solicitacoesTable', {
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.13.8/i18n/pt-BR.json'
+                },
+                pageLength: 8,
+                lengthChange: false,
+                ordering: true,
+                info: true,
+                searching: true,
+                pagingType: "simple_numbers",
+                dom:
+                    "<'row mb-3'<'col-md-6'f><'col-md-6 text-end'i>>" +
+                    "<'table-responsive'tr>" +
+                    "<'row mt-3'<'col-md-12 d-flex justify-content-center'p>>"
+            });
+        });
+    </script>
+
+
     <style>
-        /* Estilos específicos para a listagem */
         .text-orange {
             color: #ff6600 !important;
         }
@@ -100,7 +121,6 @@
             background-color: #fff3e6;
         }
 
-        /* Badges customizados */
         .bg-success-light {
             background-color: #e6f4ea;
         }
@@ -114,7 +134,6 @@
             height: 35px;
         }
 
-        /* Botão de ação padrão DeliFit */
         .btn-orange-outline {
             border: 1px solid #ff6600;
             color: #ff6600;
@@ -150,5 +169,72 @@
         .table tbody tr:hover {
             background-color: #fffaf5;
         }
+        /* ===== DataTables DeliFit ===== */
+
+        /* Search */
+        .dataTables_filter input {
+            border-radius: 20px;
+            padding: 6px 14px;
+            border: 1px solid #dee2e6;
+            outline: none;
+        }
+
+            .dataTables_filter input:focus {
+                border-color: #ff6600;
+                box-shadow: 0 0 0 0.15rem rgba(255, 102, 0, 0.25);
+            }
+
+        /* Info */
+        .dataTables_info {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        /* Paginação */
+        .dataTables_paginate .pagination {
+            gap: 6px;
+        }
+
+        .dataTables_paginate .page-link {
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff6600;
+            border: 1px solid #dee2e6;
+        }
+
+            .dataTables_paginate .page-link:hover {
+                background-color: #fff3e6;
+                border-color: #ff6600;
+            }
+
+        .dataTables_paginate .page-item.active .page-link {
+            background-color: #ff6600;
+            border-color: #ff6600;
+            color: #fff;
+        }
+
+        /* Remove borda feia padrão */
+        table.dataTable {
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+            /* Hover alinhado com seu layout */
+            table.dataTable tbody tr:hover {
+                background-color: #fffaf5;
+            }
+
+            /* Cabeçalho */
+            table.dataTable thead th {
+                border-bottom: 2px solid #f8f9fa;
+                color: #6c757d;
+                font-size: 0.85rem;
+            }
+        }
+
     </style>
 }
