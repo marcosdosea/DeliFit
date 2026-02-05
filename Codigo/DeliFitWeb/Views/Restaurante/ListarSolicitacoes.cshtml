@@ -1,0 +1,154 @@
+﻿@model IEnumerable<DeliFitWeb.Models.RestauranteViewModel>
+
+@{
+    ViewData["Title"] = "Solicitacoes";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold">Restaurantes</h2>
+            <p class="text-muted">Gerencie todos os estabelecimentos cadastrados na plataforma DeliFit.</p>
+        </div>
+    </div>
+
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-6">
+            <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary px-3">
+                <i class="bi bi-chevron-left"></i> Voltar
+            </a>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4 py-3">ID</th>
+                            <th class="py-3">Restaurante</th>
+                            <th class="py-3">Localização</th>
+                            <th class="py-3">Status</th>
+                            <th class="text-center py-3">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="ps-4 fw-bold text-muted">#@item.Id</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-sm bg-light-orange rounded-circle me-3 d-flex align-items-center justify-content-center">
+                                                <i class="bi bi-shop text-orange"></i>
+                                            </div>
+                                            <span class="fw-bold">@item.NomeRestaurante</span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <i class="bi bi-geo-alt text-muted me-1"></i> @item.Cidade / @item.Estado
+                                    </td>
+                                    <td>
+                                        @if (item.Validado)
+                                        {
+                                            <span class="badge rounded-pill bg-success-light text-success px-3">
+                                                <i class="bi bi-check-circle-fill me-1"></i> Ativo
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge rounded-pill bg-secondary-light text-secondary px-3">
+                                                <i class="bi bi-pause-circle-fill me-1"></i> Inativo
+                                            </span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <a asp-action="DetailsSolicitacao" asp-route-id="@item.Id" class="btn btn-sm btn-orange-outline px-3">
+                                            Visualizar Restaurante
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center py-5">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" width="80" class="opacity-25 mb-3" /><br />
+                                    <span class="text-muted">Nenhum restaurante encontrado na base de dados.</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        /* Estilos específicos para a listagem */
+        .text-orange {
+            color: #ff6600 !important;
+        }
+
+        .bg-light-orange {
+            background-color: #fff3e6;
+        }
+
+        /* Badges customizados */
+        .bg-success-light {
+            background-color: #e6f4ea;
+        }
+
+        .bg-secondary-light {
+            background-color: #f1f3f4;
+        }
+
+        .avatar-sm {
+            width: 35px;
+            height: 35px;
+        }
+
+        /* Botão de ação padrão DeliFit */
+        .btn-orange-outline {
+            border: 1px solid #ff6600;
+            color: #ff6600;
+            background: transparent;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+            .btn-orange-outline:hover {
+                background-color: #ff6600;
+                color: white;
+            }
+
+        .btn-red-outline {
+            border: 1px solid #ff0000;
+            color: #ff0000;
+            background: transparent;
+            transition: all 0.2s;
+            font-weight: 300;
+        }
+
+            .btn-red-outline:hover {
+                background-color: #ff0000;
+                color: white;
+            }
+
+        .table thead th {
+            font-size: 0.85rem;
+            color: #6c757d;
+            border-bottom: 2px solid #f8f9fa;
+        }
+
+        .table tbody tr:hover {
+            background-color: #fffaf5;
+        }
+    </style>
+}
