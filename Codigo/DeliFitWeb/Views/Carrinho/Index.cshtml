@@ -69,16 +69,17 @@
 
                                     <a asp-action="Details"
                                        asp-route-id="@carrinho.Id"
-                                       class="btn btn-outline-secondary btn-sm">
-                                        Detalhes
+                                       class="btn btn-outline-secondary btn-sm action-btn">
+                                        <i class="bi bi-eye me-1"></i> Detalhes
                                     </a>
-            
+
                                     <form asp-action="Delete" method="post" class="d-inline">
                                         <input type="hidden" name="Id" value="@carrinho.Id" />
-                                        <button type="submit"
-                                                class="btn btn-outline-danger btn-sm"
-                                                onclick="return confirm('Deseja cancelar este carrinho?')">
-                                            Cancelar
+                                        <button type="button"
+                                                class="btn btn-outline-danger btn-sm btn-cancel"
+                                                data-bs-id="@carrinho.Id"
+                                                data-bs-nome="@carrinho.Cliente?.Nome">
+                                            <i class="bi bi-trash me-1"></i> Cancelar
                                         </button>
                                     </form>
 
@@ -103,8 +104,63 @@
     </div>
 </div>
 
+
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="confirmDeleteLabel"><i class="bi bi-exclamation-triangle-fill me-2"></i>Cancelar carrinho</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-2">Você está prestes a cancelar o <strong id="modalCarrinhoId">#0</strong>.</p>
+                <p class="text-muted small mb-0" id="modalClienteNome"></p>
+                <p class="small text-muted mt-2">Esta ação não pode ser desfeita.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Voltar</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Confirmar cancelamento</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
     .card {
         border-radius: 12px;
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      
+        if (typeof bootstrap === 'undefined') {
+            console.warn('Bootstrap JS não encontrado. A confirmação estilizada requer Bootstrap JavaScript.');
+            return;
+        }
+
+        let currentForm = null;
+        const modalEl = document.getElementById('confirmDeleteModal');
+        const modal = new bootstrap.Modal(modalEl);
+
+        document.querySelectorAll('.btn-cancel').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                currentForm = this.closest('form');
+                const id = this.getAttribute('data-bs-id') || '';
+                const nome = this.getAttribute('data-bs-nome') || '';
+
+                document.getElementById('modalCarrinhoId').textContent = '#' + id;
+                document.getElementById('modalClienteNome').textContent = nome ? 'Cliente: ' + nome : '';
+
+                modal.show();
+            });
+        });
+
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
+            if (currentForm) {
+                
+                currentForm.submit();
+            }
+        });
+    });
+</script>

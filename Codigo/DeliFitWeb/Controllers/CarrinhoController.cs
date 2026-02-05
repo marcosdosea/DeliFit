@@ -66,7 +66,7 @@ namespace DeliFitWeb.Controllers
             if (!ModelState.IsValid)
             {
                 CarregarDados();
-                return View(viewModel);
+                return RedirectToAction(nameof(Index));
             }
 
             try
@@ -74,47 +74,13 @@ namespace DeliFitWeb.Controllers
                 var carrinho = _mapper.Map<Carrinho>(viewModel);
                 _carrinhoService.Create(carrinho);
                 return RedirectToAction(nameof(Index));
+                
             }
             catch (ServiceException ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
                 CarregarDados();
-                return View(viewModel);
-            }
-        }
-
-        public ActionResult Edit(uint id)
-        {
-            var carrinho = _carrinhoService.Get(id);
-            if (carrinho == null)
-                return NotFound();
-
-            var viewModel = _mapper.Map<CarrinhoViewModel>(carrinho);
-            CarregarDados();
-            return View(viewModel);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(CarrinhoViewModel viewModel)
-        {
-            if (!ModelState.IsValid)
-            {
-                CarregarDados();
-                return View(viewModel);
-            }
-
-            try
-            {
-                var carrinho = _mapper.Map<Carrinho>(viewModel);
-                _carrinhoService.Edit(carrinho);
                 return RedirectToAction(nameof(Index));
-            }
-            catch (ServiceException ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                CarregarDados();
-                return View(viewModel);
             }
         }
 

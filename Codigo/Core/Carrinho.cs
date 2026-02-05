@@ -7,7 +7,7 @@ public partial class Carrinho
 {
     public uint Id { get; set; }
 
-    public string? Observação { get; set; }
+    public string? Observacao { get; set; }
 
     public uint IdCliente { get; set; }
 
