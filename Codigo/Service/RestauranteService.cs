@@ -88,5 +88,22 @@ namespace Service
                 })
                 .ToList();
         }
+
+        public IEnumerable<FaturamentoDTO> GetAllFaturamentos(uint idRestaurante)
+        {
+           var faturamentos = _context.Pedidos
+                .Where(p => p.IdRestaurante == idRestaurante && p.Data.HasValue)
+                .GroupBy(p => p.Data.Value.Date)
+                .Select(g => new FaturamentoDTO
+                {
+                    IdRestaurante = idRestaurante,
+                    Data = g.Key,
+                    TotalFaturamento = g.Sum(p => p.Preco),
+                    TotalPedidos = g.Count(),
+                    Pedidos = g.ToList()
+                })
+                .ToList();
+            return faturamentos;
+        }
     }
 }

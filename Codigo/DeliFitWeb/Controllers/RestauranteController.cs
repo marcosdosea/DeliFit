@@ -97,5 +97,12 @@ namespace DeliFitWeb.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        public ActionResult Faturamentos(uint idRestaurante)
+        {
+            var faturamento = _restauranteService.GetAllFaturamentos(idRestaurante);
+            var faturamentoModel = _mapper.Map<List<FaturamentoViewModel>>(faturamento);
+            return View(faturamentoModel);
+        }
     }
 }

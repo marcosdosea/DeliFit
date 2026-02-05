@@ -13,4 +13,6 @@ public interface IRestauranteService
     Restaurante? Get(uint id);
 
     IEnumerable<RestauranteDTO> GetAll();
+
+    IEnumerable<FaturamentoDTO> GetAllFaturamentos(uint idRestaurante);
 }
