@@ -65,19 +65,10 @@ public class CarrinhoController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        try
-        {
-            var carrinho = _mapper.Map<Carrinho>(viewModel);
-            _carrinhoService.Create(carrinho);
-            return RedirectToAction(nameof(Index));
+        var carrinho = _mapper.Map<Carrinho>(viewModel);
+        _carrinhoService.Create(carrinho);
 
-        }
-        catch (ServiceException ex)
-        {
-            ModelState.AddModelError(string.Empty, ex.Message);
-            CarregarDados();
-            return RedirectToAction(nameof(Index));
-        }
+        return RedirectToAction(nameof(Index));
     }
 
     public ActionResult Delete(uint id)
