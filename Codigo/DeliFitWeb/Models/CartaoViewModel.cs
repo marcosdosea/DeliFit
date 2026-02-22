@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Util;
 
 namespace DeliFitWeb.Models
 {
@@ -27,6 +28,7 @@ namespace DeliFitWeb.Models
 
         [Required(ErrorMessage = "Campo requerido.")]
         [StringLength(11, MinimumLength = 11, ErrorMessage = "O CPF deve conter 11 caracteres.")]
+        [CPF]
         public string Cpf { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Cliente obrigatório.")]
