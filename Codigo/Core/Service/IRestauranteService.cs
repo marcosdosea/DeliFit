@@ -15,4 +15,6 @@ public interface IRestauranteService
     IEnumerable<RestauranteDTO> GetAll();
 
     IEnumerable<FaturamentoDTO> GetAllFaturamentos(uint idRestaurante);
+    IEnumerable<RestauranteDTO> GetRestaurantesAtivos();
+    IEnumerable<RestauranteDTO> GetRestaurantesPendentes();
 }

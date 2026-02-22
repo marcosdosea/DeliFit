@@ -20,24 +20,15 @@ namespace DeliFitWeb.Controllers
         // GET: RestauranteController
         public ActionResult Index()
         {
-            // FILTRO: Apenas restaurantes ATIVOS (Validado = true)
-            var listaRestaurantes = _restauranteService.GetAll()
-                .Where(r => r.Validado == true) // <-- ADICIONE ESTE FILTRO
-                .ToList();
-
+            var listaRestaurantes = _restauranteService.GetRestaurantesAtivos();
             var listaRestaurantesModel = _mapper.Map<List<RestauranteViewModel>>(listaRestaurantes);
 
             return View(listaRestaurantesModel);
         }
 
-        // GET: RestauranteController/ListarSolicitacoes
         public ActionResult ListarSolicitacoes()
         {
-            // FILTRO: Apenas restaurantes INATIVOS/PENDENTES (Validado = false)
-            var listaRestaurantes = _restauranteService.GetAll()
-                .Where(r => r.Validado == false) // <-- ADICIONE ESTE FILTRO
-                .ToList();
-
+            var listaRestaurantes = _restauranteService.GetRestaurantesPendentes();
             var listaRestaurantesModel = _mapper.Map<List<RestauranteViewModel>>(listaRestaurantes);
 
             return View(listaRestaurantesModel);
