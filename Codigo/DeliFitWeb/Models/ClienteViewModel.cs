@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Util;
 
 namespace DeliFitWeb.Models
 {
@@ -13,12 +14,14 @@ namespace DeliFitWeb.Models
         public string Nome { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Campo requerido")]
-        [StringLength(11, MinimumLength = 11, ErrorMessage = "O telefone deve ter no 11 caracteres.")]
+        [StringLength(11, MinimumLength = 11, ErrorMessage = "O telefone deve conter 11 caracteres.")]
+        [TelefoneCelular(ErrorMessage = "Telefone inválido")]
         public string Telefone { get; set; } = string.Empty;
 
 
         [Required(ErrorMessage = "Campo requerido")]
         [StringLength(11, MinimumLength = 11, ErrorMessage = "O cpf deve conter 11 caracteres.")]
+        [CPF(ErrorMessage = "CPF inválido")]
         public string Cpf { get; set; } = string.Empty;
 
         [Display(Name = "Email")]

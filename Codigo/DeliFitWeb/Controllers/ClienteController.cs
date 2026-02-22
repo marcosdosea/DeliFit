@@ -49,8 +49,11 @@ namespace DeliFitWeb.Controllers
             {
                 var cliente = _mapper.Map<Cliente>(clienteModel);
                 _clienteService.Create(cliente);
+                return RedirectToAction(nameof(Index));
             }
-            return RedirectToAction(nameof(Index));
+
+            
+            return View(clienteModel);
         }
 
         // GET: ClienteController/Edit/5
@@ -71,8 +74,11 @@ namespace DeliFitWeb.Controllers
             {
                 var cliente = _mapper.Map<Cliente>(clienteModel);
                 _clienteService.Edit(cliente);
+                return RedirectToAction(nameof(Index));
             }
-            return RedirectToAction(nameof(Index));
+
+            // If validation failed, redisplay the edit form
+            return View(clienteModel);
         }
 
         // GET: ClienteController/Delete/5

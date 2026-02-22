@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Core;
-using Core.DTO;
 using Core.Service;
 using DeliFitWeb.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -23,11 +21,7 @@ namespace DeliFitWeb.Controllers
         public ActionResult Index()
         {
             var categoriaDto = _categoriaService.ListarCategorias();
-            var viewModel = categoriaDto.Select(c => new CategoriaViewModel
-            {
-                Nome = c.Nome,
-                QuantidadeItens = c.QuantidadeItens
-            }).ToList();
+            var viewModel = _mapper.Map<List<CategoriaViewModel>>(categoriaDto);
 
             return View(viewModel);
         }
@@ -36,15 +30,10 @@ namespace DeliFitWeb.Controllers
         public IActionResult Itens(string categoria)
         {
             if (string.IsNullOrEmpty(categoria))
-                return BadRequest();
+                return RedirectToAction(nameof(Index));
 
-            var itens =  _categoriaService.ListarItensPorCategoria(categoria);
-
-            var viewModel = itens.Select(i => new ItemViewModel
-            {
-                Id = i.Id,
-                Nome = i.Nome
-            }).ToList();
+            var itens = _categoriaService.ListarItensPorCategoria(categoria);
+            var viewModel = _mapper.Map<List<ItemViewModel>>(itens);
 
             return View(viewModel);
         }

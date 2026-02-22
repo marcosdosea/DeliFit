@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Util;
 
 namespace DeliFitWeb.Models
 {
@@ -27,7 +28,8 @@ namespace DeliFitWeb.Models
 
         [Display(Name = "CEP")]
         [Required(ErrorMessage = "O campo CEP é obrigatório.")]
-        [StringLength(10, ErrorMessage = "O CEP deve ter no máximo 10 caracteres.")]
+        [StringLength(8, ErrorMessage = "O CEP deve ter no máximo 8 caracteres.")]
+        [Cep(ErrorMessage = "CEP inválido")]
         public string Cep { get; set; } = string.Empty;
 
         [Display(Name = "Cidade")]

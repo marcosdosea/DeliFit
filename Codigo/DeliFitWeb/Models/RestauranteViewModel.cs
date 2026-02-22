@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Util;
 
 namespace DeliFitWeb.Models
 {
@@ -26,12 +27,14 @@ namespace DeliFitWeb.Models
 
         [Display(Name = "CPF do(a) Proprietário(a)")]
         [Required(ErrorMessage = "O campo CPF do(a) Proprietário(a) é obrigatório.")]
-        [StringLength(15, ErrorMessage = "O CPF deve ter no máximo 15 caracteres.")]
+        [StringLength(11, MinimumLength = 11, ErrorMessage = "O CPF deve conter 11 caracteres.")]
+        [CPF(ErrorMessage = "CPF inválido")]
         public string CpfProprietario { get; set; } = string.Empty;
 
         [Display(Name = "CNPJ")]
         [Required(ErrorMessage = "O campo CNPJ é obrigatório.")]
-        [StringLength(20, ErrorMessage = "O CNPJ deve ter no máximo 20 caracteres.")]
+        [StringLength(14, ErrorMessage = "O CNPJ deve ter no máximo 14 caracteres.")]
+        [CNPJ(ErrorMessage = "CNPJ inválido")]
         public string Cnpj { get; set; } = string.Empty;
 
         [Display(Name = "Descrição do Restaurante")]
@@ -40,12 +43,14 @@ namespace DeliFitWeb.Models
 
         [Display(Name = "Telefone do(a) Proprietário(a)")]
         [Required(ErrorMessage = "O campo Telefone do(a) Proprietário(a) é obrigatório.")]
-        [StringLength(15, ErrorMessage = "O telefone deve ter no máximo 15 caracteres.")]
+        [StringLength(11, MinimumLength = 11, ErrorMessage = "O telefone deve conter 11 caracteres.")]
+        [TelefoneCelular(ErrorMessage = "Telefone inválido")]
         public string TelefoneProprietario { get; set; } = string.Empty;
 
         [Display(Name = "Telefone do Restaurante")]
         [Required(ErrorMessage = "O campo Telefone do Restaurante é obrigatório.")]
-        [StringLength(15, ErrorMessage = "O telefone deve ter no máximo 15 caracteres.")]
+        [StringLength(11, MinimumLength = 11, ErrorMessage = "O telefone deve conter 11 caracteres.")]
+        [TelefoneCelular(ErrorMessage = "Telefone inválido")]
         public string TelefoneRestaurante { get; set; } = string.Empty;
 
         [Display(Name = "Email")]
@@ -71,7 +76,8 @@ namespace DeliFitWeb.Models
 
         [Display(Name = "CEP")]
         [Required(ErrorMessage = "O campo CEP é obrigatório.")]
-        [StringLength(10, ErrorMessage = "O CEP deve ter no máximo 10 caracteres.")]
+        [StringLength(8, MinimumLength = 8, ErrorMessage = "O CEP deve conter 8 caracteres.")]
+        [Cep(ErrorMessage = "CEP inválido")]
         public string Cep { get; set; } = string.Empty;
 
         [Display(Name = "Cidade")]
