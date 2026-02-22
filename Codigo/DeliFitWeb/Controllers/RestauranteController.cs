@@ -81,9 +81,10 @@ namespace DeliFitWeb.Controllers
             {
                 var restaurante = _mapper.Map<Restaurante>(restauranteModel);
                 _restauranteService.Create(restaurante);
+                return RedirectToAction(nameof(Index));
             }
 
-            return RedirectToAction(nameof(Index));
+            return View(restauranteModel);
         }
 
         // GET: RestauranteController/Edit/5

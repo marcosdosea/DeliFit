@@ -4,4 +4,5 @@
   <Project Path="DeliFitWebTests/DeliFitWebTests.csproj" Id="a8a8b37d-d966-4163-be92-8f33969eda3d" />
   <Project Path="Service/Service.csproj" />
   <Project Path="ServiceTests/ServiceTests.csproj" Id="6ac54be2-5196-4f13-8db1-05c87c3d43a7" />
+  <Project Path="Util/Util.csproj" Id="390fa94d-af1a-401b-9b7d-5d27e2643e00" />
 </Solution>

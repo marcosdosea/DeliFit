@@ -73,15 +73,6 @@
                                 </tr>
                             }
                         }
-                        else
-                        {
-                            <tr>
-                                <td colspan="5" class="text-center py-5">
-                                    <img src="https://cdn-icons-png.flaticon.com/512/7486/7486744.png" width="80" class="opacity-25 mb-3" /><br />
-                                    <span class="text-muted">Nenhum restaurante encontrado na base de dados.</span>
-                                </td>
-                            </tr>
-                        }
                     </tbody>
                 </table>
             </div>
@@ -95,7 +86,8 @@
         $(document).ready(function () {
             new DataTable('#solicitacoesTable', {
                 language: {
-                    url: 'https://cdn.datatables.net/plug-ins/1.13.8/i18n/pt-BR.json'
+                    url: 'https://cdn.datatables.net/plug-ins/1.13.8/i18n/pt-BR.json',
+                    emptyTable : "Nenhum restaurante encontrado."
                 },
                 pageLength: 8,
                 lengthChange: false,
