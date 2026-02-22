@@ -65,8 +65,6 @@ namespace Service
             var Cliente = _context.Clientes.FirstOrDefault(a => a.Id == id);
             if (Cliente != null)
             {
-                _context.Entry(Cliente).Collection(c => c.Enderecos).Load();
-                _context.Enderecos.RemoveRange(Cliente.Enderecos);
                 _context.Clientes.Remove(Cliente);
                 _context.SaveChanges();
             }
