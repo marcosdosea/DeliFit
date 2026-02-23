@@ -132,6 +132,34 @@
 </div>
 
 @section Scripts {
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        document.getElementById('Cnpj').addEventListener('blur', function () {
+            let cnpj = this.value;
+            
+            if (cnpj.length >= 14) {
+                fetch(`/Restaurante/ConsultarCnpj?cnpj=${cnpj}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.sucesso) {
+                            document.getElementById('NomeRestaurante').value = data.nomeRestaurante;
+                            document.getElementById('Cep').value = data.cep;
+                            document.getElementById('Rua').value = data.rua;
+                            document.getElementById('Numero').value = data.numero;
+                            document.getElementById('Bairro').value = data.bairro;
+                            document.getElementById('Cidade').value = data.cidade;
+                            document.getElementById('Estado').value = data.estado;
+                        } else {
+                            alert(data.mensagem);
+                        }
+                    })
+                    .catch(error => console.error('Erro na consulta do CNPJ:', error));
+            }
+        });
+    </script>
+
     <style>
         .text-orange {
             color: #ff6600 !important;
