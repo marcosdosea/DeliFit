@@ -3,6 +3,8 @@ using Core;
 using Core.Service;
 using DeliFitWeb.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using System.Net.Http.Json;
 
 namespace DeliFitWeb.Controllers
 {
@@ -164,6 +166,39 @@ namespace DeliFitWeb.Controllers
             _restauranteService.Delete(id);
 
             return RedirectToAction(nameof(ListarSolicitacoes));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ConsultarCnpj(string cnpj)
+        {
+            if (string.IsNullOrEmpty(cnpj))
+            {
+                return Json(new { sucesso = false, mensagem = "CNPJ inválido." });
+            }
+
+            cnpj = new string(cnpj.Where(char.IsDigit).ToArray());
+
+            using var httpClient = new HttpClient();
+            var response = await httpClient.GetAsync($"https://brasilapi.com.br/api/cnpj/v1/{cnpj}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadFromJsonAsync<CnpjResponse>();
+
+                return Json(new
+                {
+                    sucesso = true,
+                    nomeRestaurante = string.IsNullOrEmpty(data.nome_fantasia) ? data.razao_social : data.nome_fantasia,
+                    cep = data.cep,
+                    rua = data.logradouro,
+                    numero = data.numero,
+                    bairro = data.bairro,
+                    cidade = data.municipio,
+                    estado = data.uf
+                });
+            }
+
+            return Json(new { sucesso = false, mensagem = "CNPJ não encontrado." });
         }
     }
 }
