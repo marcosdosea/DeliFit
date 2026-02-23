@@ -6,6 +6,7 @@ using DeliFitWeb.Mappers;
 using DeliFitWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using System.Linq;
 
 namespace DeliFitWeb.Controllers.Tests
 {
@@ -21,7 +22,10 @@ namespace DeliFitWeb.Controllers.Tests
 
             IMapper mapper = new MapperConfiguration(cfg => cfg.AddProfile(new RestauranteProfile())).CreateMapper();
 
-            mockService.Setup(service => service.GetAll()).Returns(GetTestRestaurantes());
+            // Ajuste: configurar o mock para retornar apenas os restaurantes ativos
+            mockService.Setup(service => service.GetRestaurantesAtivos()).Returns(GetTestRestaurantes().Where(r => r.Validado).ToList());
+            // Ajuste: configurar o mock para retornar restaurantes pendentes quando solicitado
+            mockService.Setup(service => service.GetRestaurantesPendentes()).Returns(GetTestRestaurantes().Where(r => !r.Validado).ToList());
 
             mockService.Setup(service => service.Get(1)).Returns(GetTargetRestaurante());
 
