@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http;
+using System.Net.Http.Json;
 using DeliFitWeb.Areas.Identity.Data;
 using System.Security.Cryptography;
 using System.Linq;
@@ -43,7 +45,7 @@ namespace DeliFitWeb.Controllers
             RandomNumberGenerator.Fill(bytes);
             var chars = bytes.Select(b => valid[b % valid.Length]).ToArray();
 
-            // ensure at least one digit
+            
             if (!chars.Any(c => digits.Contains(c)))
             {
                 var pos = Math.Abs(BitConverter.ToInt32(bytes, 0)) % length;
@@ -114,7 +116,8 @@ namespace DeliFitWeb.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(restauranteModel);
+            
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: RestauranteController/Edit/5
@@ -204,20 +207,20 @@ namespace DeliFitWeb.Controllers
                         restaurante.Validado = true; // Ativa o restaurante
                         _restauranteService.Edit(restaurante);
 
-                        // Envia e-mail com credenciais (opção B: menos seguro)
+                        // Envia e-mail com credenciais 
                         var assunto = "Solicitação aprovada - DeliFit";
                         var mensagem = $"Sua solicitação foi aprovada.\nUsuário: {email}\nSenha: {senha}\nAcesse: {Request.Scheme}://{Request.Host}/Identity/Account/Login";
                         await _emailSender.SendEmailAsync(email, assunto, mensagem);
                     }
                     else
                     {
-                        // Em caso de erro ao criar usuário, você pode logar os erros
-                        // por enquanto não altera o estado do restaurante
+                        // Logar falha na criação do usuário 
+
                     }
                 }
                 else
                 {
-                    // Email não informado, não é possível criar usuário
+                    // Email não informado não é possível criar usuário logar erro
                 }
             }
             return RedirectToAction(nameof(ListarSolicitacoes));
@@ -236,7 +239,7 @@ namespace DeliFitWeb.Controllers
         [Authorize(Roles = "GerenteRestaurante")]
         public ActionResult MeuRestaurante()
         {
-            // O e-mail foi usado como UserName no Identity, logo podemos obtê-lo assim:
+            // O e-mail foi usado como UserName no Identity
             var email = User.Identity?.Name;
 
             if (string.IsNullOrEmpty(email))
@@ -255,6 +258,39 @@ namespace DeliFitWeb.Controllers
 
             // Redireciona para a Action de Detalhes passando o ID correto do restaurante
             return RedirectToAction(nameof(Details), new { id = restaurante.Id });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ConsultarCnpj(string cnpj)
+        {
+            if (string.IsNullOrEmpty(cnpj))
+            {
+                return Json(new { sucesso = false, mensagem = "CNPJ inválido." });
+            }
+
+            cnpj = new string(cnpj.Where(char.IsDigit).ToArray());
+
+            using var httpClient = new HttpClient();
+            var response = await httpClient.GetAsync($"https://brasilapi.com.br/api/cnpj/v1/{cnpj}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var data = await response.Content.ReadFromJsonAsync<CnpjResponse>();
+
+                return Json(new
+                {
+                    sucesso = true,
+                    nomeRestaurante = string.IsNullOrEmpty(data.nome_fantasia) ? data.razao_social : data.nome_fantasia,
+                    cep = data.cep,
+                    rua = data.logradouro,
+                    numero = data.numero,
+                    bairro = data.bairro,
+                    cidade = data.municipio,
+                    estado = data.uf
+                });
+            }
+
+            return Json(new { sucesso = false, mensagem = "CNPJ não encontrado." });
         }
     }
 }

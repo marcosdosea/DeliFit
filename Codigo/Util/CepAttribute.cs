@@ -1,36 +1,26 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-
 namespace Util
 {
-    /// <summary>
-    /// Validação customizada para CPF
-    /// </summary>
     public class CepAttribute : ValidationAttribute
     {
-        /// <summary>
-        /// Construtor
-        /// </summary>
-        public CepAttribute() { }
-
-        /// <summary>
-        /// Validação server
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
         public override bool IsValid(object? value)
         {
             if (value == null || string.IsNullOrEmpty(value.ToString()))
                 return true;
-            var valueNoEspecial = Methods.RemoveNaoNumericos((string)value);
-            if (valueNoEspecial.ToString().Length != 8)
+
+            var valueNoEspecial = Methods.RemoveNaoNumericos(value.ToString());
+
+            // Só confere se tem 8 números. Tiramos a verificação do zero no começo!
+            if (valueNoEspecial.Length != 8)
                 return false;
-            if (valueNoEspecial.ToString().StartsWith('0'))
-                return false;
+
             return true;
         }
 
-        public string GetErrorMessage() =>
-            $"CEP Inválido";
+        public override string FormatErrorMessage(string name)
+        {
+            return $"O campo {name} deve conter um CEP válido de 8 dígitos.";
+        }
     }
 }
