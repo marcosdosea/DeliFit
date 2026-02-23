@@ -99,10 +99,13 @@ namespace DeliFitWeb.Controllers.Tests
 
             // Assert
             Assert.AreEqual(1, controller?.ModelState.ErrorCount);
-            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
-            RedirectToActionResult redirectToActionResult = (RedirectToActionResult)result;
-            Assert.IsNull(redirectToActionResult.ControllerName);
-            Assert.AreEqual("Index", redirectToActionResult.ActionName);
+            // When model state is invalid the controller should re-display the Create view
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+            ViewResult viewResult = (ViewResult)result;
+            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(ClienteViewModel));
+            ClienteViewModel clienteModel = (ClienteViewModel)viewResult.ViewData.Model;
+            Assert.AreEqual(4u, clienteModel.Id);
+            Assert.AreEqual("Ian Sommerville", clienteModel.Nome);
         }
 
         [TestMethod()]
