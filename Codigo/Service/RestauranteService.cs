@@ -107,5 +107,11 @@ namespace Service
                 })
                 .ToList();
         }
+
+        public Restaurante? GetByEmail(string email)
+        {
+            return _context.Restaurantes
+                .FirstOrDefault(r => r.Email == email);
+        }
     }
 }

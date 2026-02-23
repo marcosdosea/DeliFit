@@ -1,4 +1,6 @@
+using DeliFitWeb.Areas.Identity.Data;
 using DeliFitWeb.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -6,34 +8,52 @@ namespace DeliFitWeb.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        public const string SessionKeyUserName = "UserName";
+        public const string SessionKeyUserRoles = "UserRoles";
 
-        public HomeController(ILogger<HomeController> logger)
+
+        private readonly ILogger<HomeController> _logger;
+        private readonly UserManager<UsuarioIdentity> _userManager;
+        public HomeController(ILogger<HomeController> logger, UserManager<UsuarioIdentity> userManager)
         {
             _logger = logger;
+            _userManager = userManager;
         }
 
+
         // C#
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var model = new RestauranteViewModel
+            // Obter usuário/roles via UserManager
+            var usuario = await _userManager.GetUserAsync(User);
+            var userName = usuario?.UserName ?? User.Identity?.Name ?? "Convidado";
+            var roles = usuario is not null ? await _userManager.GetRolesAsync(usuario) : new List<string>();
+            var rolesString = string.Join(", ", roles);
+            var perfil = roles.FirstOrDefault() ?? "Convidado";
+
+
+            // armazenar na sessão
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyUserName)))
             {
-                Id = 1,
-                NomeRestaurante = "Restaurante 1",
-                Cidade = "Cidade 1",
-                Bairro = "Bairro",
-                Cep = "12345-789",
-                Cnpj = "12345678910121",
-                CpfProprietario = "12345678901",
-                Email = "teste@gmail.com",
-                Estado = "Estado",
-                Numero = "123",
-                Rua = "Rua",
-                TelefoneProprietario = "79999419916",
-                TelefoneRestaurante = "79999419916",
-                NomeProprietario = "NomeTeste"
-            }; // preencher conforme necessário
-            return View(model);
+                HttpContext.Session.SetString(SessionKeyUserName, userName);
+            }
+
+            // armazenar o(s) perfil(is) do usuário na sessão
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyUserRoles)))
+            {
+                HttpContext.Session.SetString(SessionKeyUserRoles, rolesString);
+            }
+
+
+            ViewData["nomeUsuario"] = userName;
+
+            ViewData["idadeUsuario"] = 30;
+
+            ViewBag.DataAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+
+            ViewBag.PerfilUsuario = perfil;
+
+            return View();
         }
 
         public IActionResult Privacy()
