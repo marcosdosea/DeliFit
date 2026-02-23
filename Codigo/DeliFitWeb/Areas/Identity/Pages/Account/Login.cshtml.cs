@@ -135,7 +135,7 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
                     }
                     if (roles.Contains("GerenteRestaurante"))
                     {
-                        return LocalRedirect("~/Restaurante/Details"); 
+                        return LocalRedirect("~/Restaurante/MeuRestaurante"); 
                     }
 
                     // Se for cliente comum ou não tiver role específica, vai para a página padrão

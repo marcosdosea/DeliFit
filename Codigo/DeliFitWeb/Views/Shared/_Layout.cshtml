@@ -13,6 +13,8 @@
 
 
     <style>
+
+
         /* Variáveis de Cor DeliFit */
         :root {
             --delifit-orange: #ff6600;
@@ -74,8 +76,6 @@
 
         /* Área de Conteúdo Principal */
         .main-content {
-            margin-left: var(--sidebar-width);
-            padding: 30px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -128,10 +128,10 @@
 </head>
 <body>
 
-    <div class="sidebar">
+    @* <div class="sidebar">
         <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
             <i class="bi bi-fire"></i> DeliFit
-            @* <partial name='_LoginPartial' />' *@
+             <partial name='_LoginPartial' />' 
         </a>
 
         <ul class="nav nav-pills flex-column">
@@ -177,7 +177,7 @@
                 </a>
             </li>
         </ul>
-    </div>
+    </div> *@
 
     <div class="main-content">
         <main role="main" class="pb-3">

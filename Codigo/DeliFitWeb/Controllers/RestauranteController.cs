@@ -232,5 +232,29 @@ namespace DeliFitWeb.Controllers
 
             return RedirectToAction(nameof(ListarSolicitacoes));
         }
+
+        [Authorize(Roles = "GerenteRestaurante")]
+        public ActionResult MeuRestaurante()
+        {
+            // O e-mail foi usado como UserName no Identity, logo podemos obtê-lo assim:
+            var email = User.Identity?.Name;
+
+            if (string.IsNullOrEmpty(email))
+            {
+                // Se por algum motivo o utilizador não estiver autenticado ou não tiver e-mail
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Procura o restaurante correspondente
+            var restaurante = _restauranteService.GetByEmail(email);
+
+            if (restaurante == null)
+            {
+                return NotFound("O restaurante associado a este utilizador não foi encontrado.");
+            }
+
+            // Redireciona para a Action de Detalhes passando o ID correto do restaurante
+            return RedirectToAction(nameof(Details), new { id = restaurante.Id });
+        }
     }
 }

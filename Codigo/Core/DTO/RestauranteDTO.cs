@@ -11,5 +11,6 @@
         public string Cidade { get; set; } = null!;
 
         public string Estado { get; set; } = null!;
+        
     }
 }
