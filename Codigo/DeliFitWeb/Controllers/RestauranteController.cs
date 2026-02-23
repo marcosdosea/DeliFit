@@ -2,7 +2,13 @@
 using Core;
 using Core.Service;
 using DeliFitWeb.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using DeliFitWeb.Areas.Identity.Data;
+using System.Security.Cryptography;
+using System.Linq;
 
 namespace DeliFitWeb.Controllers
 {
@@ -10,11 +16,41 @@ namespace DeliFitWeb.Controllers
     {
         private readonly IRestauranteService _restauranteService;
         private readonly IMapper _mapper;
+        private readonly UserManager<UsuarioIdentity> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IEmailSender _emailSender;
 
-        public RestauranteController(IRestauranteService restauranteService, IMapper mapper)
+        public RestauranteController(IRestauranteService restauranteService,
+                                     IMapper mapper,
+                                     UserManager<UsuarioIdentity> userManager,
+                                     RoleManager<IdentityRole> roleManager,
+                                     IEmailSender emailSender)
         {
             _restauranteService = restauranteService;
             _mapper = mapper;
+            _userManager = userManager;
+            _roleManager = roleManager;
+            _emailSender = emailSender;
+        }
+
+        private static string GenerateSecurePassword(int length = 12)
+        {
+            const string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            const string digits = "0123456789";
+            if (length < 6) length = 6;
+
+            var bytes = new byte[length];
+            RandomNumberGenerator.Fill(bytes);
+            var chars = bytes.Select(b => valid[b % valid.Length]).ToArray();
+
+            // ensure at least one digit
+            if (!chars.Any(c => digits.Contains(c)))
+            {
+                var pos = Math.Abs(BitConverter.ToInt32(bytes, 0)) % length;
+                chars[pos] = digits[bytes[0] % digits.Length];
+            }
+
+            return new string(chars);
         }
 
         // GET: RestauranteController
@@ -26,6 +62,8 @@ namespace DeliFitWeb.Controllers
             return View(listaRestaurantesModel);
         }
 
+
+        [Authorize(Roles = "Admin")]
         public ActionResult ListarSolicitacoes()
         {
             var listaRestaurantes = _restauranteService.GetRestaurantesPendentes();
@@ -45,6 +83,7 @@ namespace DeliFitWeb.Controllers
             return View(restauranteModel);
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: RestauranteController/DetailsSolicitacao/5
         public ActionResult DetailsSolicitacao(uint id)
         {
@@ -142,15 +181,44 @@ namespace DeliFitWeb.Controllers
         }
 
         // POST: RestauranteController/AprovarSolicitacao/5
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AprovarSolicitacao(uint id)
+        public async Task<ActionResult> AprovarSolicitacao(uint id)
         {
             var restaurante = _restauranteService.Get(id);
             if (restaurante != null)
             {
-                restaurante.Validado = true; // Ativa o restaurante
-                _restauranteService.Edit(restaurante);
+                // Cria usuário Identity para o restaurante com senha gerada
+                var email = restaurante.Email;
+                if (!string.IsNullOrWhiteSpace(email))
+                {
+                    var user = new UsuarioIdentity { UserName = email, Email = email };
+                    var senha = GenerateSecurePassword(12);
+                    var createResult = await _userManager.CreateAsync(user, senha);
+                    if (createResult.Succeeded)
+                    {
+                        // Atribui role e ativa restaurante
+                        await _userManager.AddToRoleAsync(user, "GerenteRestaurante");
+
+                        restaurante.Validado = true; // Ativa o restaurante
+                        _restauranteService.Edit(restaurante);
+
+                        // Envia e-mail com credenciais (opção B: menos seguro)
+                        var assunto = "Solicitação aprovada - DeliFit";
+                        var mensagem = $"Sua solicitação foi aprovada.\nUsuário: {email}\nSenha: {senha}\nAcesse: {Request.Scheme}://{Request.Host}/Identity/Account/Login";
+                        await _emailSender.SendEmailAsync(email, assunto, mensagem);
+                    }
+                    else
+                    {
+                        // Em caso de erro ao criar usuário, você pode logar os erros
+                        // por enquanto não altera o estado do restaurante
+                    }
+                }
+                else
+                {
+                    // Email não informado, não é possível criar usuário
+                }
             }
             return RedirectToAction(nameof(ListarSolicitacoes));
         }

@@ -98,13 +98,19 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Display(Name = "Tipo de Perfil")]
+            public string RoleDesejada { get; set; } // 
         }
 
 
-        public async Task OnGetAsync(string returnUrl = null)
+        public async Task OnGetAsync(string returnUrl = null, string role = null)
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            // Pre-fill role from query string when provided (e.g. ?role=Cliente or ?role=Restaurante)
+            Input ??= new InputModel();
+            Input.RoleDesejada ??= string.IsNullOrEmpty(role) ? "Cliente" : role;
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
@@ -122,6 +128,8 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    await _userManager.AddToRoleAsync(user, Input.RoleDesejada);
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

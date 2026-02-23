@@ -22,12 +22,17 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<UsuarioIdentity> _signInManager;
         private readonly ILogger<LoginModel> _logger;
+        private readonly UserManager<UsuarioIdentity> _userManager;
 
-        public LoginModel(SignInManager<UsuarioIdentity> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<UsuarioIdentity> signInManager, ILogger<LoginModel> logger, UserManager<UsuarioIdentity> userManager)
         {
             _signInManager = signInManager;
             _logger = logger;
+            _userManager = userManager;
         }
+
+        // Optional incoming role from query string (propagated to Register link)
+        public string Role { get; set; }
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -85,7 +90,7 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
             public bool RememberMe { get; set; }
         }
 
-        public async Task OnGetAsync(string returnUrl = null)
+        public async Task OnGetAsync(string returnUrl = null, string role = null)
         {
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
@@ -100,11 +105,12 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             ReturnUrl = returnUrl;
+            Role = role; // store role to propagate to Register link
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/");
+            returnUrl ??= Url.Content("~/Cliente/Details");
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
@@ -116,7 +122,24 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
+
+                    // Recupera o usuário logado
+                    var user = await _userManager.FindByEmailAsync(Input.Email);
+                    // Pega as roles (perfis) desse usuário
+                    var roles = await _userManager.GetRolesAsync(user);
+
+                    // Redireciona de acordo com a Role
+                    if (roles.Contains("Admin"))
+                    {
+                        return LocalRedirect("~/Restaurante/Index"); 
+                    }
+                    if (roles.Contains("GerenteRestaurante"))
+                    {
+                        return LocalRedirect("~/Restaurante/Details"); 
+                    }
+
+                    // Se for cliente comum ou não tiver role específica, vai para a página padrão
+                    return LocalRedirect(returnUrl ?? "~/");
                 }
                 if (result.RequiresTwoFactor)
                 {

@@ -13,7 +13,7 @@ namespace DeliFitWeb;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
         // Add services to the container.
@@ -97,6 +97,7 @@ public class Program
 
         var app = builder.Build();
 
+
         // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
         {
@@ -104,6 +105,9 @@ public class Program
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
+
+        
+
 
         app.UseHttpsRedirection();
         app.UseStaticFiles();
@@ -123,8 +127,25 @@ public class Program
             pattern: "{controller=Home}/{action=Index}/{id?}");
 
 
-        
+        using (var scope = app.Services.CreateScope())
+        {
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<UsuarioIdentity>>();
+
+            string[] roleNames = { "Admin", "GerenteRestaurante", "Cliente" };
+
+            foreach (var roleName in roleNames)
+            {
+                // Verifica se a role já existe, se não, cria.
+                if (!await roleManager.RoleExistsAsync(roleName))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(roleName));
+                }
+            }
+        }
+
 
         app.Run();
     }
+    
 }

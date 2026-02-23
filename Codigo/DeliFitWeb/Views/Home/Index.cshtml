@@ -1,41 +1,50 @@
 ﻿@{
-    ViewData["Title"] = "Painel Administrativo";
+    ViewData["Title"] = "Bem-vindo ao DeliFit";
 }
 
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 class="fw-bold">Home</h2>
-            <p class="text-muted">Bem-vindo, Administrador.</p>
+<div class="text-center mt-5">
+    <h1 class="display-4 fw-bold text-primary mb-3">Bem-vindo ao DeliFit</h1>
+    <p class="lead mb-5">Selecione o seu perfil para acessar o sistema:</p>
+
+    <div class="row justify-content-center g-4">
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-success">
+                <div class="card-body d-flex flex-column">
+                    <h3 class="card-title text-success">🙋🏽‍♂️ Sou Cliente</h3>
+                    <p class="card-text text-muted mb-4">Faça pedidos, acompanhe suas calorias e descubra novos restaurantes.</p>
+                    <div class="mt-auto">
+                        <a href="/Identity/Account/Login?role=Cliente" class="btn btn-success w-100 mb-2">Entrar (Telefone/Email)</a>
+                        <a href="/Identity/Account/Register?role=Cliente" class="btn btn-outline-success w-100">Criar Conta Cliente</a>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-warning">
+                <div class="card-body d-flex flex-column">
+                    <h3 class="card-title text-warning">🏪 Sou Restaurante</h3>
+                    <p class="card-text text-muted mb-4">Gerencie seu cardápio, acompanhe pedidos e faturamento.</p>
+                    <div class="mt-auto">
+                        <a href="/Identity/Account/Login?role=Restaurante" class="btn btn-warning w-100 mb-2 text-dark">Acessar Painel</a>
+                        <a href="/Restaurante/SolicitarAdesao" class="btn btn-outline-warning w-100 text-dark">Solicitar Adesão</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-danger">
+                <div class="card-body d-flex flex-column">
+                    <h3 class="card-title text-danger">🛡️ Sou Admin</h3>
+                    <p class="card-text text-muted mb-4">Gestão total da plataforma e aprovação de novos restaurantes.</p>
+                    <div class="mt-auto">
+                        <a href="/Identity/Account/Login?role=Admin" class="btn btn-danger w-100">Login Administrativo</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
-
-@section Scripts {
-    <style>
-        /* Estilos específicos para esta página Index do ADM */
-        .bg-light-orange {
-            background-color: #fff3e6;
-        }
-
-        .text-orange {
-            color: #ff6600;
-        }
-
-        .card {
-            transition: transform 0.2s;
-            border-radius: 12px;
-        }
-
-            .card:hover {
-                transform: translateY(-5px);
-            }
-
-        .table thead th {
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 0.5px;
-        }
-    </style>
-}
