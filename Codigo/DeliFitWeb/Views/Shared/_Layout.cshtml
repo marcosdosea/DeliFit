@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
     <style>
-        /* Variáveis de Cor DeliFit */
         :root {
             --delifit-orange: #ff6600;
             --delifit-dark-orange: #e65c00;
@@ -24,7 +23,6 @@
             background-color: #f8f9fa;
         }
 
-        /* Estrutura Sidebar */
         .sidebar {
             width: var(--sidebar-width);
             height: 100vh;
@@ -36,6 +34,8 @@
             padding: 20px 0;
             z-index: 1000;
             box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
         }
 
         .navbar-brand {
@@ -44,11 +44,22 @@
             color: var(--delifit-orange) !important;
             text-align: center;
             display: block;
-            margin-bottom: 30px;
+            margin-bottom: 10px;
             padding: 0 15px;
         }
 
-        /* Links do Menu */
+        .login-area {
+            padding: 0 20px 20px 20px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 15px;
+        }
+
+            .login-area a {
+                display: block;
+                padding: 6px 0;
+                font-size: 0.9rem;
+            }
+
         .nav-pills .nav-link {
             color: #495057;
             border-radius: 0 25px 25px 0;
@@ -71,14 +82,14 @@
             margin-right: 10px;
         }
 
-        /* Área de Conteúdo Principal */
         .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 30px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
-        /* Botões e Links Gerais */
         a {
             color: var(--delifit-orange);
             text-decoration: none;
@@ -104,7 +115,6 @@
             font-size: 0.9rem;
         }
 
-        /* Responsividade Básica */
         @@media (max-width: 768px) {
             .sidebar {
                 width: 100%;
@@ -123,58 +133,109 @@
         }
     </style>
 </head>
+
 <body>
 
-    @* <div class="sidebar">
-        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
-            <i class="bi bi-fire"></i> DeliFit
-             <partial name='_LoginPartial' />' 
-        </a>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="sidebar">
 
-        <ul class="nav nav-pills flex-column">
-            <li class="nav-item">
-                <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Index" ? "active" : "")"
-                   asp-area="" asp-controller="Home" asp-action="Index">
-                    <i class="bi bi-house-door"></i> Início
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" asp-area="" asp-controller="Cliente" asp-action="Index">
-                    <i class="bi bi-list"></i> Listar Clientes
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" asp-area="" asp-controller="Restaurante" asp-action="ListarSolicitacoes">
-                    <i class="bi bi-list"></i> Listar Solicitacoes
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" asp-area="" asp-controller="Restaurante" asp-action="Index">
-                    <i class="bi bi-list"></i> Listar Restaurantes
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" asp-area="" asp-controller="Restaurante" asp-action="SolicitarAdesao">
-                    <i class="bi bi-plus"></i> Solicitar Adesao
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" asp-area="" asp-controller="Cliente" asp-action="Create">
-                    <i class="bi bi-plus"></i> Adicionar Cliente
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" asp-area="" asp-controller="Restaurante" asp-action="Create">
-                    <i class="bi bi-plus"></i> Adicionar Restaurante
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">
-                    <i class="bi bi-shield-check"></i> Privacidade
-                </a>
-            </li>
-        </ul>
-    </div> *@
+            <a class="navbar-brand"
+               asp-controller="Home" asp-action="Index">
+                <i class="bi bi-fire"></i> DeliFit
+            </a>
+
+            <div class="login-area">
+                <partial name="_LoginPartial" />
+            </div>
+
+            <ul class="nav nav-pills flex-column">
+
+                @* ================= ADMIN ================= *@
+                @if (User.IsInRole("Admin"))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "HomeAdmin" ? "active" : "")"
+                           asp-controller="Restaurante" asp-action="HomeAdmin">
+                            <i class="bi bi-house-door"></i> Início
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Cliente" asp-action="Index">
+                            <i class="bi bi-people"></i> Listar Clientes
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Restaurante" asp-action="ListarSolicitacoes">
+                            <i class="bi bi-clock-history"></i> Listar Solicitações
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Restaurante" asp-action="Index">
+                            <i class="bi bi-shop"></i> Listar Restaurantes
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Cliente" asp-action="Create">
+                            <i class="bi bi-person-plus"></i> Adicionar Cliente
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Restaurante" asp-action="Create">
+                            <i class="bi bi-plus-circle"></i> Adicionar Restaurante
+                        </a>
+                    </li>
+                }
+
+                @* ================= RESTAURANTE ================= *@
+                @if (User.IsInRole("GerenteRestaurante"))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           asp-controller="Restaurante" asp-action="Home">
+                            <i class="bi bi-house-door"></i> Início
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Item" asp-action="Index">
+                            <i class="bi bi-journal-text"></i> Cardápio
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Restaurante" asp-action="Edit">
+                            <i class="bi bi-person"></i> Perfil
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-headset"></i> Atendimento
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-credit-card"></i> Pagamentos
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-star"></i> Avaliações
+                        </a>
+                    </li>
+                }
+
+            </ul>
+        </div>
+    }
 
     <div class="main-content">
         <main role="main" class="pb-3">
@@ -183,7 +244,8 @@
 
         <footer class="border-top text-muted text-center">
             <div class="container">
-                &copy; 2026 - <strong>DeliFit</strong> - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacidade</a>
+                &copy; 2026 - <strong>DeliFit</strong> -
+                <a asp-controller="Home" asp-action="Privacy">Privacidade</a>
             </div>
         </footer>
     </div>
@@ -215,7 +277,7 @@
                     el.val(formatted);
                 });
 
-                // Before submit, normalize telefone inputs to digits only
+                // antes de enviar normaliza o telefone
                 $(document).on('submit', 'form', function(){
                     $(this).find('.telefone-mask').each(function(){
                         var v = $(this).val() || '';
@@ -228,5 +290,6 @@
     </script>
 
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

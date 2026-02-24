@@ -7,21 +7,7 @@
 
 <div class="container-fluid p-0 bg-white">
     <div class="row g-0">
-        <aside class="col-md-2 border-end min-vh-100 p-3 bg-white">
-            <div class="mb-4">
-                <a asp-action="Index" asp-route-idRestaurante="@idRestauranteContexto" class="text-decoration-none text-muted small fw-bold">
-                    <i class="bi bi-chevron-left"></i> Voltar ao Cardápio
-                </a>
-            </div>
 
-            <ul class="nav flex-column gap-1">
-                <li class="nav-item mb-2">
-                    <span class="nav-link fw-bold text-dark fs-5 p-0">Início</span>
-                </li>
-                <li><a asp-controller="Restaurante" asp-action="Details" asp-route-id="@idRestauranteContexto" class="nav-link text-muted py-1 small">- Perfil</a></li>
-                <li><a href="#" class="nav-link fw-bold py-1 small" style="color: #ff6600;">-Gestor de Cardápio</a></li>
-            </ul>
-        </aside>
 
         <main class="col-md-10 p-5 bg-light">
             <div class="row justify-content-center">
