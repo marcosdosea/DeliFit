@@ -33,7 +33,7 @@ namespace DeliFitWeb.Controllers.Tests
 
             mockService.Setup(service => service.Create(It.IsAny<Restaurante>())).Verifiable();
 
-           controller = new RestauranteController(mockService.Object, mapper);
+            controller = new RestauranteController(mockService.Object, mapper);
         }
 
         private static RestauranteViewModel GetNewRestaurante()
