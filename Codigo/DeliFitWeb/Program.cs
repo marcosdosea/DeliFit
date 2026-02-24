@@ -31,7 +31,7 @@ public class Program
             options.UseMySQL(builder.Configuration.GetConnectionString("IdentityConnection")));
 
         builder.Services.AddDefaultIdentity<UsuarioIdentity>(options =>
-        { 
+        {
             options.SignIn.RequireConfirmedAccount = false;
             options.SignIn.RequireConfirmedEmail = false;
             options.SignIn.RequireConfirmedPhoneNumber = false;
@@ -71,16 +71,26 @@ public class Program
         builder.Services.AddTransient<ICartaoService, CartaoService>();
         builder.Services.AddTransient<ICarrinhoService, CarrinhoService>();
 
+        // Registra o HttpClient nomeado para consumo da própria API de CPF
+        builder.Services.AddHttpClient("CpfApi", client =>
+        {
+            client.BaseAddress = new Uri("https://localhost:44309");
+        }).ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+        {
+            // Permite certificado autoassinado em desenvolvimento
+            ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+        });
+
         builder.Services.ConfigureApplicationCookie(options =>
-                {
-                    //options.AccessDeniedPath = "/Identity/Autenticar";
-                    options.Cookie.Name = "DeliFitCookieName";
-                    options.Cookie.HttpOnly = true;
-                    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
-                    //options.LoginPath = "/Identity/Autenticar";
-                    // ReturnUrlParameter requires 
-                    options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
-                    options.SlidingExpiration = true;
+        {
+            //options.AccessDeniedPath = "/Identity/Autenticar";
+            options.Cookie.Name = "DeliFitCookieName";
+            options.Cookie.HttpOnly = true;
+            options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+            //options.LoginPath = "/Identity/Autenticar";
+            // ReturnUrlParameter requires 
+            options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+            options.SlidingExpiration = true;
         });
 
 
@@ -106,7 +116,7 @@ public class Program
             app.UseHsts();
         }
 
-        
+
 
 
         app.UseHttpsRedirection();
@@ -147,5 +157,5 @@ public class Program
 
         app.Run();
     }
-    
+
 }

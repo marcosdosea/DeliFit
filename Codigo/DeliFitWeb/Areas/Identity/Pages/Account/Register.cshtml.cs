@@ -19,184 +19,213 @@ using Microsoft.Extensions.Logging;
 using Core;
 using Core.Service;
 
-namespace DeliFitWeb.Areas.Identity.Pages.Account
+namespace DeliFitWeb.Areas.Identity.Pages.Account;
+
+public class RegisterModel : PageModel
 {
-    public class RegisterModel : PageModel
+    private readonly SignInManager<UsuarioIdentity> _signInManager;
+    private readonly UserManager<UsuarioIdentity> _userManager;
+    private readonly IUserStore<UsuarioIdentity> _userStore;
+    private readonly IUserEmailStore<UsuarioIdentity> _emailStore;
+    private readonly ILogger<RegisterModel> _logger;
+    private readonly IEmailSender _emailSender;
+    private readonly IClienteService _clienteService;
+    private readonly IHttpClientFactory _httpClientFactory;
+
+    public RegisterModel(
+        UserManager<UsuarioIdentity> userManager,
+        IUserStore<UsuarioIdentity> userStore,
+        SignInManager<UsuarioIdentity> signInManager,
+        ILogger<RegisterModel> logger,
+        IEmailSender emailSender,
+        IClienteService clienteService,
+        IHttpClientFactory httpClientFactory)
     {
-        private readonly SignInManager<UsuarioIdentity> _signInManager;
-        private readonly UserManager<UsuarioIdentity> _userManager;
-        private readonly IUserStore<UsuarioIdentity> _userStore;
-        private readonly IUserEmailStore<UsuarioIdentity> _emailStore;
-        private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
-        private readonly IClienteService _clienteService;
+        _userManager = userManager;
+        _userStore = userStore;
+        _emailStore = GetEmailStore();
+        _signInManager = signInManager;
+        _logger = logger;
+        _emailSender = emailSender;
+        _clienteService = clienteService;
+        _httpClientFactory = httpClientFactory;
+    }
 
-        public RegisterModel(
-            UserManager<UsuarioIdentity> userManager,
-            IUserStore<UsuarioIdentity> userStore,
-            SignInManager<UsuarioIdentity> signInManager,
-            ILogger<RegisterModel> logger,
-            IEmailSender emailSender,
-            IClienteService clienteService)
+    [BindProperty]
+    public InputModel Input { get; set; }
+
+    public string ReturnUrl { get; set; }
+
+    public IList<AuthenticationScheme> ExternalLogins { get; set; }
+
+    public class InputModel
+    {
+        [Required]
+        [EmailAddress]
+        [Display(Name = "Email")]
+        public string Email { get; set; }
+
+        [Required]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [Display(Name = "Password")]
+        public string Password { get; set; }
+
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm password")]
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        public string ConfirmPassword { get; set; }
+
+        [Display(Name = "Tipo de Perfil")]
+        public string RoleDesejada { get; set; }
+
+        // Campos extras para cadastro de Cliente
+        [Display(Name = "Nome completo")]
+        public string Nome { get; set; }
+
+        [Display(Name = "CPF")]
+        public string Cpf { get; set; }
+
+        [Display(Name = "Telefone")]
+        public string Telefone { get; set; }
+
+        [Display(Name = "Data de Nascimento")]
+        [DataType(DataType.Date)]
+        public DateTime? DataNascimento { get; set; }
+    }
+
+    public async Task OnGetAsync(string returnUrl = null, string role = null)
+    {
+        ReturnUrl = returnUrl;
+        ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+        Input ??= new InputModel();
+        Input.RoleDesejada ??= string.IsNullOrEmpty(role) ? "Cliente" : role;
+    }
+
+    public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+    {
+        returnUrl ??= Url.Content("~/");
+        ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
+        // Validações extras para role Cliente
+        if (Input.RoleDesejada == "Cliente")
         {
-            _userManager = userManager;
-            _userStore = userStore;
-            _emailStore = GetEmailStore();
-            _signInManager = signInManager;
-            _logger = logger;
-            _emailSender = emailSender;
-            _clienteService = clienteService;
-        }
+            if (string.IsNullOrWhiteSpace(Input.Nome))
+                ModelState.AddModelError("Input.Nome", "O nome é obrigatório.");
+            if (string.IsNullOrWhiteSpace(Input.Cpf))
+                ModelState.AddModelError("Input.Cpf", "O CPF é obrigatório.");
+            if (string.IsNullOrWhiteSpace(Input.Telefone))
+                ModelState.AddModelError("Input.Telefone", "O telefone é obrigatório.");
+            if (Input.DataNascimento == null)
+                ModelState.AddModelError("Input.DataNascimento", "A data de nascimento é obrigatória.");
 
-        [BindProperty]
-        public InputModel Input { get; set; }
-
-        public string ReturnUrl { get; set; }
-
-        public IList<AuthenticationScheme> ExternalLogins { get; set; }
-
-        public class InputModel
-        {
-            [Required]
-            [EmailAddress]
-            [Display(Name = "Email")]
-            public string Email { get; set; }
-
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-            [DataType(DataType.Password)]
-            [Display(Name = "Password")]
-            public string Password { get; set; }
-
-            [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-            public string ConfirmPassword { get; set; }
-
-            [Display(Name = "Tipo de Perfil")]
-            public string RoleDesejada { get; set; }
-
-            // Campos extras para cadastro de Cliente
-            [Display(Name = "Nome completo")]
-            public string Nome { get; set; }
-
-            [Display(Name = "CPF")]
-            public string Cpf { get; set; }
-
-            [Display(Name = "Telefone")]
-            public string Telefone { get; set; }
-
-            [Display(Name = "Data de Nascimento")]
-            [DataType(DataType.Date)]
-            public DateTime? DataNascimento { get; set; }
-        }
-
-        public async Task OnGetAsync(string returnUrl = null, string role = null)
-        {
-            ReturnUrl = returnUrl;
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            Input ??= new InputModel();
-            Input.RoleDesejada ??= string.IsNullOrEmpty(role) ? "Cliente" : role;
-        }
-
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
-        {
-            returnUrl ??= Url.Content("~/");
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-
-            // Validações extras para role Cliente
-            if (Input.RoleDesejada == "Cliente")
+            // Valida o CPF via API antes de prosseguir
+            if (!string.IsNullOrWhiteSpace(Input.Cpf))
             {
-                if (string.IsNullOrWhiteSpace(Input.Nome))
-                    ModelState.AddModelError("Input.Nome", "O nome é obrigatório.");
-                if (string.IsNullOrWhiteSpace(Input.Cpf))
-                    ModelState.AddModelError("Input.Cpf", "O CPF é obrigatório.");
-                if (string.IsNullOrWhiteSpace(Input.Telefone))
-                    ModelState.AddModelError("Input.Telefone", "O telefone é obrigatório.");
-                if (Input.DataNascimento == null)
-                    ModelState.AddModelError("Input.DataNascimento", "A data de nascimento é obrigatória.");
+                var cpfValido = await ValidarCpfViaApiAsync(Input.Cpf);
+                if (!cpfValido)
+                    ModelState.AddModelError("Input.Cpf", "CPF inválido. Verifique os dígitos informados.");
             }
+        }
 
-            if (ModelState.IsValid)
+        if (ModelState.IsValid)
+        {
+            var user = CreateUser();
+
+            await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+            await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+            var result = await _userManager.CreateAsync(user, Input.Password);
+
+            if (result.Succeeded)
             {
-                var user = CreateUser();
+                _logger.LogInformation("User created a new account with password.");
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-                var result = await _userManager.CreateAsync(user, Input.Password);
+                await _userManager.AddToRoleAsync(user, Input.RoleDesejada);
 
-                if (result.Succeeded)
+                // Se for cliente, cria o registro na tabela Cliente
+                if (Input.RoleDesejada == "Cliente")
                 {
-                    _logger.LogInformation("User created a new account with password.");
-
-                    await _userManager.AddToRoleAsync(user, Input.RoleDesejada);
-
-                    // Se for cliente, cria o registro na tabela Cliente
-                    if (Input.RoleDesejada == "Cliente")
+                    var cliente = new Cliente
                     {
-                        var cliente = new Cliente
-                        {
-                            Nome = Input.Nome,
-                            Email = Input.Email,
-                            Cpf = Input.Cpf,
-                            Telefone = Input.Telefone,
-                            DataNascimento = Input.DataNascimento!.Value
-                        };
-                        _clienteService.Create(cliente);
-                    }
-
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                    var callbackUrl = Url.Page(
-                        "/Account/ConfirmEmail",
-                        pageHandler: null,
-                        values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                        protocol: Request.Scheme);
-
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
-                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
-                    {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
-                    }
-                    else
-                    {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
-                    }
+                        Nome = Input.Nome,
+                        Email = Input.Email,
+                        Cpf = Input.Cpf,
+                        Telefone = Input.Telefone,
+                        DataNascimento = Input.DataNascimento!.Value
+                    };
+                    _clienteService.Create(cliente);
                 }
-                foreach (var error in result.Errors)
+
+                var userId = await _userManager.GetUserIdAsync(user);
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var callbackUrl = Url.Page(
+                    "/Account/ConfirmEmail",
+                    pageHandler: null,
+                    values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+                    protocol: Request.Scheme);
+
+                await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                if (_userManager.Options.SignIn.RequireConfirmedAccount)
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                }
+                else
+                {
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    return LocalRedirect(returnUrl);
                 }
             }
-
-            return Page();
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
         }
 
-        private UsuarioIdentity CreateUser()
+        return Page();
+    }
+
+    /// <summary>
+    /// Consome a própria API de CPF para validar os dígitos verificadores.
+    /// Retorna true se válido, false caso contrário.
+    /// </summary>
+    private async Task<bool> ValidarCpfViaApiAsync(string cpf)
+    {
+        try
         {
-            try
-            {
-                return Activator.CreateInstance<UsuarioIdentity>();
-            }
-            catch
-            {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(UsuarioIdentity)}'. " +
-                    $"Ensure that '{nameof(UsuarioIdentity)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
-            }
+            var client = _httpClientFactory.CreateClient("CpfApi");
+            var response = await client.GetAsync($"/api/cpf/{cpf}/validar");
+            return response.IsSuccessStatusCode;
         }
-
-        private IUserEmailStore<UsuarioIdentity> GetEmailStore()
+        catch
         {
-            if (!_userManager.SupportsUserEmail)
-            {
-                throw new NotSupportedException("The default UI requires a user store with email support.");
-            }
-            return (IUserEmailStore<UsuarioIdentity>)_userStore;
+            // Se a API estiver indisponível, bloqueia o cadastro por segurança
+            return false;
         }
+    }
+
+    private UsuarioIdentity CreateUser()
+    {
+        try
+        {
+            return Activator.CreateInstance<UsuarioIdentity>();
+        }
+        catch
+        {
+            throw new InvalidOperationException($"Can't create an instance of '{nameof(UsuarioIdentity)}'. " +
+                $"Ensure that '{nameof(UsuarioIdentity)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
+        }
+    }
+
+    private IUserEmailStore<UsuarioIdentity> GetEmailStore()
+    {
+        if (!_userManager.SupportsUserEmail)
+        {
+            throw new NotSupportedException("The default UI requires a user store with email support.");
+        }
+        return (IUserEmailStore<UsuarioIdentity>)_userStore;
     }
 }
