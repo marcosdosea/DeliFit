@@ -27,7 +27,7 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
         private readonly SignInManager<UsuarioIdentity> _signInManager;
         private readonly UserManager<UsuarioIdentity> _userManager;
         private readonly IUserStore<UsuarioIdentity> _userStore;
-        private readonly IUserEmailStore<UsuarioIdentity> _email_store;
+        private readonly IUserEmailStore<UsuarioIdentity> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly IClienteService _clienteService;
@@ -42,7 +42,7 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
         {
             _userManager = userManager;
             _userStore = userStore;
-            _email_store = GetEmailStore();
+            _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
@@ -141,7 +141,7 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
                 var user = CreateUser();
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                await _email_store.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
@@ -158,7 +158,8 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
                             foreach (var err in phoneResult.Errors)
                                 ModelState.AddModelError(string.Empty, err.Description);
 
-                            // Caso prefira abortar o fluxo, você pode retornar Page() aqui.
+                            // Trata falha como erro fatal: não prossegue com role, cliente, e login.
+                            return Page();
                         }
                     }
 
