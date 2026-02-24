@@ -52,7 +52,7 @@ namespace DeliFitWeb.Controllers
             RandomNumberGenerator.Fill(bytes);
             var chars = bytes.Select(b => valid[b % valid.Length]).ToArray();
 
-            
+
             if (!chars.Any(c => digits.Contains(c)))
             {
                 var pos = Math.Abs(BitConverter.ToInt32(bytes, 0)) % length;
@@ -123,7 +123,7 @@ namespace DeliFitWeb.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            
+
             return RedirectToAction(nameof(Index));
         }
 
@@ -296,6 +296,18 @@ namespace DeliFitWeb.Controllers
             }
 
             return Json(new { sucesso = false, mensagem = "CNPJ não encontrado." });
+        }
+
+        [Authorize(Roles = "GerenteRestaurante")]
+        public IActionResult Home()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Admin")]
+        public IActionResult HomeAdmin()
+        {
+            return View();
         }
     }
 }

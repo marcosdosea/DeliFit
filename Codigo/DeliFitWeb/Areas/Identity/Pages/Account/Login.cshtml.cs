@@ -96,13 +96,13 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
 
                     // Redireciona de acordo com a Role
                     if (roles.Contains("Admin"))
-                        return LocalRedirect("~/Restaurante/Index");
-
+                    {
+                        return LocalRedirect("~/Restaurante/HomeAdmin"); 
+                    }
                     if (roles.Contains("GerenteRestaurante"))
-                        return LocalRedirect("~/Restaurante/MeuRestaurante");
-
-                    if (roles.Contains("Cliente"))
-                        return LocalRedirect("~/Cliente/Perfil");
+                    {
+                        return LocalRedirect("~/Restaurante/Home"); 
+                    }
 
                     return LocalRedirect(returnUrl ?? "~/");
                 }
@@ -122,7 +122,6 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return Page();
         }
     }
