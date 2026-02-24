@@ -1,4 +1,4 @@
-Ôªø@model DeliFitWeb.Models.ClienteViewModel
+@model DeliFitWeb.Models.ClienteViewModel
 
 @{
     ViewData["Title"] = "Cadastrar Novo Cliente";
@@ -34,7 +34,7 @@
                         <div class="row g-3">
                             <div class="col-md-12">
                                 <label asp-for="Nome" class="form-label fw-semibold"></label>
-                                <input asp-for="Nome" class="form-control" placeholder="Ex: Jo√£o Silva" />
+                                <input asp-for="Nome" class="form-control" placeholder="Ex: Jo„o Silva" />
                                 <span asp-validation-for="Nome" class="text-danger small"></span>
                             </div>
 
@@ -112,7 +112,7 @@
             border-radius: 12px;
         }
 
-        /* Ajuste para √≠cone de calend√°rio no Chrome */
+        /* Ajuste para Ìcone de calend·rio no Chrome */
         input[type="date"]::-webkit-calendar-picker-indicator {
             cursor: pointer;
             filter: invert(45%) sepia(90%) saturate(1352%) hue-rotate(350deg) brightness(92%) contrast(95%);

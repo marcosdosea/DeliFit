@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 
-namespace DeliFitWeb.Areas.Identity.Data;
+namespace Core.Identity.Data;
 
 // Add profile data for application users by adding properties to the UsuarioIdentity class
 public class UsuarioIdentity : IdentityUser

@@ -1,4 +1,4 @@
-Ôªøusing System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,7 +13,7 @@ public class ItemViewModel
     public byte[]? Foto { get; set; } = null;
 
     [Display(Name = "Quantidade de Calorias")]
-    [Required(ErrorMessage = "Preenchimento do campo Quantidade de Calorias √© obrigat√≥rio.")]
+    [Required(ErrorMessage = "Preenchimento do campo Quantidade de Calorias È obrigatÛrio.")]
     public float Calorias { get; set; }
 
     [Display(Name = "Quantidade de Carboidratos")]
@@ -26,27 +26,27 @@ public class ItemViewModel
     public float? Proteina { get; set; }
 
     [Display(Name = "Restricao Alimentar")]
-    [StringLength(50, ErrorMessage = "A restricao deve ter no m√°ximo 50 caracteres.")]
+    [StringLength(50, ErrorMessage = "A restricao deve ter no m·ximo 50 caracteres.")]
     public string? Restricao { get; set; }
 
     [Display(Name = "Nome do Item")]
-    [Required(ErrorMessage = "Preenchimento do campo Nome do Item √© obrigat√≥rio.")]
-    [StringLength(50, ErrorMessage = "O nome deve ter no m√°ximo 50 caracteres.")]
+    [Required(ErrorMessage = "Preenchimento do campo Nome do Item È obrigatÛrio.")]
+    [StringLength(50, ErrorMessage = "O nome deve ter no m·ximo 50 caracteres.")]
     public string Nome { get; set; } = null!;
 
     [Display(Name = "Descricao")]
-    [StringLength(50, ErrorMessage = "A descricao deve ter no m√°ximo 200 caracteres.")]
+    [StringLength(50, ErrorMessage = "A descricao deve ter no m·ximo 200 caracteres.")]
     public string? Descricao { get; set; }
 
     [Display(Name = "Valor")]
-    [Required(ErrorMessage = "Preenchimento do campo Valor √© obrigat√≥rio.")]
+    [Required(ErrorMessage = "Preenchimento do campo Valor È obrigatÛrio.")]
     public decimal Preco { get; set; }
 
     [Display(Name = "Tamanho do Item")]
     public string? Tamanho { get; set; }
 
     [Display(Name = "Volume do Item")]
-    [StringLength(50, ErrorMessage = "O volume deve ter no m√°ximo 10 caracteres.")]
+    [StringLength(50, ErrorMessage = "O volume deve ter no m·ximo 10 caracteres.")]
     public string? Volume { get; set; }
 
     [HiddenInput(DisplayValue = false)]
