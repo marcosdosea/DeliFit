@@ -15,4 +15,14 @@ public interface IClienteService
     void Delete(uint id);
 
     IEnumerable<ClienteDTO> GetAll();
+
+    /// <summary>
+    /// Busca um cliente pelo e-mail para autenticação
+    /// </summary>
+    Cliente? GetByEmail(string email);
+
+    /// <summary>
+    /// Busca um cliente pelo telefone para autenticação
+    /// </summary>
+    Cliente? GetByTelefone(string telefone);
 }

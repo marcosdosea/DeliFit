@@ -3,6 +3,8 @@ using Core.Service;
 using Microsoft.AspNetCore.Mvc;
 using DeliFitWeb.Models;
 using Core;
+using Microsoft.AspNetCore.Identity;
+using DeliFitWeb.Areas.Identity.Data;
 
 namespace DeliFitWeb.Controllers
 {
@@ -11,19 +13,34 @@ namespace DeliFitWeb.Controllers
 
         private readonly IClienteService _clienteService;
         private readonly IMapper _mapper;
+        private readonly UserManager<UsuarioIdentity> _userManager;
 
-        public ClienteController(IClienteService clienteService, IMapper mapper)
+        public ClienteController(IClienteService clienteService, IMapper mapper, UserManager<UsuarioIdentity> userManager)
         {
             _clienteService = clienteService;
             _mapper = mapper;
+            _userManager = userManager;
         }
+
         // GET: ClienteController
         public ActionResult Index()
         {
             var listaClientes = _clienteService.GetAll();
             var listaClientesViewModel = _mapper.Map<List<ClienteViewModel>>(listaClientes);
-
             return View(listaClientesViewModel);
+        }
+
+        // GET: ClienteController/Perfil
+        // Redireciona o cliente logado para o seu próprio Details
+        public async Task<ActionResult> Perfil()
+        {
+            var userEmail = _userManager.GetUserName(User);
+            var cliente = _clienteService.GetByEmail(userEmail);
+
+            if (cliente == null)
+                return NotFound("Perfil de cliente não encontrado para o usuário logado.");
+
+            return RedirectToAction(nameof(Details), new { id = cliente.Id });
         }
 
         // GET: ClienteController/Details/5
@@ -52,7 +69,6 @@ namespace DeliFitWeb.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            
             return View(clienteModel);
         }
 
@@ -61,7 +77,6 @@ namespace DeliFitWeb.Controllers
         {
             Cliente? cliente = _clienteService.Get(id);
             ClienteViewModel clienteModel = _mapper.Map<ClienteViewModel>(cliente);
-
             return View(clienteModel);
         }
 
@@ -77,7 +92,6 @@ namespace DeliFitWeb.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // If validation failed, redisplay the edit form
             return View(clienteModel);
         }
 
