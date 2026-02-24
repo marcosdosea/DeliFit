@@ -93,7 +93,8 @@ public class Program
             options.Cookie.IsEssential = true;
         });
 
-
+        // Registra o serviço e configura um HttpClient específico para ele
+        builder.Services.AddHttpClient<Core.Service.IBrasilApiService, Service.BrasilApiService>();
 
         var app = builder.Build();
 

@@ -15,6 +15,7 @@ namespace DeliFitWeb.Controllers
 
         private readonly IClienteService _clienteService;
         private readonly IMapper _mapper;
+        private readonly IBrasilApiService _brasilApiService;
         private readonly UserManager<UsuarioIdentity> _userManager;
         private readonly IRestauranteService _restauranteService;
 
@@ -76,12 +77,40 @@ namespace DeliFitWeb.Controllers
         // POST: ClienteController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(ClienteViewModel clienteModel)
+        public async Task<ActionResult> CreateAsync(ClienteViewModel clienteModel)
         {
             if (ModelState.IsValid)
             {
+                // Validação e normalização do telefone antes de extrair o DDD
+                if (clienteModel == null || string.IsNullOrWhiteSpace(clienteModel.Telefone))
+                {
+                    ModelState.AddModelError("Telefone", "Telefone inválido.");
+                    return View(clienteModel);
+                }
+
+                var normalized = new string(clienteModel.Telefone.Where(char.IsDigit).ToArray());
+                if (normalized.Length < 2)
+                {
+                    ModelState.AddModelError("Telefone", "Telefone inválido.");
+                    return View(clienteModel);
+                }
+
+                string ddd = normalized.Substring(0, 2);
+
+                bool dddValido = await _brasilApiService.IsDddValidAsync(ddd);
+
+                if (!dddValido)
+                {
+                    ModelState.AddModelError("Telefone", "O DDD informado é inválido.");
+                    return View(clienteModel);
+                }
+
+                // Atualiza o modelo com o telefone normalizado (somente dígitos)
+                clienteModel.Telefone = normalized;
+
                 var cliente = _mapper.Map<Cliente>(clienteModel);
                 _clienteService.Create(cliente);
+
                 return RedirectToAction(nameof(Index));
             }
 
@@ -103,6 +132,23 @@ namespace DeliFitWeb.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Validação e normalização do telefone antes de salvar
+                if (clienteModel == null || string.IsNullOrWhiteSpace(clienteModel.Telefone))
+                {
+                    ModelState.AddModelError("Telefone", "Telefone inválido.");
+                    return View(clienteModel);
+                }
+
+                var normalized = new string(clienteModel.Telefone.Where(char.IsDigit).ToArray());
+                if (normalized.Length != 11)
+                {
+                    ModelState.AddModelError("Telefone", "O telefone deve conter 11 dígitos.");
+                    return View(clienteModel);
+                }
+
+                // Atualiza o modelo com o telefone normalizado
+                clienteModel.Telefone = normalized;
+
                 var cliente = _mapper.Map<Cliente>(clienteModel);
                 _clienteService.Edit(cliente);
                 return RedirectToAction(nameof(Index));

@@ -14,7 +14,7 @@ namespace DeliFitWeb.Models
         public string Nome { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Campo requerido")]
-        [StringLength(11, MinimumLength = 11, ErrorMessage = "O telefone deve conter 11 caracteres.")]
+        [RegularExpression(@"^(?:\(?\d{2}\)?\s?\d{4,5}-?\d{4}|\d{11})$", ErrorMessage = "O telefone deve conter exatamente 11 dígitos.")]
         [TelefoneCelular(ErrorMessage = "Telefone inválido")]
         public string Telefone { get; set; } = string.Empty;
 
