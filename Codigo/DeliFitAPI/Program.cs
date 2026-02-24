@@ -60,6 +60,7 @@ namespace DeliFitAPI
 
             builder.Services.AddAuthentication();
             builder.Services.AddAuthorization();
+            builder.Services.AddScoped<IEnderecoService, EnderecoService>();
 
 
             var app = builder.Build();
