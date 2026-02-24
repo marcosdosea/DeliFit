@@ -14,9 +14,9 @@
                 <hr />
                 <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
                 <div class="form-floating mb-3">
-                    <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                    <label asp-for="Input.Email" class="form-label">Email</label>
-                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    <input asp-for="Input.Telefone" class="form-control telefone-mask" autocomplete="tel" aria-required="true" placeholder="(99) 99999-9999" maxlength="14" />
+                    <label asp-for="Input.Telefone" class="form-label">Telefone</label>
+                    <span asp-validation-for="Input.Telefone" class="text-danger"></span>
                 </div>
                 <div class="form-floating mb-3">
                     <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />

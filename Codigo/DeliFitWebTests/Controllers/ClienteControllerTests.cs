@@ -2,8 +2,10 @@
 using Core;
 using Core.DTO;
 using Core.Service;
+using DeliFitWeb.Areas.Identity.Data;
 using DeliFitWeb.Mappers;
 using DeliFitWeb.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -19,19 +21,44 @@ namespace DeliFitWeb.Controllers.Tests
         {
             // Arrange
             var mockService = new Mock<IClienteService>();
+            var mockBrasilApi = new Mock<IBrasilApiService>();
+            var mockUserManager = new Mock<UserManager<UsuarioIdentity>>(
+                new Mock<IUserStore<UsuarioIdentity>>().Object,
+                null, null, null, null, null, null, null, null);
 
             IMapper mapper = new MapperConfiguration(cfg =>
                 cfg.AddProfile(new ClienteProfile())).CreateMapper();
 
-            mockService.Setup(service => service.GetAll())
+            mockBrasilApi
+                .Setup(service => service.IsDddValidAsync(It.IsAny<string>()))
+                .ReturnsAsync(true);
+
+            // Configura comportamento do mock do IClienteService para os testes funcionarem
+            mockService
+                .Setup(service => service.GetAll())
                 .Returns(GetTestCliente());
-            mockService.Setup(service => service.Get(1))
+
+            mockService
+                .Setup(service => service.Get(It.Is<uint>(id => id == 1)))
                 .Returns(GetTargetCliente());
-            mockService.Setup(service => service.Edit(It.IsAny<Cliente>()))
-                .Verifiable();
-            mockService.Setup(service => service.Create(It.IsAny<Cliente>()))
-                .Verifiable();
-            controller = new ClienteController(mockService.Object, mapper);
+
+            mockService
+                .Setup(service => service.Get(It.Is<uint>(id => id != 1)))
+                .Returns((Cliente?)null);
+
+            mockService
+                .Setup(service => service.GetByEmail(It.IsAny<string>()))
+                .Returns((string email) => {
+                    // tenta encontrar um ClienteDTO com email correspondente (não existe em dados de teste)
+                    return null;
+                });
+
+            controller = new ClienteController(
+                mockService.Object,
+                mapper,
+                mockBrasilApi.Object,
+                mockUserManager.Object
+            );
         }
 
         [TestMethod()]
@@ -79,7 +106,8 @@ namespace DeliFitWeb.Controllers.Tests
         public void CreateTest_Valid()
         {
             // Act
-            var result = controller?.CreateAsync(GetNewCliente());
+            var novoClienteViewModel = GetNewCliente();
+            var result = Unwrap(controller?.CreateAsync(novoClienteViewModel));
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
@@ -95,8 +123,7 @@ namespace DeliFitWeb.Controllers.Tests
             controller?.ModelState.AddModelError("Nome", "Nome é obrigatório.");
 
             // Act
-            var result = controller?.CreateAsync(GetNewCliente());
-
+            var result = Unwrap(controller?.CreateAsync(GetNewCliente()));
             // Assert
             Assert.AreEqual(1, controller?.ModelState.ErrorCount);
             // When model state is invalid the controller should re-display the Create view
@@ -217,6 +244,30 @@ namespace DeliFitWeb.Controllers.Tests
                     Telefone = "79977777777"
                 },
             };
+        }
+
+
+        private static object? Unwrap(object? maybeTask)
+        {
+            if (maybeTask is null) return null;
+            if (maybeTask is Task task)
+            {
+                // Aguarda término
+                task.GetAwaiter().GetResult();
+
+                var taskType = task.GetType();
+                if (taskType.IsGenericType)
+                {
+                    // Obtém propriedade Result via reflexão para Task<T>
+                    var prop = taskType.GetProperty("Result");
+                    return prop?.GetValue(task);
+                }
+
+                // Task sem resultado
+                return null;
+            }
+
+            return maybeTask;
         }
     }
 }

@@ -5,6 +5,7 @@ using DeliFitWeb.Models;
 using Core;
 using Microsoft.AspNetCore.Identity;
 using DeliFitWeb.Areas.Identity.Data;
+using System.Linq;
 
 namespace DeliFitWeb.Controllers
 {
@@ -16,17 +17,15 @@ namespace DeliFitWeb.Controllers
         private readonly IBrasilApiService _brasilApiService;
         private readonly UserManager<UsuarioIdentity> _userManager;
 
-        public ClienteController(IClienteService clienteService, IMapper mapper, IBrasilApiService brasilApiService)
+        public ClienteController(
+    IClienteService clienteService,
+    IMapper mapper,
+    IBrasilApiService brasilApiService,
+    UserManager<UsuarioIdentity> userManager)
         {
             _clienteService = clienteService;
             _mapper = mapper;
             _brasilApiService = brasilApiService;
-        }
-
-        public ClienteController(IClienteService clienteService, IMapper mapper, UserManager<UsuarioIdentity> userManager)
-        {
-            _clienteService = clienteService;
-            _mapper = mapper;
             _userManager = userManager;
         }
 
@@ -72,11 +71,22 @@ namespace DeliFitWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Extrair o DDD (aqui presumindo que o usuário digite apenas números, 
-                // ou você faz um substring caso venha como (XX)99999-9999)
-                string ddd = clienteModel.Telefone.Substring(0, 2);
+                // Validação e normalização do telefone antes de extrair o DDD
+                if (clienteModel == null || string.IsNullOrWhiteSpace(clienteModel.Telefone))
+                {
+                    ModelState.AddModelError("Telefone", "Telefone inválido.");
+                    return View(clienteModel);
+                }
 
-                // Vai na BrasilAPI verificar
+                var normalized = new string(clienteModel.Telefone.Where(char.IsDigit).ToArray());
+                if (normalized.Length < 2)
+                {
+                    ModelState.AddModelError("Telefone", "Telefone inválido.");
+                    return View(clienteModel);
+                }
+
+                string ddd = normalized.Substring(0, 2);
+
                 bool dddValido = await _brasilApiService.IsDddValidAsync(ddd);
 
                 if (!dddValido)
@@ -85,8 +95,10 @@ namespace DeliFitWeb.Controllers
                     return View(clienteModel);
                 }
 
-                // DDD Válido -> Prosseguir com o salvamento no banco de dados...
-                // _clienteService.Create(clienteDTO);
+                var cliente = _mapper.Map<Cliente>(clienteModel);
+                _clienteService.Create(cliente);
+
+                return RedirectToAction(nameof(Index));
             }
 
             return View(clienteModel);

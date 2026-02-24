@@ -47,7 +47,7 @@
                 </div>
 
                 <div class="form-floating mb-3">
-                    <input asp-for="Input.Telefone" class="form-control" placeholder="Telefone (somente números)" />
+                    <input asp-for="Input.Telefone" class="form-control telefone-mask" placeholder="(99) 99999-9999" maxlength="14" />
                     <label asp-for="Input.Telefone">Telefone</label>
                     <span asp-validation-for="Input.Telefone" class="text-danger"></span>
                 </div>
@@ -68,4 +68,6 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    
+    </script>
 }

@@ -9,6 +9,6 @@ namespace Core.Service
         Task<bool> IsDddValidAsync(string ddd);
 
         // Opcional: Retorna os dados completos do DDD (estado e cidades)
-        Task<DddResponse> GetDddInfoAsync(string ddd);
+        Task<DddResponse?> GetDddInfoAsync(string ddd);
     }
 }

@@ -49,7 +49,7 @@
 
                         <div class="col-md-6">
                             <label asp-for="Telefone" class="form-label small fw-bold text-muted text-uppercase">Telefone</label>
-                            <input asp-for="Telefone" class="form-control border-0 bg-light p-3" inputmode="tel" autocomplete="tel" placeholder="(99) 99999-9999" />
+                            <input asp-for="Telefone" class="form-control border-0 bg-light p-3 telefone-mask" inputmode="tel" autocomplete="tel" placeholder="(99) 99999-9999" maxlength="14" />
                             <span asp-validation-for="Telefone" class="text-danger small"></span>
                         </div>
 

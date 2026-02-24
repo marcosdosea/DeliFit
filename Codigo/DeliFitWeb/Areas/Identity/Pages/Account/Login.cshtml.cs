@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using DeliFitWeb.Areas.Identity.Data;
 using Microsoft.AspNetCore.Authentication;
@@ -46,9 +47,9 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required]
-            [EmailAddress]
-            public string Email { get; set; }
+            [Required(ErrorMessage = "O telefone é obrigatório.")]
+            [Display(Name = "Telefone")]
+            public string Telefone { get; set; }
 
             [Required]
             [DataType(DataType.Password)]
@@ -84,13 +85,29 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                // Normaliza telefone para dígitos
+                var digits = new string((Input.Telefone ?? string.Empty).Where(char.IsDigit).ToArray());
+                if (digits.Length != 11)
+                {
+                    ModelState.AddModelError(string.Empty, "O telefone deve conter 11 dígitos.");
+                    return Page();
+                }
+
+                // Procura usuário pelo PhoneNumber
+                var user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == digits);
+                if (user == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Credenciais inválidas.");
+                    return Page();
+                }
+
+                // Usa o UserName do usuário encontrado para efetuar o sign-in
+                var usernameForSignIn = user.UserName ?? user.Email;
+                var result = await _signInManager.PasswordSignInAsync(usernameForSignIn, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
 
-                    // Recupera o usuário logado
-                    var user = await _userManager.FindByEmailAsync(Input.Email);
                     // Pega as roles (perfis) desse usuário
                     var roles = await _userManager.GetRolesAsync(user);
 

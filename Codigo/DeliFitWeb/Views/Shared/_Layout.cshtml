@@ -11,10 +11,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-
     <style>
-
-
         /* Variáveis de Cor DeliFit */
         :root {
             --delifit-orange: #ff6600;
@@ -60,15 +57,15 @@
             transition: all 0.3s;
         }
 
-            .nav-pills .nav-link:hover {
-                background-color: #fff3e6;
-                color: var(--delifit-orange);
-            }
+        .nav-pills .nav-link:hover {
+            background-color: #fff3e6;
+            color: var(--delifit-orange);
+        }
 
-            .nav-pills .nav-link.active {
-                background-color: var(--delifit-orange) !important;
-                color: white !important;
-            }
+        .nav-pills .nav-link.active {
+            background-color: var(--delifit-orange) !important;
+            color: white !important;
+        }
 
         .nav-link i {
             margin-right: 10px;
@@ -113,7 +110,7 @@
                 width: 100%;
                 height: auto;
                 position: relative;
-            }
+        }
 
             .main-content {
                 margin-left: 0;
@@ -193,12 +190,46 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
-
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- Validação de telefone --!>></>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+
+    <!-- Máscara de telefone: formata visualmente como (99) 99999-9999 e envia apenas dígitos -->
+    <script>
+        (function($){
+            function formatPhone(value){
+                if(!value) return '';
+                var v = value.replace(/\D/g,'').slice(0,11);
+                if(v.length <= 2) return '(' + v;
+                if(v.length <= 7) return '(' + v.slice(0,2) + ')' + v.slice(2);
+                return '(' + v.slice(0,2) + ')' + v.slice(2,7) + '-' + v.slice(7);
+            }
+
+            $(function(){
+                // Apply formatting on input for elements with class .telefone-mask
+                $(document).on('input', '.telefone-mask', function(e){
+                    var el = $(this);
+                    var pos = this.selectionStart;
+                    var old = el.val();
+                    var formatted = formatPhone(old);
+                    el.val(formatted);
+                });
+
+                // Before submit, normalize telefone inputs to digits only
+                $(document).on('submit', 'form', function(){
+                    $(this).find('.telefone-mask').each(function(){
+                        var v = $(this).val() || '';
+                        var digits = v.replace(/\D/g, '').slice(0,11);
+                        $(this).val(digits);
+                    });
+                });
+            });
+        })(jQuery);
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
-
 </html>

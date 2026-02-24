@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Core;
 using Core.Service;
+using System.Linq;
 
 namespace DeliFitWeb.Areas.Identity.Pages.Account
 {
@@ -26,7 +27,7 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
         private readonly SignInManager<UsuarioIdentity> _signInManager;
         private readonly UserManager<UsuarioIdentity> _userManager;
         private readonly IUserStore<UsuarioIdentity> _userStore;
-        private readonly IUserEmailStore<UsuarioIdentity> _emailStore;
+        private readonly IUserEmailStore<UsuarioIdentity> _email_store;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly IClienteService _clienteService;
@@ -41,7 +42,7 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
         {
             _userManager = userManager;
             _userStore = userStore;
-            _emailStore = GetEmailStore();
+            _email_store = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
@@ -77,13 +78,20 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
             public string RoleDesejada { get; set; }
 
             // Campos extras para cadastro de Cliente
+            [Required(ErrorMessage = "Campo requerido.")]
             [Display(Name = "Nome completo")]
+            [StringLength(50, MinimumLength = 3, ErrorMessage = "O nome deve ter entre 3 e 50 caracteres.")]
             public string Nome { get; set; }
 
+            [Required(ErrorMessage = "Campo requerido")]
             [Display(Name = "CPF")]
+            [StringLength(11, MinimumLength = 11, ErrorMessage = "O cpf deve conter 11 caracteres.")]
+            [RegularExpression(@"^\d{11}$", ErrorMessage = "O CPF deve conter exatamente 11 dígitos.")]
             public string Cpf { get; set; }
 
+            [Required(ErrorMessage = "Campo requerido")]
             [Display(Name = "Telefone")]
+            [RegularExpression(@"^(?:\(?\d{2}\)?\s?\d{4,5}-?\d{4}|\d{11})$", ErrorMessage = "O telefone deve conter exatamente 11 dígitos.")]
             public string Telefone { get; set; }
 
             [Display(Name = "Data de Nascimento")]
@@ -104,15 +112,26 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
+            // Normalização de campos que podem vir formatados (ex.: máscara)
+            if (Input != null)
+            {
+                if (!string.IsNullOrWhiteSpace(Input.Telefone))
+                    Input.Telefone = new string(Input.Telefone.Where(char.IsDigit).ToArray());
+                if (!string.IsNullOrWhiteSpace(Input.Cpf))
+                    Input.Cpf = new string(Input.Cpf.Where(char.IsDigit).ToArray());
+                if (!string.IsNullOrWhiteSpace(Input.Nome))
+                    Input.Nome = Input.Nome.Trim();
+            }
+
             // Validações extras para role Cliente
             if (Input.RoleDesejada == "Cliente")
             {
                 if (string.IsNullOrWhiteSpace(Input.Nome))
                     ModelState.AddModelError("Input.Nome", "O nome é obrigatório.");
-                if (string.IsNullOrWhiteSpace(Input.Cpf))
-                    ModelState.AddModelError("Input.Cpf", "O CPF é obrigatório.");
-                if (string.IsNullOrWhiteSpace(Input.Telefone))
-                    ModelState.AddModelError("Input.Telefone", "O telefone é obrigatório.");
+                if (string.IsNullOrWhiteSpace(Input.Cpf) || Input.Cpf.Length != 11 || !Input.Cpf.All(char.IsDigit))
+                    ModelState.AddModelError("Input.Cpf", "O CPF é obrigatório e deve conter 11 dígitos.");
+                if (string.IsNullOrWhiteSpace(Input.Telefone) || Input.Telefone.Length != 11 || !Input.Telefone.All(char.IsDigit))
+                    ModelState.AddModelError("Input.Telefone", "O telefone é obrigatório e deve conter 11 dígitos.");
                 if (Input.DataNascimento == null)
                     ModelState.AddModelError("Input.DataNascimento", "A data de nascimento é obrigatória.");
             }
@@ -122,12 +141,26 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
                 var user = CreateUser();
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+                await _email_store.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    // Salva telefone em AspNetUsers.PhoneNumber se disponível
+                    if (!string.IsNullOrWhiteSpace(Input.Telefone))
+                    {
+                        var phoneResult = await _userManager.SetPhoneNumberAsync(user, Input.Telefone);
+                        if (!phoneResult.Succeeded)
+                        {
+                            // registra erro e desfaz criação do cliente no banco se necessário
+                            foreach (var err in phoneResult.Errors)
+                                ModelState.AddModelError(string.Empty, err.Description);
+
+                            // Caso prefira abortar o fluxo, você pode retornar Page() aqui.
+                        }
+                    }
 
                     await _userManager.AddToRoleAsync(user, Input.RoleDesejada);
 
