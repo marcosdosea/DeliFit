@@ -15,12 +15,6 @@ namespace DeliFitWeb.Controllers
         private readonly IMapper _mapper;
         private readonly UserManager<UsuarioIdentity> _userManager;
 
-        public ClienteController(IClienteService clienteService, IMapper mapper)
-        {
-            _clienteService = clienteService;
-            _mapper = mapper;
-        }
-
         public ClienteController(IClienteService clienteService, IMapper mapper, UserManager<UsuarioIdentity> userManager)
         {
             _clienteService = clienteService;

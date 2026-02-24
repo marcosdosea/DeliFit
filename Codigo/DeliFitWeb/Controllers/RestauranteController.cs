@@ -23,13 +23,6 @@ namespace DeliFitWeb.Controllers
         private readonly IEmailSender? _emailSender;
 
         public RestauranteController(IRestauranteService restauranteService,
-                                     IMapper mapper)
-        {
-            _restauranteService = restauranteService;
-            _mapper = mapper;
-        }
-
-        public RestauranteController(IRestauranteService restauranteService,
                                      IMapper mapper,
                                      UserManager<UsuarioIdentity> userManager,
                                      RoleManager<IdentityRole> roleManager,
