@@ -115,6 +115,19 @@
 			font-size: 0.9rem;
 		}
 
+		/* Estilo para botão de logout no menu inferior do cliente */
+		.navbar-dark .nav-link button {
+			background: transparent;
+			border: none;
+			color: white;
+			padding: 0;
+			width: 100%;
+		}
+
+		.navbar-dark .nav-link button:hover {
+			color: rgba(255, 255, 255, 0.75);
+		}
+
 		@@media (max-width: 768px) {
 			.sidebar {
 				width: 100%;
@@ -267,6 +280,13 @@
 						<i class="bi bi-person d-block"></i>
 						<small>Perfil</small>
 					</a>
+
+					<form method="post" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/" class="m-0">
+						<button type="submit" class="nav-link text-white text-center bg-transparent border-0 p-0" style="cursor: pointer;">
+							<i class="bi bi-box-arrow-right d-block" style="font-size: 1.5rem;"></i>
+							<small>Sair</small>
+						</button>
+					</form>
 
 				</div>
 			</nav>
