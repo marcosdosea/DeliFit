@@ -6,6 +6,41 @@
 // Aguarda o documento carregar
 document.addEventListener("DOMContentLoaded", function () {
 
+    // Máscara de telefone celular brasileiro (99) 99999-9999
+    const telefoneInputs = document.querySelectorAll(".telefone-mask");
+
+    telefoneInputs.forEach(function (input) {
+        input.addEventListener("input", function (e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é número
+
+            if (value.length <= 11) {
+                // Aplica a máscara conforme o usuário digita
+                if (value.length <= 2) {
+                    value = value.replace(/^(\d{0,2})/, '($1');
+                } else if (value.length <= 7) {
+                    value = value.replace(/^(\d{2})(\d{0,5})/, '($1) $2');
+                } else {
+                    value = value.replace(/^(\d{2})(\d{5})(\d{0,4})/, '($1) $2-$3');
+                }
+
+                e.target.value = value;
+            } else {
+                // Limita a 14 caracteres formatados: (99) 99999-9999
+                e.target.value = e.target.value.slice(0, 15);
+            }
+        });
+
+        // Remove a máscara ao colar texto
+        input.addEventListener("paste", function (e) {
+            setTimeout(function () {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length === 11) {
+                    e.target.value = value.replace(/^(\d{2})(\d{5})(\d{4})/, '($1) $2-$3');
+                }
+            }, 10);
+        });
+    });
+
     // Substitua "Cep" pelo ID correto do seu campo de input no HTML
     // No ASP.NET MVC, o ID gerado costuma ter o mesmo nome da propriedade do ViewModel
     const cepInput = document.getElementById("Cep");

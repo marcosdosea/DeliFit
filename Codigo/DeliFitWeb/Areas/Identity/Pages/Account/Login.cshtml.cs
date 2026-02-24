@@ -104,6 +104,7 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
                 // Usa o UserName do usuário encontrado para efetuar o sign-in
                 var usernameForSignIn = user.UserName ?? user.Email;
                 var result = await _signInManager.PasswordSignInAsync(usernameForSignIn, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
