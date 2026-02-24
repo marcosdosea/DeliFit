@@ -102,4 +102,17 @@ public class ItemService : IItemService
             .AsNoTracking()
             .Where(i => EF.Functions.Like(i.Nome, $"%{nome}%"));//ignora maiuscula e minuscula
     }
+
+    /// <summary>
+    /// Obter todos os itens de um restaurante específico
+    /// </summary>
+    /// <param name="idRestaurante">ID do restaurante</param>
+    /// <returns>lista de itens do restaurante</returns>
+    public IEnumerable<Item> GetByRestaurante(uint idRestaurante)
+    {
+        return _context.Items
+            .AsNoTracking()
+            .Where(i => i.IdRestaurante == idRestaurante)
+            .OrderBy(i => i.Nome);
+    }
 }

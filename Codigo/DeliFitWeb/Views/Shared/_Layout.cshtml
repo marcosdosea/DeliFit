@@ -136,10 +136,10 @@
 
 <body>
 
-@if (User.Identity.IsAuthenticated)
-{
-	@if (User.IsInRole("Admin") || User.IsInRole("GerenteRestaurante"))
+	@if (User.Identity.IsAuthenticated)
 	{
+		@if (User.IsInRole("Admin") || User.IsInRole("GerenteRestaurante"))
+		{
 			<div class="sidebar">
 
 				<a class="navbar-brand"
@@ -236,14 +236,13 @@
 					}
 				</ul>
 			</div>
-	}
+		}
 
-	@* ================= CLIENTE ================= *@
-	@if (User.IsInRole("Cliente"))
-	{
+		@* ================= CLIENTE ================= *@
+		@if (User.IsInRole("Cliente"))
+		{
 			<nav class="navbar navbar-dark bg-dark fixed-bottom">
 				<div class="container-fluid d-flex justify-content-around">
-
 
 					<a class="nav-link text-white text-center"
 					   asp-controller="Cliente" asp-action="HomeCliente">
@@ -251,22 +250,22 @@
 						<small>Início</small>
 					</a>
 
-					@*<a class="nav-link text-white text-center"
-					   asp-controller="Cliente" asp-action="Index">
-						<i class="bi bi-journal-text d-block"></i>
+					<a class="nav-link text-white text-center"
+					   asp-controller="Pedido" asp-action="Index">
+						<i class="bi bi-receipt d-block"></i>
 						<small>Pedidos</small>
-					</a>*@
+					</a>
 
 					<a class="nav-link text-white text-center"
-					   asp-controller="Cliente" asp-action="Details">
+					   asp-controller="Cliente" asp-action="Perfil">
 						<i class="bi bi-person d-block"></i>
 						<small>Perfil</small>
 					</a>
 
 				</div>
 			</nav>
+		}
 	}
-}
 
 	<div class="main-content">
 		<main role="main" class="pb-3">
@@ -285,7 +284,7 @@
 	<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
-@await RenderSectionAsync("Scripts", required: false)
+	@await RenderSectionAsync("Scripts", required: false)
 
 </body>
 </html>

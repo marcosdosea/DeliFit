@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using DeliFitWeb.Helpers;
+using Core.Service;
 
 namespace DeliFitWeb.Areas.Identity.Pages.Account
 {
@@ -23,12 +25,20 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
         private readonly SignInManager<UsuarioIdentity> _signInManager;
         private readonly ILogger<LoginModel> _logger;
         private readonly UserManager<UsuarioIdentity> _userManager;
+        private readonly IClienteService _clienteService;
+        private readonly IRestauranteService _restauranteService;
 
-        public LoginModel(SignInManager<UsuarioIdentity> signInManager, ILogger<LoginModel> logger, UserManager<UsuarioIdentity> userManager)
+        public LoginModel(SignInManager<UsuarioIdentity> signInManager, 
+                         ILogger<LoginModel> logger, 
+                         UserManager<UsuarioIdentity> userManager,
+                         IClienteService clienteService,
+                         IRestauranteService restauranteService)
         {
             _signInManager = signInManager;
             _logger = logger;
             _userManager = userManager;
+            _clienteService = clienteService;
+            _restauranteService = restauranteService;
         }
 
         // Optional incoming role from query string (propagated to Register link)
@@ -94,14 +104,38 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
                     // Pega as roles (perfis) desse usuário
                     var roles = await _userManager.GetRolesAsync(user);
 
-                    // Redireciona de acordo com a Role
+                    // Armazena email na sessão
+                    HttpContext.Session.SetUserEmail(Input.Email);
+
+                    // Redireciona de acordo com a Role e armazena dados na sessão
                     if (roles.Contains("Admin"))
                     {
+                        HttpContext.Session.SetUserRole("Admin");
                         return LocalRedirect("~/Restaurante/HomeAdmin"); 
                     }
                     if (roles.Contains("GerenteRestaurante"))
                     {
+                        HttpContext.Session.SetUserRole("GerenteRestaurante");
+
+                        // Busca e armazena ID do restaurante
+                        var restaurante = _restauranteService.GetByEmail(Input.Email);
+                        if (restaurante != null)
+                        {
+                            HttpContext.Session.SetRestauranteId(restaurante.Id);
+                        }
+
                         return LocalRedirect("~/Restaurante/Home"); 
+                    }
+                    if (roles.Contains("Cliente"))
+                    {
+                        HttpContext.Session.SetUserRole("Cliente");
+
+                        // Busca e armazena ID do cliente
+                        var cliente = _clienteService.GetByEmail(Input.Email);
+                        if (cliente != null)
+                        {
+                            HttpContext.Session.SetClienteId(cliente.Id);
+                        }
                     }
 
                     return LocalRedirect(returnUrl ?? "~/");
