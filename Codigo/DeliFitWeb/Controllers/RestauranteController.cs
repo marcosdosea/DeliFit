@@ -211,8 +211,22 @@ namespace DeliFitWeb.Controllers
         // POST: RestauranteController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(uint id, RestauranteViewModel restauranteModel)
+        public async Task<ActionResult> Delete(uint id, RestauranteViewModel restauranteModel)
         {
+            // Busca o restaurante para obter o email
+            var restaurante = _restauranteService.Get(id);
+
+            if (restaurante != null && !string.IsNullOrEmpty(restaurante.Email) && _userManager != null)
+            {
+                // Remove o usuário do Identity primeiro
+                var user = await _userManager.FindByEmailAsync(restaurante.Email);
+                if (user != null)
+                {
+                    await _userManager.DeleteAsync(user);
+                }
+            }
+
+            // Remove o restaurante do banco delifit
             _restauranteService.Delete(id);
 
             return RedirectToAction(nameof(Index));
@@ -321,10 +335,24 @@ namespace DeliFitWeb.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult NegarSolicitacao(uint id)
+        public async Task<ActionResult> NegarSolicitacao(uint id)
         {
             try
             {
+                // Busca o restaurante para obter o email
+                var restaurante = _restauranteService.Get(id);
+
+                if (restaurante != null && !string.IsNullOrEmpty(restaurante.Email) && _userManager != null)
+                {
+                    // Remove o usuário do Identity se existir
+                    var user = await _userManager.FindByEmailAsync(restaurante.Email);
+                    if (user != null)
+                    {
+                        await _userManager.DeleteAsync(user);
+                    }
+                }
+
+                // Remove o restaurante do banco delifit
                 _restauranteService.Delete(id);
                 TempData["Success"] = "Solicitação negada e removida com sucesso.";
             }
