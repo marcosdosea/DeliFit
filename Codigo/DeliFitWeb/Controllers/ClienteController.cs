@@ -16,12 +16,14 @@ namespace DeliFitWeb.Controllers
         private readonly IClienteService _clienteService;
         private readonly IMapper _mapper;
         private readonly UserManager<UsuarioIdentity> _userManager;
+        private readonly IRestauranteService _restauranteService;
 
-        public ClienteController(IClienteService clienteService, IMapper mapper, UserManager<UsuarioIdentity> userManager)
+        public ClienteController(IClienteService clienteService, IMapper mapper, UserManager<UsuarioIdentity> userManager, IRestauranteService restauranteService)
         {
             _clienteService = clienteService;
             _mapper = mapper;
             _userManager = userManager;
+            _restauranteService = restauranteService;
         }
 
         // GET: ClienteController
@@ -139,11 +141,15 @@ namespace DeliFitWeb.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            // Aqui você pode passar dados adicionais para a view se necessário
+            // Busca informações do cliente
             var cliente = _clienteService.Get(clienteId.Value);
             ViewBag.NomeCliente = cliente?.Nome;
 
-            return View();
+            // Busca restaurantes ativos
+            var restaurantesAtivos = _restauranteService.GetRestaurantesAtivos();
+            var restaurantesViewModel = _mapper.Map<List<RestauranteViewModel>>(restaurantesAtivos);
+
+            return View(restaurantesViewModel);
         }
 
         // Método auxiliar para obter o ID do cliente logado

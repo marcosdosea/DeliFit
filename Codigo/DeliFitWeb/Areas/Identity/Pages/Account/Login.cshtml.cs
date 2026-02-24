@@ -88,7 +88,6 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/Cliente/Perfil");
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
@@ -136,9 +135,12 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
                         {
                             HttpContext.Session.SetClienteId(cliente.Id);
                         }
+
+                        return LocalRedirect("~/Cliente/HomeCliente");
                     }
 
                     return LocalRedirect(returnUrl ?? "~/");
+
                 }
                 if (result.RequiresTwoFactor)
                 {
