@@ -1,8 +1,8 @@
-Ôªøusing AutoMapper;
+using AutoMapper;
 using Core;
 using Core.DTO;
 using Core.Service;
-using DeliFitWeb.Areas.Identity.Data;
+using Core.Identity.Data;
 using DeliFitWeb.Mappers;
 using DeliFitWeb.Models;
 using Microsoft.AspNetCore.Identity;
@@ -49,7 +49,7 @@ namespace DeliFitWeb.Controllers.Tests
             mockService
                 .Setup(service => service.GetByEmail(It.IsAny<string>()))
                 .Returns((string email) => {
-                    // tenta encontrar um ClienteDTO com email correspondente (n√£o existe em dados de teste)
+                    // tenta encontrar um ClienteDTO com email correspondente (n„o existe em dados de teste)
                     return null;
                 });
 
@@ -120,7 +120,7 @@ namespace DeliFitWeb.Controllers.Tests
         public void CreateTest_Post_Invalid()
         {
             // Arrange
-            controller?.ModelState.AddModelError("Nome", "Nome √© obrigat√≥rio.");
+            controller?.ModelState.AddModelError("Nome", "Nome È obrigatÛrio.");
 
             // Act
             var result = Unwrap(controller?.CreateAsync(GetNewCliente()));
@@ -240,7 +240,7 @@ namespace DeliFitWeb.Controllers.Tests
                 new ClienteDTO
                 {
                     Id = 3,
-                    Nome = "Marcos D√≥sea",
+                    Nome = "Marcos DÛsea",
                     Telefone = "79977777777"
                 },
             };
@@ -252,13 +252,13 @@ namespace DeliFitWeb.Controllers.Tests
             if (maybeTask is null) return null;
             if (maybeTask is Task task)
             {
-                // Aguarda t√©rmino
+                // Aguarda tÈrmino
                 task.GetAwaiter().GetResult();
 
                 var taskType = task.GetType();
                 if (taskType.IsGenericType)
                 {
-                    // Obt√©m propriedade Result via reflex√£o para Task<T>
+                    // ObtÈm propriedade Result via reflex„o para Task<T>
                     var prop = taskType.GetProperty("Result");
                     return prop?.GetValue(task);
                 }

@@ -1,10 +1,10 @@
-Ôªøusing AutoMapper;
+using AutoMapper;
 using Core.Service;
 using Microsoft.AspNetCore.Mvc;
 using DeliFitWeb.Models;
 using Core;
 using Microsoft.AspNetCore.Identity;
-using DeliFitWeb.Areas.Identity.Data;
+using Core.Identity.Data;
 using System.Linq;
 
 namespace DeliFitWeb.Controllers
@@ -38,14 +38,14 @@ namespace DeliFitWeb.Controllers
         }
 
         // GET: ClienteController/Perfil
-        // Redireciona o cliente logado para o seu pr√≥prio Details
+        // Redireciona o cliente logado para o seu prÛprio Details
         public async Task<ActionResult> Perfil()
         {
             var userEmail = _userManager.GetUserName(User);
             var cliente = _clienteService.GetByEmail(userEmail);
 
             if (cliente == null)
-                return NotFound("Perfil de cliente n√£o encontrado para o usu√°rio logado.");
+                return NotFound("Perfil de cliente n„o encontrado para o usu·rio logado.");
 
             return RedirectToAction(nameof(Details), new { id = cliente.Id });
         }
@@ -71,17 +71,17 @@ namespace DeliFitWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Valida√ß√£o e normaliza√ß√£o do telefone antes de extrair o DDD
+                // ValidaÁ„o e normalizaÁ„o do telefone antes de extrair o DDD
                 if (clienteModel == null || string.IsNullOrWhiteSpace(clienteModel.Telefone))
                 {
-                    ModelState.AddModelError("Telefone", "Telefone inv√°lido.");
+                    ModelState.AddModelError("Telefone", "Telefone inv·lido.");
                     return View(clienteModel);
                 }
 
                 var normalized = new string(clienteModel.Telefone.Where(char.IsDigit).ToArray());
                 if (normalized.Length < 2)
                 {
-                    ModelState.AddModelError("Telefone", "Telefone inv√°lido.");
+                    ModelState.AddModelError("Telefone", "Telefone inv·lido.");
                     return View(clienteModel);
                 }
 
@@ -91,11 +91,11 @@ namespace DeliFitWeb.Controllers
 
                 if (!dddValido)
                 {
-                    ModelState.AddModelError("Telefone", "O DDD informado √© inv√°lido.");
+                    ModelState.AddModelError("Telefone", "O DDD informado È inv·lido.");
                     return View(clienteModel);
                 }
 
-                // Atualiza o modelo com o telefone normalizado (somente d√≠gitos)
+                // Atualiza o modelo com o telefone normalizado (somente dÌgitos)
                 clienteModel.Telefone = normalized;
 
                 var cliente = _mapper.Map<Cliente>(clienteModel);
@@ -122,17 +122,17 @@ namespace DeliFitWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Valida√ß√£o e normaliza√ß√£o do telefone antes de salvar
+                // ValidaÁ„o e normalizaÁ„o do telefone antes de salvar
                 if (clienteModel == null || string.IsNullOrWhiteSpace(clienteModel.Telefone))
                 {
-                    ModelState.AddModelError("Telefone", "Telefone inv√°lido.");
+                    ModelState.AddModelError("Telefone", "Telefone inv·lido.");
                     return View(clienteModel);
                 }
 
                 var normalized = new string(clienteModel.Telefone.Where(char.IsDigit).ToArray());
                 if (normalized.Length != 11)
                 {
-                    ModelState.AddModelError("Telefone", "O telefone deve conter 11 d√≠gitos.");
+                    ModelState.AddModelError("Telefone", "O telefone deve conter 11 dÌgitos.");
                     return View(clienteModel);
                 }
 

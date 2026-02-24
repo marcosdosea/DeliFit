@@ -1,4 +1,4 @@
-Ôªøusing AutoMapper;
+using AutoMapper;
 using Core;
 using Core.Service;
 using DeliFitWeb.Models;
@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
 using System.Net.Http.Json;
-using DeliFitWeb.Areas.Identity.Data;
+using Core.Identity.Data;
 using System.Security.Cryptography;
 using System.Linq;
 
@@ -213,8 +213,8 @@ namespace DeliFitWeb.Controllers
                         restaurante.Validado = true;
                         _restauranteService.Edit(restaurante);
 
-                        var assunto = "Solicita√ß√£o aprovada - DeliFit";
-                        var mensagem = $"Sua solicita√ß√£o foi aprovada.\nUsu√°rio: {email}\nSenha: {senha}\nAcesse: {Request.Scheme}://{Request.Host}/Identity/Account/Login";
+                        var assunto = "SolicitaÁ„o aprovada - DeliFit";
+                        var mensagem = $"Sua solicitaÁ„o foi aprovada.\nUsu·rio: {email}\nSenha: {senha}\nAcesse: {Request.Scheme}://{Request.Host}/Identity/Account/Login";
                         await _emailSender.SendEmailAsync(email, assunto, mensagem);
                     }
                     else
@@ -249,7 +249,7 @@ namespace DeliFitWeb.Controllers
 
             if (string.IsNullOrEmpty(email))
             {
-                // Se por algum motivo o utilizador n√£o estiver autenticado ou n√£o tiver e-mail
+                // Se por algum motivo o utilizador n„o estiver autenticado ou n„o tiver e-mail
                 return RedirectToAction("Index", "Home");
             }
 
@@ -258,7 +258,7 @@ namespace DeliFitWeb.Controllers
 
             if (restaurante == null)
             {
-                return NotFound("O restaurante associado a este utilizador n√£o foi encontrado.");
+                return NotFound("O restaurante associado a este utilizador n„o foi encontrado.");
             }
 
             // Redireciona para a Action de Detalhes passando o ID correto do restaurante
@@ -270,7 +270,7 @@ namespace DeliFitWeb.Controllers
         {
             if (string.IsNullOrEmpty(cnpj))
             {
-                return Json(new { sucesso = false, mensagem = "CNPJ inv√°lido." });
+                return Json(new { sucesso = false, mensagem = "CNPJ inv·lido." });
             }
 
             cnpj = new string(cnpj.Where(char.IsDigit).ToArray());
@@ -295,7 +295,7 @@ namespace DeliFitWeb.Controllers
                 });
             }
 
-            return Json(new { sucesso = false, mensagem = "CNPJ n√£o encontrado." });
+            return Json(new { sucesso = false, mensagem = "CNPJ n„o encontrado." });
         }
 
         [Authorize(Roles = "GerenteRestaurante")]

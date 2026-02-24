@@ -1,4 +1,4 @@
-Ôªøusing System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using Util;
 
 namespace DeliFitWeb.Models
@@ -12,38 +12,38 @@ namespace DeliFitWeb.Models
         public uint IdCliente { get; set; }
 
         [Display(Name = "Rua")]
-        [Required(ErrorMessage = "O campo Rua √© obrigat√≥rio.")]
-        [StringLength(50, ErrorMessage = "A rua deve ter no m√°ximo 50 caracteres.")]
+        [Required(ErrorMessage = "O campo Rua È obrigatÛrio.")]
+        [StringLength(50, ErrorMessage = "A rua deve ter no m·ximo 50 caracteres.")]
         public string Rua { get; set; } = string.Empty;
 
-        [Display(Name = "N√∫mero")]
-        [Required(ErrorMessage = "O campo N√∫mero √© obrigat√≥rio.")]
-        [StringLength(10, ErrorMessage = "O n√∫mero deve ter no m√°ximo 10 caracteres.")]
+        [Display(Name = "N˙mero")]
+        [Required(ErrorMessage = "O campo N˙mero È obrigatÛrio.")]
+        [StringLength(10, ErrorMessage = "O n˙mero deve ter no m·ximo 10 caracteres.")]
         public string Numero { get; set; } = string.Empty;
 
         [Display(Name = "Bairro")]
-        [Required(ErrorMessage = "O campo Bairro √© obrigat√≥rio.")]
-        [StringLength(50, ErrorMessage = "O Bairro deve ter no m√°ximo 50 caracteres.")]
+        [Required(ErrorMessage = "O campo Bairro È obrigatÛrio.")]
+        [StringLength(50, ErrorMessage = "O Bairro deve ter no m·ximo 50 caracteres.")]
         public string Bairro { get; set; } = string.Empty;
 
         [Display(Name = "CEP")]
-        [Required(ErrorMessage = "O campo CEP √© obrigat√≥rio.")]
-        [StringLength(8, ErrorMessage = "O CEP deve ter no m√°ximo 8 caracteres.")]
-        [Cep(ErrorMessage = "CEP inv√°lido")]
+        [Required(ErrorMessage = "O campo CEP È obrigatÛrio.")]
+        [StringLength(8, ErrorMessage = "O CEP deve ter no m·ximo 8 caracteres.")]
+        [Cep(ErrorMessage = "CEP inv·lido")]
         public string Cep { get; set; } = string.Empty;
 
         [Display(Name = "Cidade")]
-        [Required(ErrorMessage = "O campo Cidade √© obrigat√≥rio.")]
-        [StringLength(50, ErrorMessage = "A cidade deve ter no m√°ximo 50 caracteres.")]
+        [Required(ErrorMessage = "O campo Cidade È obrigatÛrio.")]
+        [StringLength(50, ErrorMessage = "A cidade deve ter no m·ximo 50 caracteres.")]
         public string Cidade { get; set; } = string.Empty;
 
         [Display(Name = "Estado")]
-        [Required(ErrorMessage = "O campo Estado √© obrigat√≥rio.")]
-        [StringLength(15, ErrorMessage = "O estado deve ter no m√°ximo 15 caracteres.")]
+        [Required(ErrorMessage = "O campo Estado È obrigatÛrio.")]
+        [StringLength(15, ErrorMessage = "O estado deve ter no m·ximo 15 caracteres.")]
         public string Estado { get; set; } = string.Empty;
 
         [Display(Name = "Label")]
-        [StringLength(50, ErrorMessage = "O complemento deve ter no m√°ximo 50 caracteres.")]
+        [StringLength(50, ErrorMessage = "O complemento deve ter no m·ximo 50 caracteres.")]
         public string Label { get; set; } = string.Empty;
 
     }

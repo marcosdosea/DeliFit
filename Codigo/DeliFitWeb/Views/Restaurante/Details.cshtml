@@ -1,4 +1,4 @@
-Ôªø@model DeliFitWeb.Models.RestauranteViewModel
+@model DeliFitWeb.Models.RestauranteViewModel
 
 @{
     ViewData["Title"] = "Perfil do Restaurante";
@@ -15,10 +15,10 @@
 
             <ul class="nav flex-column gap-1">
                 <li class="nav-item mb-2">
-                    <span class="nav-link fw-bold text-dark fs-5">In√≠cio</span>
+                    <span class="nav-link fw-bold text-dark fs-5">InÌcio</span>
                 </li>
                 <li><a href="#" class="nav-link fw-bold py-1 small" style="color: #ff6600;">- Perfil</a></li>
-                <li><a asp-controller="Item" asp-action="Index" asp-route-idRestaurante="@Model.Id" class="nav-link text-muted py-1 small">- Gestor de Card√°pio</a></li>
+                <li><a asp-controller="Item" asp-action="Index" asp-route-idRestaurante="@Model.Id" class="nav-link text-muted py-1 small">- Gestor de Card·pio</a></li>
                 <li><a asp-controller="Atendimento" asp-action="Index" asp-route-idRestaurante="@Model.Id" class="nav-link text-muted py-1 small">- Gestor de Atendimento</a></li>
             </ul>
         </aside>
@@ -62,14 +62,14 @@
 
                 <div class="row g-3 mb-4">
                     <div class="col-md-10">
-                        <label class="small fw-bold text-muted">Endere√ßo</label>
+                        <label class="small fw-bold text-muted">EndereÁo</label>
                         <input class="form-control bg-white" value="@Model.Rua, @Model.Numero, @Model.Bairro, @Model.Cidade - @Model.Estado" disabled />
                     </div>
                 </div>
 
                 <div class="row g-3 mb-5">
                     <div class="col-md-10">
-                        <label class="small fw-bold text-muted">Descri√ß√£o</label>
+                        <label class="small fw-bold text-muted">DescriÁ„o</label>
                         <textarea class="form-control bg-white" rows="4" disabled>@Model.Descricao</textarea>
                     </div>
                 </div>

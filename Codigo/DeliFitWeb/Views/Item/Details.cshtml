@@ -1,4 +1,4 @@
-ï»¿@model DeliFitWeb.Models.ItemViewModel
+@model DeliFitWeb.Models.ItemViewModel
 
 @{
     ViewData["Title"] = "Detalhes do Item";
@@ -20,10 +20,10 @@
         </div>
 
         <div class="card-body">
-            <!-- InformaÃ§Ãµes Principais -->
+            <!-- Informações Principais -->
             <div class="row mb-4">
                 <div class="col-md-8">
-                    <h5 class="text-primary mb-3">InformaÃ§Ãµes do Produto</h5>
+                    <h5 class="text-primary mb-3">Informações do Produto</h5>
 
                     <div class="mb-3">
                         <label class="form-label fw-bold text-muted">Nome</label>
@@ -33,21 +33,21 @@
                     @if (!string.IsNullOrEmpty(Model.Descricao))
                     {
                         <div class="mb-3">
-                            <label class="form-label fw-bold text-muted">DescriÃ§Ã£o</label>
+                            <label class="form-label fw-bold text-muted">Descrição</label>
                             <p class="text-muted">@Model.Descricao</p>
                         </div>
                     }
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold text-muted">PreÃ§o</label>
+                        <label class="form-label fw-bold text-muted">Preço</label>
                         <p class="fs-4 text-success">R$ @Model.Preco.ToString("N2")</p>
                     </div>
                 </div>
 
                 <div class="col-md-4">
-                    <h5 class="text-primary mb-3">EspecificaÃ§Ãµes</h5>
+                    <h5 class="text-primary mb-3">Especificações</h5>
 
-                    <!-- Tamanho e RestriÃ§Ãµes alinhados -->
+                    <!-- Tamanho e Restrições alinhados -->
                     <div class="row g-3">
                         @if (!string.IsNullOrEmpty(Model.Tamanho))
                         {
@@ -72,7 +72,7 @@
                         @if (!string.IsNullOrEmpty(Model.Restricao))
                         {
                             <div class="col-12">
-                                <label class="form-label fw-bold text-muted">RestriÃ§Ãµes Alimentares</label>
+                                <label class="form-label fw-bold text-muted">Restrições Alimentares</label>
                                 <div>
                                     <span class="badge bg-info fs-6 py-2 px-3">
                                         <i class="bi bi-shield-exclamation me-1"></i>@Model.Restricao
@@ -84,10 +84,10 @@
                 </div>
             </div>
 
-            <!-- InformaÃ§Ãµes Nutricionais -->
+            <!-- Informações Nutricionais -->
             <div class="row">
                 <div class="col-12">
-                    <h5 class="text-primary mb-3">InformaÃ§Ãµes Nutricionais</h5>
+                    <h5 class="text-primary mb-3">Informações Nutricionais</h5>
 
                     <div class="row g-3">
                         <div class="col-md-3 col-sm-6">
@@ -105,7 +105,7 @@
                             <div class="col-md-3 col-sm-6">
                                 <div class="card  bg-success bg-opacity-10 border-success h-100">
                                     <div class="card-body text-center d-flex flex-column justify-content-center">
-                                        <h6 class="text-muted mb-2">ProteÃ­nas</h6>
+                                        <h6 class="text-muted mb-2">Proteínas</h6>
                                         <h3 class="text-success mb-1">@Model.Proteina.Value.ToString("N1")</h3>
                                         <small class="text-muted">gramas</small>
                                     </div>
@@ -146,7 +146,7 @@
         <div class="card-footer bg-light">
             <div class="d-flex justify-content-between align-items-center">
                 <small class="text-muted">
-                    <i class="bi bi-clock me-1"></i>Ãšltima atualizaÃ§Ã£o: @DateTime.Now.ToString("dd/MM/yyyy")
+                    <i class="bi bi-clock me-1"></i>Última atualização: @DateTime.Now.ToString("dd/MM/yyyy")
                 </small>
                 <div class="btn-group">
                     @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-outline-primary" })
@@ -184,7 +184,7 @@
         padding: 0.5rem 1rem;
     }
 
-    /* Estilo para os campos de especificaÃ§Ã£o */
+    /* Estilo para os campos de especificação */
     .specification-item {
         border-left: 3px solid #ff6600;
         padding-left: 1rem;

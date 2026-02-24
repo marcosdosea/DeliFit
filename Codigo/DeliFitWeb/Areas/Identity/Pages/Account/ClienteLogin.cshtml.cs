@@ -4,7 +4,7 @@
 
 using System.ComponentModel.DataAnnotations;
 using Core.Service;
-using DeliFitWeb.Areas.Identity.Data;
+using Core.Identity.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;

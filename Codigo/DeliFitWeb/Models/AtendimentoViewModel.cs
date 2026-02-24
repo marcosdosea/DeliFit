@@ -1,4 +1,4 @@
-Ôªøusing System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace DeliFitWeb.Models
 {
@@ -14,11 +14,11 @@ namespace DeliFitWeb.Models
         public string DiaSemana { get; set; } = null!;
 
         [Required]
-        [Display(Name = "Hor√°rio In√≠cio")]
+        [Display(Name = "Hor·rio InÌcio")]
         public DateTime? HorarioInicio { get; set; }
 
         [Required]
-        [Display(Name = "Hor√°rio Fim")]
+        [Display(Name = "Hor·rio Fim")]
         public DateTime? HorarioFim { get; set; }
 
     }

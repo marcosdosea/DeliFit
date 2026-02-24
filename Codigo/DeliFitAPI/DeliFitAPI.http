@@ -1,0 +1,6 @@
+@DeliFitAPI_HostAddress = http://localhost:5182
+
+GET {{DeliFitAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

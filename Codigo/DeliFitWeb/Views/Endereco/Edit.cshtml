@@ -1,7 +1,7 @@
-ï»¿@model DeliFitWeb.Models.EnderecoViewModel
+@model DeliFitWeb.Models.EnderecoViewModel
 
 @{
-    ViewData["Title"] = "Editar EndereÃ§o";
+    ViewData["Title"] = "Editar Endereço";
 }
 
 <div class="container-fluid p-0 bg-white">
@@ -11,7 +11,7 @@
 
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
-                        <h2 class="fw-bold m-0">Editar EndereÃ§o</h2>
+                        <h2 class="fw-bold m-0">Editar Endereço</h2>
                         <p class="text-muted">Atualize os dados de entrega.</p>
                     </div>
                 </div>
@@ -33,7 +33,7 @@
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-header bg-white border-0 pt-4 ps-4">
                             <h5 class="fw-bold mb-0 text-orange">
-                                <i class="bi bi-geo-alt me-2"></i>Dados de LocalizaÃ§Ã£o
+                                <i class="bi bi-geo-alt me-2"></i>Dados de Localização
                             </h5>
                         </div>
 
@@ -82,7 +82,7 @@
 
                             <div class="row g-3">
                                 <div class="col-md-12">
-                                    <label asp-for="Label" class="form-label fw-semibold">Complemento / ReferÃªncia</label>
+                                    <label asp-for="Label" class="form-label fw-semibold">Complemento / Referência</label>
                                     <input asp-for="Label" class="form-control" />
                                     <span asp-validation-for="Label" class="text-danger small"></span>
                                 </div>
@@ -95,7 +95,7 @@
                             Cancelar
                         </a>
                         <button type="submit" class="btn btn-orange px-5 py-2 fw-bold shadow-sm">
-                            <i class="bi bi-save me-2"></i>Salvar AlteraÃ§Ãµes
+                            <i class="bi bi-save me-2"></i>Salvar Alterações
                         </button>
                     </div>
                 </form>
