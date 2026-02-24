@@ -79,7 +79,7 @@ namespace DeliFitWeb.Controllers.Tests
         public void CreateTest_Valid()
         {
             // Act
-            var result = controller?.Create(GetNewCliente());
+            var result = controller?.CreateAsync(GetNewCliente());
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
@@ -95,7 +95,7 @@ namespace DeliFitWeb.Controllers.Tests
             controller?.ModelState.AddModelError("Nome", "Nome é obrigatório.");
 
             // Act
-            var result = controller?.Create(GetNewCliente());
+            var result = controller?.CreateAsync(GetNewCliente());
 
             // Assert
             Assert.AreEqual(1, controller?.ModelState.ErrorCount);
