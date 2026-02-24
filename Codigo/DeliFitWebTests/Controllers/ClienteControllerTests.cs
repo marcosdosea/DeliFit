@@ -21,17 +21,13 @@ namespace DeliFitWeb.Controllers.Tests
         {
             // Arrange
             var mockService = new Mock<IClienteService>();
-            var mockBrasilApi = new Mock<IBrasilApiService>();
             var mockUserManager = new Mock<UserManager<UsuarioIdentity>>(
                 new Mock<IUserStore<UsuarioIdentity>>().Object,
                 null, null, null, null, null, null, null, null);
+            var mockRestauranteService = new Mock<IRestauranteService>();
 
             IMapper mapper = new MapperConfiguration(cfg =>
                 cfg.AddProfile(new ClienteProfile())).CreateMapper();
-
-            mockBrasilApi
-                .Setup(service => service.IsDddValidAsync(It.IsAny<string>()))
-                .ReturnsAsync(true);
 
             // Configura comportamento do mock do IClienteService para os testes funcionarem
             mockService
@@ -56,8 +52,8 @@ namespace DeliFitWeb.Controllers.Tests
             controller = new ClienteController(
                 mockService.Object,
                 mapper,
-                mockBrasilApi.Object,
-                mockUserManager.Object
+                mockUserManager.Object,
+                mockRestauranteService.Object
             );
         }
 
@@ -182,7 +178,7 @@ namespace DeliFitWeb.Controllers.Tests
         public void DeleteTest_Get_Valid()
         {
             // Act
-            var result = controller?.Delete(GetTargetClienteModel());
+            var result = Unwrap(controller?.Delete(GetTargetClienteModel()));
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
