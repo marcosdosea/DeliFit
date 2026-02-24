@@ -7,6 +7,8 @@ using DeliFitWeb.Mappers;
 using DeliFitWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using System;
+using System.Threading.Tasks;
 
 namespace DeliFitWebTests.Controllers;
 
@@ -180,7 +182,7 @@ public class AdesaoControllerTests
         var controllerLocal = new RestauranteController(mockService!.Object,
             new MapperConfiguration(cfg => cfg.AddProfile(new RestauranteProfile())).CreateMapper());
 
-        var result = controllerLocal.ListarSolicitacoes();
+        var result = Unwrap(controllerLocal.ListarSolicitacoes());
 
         Assert.IsInstanceOfType(result, typeof(ViewResult));
         ViewResult viewResult = (ViewResult)result;
@@ -194,7 +196,7 @@ public class AdesaoControllerTests
     [Description("Testando DetailsSolicitacao - visualização de solicitação pendente")]
     public void DetailsSolicitacaoTest()
     {
-        var result = controller!.DetailsSolicitacao(1);
+        var result = Unwrap(controller!.DetailsSolicitacao(1));
 
         Assert.IsInstanceOfType(result, typeof(ViewResult));
         ViewResult viewResult = (ViewResult)result;
@@ -217,7 +219,7 @@ public class AdesaoControllerTests
         var restauranteParaAprovar = GetTargetRestaurantePendente();
         mockService!.Setup(s => s.Get(It.Is<uint>(id => id == 1))).Returns(() => restauranteParaAprovar);
 
-        var result = controller!.AprovarSolicitacao(1);
+        var result = Unwrap(controller!.AprovarSolicitacao(1));
 
         Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
         RedirectToActionResult redirectToActionResult = (RedirectToActionResult)result;
@@ -235,7 +237,7 @@ public class AdesaoControllerTests
     {
         uint idParaNegar = 3;
 
-        var result = controller!.NegarSolicitacao(idParaNegar);
+        var result = Unwrap(controller!.NegarSolicitacao(idParaNegar));
 
         Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
         RedirectToActionResult redirectToActionResult = (RedirectToActionResult)result;
@@ -250,7 +252,7 @@ public class AdesaoControllerTests
     [Description("Testando SolicitarAdesao - GET")]
     public void SolicitarAdesaoTest_Get()
     {
-        var result = controller!.SolicitarAdesao();
+        var result = Unwrap(controller!.SolicitarAdesao());
 
         Assert.IsInstanceOfType(result, typeof(ViewResult));
     }
@@ -262,7 +264,7 @@ public class AdesaoControllerTests
     {
         var novaSolicitacao = GetNovoRestauranteSolicitacao();
 
-        var result = controller!.SolicitarAdesao(novaSolicitacao);
+        var result = Unwrap(controller!.SolicitarAdesao(novaSolicitacao));
 
         Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
         RedirectToActionResult redirectToActionResult = (RedirectToActionResult)result;
@@ -277,7 +279,7 @@ public class AdesaoControllerTests
     [Description("Testando que Details não permite alterar status")]
     public void Details_NaoPermiteAlterarStatusTest()
     {
-        var result = controller!.Details(1) as ViewResult;
+        var result = Unwrap(controller!.Details(1)) as ViewResult;
         var viewModel = result?.Model as RestauranteViewModel;
         Assert.IsNotNull(viewModel);
     }
@@ -287,7 +289,7 @@ public class AdesaoControllerTests
     [Description("Testando se DetailsSolicitacao permite alterar status")]
     public void DetailsSolicitacao_PermiteAlterarStatusTest()
     {
-        var result = controller!.DetailsSolicitacao(1) as ViewResult;
+        var result = Unwrap(controller!.DetailsSolicitacao(1)) as ViewResult;
         var viewModel = result?.Model as RestauranteViewModel;
 
         Assert.IsNotNull(viewModel);
@@ -303,7 +305,7 @@ public class AdesaoControllerTests
             new MapperConfiguration(cfg => cfg.AddProfile(new RestauranteProfile())).CreateMapper()
         );
 
-        var result = controllerComMockFiltrado.Index();
+        var result = Unwrap(controllerComMockFiltrado.Index());
 
         Assert.IsInstanceOfType(result, typeof(ViewResult));
     }
@@ -315,11 +317,39 @@ public class AdesaoControllerTests
     {
         var novoRestauranteViewModel = GetNovoRestauranteSolicitacao();
 
-        var result = controller!.Create(novoRestauranteViewModel);
+        var result = Unwrap(controller!.Create(novoRestauranteViewModel));
 
         Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
 
         mockService!.Verify(s => s.Create(It.Is<Restaurante>(r =>
             r.Validado == false)), Times.AtLeastOnce);
+    }
+
+    /// <summary>
+    /// Unwrap: se o objeto for um Task{T} retorna seu Result; se for Task (sem resultado) espera até completar e retorna null;
+    /// se não for Task retorna o próprio objeto.
+    /// Implementado via reflection para suportar Task{T} genéricos sem precisar conhecer T.
+    /// </summary>
+    private static object? Unwrap(object? maybeTask)
+    {
+        if (maybeTask is null) return null;
+        if (maybeTask is Task task)
+        {
+            // Aguarda término
+            task.GetAwaiter().GetResult();
+
+            var taskType = task.GetType();
+            if (taskType.IsGenericType)
+            {
+                // Obtém propriedade Result via reflexão para Task<T>
+                var prop = taskType.GetProperty("Result");
+                return prop?.GetValue(task);
+            }
+
+            // Task sem resultado
+            return null;
+        }
+
+        return maybeTask;
     }
 }
