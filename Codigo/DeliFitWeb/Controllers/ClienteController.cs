@@ -95,6 +95,9 @@ namespace DeliFitWeb.Controllers
                     return View(clienteModel);
                 }
 
+                // Atualiza o modelo com o telefone normalizado (somente dígitos)
+                clienteModel.Telefone = normalized;
+
                 var cliente = _mapper.Map<Cliente>(clienteModel);
                 _clienteService.Create(cliente);
 
@@ -119,6 +122,23 @@ namespace DeliFitWeb.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Validação e normalização do telefone antes de salvar
+                if (clienteModel == null || string.IsNullOrWhiteSpace(clienteModel.Telefone))
+                {
+                    ModelState.AddModelError("Telefone", "Telefone inválido.");
+                    return View(clienteModel);
+                }
+
+                var normalized = new string(clienteModel.Telefone.Where(char.IsDigit).ToArray());
+                if (normalized.Length != 11)
+                {
+                    ModelState.AddModelError("Telefone", "O telefone deve conter 11 dígitos.");
+                    return View(clienteModel);
+                }
+
+                // Atualiza o modelo com o telefone normalizado
+                clienteModel.Telefone = normalized;
+
                 var cliente = _mapper.Map<Cliente>(clienteModel);
                 _clienteService.Edit(cliente);
                 return RedirectToAction(nameof(Index));

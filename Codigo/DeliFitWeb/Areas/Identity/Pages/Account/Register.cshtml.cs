@@ -86,12 +86,12 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
             [Required(ErrorMessage = "Campo requerido")]
             [Display(Name = "CPF")]
             [StringLength(11, MinimumLength = 11, ErrorMessage = "O cpf deve conter 11 caracteres.")]
-            [RegularExpression(@"^\d{11}$", ErrorMessage = "O CPF deve conter exatamente 11 dÌgitos.")]
+            [RegularExpression(@"^\d{11}$", ErrorMessage = "O CPF deve conter exatamente 11 d√≠gitos.")]
             public string Cpf { get; set; }
 
             [Required(ErrorMessage = "Campo requerido")]
             [Display(Name = "Telefone")]
-            [RegularExpression(@"^(?:\(?\d{2}\)?\s?\d{4,5}-?\d{4}|\d{11})$", ErrorMessage = "O telefone deve conter exatamente 11 dÌgitos.")]
+            [RegularExpression(@"^(?:\(?\d{2}\)?\s?\d{4,5}-?\d{4}|\d{11})$", ErrorMessage = "O telefone deve conter exatamente 11 d√≠gitos.")]
             public string Telefone { get; set; }
 
             [Display(Name = "Data de Nascimento")]
@@ -112,7 +112,7 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
-            // NormalizaÁ„o de campos que podem vir formatados (ex.: m·scara)
+            // Normaliza√ß√£o de campos que podem vir formatados (ex.: m√°scara)
             if (Input != null)
             {
                 if (!string.IsNullOrWhiteSpace(Input.Telefone))
@@ -123,17 +123,17 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
                     Input.Nome = Input.Nome.Trim();
             }
 
-            // ValidaÁıes extras para role Cliente
+            // Valida√ß√µes extras para role Cliente
             if (Input.RoleDesejada == "Cliente")
             {
                 if (string.IsNullOrWhiteSpace(Input.Nome))
-                    ModelState.AddModelError("Input.Nome", "O nome È obrigatÛrio.");
+                    ModelState.AddModelError("Input.Nome", "O nome √© obrigat√≥rio.");
                 if (string.IsNullOrWhiteSpace(Input.Cpf) || Input.Cpf.Length != 11 || !Input.Cpf.All(char.IsDigit))
-                    ModelState.AddModelError("Input.Cpf", "O CPF È obrigatÛrio e deve conter 11 dÌgitos.");
+                    ModelState.AddModelError("Input.Cpf", "O CPF √© obrigat√≥rio e deve conter 11 d√≠gitos.");
                 if (string.IsNullOrWhiteSpace(Input.Telefone) || Input.Telefone.Length != 11 || !Input.Telefone.All(char.IsDigit))
-                    ModelState.AddModelError("Input.Telefone", "O telefone È obrigatÛrio e deve conter 11 dÌgitos.");
+                    ModelState.AddModelError("Input.Telefone", "O telefone √© obrigat√≥rio e deve conter 11 d√≠gitos.");
                 if (Input.DataNascimento == null)
-                    ModelState.AddModelError("Input.DataNascimento", "A data de nascimento È obrigatÛria.");
+                    ModelState.AddModelError("Input.DataNascimento", "A data de nascimento √© obrigat√≥ria.");
             }
 
             if (ModelState.IsValid)
@@ -148,17 +148,17 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    // Salva telefone em AspNetUsers.PhoneNumber se disponÌvel
+                    // Salva telefone em AspNetUsers.PhoneNumber se dispon√≠vel
                     if (!string.IsNullOrWhiteSpace(Input.Telefone))
                     {
                         var phoneResult = await _userManager.SetPhoneNumberAsync(user, Input.Telefone);
                         if (!phoneResult.Succeeded)
                         {
-                            // registra erro e desfaz criaÁ„o do cliente no banco se necess·rio
+                            // registra erro e desfaz cria√ß√£o do cliente no banco se necess√°rio
                             foreach (var err in phoneResult.Errors)
                                 ModelState.AddModelError(string.Empty, err.Description);
 
-                            // Trata falha como erro fatal: n„o prossegue com role, cliente, e login.
+                            // Trata falha como erro fatal: n√£o prossegue com role, cliente, e login.
                             return Page();
                         }
                     }
