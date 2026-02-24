@@ -7,34 +7,30 @@
     <div class="container text-center">
 
         <h1 class="display-4 fw-bold mb-3" style="color: #ff6600;">
-            Bem-vindo ao DeliFit
+            <i class="bi bi-fire"></i> Bem-vindo ao DeliFit
         </h1>
 
         <p class="lead mb-5">
-            Selecione o seu perfil para acessar o sistema:
+            Alimentação saudável com controle de macros e calorias
         </p>
 
         <div class="row justify-content-center g-4">
 
             <div class="col-md-4">
-                <div class="card h-100 shadow-lg border-0">
-                    <div class="card-body d-flex flex-column">
+                <div class="card h-100 shadow-lg border-0 rounded-4">
+                    <div class="card-body d-flex flex-column p-4">
                         <h3 class="card-title mb-3" style="color: #ff6600;">
-                            🙋🏽‍♂️ Sou Cliente
+                            <i class="bi bi-person-circle" style="font-size: 3rem;"></i>
                         </h3>
+                        <h4 class="fw-bold mb-3">Sou Cliente</h4>
                         <p class="card-text text-muted mb-4">
                             Faça pedidos, acompanhe suas calorias e descubra novos restaurantes.
                         </p>
-                        <div class="mt-auto">
-                            <a href="/Identity/Account/Login?role=Cliente"
-                               class="btn w-100 mb-2 text-white"
-                               style="background-color: #ff6600;">
-                                Entrar (Telefone)
-                            </a>
+                        <div class="mt-auto d-grid gap-2">
                             <a href="/Identity/Account/Register?role=Cliente"
-                               class="btn w-100"
+                               class="btn btn-lg"
                                style="border: 2px solid #ff6600; color: #ff6600;">
-                                Criar Conta Cliente
+                                <i class="bi bi-person-plus"></i> Criar Conta
                             </a>
                         </div>
                     </div>
@@ -42,50 +38,38 @@
             </div>
 
             <div class="col-md-4">
-                <div class="card h-100 shadow-lg border-0">
-                    <div class="card-body d-flex flex-column">
+                <div class="card h-100 shadow-lg border-0 rounded-4">
+                    <div class="card-body d-flex flex-column p-4">
                         <h3 class="card-title mb-3" style="color: #ff6600;">
-                            🏪 Sou Restaurante
+                            <i class="bi bi-shop" style="font-size: 3rem;"></i>
                         </h3>
+                        <h4 class="fw-bold mb-3">Sou Restaurante</h4>
                         <p class="card-text text-muted mb-4">
                             Gerencie seu cardápio, acompanhe pedidos e faturamento.
                         </p>
-                        <div class="mt-auto">
-                            <a href="/Identity/Account/Login?role=Restaurante"
-                               class="btn w-100 mb-2 text-white"
-                               style="background-color: #ff6600;">
-                                Acessar Painel
-                            </a>
+                        <div class="mt-auto d-grid gap-2">
                             <a href="/Restaurante/SolicitarAdesao"
-                               class="btn w-100"
-                               style="border: 2px solid #ff6600; color: #ff6600;">
-                                Solicitar Adesão
+                               class="btn btn-lg"
+                               style="border: 2px solid #28a745; color: #28a745;">
+                                <i class="bi bi-clipboard-check"></i> Solicitar Adesão
                             </a>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-4">
-                <div class="card h-100 shadow-lg border-0">
-                    <div class="card-body d-flex flex-column">
-                        <h3 class="card-title mb-3" style="color: #ff6600;">
-                            🛡️ Sou Admin
-                        </h3>
-                        <p class="card-text text-muted mb-4">
-                            Gestão total da plataforma e aprovação de novos restaurantes.
-                        </p>
-                        <div class="mt-auto">
-                            <a href="/Identity/Account/Login?role=Admin"
-                               class="btn w-100 text-white"
-                               style="background-color: #ff6600;">
-                                Login Administrativo
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        </div>
 
+        <!-- Botão de Login Unificado -->
+        <div class="mt-5">
+            <a href="/Identity/Account/Login"
+               class="btn btn-lg btn-primary px-5 py-3 text-white fw-bold rounded-pill shadow"
+               style="background-color: #ff6600; border: none; font-size: 1.2rem;">
+                <i class="bi bi-box-arrow-in-right"></i> Entrar no Sistema
+            </a>
+            <p class="text-muted mt-3 small">
+                Acesso unificado para clientes, restaurantes e administradores
+            </p>
         </div>
 
     </div>

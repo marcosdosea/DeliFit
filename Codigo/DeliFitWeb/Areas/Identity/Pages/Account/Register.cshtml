@@ -1,72 +1,259 @@
 ﻿@page
 @model RegisterModel
 @{
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = "Criar Conta";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
 }
 
-<h1>@ViewData["Title"]</h1>
+<div class="d-flex align-items-center justify-content-center min-vh-100 py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-7 col-lg-6">
 
-<div class="row">
-    <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                <!-- Card Principal de Cadastro -->
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-body p-5">
 
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email">Email</label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        <!-- Logo e Título -->
+                        <div class="text-center mb-4">
+                            <h1 class="display-5 fw-bold mb-2" style="color: #ff6600;">
+                                <i class="bi bi-person-plus-fill"></i> Criar Conta
+                            </h1>
+                            <p class="text-muted">
+                                @if (Model.Input?.RoleDesejada == "Cliente")
+                                {
+                                    <span>Cadastro de Cliente</span>
+                                }
+                                else
+                                {
+                                    <span>Cadastro de Usuário</span>
+                                }
+                            </p>
+                        </div>
+
+                        <!-- Formulário de Cadastro -->
+                        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3" role="alert"></div>
+
+                            @* Campos para Cliente *@
+                            @if (Model.Input?.RoleDesejada == "Cliente")
+                            {
+                                <div class="mb-3">
+                                    <label asp-for="Input.Nome" class="form-label fw-semibold">
+                                        <i class="bi bi-person"></i> Nome Completo
+                                    </label>
+                                    <input asp-for="Input.Nome" class="form-control form-control-lg rounded-3" placeholder="Digite seu nome completo" />
+                                    <span asp-validation-for="Input.Nome" class="text-danger small"></span>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Input.Cpf" class="form-label fw-semibold">
+                                            <i class="bi bi-card-text"></i> CPF
+                                        </label>
+                                        <input asp-for="Input.Cpf" id="cpfInput" class="form-control form-control-lg rounded-3" placeholder="12345678901" maxlength="11" />
+                                        <span asp-validation-for="Input.Cpf" class="text-danger small"></span>
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label asp-for="Input.Telefone" class="form-label fw-semibold">
+                                            <i class="bi bi-telephone"></i> Telefone
+                                        </label>
+                                        <input asp-for="Input.Telefone" id="telefoneInput" class="form-control form-control-lg rounded-3" placeholder="(99) 99999-9999" maxlength="15" />
+                                        <span asp-validation-for="Input.Telefone" class="text-danger small"></span>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label asp-for="Input.DataNascimento" class="form-label fw-semibold">
+                                        <i class="bi bi-calendar"></i> Data de Nascimento
+                                    </label>
+                                    <input asp-for="Input.DataNascimento" class="form-control form-control-lg rounded-3" type="date" />
+                                    <span asp-validation-for="Input.DataNascimento" class="text-danger small"></span>
+                                </div>
+
+                                <hr class="my-4" />
+                            }
+
+                            @* Campos comuns *@
+                            <div class="mb-3">
+                                <label asp-for="Input.Email" class="form-label fw-semibold">
+                                    <i class="bi bi-envelope"></i> Email
+                                </label>
+                                <input asp-for="Input.Email" class="form-control form-control-lg rounded-3" autocomplete="username" placeholder="email@exemplo.com" />
+                                <span asp-validation-for="Input.Email" class="text-danger small"></span>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Input.Password" class="form-label fw-semibold">
+                                        <i class="bi bi-lock"></i> Senha
+                                    </label>
+                                    <input asp-for="Input.Password" class="form-control form-control-lg rounded-3" autocomplete="new-password" placeholder="Digite sua senha" />
+                                    <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label asp-for="Input.ConfirmPassword" class="form-label fw-semibold">
+                                        <i class="bi bi-lock-fill"></i> Confirmar Senha
+                                    </label>
+                                    <input asp-for="Input.ConfirmPassword" class="form-control form-control-lg rounded-3" autocomplete="new-password" placeholder="Confirme sua senha" />
+                                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <input asp-for="Input.RoleDesejada" type="hidden" />
+
+                            <button id="registerSubmit" 
+                                    type="submit" 
+                                    class="btn btn-lg w-100 text-white fw-bold rounded-3 mb-3 mt-3"
+                                    style="background-color: #ff6600; border: none;">
+                                <i class="bi bi-check-circle"></i> Criar Minha Conta
+                            </button>
+
+                            <div class="text-center">
+                                <p class="text-muted mb-0">
+                                    Já tem uma conta? 
+                                    <a asp-page="./Login" 
+                                       asp-route-returnUrl="@Model.ReturnUrl" 
+                                       class="text-decoration-none fw-semibold"
+                                       style="color: #ff6600;">
+                                        Entrar
+                                    </a>
+                                </p>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
+                <!-- Link para voltar -->
+                <div class="text-center mt-3">
+                    <a href="/" class="text-muted text-decoration-none">
+                        <i class="bi bi-arrow-left"></i> Voltar para página inicial
+                    </a>
+                </div>
+
             </div>
-
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.Password">Password</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-
-            @* Campos extras exibidos apenas para role Cliente *@
-            @if (Model.Input?.RoleDesejada == "Cliente")
-            {
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Nome" class="form-control" placeholder="Nome completo" />
-                    <label asp-for="Input.Nome">Nome completo</label>
-                    <span asp-validation-for="Input.Nome" class="text-danger"></span>
-                </div>
-
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Cpf" class="form-control" placeholder="CPF (somente números)" />
-                    <label asp-for="Input.Cpf">CPF</label>
-                    <span asp-validation-for="Input.Cpf" class="text-danger"></span>
-                </div>
-
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Telefone" class="form-control telefone-mask" placeholder="(99) 99999-9999" maxlength="15" />
-                    <label asp-for="Input.Telefone">Telefone</label>
-                    <span asp-validation-for="Input.Telefone" class="text-danger"></span>
-                </div>
-
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.DataNascimento" class="form-control" type="date" />
-                    <label asp-for="Input.DataNascimento">Data de Nascimento</label>
-                    <span asp-validation-for="Input.DataNascimento" class="text-danger"></span>
-                </div>
-            }
-
-            <input asp-for="Input.RoleDesejada" type="hidden" />
-
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </form>
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    
+
+    <script>
+        $(document).ready(function() {
+            // Apenas permite números no CPF (sem máscara)
+            $('#cpfInput').on('input', function() {
+                var value = $(this).val().replace(/\D/g, '');
+                $(this).val(value);
+            });
+
+            // Máscara de Telefone com controle de cursor
+            $('#telefoneInput').on('input', function(e) {
+                var input = this;
+                var cursorPosition = input.selectionStart;
+                var oldValue = $(input).val();
+                var oldLength = oldValue.length;
+
+                // Remove tudo que não é dígito
+                var value = oldValue.replace(/\D/g, '');
+
+                // Limita a 11 dígitos
+                if (value.length > 11) {
+                    value = value.substring(0, 11);
+                }
+
+                // Aplica máscara (99) 99999-9999 progressivamente
+                var maskedValue = '';
+                if (value.length > 0) {
+                    if (value.length <= 2) {
+                        maskedValue = '(' + value;
+                    } else if (value.length <= 7) {
+                        maskedValue = '(' + value.substring(0, 2) + ') ' + value.substring(2);
+                    } else {
+                        maskedValue = '(' + value.substring(0, 2) + ') ' + value.substring(2, 7) + '-' + value.substring(7);
+                    }
+                }
+
+                // Aplica o valor mascarado
+                $(input).val(maskedValue);
+
+                // Ajusta a posição do cursor
+                var newLength = maskedValue.length;
+                var newPosition = cursorPosition + (newLength - oldLength);
+
+                // Garante que o cursor não ultrapasse o tamanho do input
+                if (newPosition > newLength) {
+                    newPosition = newLength;
+                }
+                if (newPosition < 0) {
+                    newPosition = 0;
+                }
+
+                // Restaura a posição do cursor
+                input.setSelectionRange(newPosition, newPosition);
+            });
+
+            // Aplicar máscara ao colar no telefone
+            $('#telefoneInput').on('paste', function(e) {
+                var input = this;
+                setTimeout(function() {
+                    $(input).trigger('input');
+                }, 10);
+            });
+
+            // Previne que caracteres não numéricos sejam digitados
+            $('#cpfInput, #telefoneInput').on('keypress', function(e) {
+                // Permite apenas números, backspace, delete, tab, enter e teclas de navegação
+                var key = e.which || e.keyCode;
+                var char = String.fromCharCode(key);
+
+                // Permite: backspace, delete, tab, escape, enter
+                if ([8, 9, 13, 27, 46].indexOf(key) !== -1 ||
+                    // Permite: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                    (key === 65 && e.ctrlKey === true) ||
+                    (key === 67 && e.ctrlKey === true) ||
+                    (key === 86 && e.ctrlKey === true) ||
+                    (key === 88 && e.ctrlKey === true) ||
+                    // Permite: home, end, setas
+                    (key >= 35 && key <= 40)) {
+                    return;
+                }
+
+                // Garante que é um número
+                if (!/^\d$/.test(char)) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+
+    <style>
+        .form-control:focus {
+            border-color: #ff6600;
+            box-shadow: 0 0 0 0.25rem rgba(255, 102, 0, 0.25);
+        }
+
+        .btn:hover {
+            background-color: #e65c00 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .card {
+            transition: all 0.3s ease;
+        }
+
+        label {
+            color: #495057;
+        }
+
+        label i {
+            color: #ff6600;
+            margin-right: 5px;
+        }
+    </style>
 }
