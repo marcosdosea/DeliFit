@@ -1,8 +1,8 @@
-ï»¿@model DeliFitWeb.Models.ItemViewModel
+@model DeliFitWeb.Models.ItemViewModel
 
 @{
     ViewData["Title"] = "Novo Item";
-    // Captura o ID do restaurante da URL para manter o vÃ­nculo na criaÃ§Ã£o
+    // Captura o ID do restaurante da URL para manter o vínculo na criação
     var idRestauranteContexto = Context.Request.Query["idRestaurante"];
 }
 
@@ -16,7 +16,7 @@
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div>
                             <h2 class="fw-bold m-0">Novo Item</h2>
-                            <p class="text-muted">Adicione um novo prato ou bebida ao seu cardÃ¡pio.</p>
+                            <p class="text-muted">Adicione um novo prato ou bebida ao seu cardápio.</p>
                         </div>
                     </div>
 
@@ -45,7 +45,7 @@
                         <div class="row g-4">
                             <div class="col-md-8">
                                 <div class="card border-0 shadow-sm p-4 mb-4">
-                                    <h5 class="fw-bold mb-4" style="color: #ff6600;"><i class="bi bi-info-circle me-2"></i>InformaÃ§Ãµes BÃ¡sicas</h5>
+                                    <h5 class="fw-bold mb-4" style="color: #ff6600;"><i class="bi bi-info-circle me-2"></i>Informações Básicas</h5>
 
                                     <div class="mb-3">
                                         <label asp-for="Nome" class="form-label small fw-bold text-muted">NOME DO ITEM</label>
@@ -54,14 +54,14 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label asp-for="Descricao" class="form-label small fw-bold text-muted">DESCRIÃ‡ÃƒO DETALHADA</label>
+                                        <label asp-for="Descricao" class="form-label small fw-bold text-muted">DESCRIÇÃO DETALHADA</label>
                                         <textarea asp-for="Descricao" class="form-control border-0 bg-light p-3" rows="4" placeholder="Descreva os ingredientes e o preparo..."></textarea>
                                         <span asp-validation-for="Descricao" class="text-danger small"></span>
                                     </div>
 
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <label asp-for="Preco" class="form-label small fw-bold text-muted">PREÃ‡O DE VENDA (R$)</label>
+                                            <label asp-for="Preco" class="form-label small fw-bold text-muted">PREÇO DE VENDA (R$)</label>
                                             <div class="input-group">
                                                 <span class="input-group-text border-0 bg-orange-subtle fw-bold" style="color: #ff6600;">R$</span>
                                                 <input asp-for="Preco" type="number" step="0.01" class="form-control border-0 bg-light p-3" placeholder="0,00" required />
@@ -69,12 +69,12 @@
                                             <span asp-validation-for="Preco" class="text-danger small"></span>
                                         </div>
                                         <div class="col-md-6">
-                                            <label asp-for="Restricao" class="form-label small fw-bold text-muted">RESTRIÃ‡ÃƒO ALIMENTAR</label>
+                                            <label asp-for="Restricao" class="form-label small fw-bold text-muted">RESTRIÇÃO ALIMENTAR</label>
                                             <select asp-for="Restricao" class="form-select border-0 bg-light p-3">
                                                 <option value="">Nenhuma</option>
                                                 <option value="Vegetariano">Vegetariano</option>
                                                 <option value="Vegano">Vegano</option>
-                                                <option value="Sem GlÃºten">Sem GlÃºten</option>
+                                                <option value="Sem Glúten">Sem Glúten</option>
                                                 <option value="Sem Lactose">Sem Lactose</option>
                                             </select>
                                         </div>
@@ -84,7 +84,7 @@
 
                             <div class="col-md-4">
                                 <div class="card border-0 shadow-sm p-4 mb-4 h-100">
-                                    <h5 class="fw-bold mb-4" style="color: #ff6600;"><i class="bi bi-heart-pulse me-2"></i>NutriÃ§Ã£o e Medidas</h5>
+                                    <h5 class="fw-bold mb-4" style="color: #ff6600;"><i class="bi bi-heart-pulse me-2"></i>Nutrição e Medidas</h5>
 
                                     <div class="mb-3">
                                         <label asp-for="Calorias" class="form-label small fw-bold text-muted">CALORIAS (KCAL)</label>
@@ -107,7 +107,7 @@
                                         <select asp-for="Tamanho" class="form-select border-0 bg-light p-3">
                                             <option value="">Nenhum (Vazio)</option>
                                             <option value="P">P - Pequeno</option>
-                                            <option value="M">M - MÃ©dio</option>
+                                            <option value="M">M - Médio</option>
                                             <option value="G">G - Grande</option>
                                         </select>
                                     </div>

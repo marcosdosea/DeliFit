@@ -1,7 +1,7 @@
 using BibliotecaWeb.Helpers;
 using Core;
 using Core.Service;
-using DeliFitWeb.Areas.Identity.Data;
+using Core.Identity.Data;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;

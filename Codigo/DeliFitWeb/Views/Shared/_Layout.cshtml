@@ -1,4 +1,4 @@
-ï»¿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
 
@@ -115,7 +115,7 @@
 			font-size: 0.9rem;
 		}
 
-		/* Estilo para botÃ£o de logout no menu inferior do cliente */
+		/* Estilo para botão de logout no menu inferior do cliente */
 		.navbar-dark .nav-link button {
 			background: transparent;
 			border: none;
@@ -172,7 +172,7 @@
 						<li class="nav-item">
 							<a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "HomeAdmin" ? "active" : "")"
 							   asp-controller="Restaurante" asp-action="HomeAdmin">
-								<i class="bi bi-house-door"></i> InÃ­cio
+								<i class="bi bi-house-door"></i> Início
 							</a>
 						</li>
 
@@ -184,7 +184,7 @@
 
 						<li class="nav-item">
 							<a class="nav-link" asp-controller="Restaurante" asp-action="ListarSolicitacoes">
-								<i class="bi bi-clock-history"></i> Listar SolicitaÃ§Ãµes
+								<i class="bi bi-clock-history"></i> Listar Solicitações
 							</a>
 						</li>
 
@@ -213,13 +213,13 @@
 						<li class="nav-item">
 							<a class="nav-link"
 							   asp-controller="Restaurante" asp-action="Home">
-								<i class="bi bi-house-door"></i> InÃ­cio
+								<i class="bi bi-house-door"></i> Início
 							</a>
 						</li>
 
 						<li class="nav-item">
 							<a class="nav-link" asp-controller="Item" asp-action="Index">
-								<i class="bi bi-journal-text"></i> CardÃ¡pio
+								<i class="bi bi-journal-text"></i> Cardápio
 							</a>
 						</li>
 
@@ -243,7 +243,7 @@
 
 						<li class="nav-item">
 							<a class="nav-link" href="#">
-								<i class="bi bi-star"></i> AvaliaÃ§Ãµes
+								<i class="bi bi-star"></i> Avaliações
 							</a>
 						</li>
 					}
@@ -260,7 +260,7 @@
 					<a class="nav-link text-white text-center"
 					   asp-controller="Cliente" asp-action="HomeCliente">
 						<i class="bi bi-house-door d-block"></i>
-						<small>InÃ­cio</small>
+						<small>Início</small>
 					</a>
 
 					<a class="nav-link text-white text-center"
@@ -272,7 +272,7 @@
 					<a class="nav-link text-white text-center"
 					   asp-controller="Endereco" asp-action="Index">
 						<i class="bi bi-geo-alt d-block"></i>
-						<small>EndereÃ§os</small>
+						<small>Endereços</small>
 					</a>
 
 					<a class="nav-link text-white text-center"
@@ -311,9 +311,9 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
-    <!-- ValidaÃ§Ã£o de telefone -->
+    <!-- Validação de telefone -->
 
-    <!-- MÃ¡scara de telefone: formata visualmente como (99) 99999-9999 e envia apenas dÃ­gitos -->
+    <!-- Máscara de telefone: formata visualmente como (99) 99999-9999 e envia apenas dígitos -->
     <script>
         (function($){
             function formatPhone(value){

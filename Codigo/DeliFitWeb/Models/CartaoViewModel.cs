@@ -1,4 +1,4 @@
-Ôªøusing System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using Util;
 
 namespace DeliFitWeb.Models
@@ -13,7 +13,7 @@ namespace DeliFitWeb.Models
         public string Nome { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Campo requerido.")]
-        [StringLength(16, MinimumLength = 16, ErrorMessage = "O n√∫mero do cart√£o deve conter 16 caracteres.")]
+        [StringLength(16, MinimumLength = 16, ErrorMessage = "O n˙mero do cart„o deve conter 16 caracteres.")]
         public string Numero { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Campo requerido.")]
@@ -22,7 +22,7 @@ namespace DeliFitWeb.Models
 
         [Display(Name = "Validade")]
         [Required(ErrorMessage = "Campo requerido.")]
-        [DataType(DataType.Date, ErrorMessage = "Data v√°lida requerida.")]
+        [DataType(DataType.Date, ErrorMessage = "Data v·lida requerida.")]
         [DisplayFormat(DataFormatString = "{0:MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Validade { get; set; }
 
@@ -31,7 +31,7 @@ namespace DeliFitWeb.Models
         [CPF]
         public string Cpf { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Cliente obrigat√≥rio.")]
+        [Required(ErrorMessage = "Cliente obrigatÛrio.")]
         public uint IdCliente { get; set; }
     }
 }

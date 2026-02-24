@@ -1,17 +1,17 @@
-Ôªø@model DeliFitWeb.Models.RestauranteViewModel
+@model DeliFitWeb.Models.RestauranteViewModel
 
 @{
-    ViewData["Title"] = "Solicitar Ades√£o";
+    ViewData["Title"] = "Solicitar Ades„o";
     Layout = "~/Views/Shared/_LayoutLogin.cshtml";
 }
 
 <div class="d-flex align-items-center justify-content-center min-vh-100 py-5">
     <div class="container">
 
-        <!-- Cabe√ßalho -->
+        <!-- CabeÁalho -->
         <div class="text-center mb-4">
             <h1 class="display-5 fw-bold mb-2" style="color: #ff6600;">
-                <i class="bi bi-shop"></i> Solicitar Ades√£o
+                <i class="bi bi-shop"></i> Solicitar Ades„o
             </h1>
             <p class="text-muted">Preencha os dados para se cadastrar na plataforma DeliFit</p>
         </div>
@@ -40,7 +40,7 @@
                 <div class="card border-0 shadow-lg rounded-4">
                     <div class="card-header bg-white border-0 pt-4 ps-4">
                         <h5 class="fw-bold mb-0" style="color: #ff6600;">
-                            <i class="bi bi-person-badge me-2"></i>Dados do Propriet√°rio
+                            <i class="bi bi-person-badge me-2"></i>Dados do Propriet·rio
                         </h5>
                     </div>
                     <div class="card-body p-4">
@@ -88,7 +88,7 @@
                                 <label asp-for="Cnpj" class="form-label fw-semibold"></label>
                                 <input asp-for="Cnpj" id="Cnpj" class="form-control form-control-lg rounded-3" placeholder="00000000000000" maxlength="14" />
                                 <span asp-validation-for="Cnpj" class="text-danger small"></span>
-                                <small class="text-muted">Ser√° consultado automaticamente</small>
+                                <small class="text-muted">Ser· consultado automaticamente</small>
                             </div>
                             <div class="col-md-3">
                                 <label asp-for="TelefoneRestaurante" class="form-label fw-semibold"></label>
@@ -131,29 +131,29 @@
                                     <option value="">Selecione...</option>
                                     <option value="AC">Acre</option>
                                     <option value="AL">Alagoas</option>
-                                    <option value="AP">Amap√°</option>
+                                    <option value="AP">Amap·</option>
                                     <option value="AM">Amazonas</option>
                                     <option value="BA">Bahia</option>
-                                    <option value="CE">Cear√°</option>
+                                    <option value="CE">Cear·</option>
                                     <option value="DF">Distrito Federal</option>
-                                    <option value="ES">Esp√≠rito Santo</option>
-                                    <option value="GO">Goi√°s</option>
-                                    <option value="MA">Maranh√£o</option>
+                                    <option value="ES">EspÌrito Santo</option>
+                                    <option value="GO">Goi·s</option>
+                                    <option value="MA">Maranh„o</option>
                                     <option value="MT">Mato Grosso</option>
                                     <option value="MS">Mato Grosso do Sul</option>
                                     <option value="MG">Minas Gerais</option>
-                                    <option value="PA">Par√°</option>
-                                    <option value="PB">Para√≠ba</option>
-                                    <option value="PR">Paran√°</option>
+                                    <option value="PA">Par·</option>
+                                    <option value="PB">ParaÌba</option>
+                                    <option value="PR">Paran·</option>
                                     <option value="PE">Pernambuco</option>
-                                    <option value="PI">Piau√≠</option>
+                                    <option value="PI">PiauÌ</option>
                                     <option value="RJ">Rio de Janeiro</option>
                                     <option value="RN">Rio Grande do Norte</option>
                                     <option value="RS">Rio Grande do Sul</option>
-                                    <option value="RO">Rond√¥nia</option>
+                                    <option value="RO">RondÙnia</option>
                                     <option value="RR">Roraima</option>
                                     <option value="SC">Santa Catarina</option>
-                                    <option value="SP">S√£o Paulo</option>
+                                    <option value="SP">S„o Paulo</option>
                                     <option value="SE">Sergipe</option>
                                     <option value="TO">Tocantins</option>
                                 </select>
@@ -170,7 +170,7 @@
                             <i class="bi bi-arrow-left"></i> Voltar
                         </a>
                         <button type="submit" class="btn btn-lg px-5 py-3 rounded-3 text-white fw-bold" style="background-color: #ff6600; border: none;">
-                            <i class="bi bi-check-circle me-2"></i>Solicitar Ades√£o
+                            <i class="bi bi-check-circle me-2"></i>Solicitar Ades„o
                         </button>
                     </div>
                 </form>
@@ -183,19 +183,19 @@
 
     <script>
         $(document).ready(function() {
-            // M√°scara de CPF (apenas n√∫meros)
+            // M·scara de CPF (apenas n˙meros)
             $('#cpfProprietario').on('input', function() {
                 var value = $(this).val().replace(/\D/g, '');
                 $(this).val(value);
             });
 
-            // M√°scara de CNPJ (apenas n√∫meros)
+            // M·scara de CNPJ (apenas n˙meros)
             $('#Cnpj').on('input', function() {
                 var value = $(this).val().replace(/\D/g, '');
                 $(this).val(value);
             });
 
-            // M√°scara de Telefone (apenas n√∫meros)
+            // M·scara de Telefone (apenas n˙meros)
             $('#telefoneProprietario, #telefoneRestaurante').on('input', function() {
                 var value = $(this).val().replace(/\D/g, '');
                 $(this).val(value);
@@ -225,7 +225,7 @@
                 }
             });
 
-            // Previne caracteres n√£o num√©ricos nos campos num√©ricos
+            // Previne caracteres n„o numÈricos nos campos numÈricos
             $('#cpfProprietario, #Cnpj, #telefoneProprietario, #telefoneRestaurante').on('keypress', function(e) {
                 var key = e.which || e.keyCode;
                 var char = String.fromCharCode(key);

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace DeliFitWeb.Models
 {
@@ -18,7 +18,7 @@ namespace DeliFitWeb.Models
         public DateTime? Data { get; set; }
         
         [Required]
-        [Display(Name = "Preço do pedido")]
+        [Display(Name = "Pre�o do pedido")]
         public decimal Preco { get; set; } = 0;
 
         //ponto de analise quando inserir a avaliacao view model

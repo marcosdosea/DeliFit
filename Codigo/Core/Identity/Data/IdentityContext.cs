@@ -1,9 +1,9 @@
-using DeliFitWeb.Areas.Identity.Data;
+using Core.Identity.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace DeliFitWeb.Areas.Identity.Data;
+namespace Core.Identity.Data;
 
 public class IdentityContext : IdentityDbContext<UsuarioIdentity>
 {

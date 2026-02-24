@@ -1,4 +1,4 @@
-ï»¿
+
 @model DeliFitWeb.Models.CarrinhoViewModel
 
 @{
@@ -42,25 +42,25 @@
                             <div>
                                 <h5 class="fw-bold mb-1">@Model.Restaurante</h5>
                                 <p class="text-muted small mb-0">
-                                    @Model.QuantidadeItens itens â€¢ R$ @Model.ValorSubtotal.ToString("F2")
+                                    @Model.QuantidadeItens itens • R$ @Model.ValorSubtotal.ToString("F2")
                                 </p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- ENDEREÃ‡O -->
+                <!-- ENDEREÇO -->
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-header bg-white border-0 pt-4 ps-4">
                         <h5 class="fw-bold mb-0" style="color:#ff6600;">
-                            <i class="bi bi-geo-alt me-2"></i>EndereÃ§o de Entrega
+                            <i class="bi bi-geo-alt me-2"></i>Endereço de Entrega
                         </h5>
                     </div>
 
                     <div class="card-body p-4">
                         <p class="mb-1 fw-bold">@Model.Endereco.Rua, @Model.Endereco.Numero</p>
                         <p class="text-muted small mb-0">
-                            @Model.Endereco.Bairro â€¢ @Model.Endereco.Cidade - @Model.Endereco.Estado
+                            @Model.Endereco.Bairro • @Model.Endereco.Cidade - @Model.Endereco.Estado
                         </p>
                     </div>
                 </div>

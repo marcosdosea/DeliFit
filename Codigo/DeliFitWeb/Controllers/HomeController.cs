@@ -1,4 +1,4 @@
-using DeliFitWeb.Areas.Identity.Data;
+using Core.Identity.Data;
 using DeliFitWeb.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

@@ -1,4 +1,4 @@
-ï»¿@model List<DeliFitWeb.Models.CarrinhoViewModel>
+@model List<DeliFitWeb.Models.CarrinhoViewModel>
 
 @{
     ViewData["Title"] = "Seus Carrinhos";
@@ -21,7 +21,7 @@
                 @if (!Model.Any())
                 {
                     <div class="alert alert-info">
-                        VocÃª ainda nÃ£o possui carrinhos cadastrados.
+                        Você ainda não possui carrinhos cadastrados.
                     </div>
                 }
                 else
@@ -53,18 +53,18 @@
                                                 var fp = carrinho.FormaDePagamento switch
                                                 {
                                                     "P" => "PIX",
-                                                    "C" => "CartÃ£o",
+                                                    "C" => "Cartão",
                                                     "D" => "Dinheiro",
-                                                    _ => "NÃ£o definida"
+                                                    _ => "Não definida"
                                                 };
                                             }
                                             @fp
-                                            â€¢ Frete: R$ @carrinho.ValorFrete.ToString("F2")
+                                            • Frete: R$ @carrinho.ValorFrete.ToString("F2")
                                         </p>
                                     </div>
                                 </div>
 
-                                <!-- AÃ‡Ã•ES -->
+                                <!-- AÇÕES -->
                                 <div class="d-flex align-items-center gap-2">
 
                                     <a asp-action="Details"
@@ -113,9 +113,9 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
             <div class="modal-body">
-                <p class="mb-2">VocÃª estÃ¡ prestes a cancelar o <strong id="modalCarrinhoId">#0</strong>.</p>
+                <p class="mb-2">Você está prestes a cancelar o <strong id="modalCarrinhoId">#0</strong>.</p>
                 <p class="text-muted small mb-0" id="modalClienteNome"></p>
-                <p class="small text-muted mt-2">Esta aÃ§Ã£o nÃ£o pode ser desfeita.</p>
+                <p class="small text-muted mt-2">Esta ação não pode ser desfeita.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Voltar</button>
@@ -135,7 +135,7 @@
     document.addEventListener('DOMContentLoaded', function () {
       
         if (typeof bootstrap === 'undefined') {
-            console.warn('Bootstrap JS nÃ£o encontrado. A confirmaÃ§Ã£o estilizada requer Bootstrap JavaScript.');
+            console.warn('Bootstrap JS não encontrado. A confirmação estilizada requer Bootstrap JavaScript.');
             return;
         }
 

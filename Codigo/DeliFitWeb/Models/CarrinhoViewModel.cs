@@ -1,4 +1,4 @@
-Ôªøusing Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
 namespace DeliFitWeb.Models
@@ -7,8 +7,8 @@ namespace DeliFitWeb.Models
     {
         public uint Id { get; set; }
 
-        [Display(Name = "Observa√ß√£o")]
-        [StringLength(255, ErrorMessage = "A observa√ß√£o deve ter no m√°ximo 255 caracteres.")]
+        [Display(Name = "ObservaÁ„o")]
+        [StringLength(255, ErrorMessage = "A observaÁ„o deve ter no m·ximo 255 caracteres.")]
         public string? Observacao { get; set; }
 
         [Required]
@@ -16,7 +16,7 @@ namespace DeliFitWeb.Models
 
         [Required]
         [Display(Name = "Forma de Pagamento")]
-        [RegularExpression("[PCD]", ErrorMessage = "Use P (PIX), C (Cart√£o) ou D (Dinheiro).")]
+        [RegularExpression("[PCD]", ErrorMessage = "Use P (PIX), C (Cart„o) ou D (Dinheiro).")]
         public string FormaDePagamento { get; set; } = string.Empty;
 
         [Required]
@@ -24,7 +24,7 @@ namespace DeliFitWeb.Models
         [Display(Name = "Valor do Frete")]
         public decimal ValorFrete { get; set; }
 
-        [Display(Name = "Cart√£o")]
+        [Display(Name = "Cart„o")]
         public uint? IdCartao { get; set; }
 
         public List<uint> IdsPedidos { get; set; } = [];

@@ -1,4 +1,4 @@
-Ôªø@model DeliFitWeb.Models.CarrinhoViewModel
+@model DeliFitWeb.Models.CarrinhoViewModel
 
 @{
     ViewBag.Title = "Create";
@@ -24,7 +24,7 @@
                 id="formaPagamento">
             <option value="">Selecione</option>
             <option value="P">PIX</option>
-            <option value="C">Cart√£o</option>
+            <option value="C">Cart„o</option>
             <option value="D">Dinheiro</option>
         </select>
     </div>
@@ -35,16 +35,16 @@
     </div>
 
     <div class="form-group">
-        <label>Observa√ß√£o</label>
+        <label>ObservaÁ„o</label>
         <textarea asp-for="Observacao" class="form-control"></textarea>
     </div>
 
     <div class="form-group" id="cartaoDiv" style="display:none">
-        <label>Cart√£o</label>
+        <label>Cart„o</label>
         <select asp-for="IdCartao"
                 asp-items="@(new SelectList(ViewBag.Cartoes, "Id", "Numero"))"
                 class="form-control">
-            <option value="">Selecione um cart√£o</option>
+            <option value="">Selecione um cart„o</option>
         </select>
     </div>
 
