@@ -131,11 +131,11 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
                     // Redireciona de acordo com a Role
                     if (roles.Contains("Admin"))
                     {
-                        return LocalRedirect("~/Restaurante/Index"); 
+                        return LocalRedirect("~/Restaurante/HomeAdmin"); 
                     }
                     if (roles.Contains("GerenteRestaurante"))
                     {
-                        return LocalRedirect("~/Restaurante/MeuRestaurante"); 
+                        return LocalRedirect("~/Restaurante/Home"); 
                     }
 
                     // Se for cliente comum ou não tiver role específica, vai para a página padrão
@@ -157,7 +157,6 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return Page();
         }
     }
