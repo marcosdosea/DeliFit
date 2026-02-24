@@ -13,4 +13,6 @@ public interface IItemService
     IEnumerable<Item> GetAll();
 
     IEnumerable<Item> GetByName(string nome);
+
+    IEnumerable<Item> GetByRestaurante(uint idRestaurante);
 }

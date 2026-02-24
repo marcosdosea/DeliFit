@@ -4,6 +4,8 @@ using Core.Service;
 using DeliFitWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Service;
+using DeliFitWeb.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DeliFitWeb.Controllers;
 
@@ -11,17 +13,42 @@ public class CartaoController : Controller
 {
     private readonly ICartaoService _cartaoService;
     private readonly IMapper _mapper;
+    private readonly IClienteService _clienteService;
 
-    public CartaoController(ICartaoService cartaoService, IMapper mapper)
+    public CartaoController(ICartaoService cartaoService, IMapper mapper, IClienteService clienteService)
     {
         _cartaoService = cartaoService;
         _mapper = mapper;
+        _clienteService = clienteService;
     }
 
-    public ActionResult Index(uint idCliente)
+    [Authorize(Roles = "Cliente,Admin")]
+    public ActionResult Index(uint? idCliente)
     {
-        var listaCartoes = _cartaoService.GetByCliente(idCliente);
+        uint clienteIdFiltro;
+
+        if (idCliente.HasValue)
+        {
+            clienteIdFiltro = idCliente.Value;
+        }
+        else if (User.IsInRole("Cliente"))
+        {
+            var clienteIdSessao = GetClienteIdLogado();
+            if (!clienteIdSessao.HasValue)
+            {
+                TempData["Error"] = "Não foi possível identificar o cliente. Faça login novamente.";
+                return RedirectToAction("Index", "Home");
+            }
+            clienteIdFiltro = clienteIdSessao.Value;
+        }
+        else
+        {
+            return BadRequest("ID do cliente não fornecido.");
+        }
+
+        var listaCartoes = _cartaoService.GetByCliente(clienteIdFiltro);
         var listaViewModel = _mapper.Map<List<CartaoViewModel>>(listaCartoes);
+        ViewBag.IdCliente = clienteIdFiltro;
         return View(listaViewModel);
     }
 
@@ -33,19 +60,64 @@ public class CartaoController : Controller
         return View(viewModel);
     }
 
-    public ActionResult Create(uint id)
+    [Authorize(Roles = "Cliente")]
+    public ActionResult Create(uint? idCliente)
     {
-        return View();
+        var model = new CartaoViewModel();
+
+        if (idCliente.HasValue)
+        {
+            model.IdCliente = idCliente.Value;
+        }
+        else
+        {
+            var clienteIdSessao = GetClienteIdLogado();
+            if (clienteIdSessao.HasValue)
+            {
+                model.IdCliente = clienteIdSessao.Value;
+            }
+            else
+            {
+                TempData["Error"] = "Não foi possível identificar o cliente. Faça login novamente.";
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+        return View(model);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Cliente")]
     public ActionResult Create(CartaoViewModel viewModel)
     {
+        if (viewModel.IdCliente == 0)
+        {
+            var clienteId = GetClienteIdLogado();
+            if (clienteId.HasValue)
+            {
+                viewModel.IdCliente = clienteId.Value;
+            }
+            else
+            {
+                ModelState.AddModelError("", "Não foi possível identificar o cliente.");
+                return View(viewModel);
+            }
+        }
+
         if (ModelState.IsValid)
         {
-            var cartao = _mapper.Map<Cartao>(viewModel);
-            _cartaoService.Create(cartao);
+            try
+            {
+                var cartao = _mapper.Map<Cartao>(viewModel);
+                _cartaoService.Create(cartao);
+                TempData["Success"] = "Cartão adicionado com sucesso!";
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Erro ao adicionar cartão: {ex.Message}");
+                return View(viewModel);
+            }
         }
         return RedirectToAction(nameof(Index), new { idCliente = viewModel.IdCliente });
     }
@@ -63,6 +135,28 @@ public class CartaoController : Controller
     {
         _cartaoService.Delete(viewModel.Id);
         return RedirectToAction(nameof(Index), new { idCliente = viewModel.IdCliente });
+    }
 
+    // Método auxiliar para obter o ID do cliente logado
+    private uint? GetClienteIdLogado()
+    {
+        var clienteId = HttpContext.Session.GetClienteId();
+
+        if (!clienteId.HasValue)
+        {
+            var userEmail = User.Identity?.Name;
+            if (!string.IsNullOrEmpty(userEmail))
+            {
+                var cliente = _clienteService.GetByEmail(userEmail);
+
+                if (cliente != null)
+                {
+                    HttpContext.Session.SetClienteId(cliente.Id);
+                    clienteId = cliente.Id;
+                }
+            }
+        }
+
+        return clienteId;
     }
 }

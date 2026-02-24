@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using DeliFitWeb.Helpers;
+using Core.Service;
 
 namespace DeliFitWeb.Areas.Identity.Pages.Account
 {
@@ -24,12 +26,20 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
         private readonly SignInManager<UsuarioIdentity> _signInManager;
         private readonly ILogger<LoginModel> _logger;
         private readonly UserManager<UsuarioIdentity> _userManager;
+        private readonly IClienteService _clienteService;
+        private readonly IRestauranteService _restauranteService;
 
-        public LoginModel(SignInManager<UsuarioIdentity> signInManager, ILogger<LoginModel> logger, UserManager<UsuarioIdentity> userManager)
+        public LoginModel(SignInManager<UsuarioIdentity> signInManager, 
+                         ILogger<LoginModel> logger, 
+                         UserManager<UsuarioIdentity> userManager,
+                         IClienteService clienteService,
+                         IRestauranteService restauranteService)
         {
             _signInManager = signInManager;
             _logger = logger;
             _userManager = userManager;
+            _clienteService = clienteService;
+            _restauranteService = restauranteService;
         }
 
         // Optional incoming role from query string (propagated to Register link)
@@ -47,15 +57,15 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required(ErrorMessage = "O telefone é obrigatório.")]
-            [Display(Name = "Telefone")]
-            public string Telefone { get; set; }
+            [Required(ErrorMessage = "Email ou Telefone é obrigatório.")]
+            [Display(Name = "Email ou Telefone")]
+            public string EmailOrPhone { get; set; }
 
             [Required]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
-            [Display(Name = "Remember me?")]
+            [Display(Name = "Lembrar-me")]
             public bool RememberMe { get; set; }
         }
 
@@ -79,22 +89,33 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/Cliente/Perfil");
-
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (ModelState.IsValid)
             {
-                // Normaliza telefone para dígitos
-                var digits = new string((Input.Telefone ?? string.Empty).Where(char.IsDigit).ToArray());
-                if (digits.Length != 11)
+                UsuarioIdentity user = null;
+                var inputValue = Input.EmailOrPhone?.Trim();
+
+                // Detecta se é email ou telefone
+                bool isEmail = inputValue.Contains("@");
+
+                if (isEmail)
                 {
-                    ModelState.AddModelError(string.Empty, "O telefone deve conter 11 dígitos.");
-                    return Page();
+                    // Login com EMAIL (Admin ou Restaurante)
+                    user = await _userManager.FindByEmailAsync(inputValue);
+                }
+                else
+                {
+                    // Login com TELEFONE (Cliente)
+                    var digits = new string(inputValue.Where(char.IsDigit).ToArray());
+                    if (digits.Length != 11)
+                    {
+                        ModelState.AddModelError(string.Empty, "O telefone deve conter 11 dígitos.");
+                        return Page();
+                    }
+                    user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == digits);
                 }
 
-                // Procura usuário pelo PhoneNumber
-                var user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == digits);
                 if (user == null)
                 {
                     ModelState.AddModelError(string.Empty, "Credenciais inválidas.");
@@ -112,14 +133,40 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
                     // Pega as roles (perfis) desse usuário
                     var roles = await _userManager.GetRolesAsync(user);
 
-                    // Redireciona de acordo com a Role
+                    // Armazena email ou telefone na sessão
+                    HttpContext.Session.SetUserEmail(isEmail ? user.Email : user.PhoneNumber);
+
+                    // Redireciona de acordo com a Role e armazena dados na sessão
                     if (roles.Contains("Admin"))
                     {
+                        HttpContext.Session.SetUserRole("Admin");
                         return LocalRedirect("~/Restaurante/HomeAdmin"); 
                     }
                     if (roles.Contains("GerenteRestaurante"))
                     {
+                        HttpContext.Session.SetUserRole("GerenteRestaurante");
+
+                        // Busca e armazena ID do restaurante
+                        var restaurante = _restauranteService.GetByEmail(user.Email);
+                        if (restaurante != null)
+                        {
+                            HttpContext.Session.SetRestauranteId(restaurante.Id);
+                        }
+
                         return LocalRedirect("~/Restaurante/Home"); 
+                    }
+                    if (roles.Contains("Cliente"))
+                    {
+                        HttpContext.Session.SetUserRole("Cliente");
+
+                        // Busca e armazena ID do cliente
+                        var cliente = _clienteService.GetByTelefone(user.PhoneNumber);
+                        if (cliente != null)
+                        {
+                            HttpContext.Session.SetClienteId(cliente.Id);
+                        }
+
+                        return LocalRedirect("~/Cliente/HomeCliente");
                     }
 
                     return LocalRedirect(returnUrl ?? "~/");
@@ -135,7 +182,7 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty, "Credenciais inválidas.");
                     return Page();
                 }
             }

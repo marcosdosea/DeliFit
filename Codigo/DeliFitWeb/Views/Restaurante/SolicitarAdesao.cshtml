@@ -1,53 +1,68 @@
 @model DeliFitWeb.Models.RestauranteViewModel
 
 @{
-    ViewData["Title"] = "Solicitar Adesao";
+    ViewData["Title"] = "Solicitar Adesão";
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
 }
 
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h2 class="fw-bold">Solicitar Adesao</h2>
-        </div>
-    </div>
+<div class="d-flex align-items-center justify-content-center min-vh-100 py-5">
+    <div class="container">
 
-    <div class="row mb-4 align-items-center">
-        <div class="col-md-6">
-            <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary px-3">
-                <i class="bi bi-chevron-left"></i> Voltar
-            </a>
+        <!-- Cabeçalho -->
+        <div class="text-center mb-4">
+            <h1 class="display-5 fw-bold mb-2" style="color: #ff6600;">
+                <i class="bi bi-shop"></i> Solicitar Adesão
+            </h1>
+            <p class="text-muted">Preencha os dados para se cadastrar na plataforma DeliFit</p>
         </div>
-    </div>
 
-    <form asp-action="Create">
-        <div asp-validation-summary="ModelOnly" class="alert alert-danger shadow-sm border-0" role="alert"></div>
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show rounded-3" role="alert">
+                <i class="bi bi-check-circle-fill me-2"></i>@TempData["Success"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show rounded-3" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        <form asp-action="SolicitarAdesao" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3" role="alert"></div>
 
         <div class="row">
             <div class="col-lg-12 mb-4">
-                <div class="card border-0 shadow-sm">
+                <div class="card border-0 shadow-lg rounded-4">
                     <div class="card-header bg-white border-0 pt-4 ps-4">
-                        <h5 class="fw-bold mb-0 text-orange"><i class="bi bi-person-badge me-2"></i>Dados do Proprietário</h5>
+                        <h5 class="fw-bold mb-0" style="color: #ff6600;">
+                            <i class="bi bi-person-badge me-2"></i>Dados do Proprietário
+                        </h5>
                     </div>
                     <div class="card-body p-4">
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label asp-for="NomeProprietario" class="form-label fw-semibold"></label>
-                                <input asp-for="NomeProprietario" class="form-control" placeholder="Digite o nome completo" />
+                                <input asp-for="NomeProprietario" class="form-control form-control-lg rounded-3" placeholder="Digite o nome completo" />
                                 <span asp-validation-for="NomeProprietario" class="text-danger small"></span>
                             </div>
                             <div class="col-md-3">
                                 <label asp-for="CpfProprietario" class="form-label fw-semibold"></label>
-                                <input asp-for="CpfProprietario" class="form-control" placeholder="000.000.000-00" />
+                                <input asp-for="CpfProprietario" id="cpfProprietario" class="form-control form-control-lg rounded-3" placeholder="12345678901" maxlength="11" />
                                 <span asp-validation-for="CpfProprietario" class="text-danger small"></span>
                             </div>
                             <div class="col-md-3">
                                 <label asp-for="TelefoneProprietario" class="form-label fw-semibold"></label>
-                                <input asp-for="TelefoneProprietario" class="form-control" placeholder="(00) 00000-0000" />
+                                <input asp-for="TelefoneProprietario" id="telefoneProprietario" class="form-control form-control-lg rounded-3" placeholder="11987654321" maxlength="11" />
                                 <span asp-validation-for="TelefoneProprietario" class="text-danger small"></span>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <label asp-for="Email" class="form-label fw-semibold"></label>
-                                <input asp-for="Email" class="form-control" placeholder="exemplo@email.com" />
+                                <input asp-for="Email" class="form-control form-control-lg rounded-3" placeholder="email@exemplo.com" />
                                 <span asp-validation-for="Email" class="text-danger small"></span>
                             </div>
                         </div>
@@ -56,25 +71,28 @@
             </div>
 
             <div class="col-lg-12 mb-4">
-                <div class="card border-0 shadow-sm">
+                <div class="card border-0 shadow-lg rounded-4">
                     <div class="card-header bg-white border-0 pt-4 ps-4">
-                        <h5 class="fw-bold mb-0 text-orange"><i class="bi bi-shop me-2"></i>Dados do Restaurante</h5>
+                        <h5 class="fw-bold mb-0" style="color: #ff6600;">
+                            <i class="bi bi-shop me-2"></i>Dados do Restaurante
+                        </h5>
                     </div>
                     <div class="card-body p-4">
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label asp-for="NomeRestaurante" class="form-label fw-semibold"></label>
-                                <input asp-for="NomeRestaurante" class="form-control" placeholder="Ex: Fit & Cia" />
+                                <input asp-for="NomeRestaurante" id="NomeRestaurante" class="form-control form-control-lg rounded-3" placeholder="Ex: Fit & Cia" />
                                 <span asp-validation-for="NomeRestaurante" class="text-danger small"></span>
                             </div>
                             <div class="col-md-3">
                                 <label asp-for="Cnpj" class="form-label fw-semibold"></label>
-                                <input asp-for="Cnpj" class="form-control" placeholder="00.000.000/0000-00" />
+                                <input asp-for="Cnpj" id="Cnpj" class="form-control form-control-lg rounded-3" placeholder="00000000000000" maxlength="14" />
                                 <span asp-validation-for="Cnpj" class="text-danger small"></span>
+                                <small class="text-muted">Será consultado automaticamente</small>
                             </div>
                             <div class="col-md-3">
                                 <label asp-for="TelefoneRestaurante" class="form-label fw-semibold"></label>
-                                <input asp-for="TelefoneRestaurante" class="form-control" placeholder="(00) 00000-0000" />
+                                <input asp-for="TelefoneRestaurante" id="telefoneRestaurante" class="form-control form-control-lg rounded-3" placeholder="11987654321" maxlength="11" />
                                 <span asp-validation-for="TelefoneRestaurante" class="text-danger small"></span>
                             </div>
                         </div>
@@ -84,36 +102,60 @@
                         <div class="row g-3">
                             <div class="col-md-3">
                                 <label asp-for="Cep" class="form-label fw-semibold"></label>
-                                <input asp-for="Cep" class="form-control" />
+                                <input asp-for="Cep" id="Cep" class="form-control form-control-lg rounded-3" />
                                 <span asp-validation-for="Cep" class="text-danger small"></span>
                             </div>
                             <div class="col-md-6">
                                 <label asp-for="Rua" class="form-label fw-semibold"></label>
-                                <input asp-for="Rua" class="form-control" />
+                                <input asp-for="Rua" id="Rua" class="form-control form-control-lg rounded-3" />
                                 <span asp-validation-for="Rua" class="text-danger small"></span>
                             </div>
                             <div class="col-md-3">
                                 <label asp-for="Numero" class="form-label fw-semibold"></label>
-                                <input asp-for="Numero" class="form-control" />
+                                <input asp-for="Numero" id="Numero" class="form-control form-control-lg rounded-3" />
                                 <span asp-validation-for="Numero" class="text-danger small"></span>
                             </div>
                             <div class="col-md-5">
                                 <label asp-for="Cidade" class="form-label fw-semibold"></label>
-                                <input asp-for="Cidade" class="form-control" />
+                                <input asp-for="Cidade" id="Cidade" class="form-control form-control-lg rounded-3" />
                                 <span asp-validation-for="Cidade" class="text-danger small"></span>
                             </div>
                             <div class="col-md-4">
                                 <label asp-for="Bairro" class="form-label fw-semibold"></label>
-                                <input asp-for="Bairro" class="form-control" />
+                                <input asp-for="Bairro" id="Bairro" class="form-control form-control-lg rounded-3" />
                                 <span asp-validation-for="Bairro" class="text-danger small"></span>
                             </div>
                             <div class="col-md-3">
                                 <label asp-for="Estado" class="form-label fw-semibold"></label>
-                                <select asp-for="Estado" class="form-select">
+                                <select asp-for="Estado" id="Estado" class="form-select form-select-lg rounded-3">
                                     <option value="">Selecione...</option>
-                                    <option value="SP">São Paulo</option>
-                                    <option value="RJ">Rio de Janeiro</option>
+                                    <option value="AC">Acre</option>
+                                    <option value="AL">Alagoas</option>
+                                    <option value="AP">Amapá</option>
+                                    <option value="AM">Amazonas</option>
+                                    <option value="BA">Bahia</option>
+                                    <option value="CE">Ceará</option>
+                                    <option value="DF">Distrito Federal</option>
+                                    <option value="ES">Espírito Santo</option>
+                                    <option value="GO">Goiás</option>
+                                    <option value="MA">Maranhão</option>
+                                    <option value="MT">Mato Grosso</option>
+                                    <option value="MS">Mato Grosso do Sul</option>
                                     <option value="MG">Minas Gerais</option>
+                                    <option value="PA">Pará</option>
+                                    <option value="PB">Paraíba</option>
+                                    <option value="PR">Paraná</option>
+                                    <option value="PE">Pernambuco</option>
+                                    <option value="PI">Piauí</option>
+                                    <option value="RJ">Rio de Janeiro</option>
+                                    <option value="RN">Rio Grande do Norte</option>
+                                    <option value="RS">Rio Grande do Sul</option>
+                                    <option value="RO">Rondônia</option>
+                                    <option value="RR">Roraima</option>
+                                    <option value="SC">Santa Catarina</option>
+                                    <option value="SP">São Paulo</option>
+                                    <option value="SE">Sergipe</option>
+                                    <option value="TO">Tocantins</option>
                                 </select>
                                 <span asp-validation-for="Estado" class="text-danger small"></span>
                             </div>
@@ -123,81 +165,101 @@
             </div>
         </div>
 
-        <div class="d-flex justify-content-end align-items-center mt-2 mb-5">
-            <button type="submit" class="btn btn-orange btn-lg px-5 py-2 shadow-sm">
-                <i class="bi bi-check-circle me-2"></i>Solicitar Adesao
-            </button>
+                    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+                        <a href="/" class="btn btn-lg btn-light border px-4 rounded-3">
+                            <i class="bi bi-arrow-left"></i> Voltar
+                        </a>
+                        <button type="submit" class="btn btn-lg px-5 py-3 rounded-3 text-white fw-bold" style="background-color: #ff6600; border: none;">
+                            <i class="bi bi-check-circle me-2"></i>Solicitar Adesão
+                        </button>
+                    </div>
+                </form>
+
+            </div>
         </div>
-    </form>
-</div>
 
 @section Scripts {
-
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
     <script>
-        document.getElementById('Cnpj').addEventListener('blur', function () {
-            let cnpj = this.value;
-            
-            if (cnpj.length >= 14) {
-                fetch(`/Restaurante/ConsultarCnpj?cnpj=${cnpj}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.sucesso) {
-                            document.getElementById('NomeRestaurante').value = data.nomeRestaurante;
-                            document.getElementById('Cep').value = data.cep;
-                            document.getElementById('Rua').value = data.rua;
-                            document.getElementById('Numero').value = data.numero;
-                            document.getElementById('Bairro').value = data.bairro;
-                            document.getElementById('Cidade').value = data.cidade;
-                            document.getElementById('Estado').value = data.estado;
-                        } else {
-                            alert(data.mensagem);
-                        }
-                    })
-                    .catch(error => console.error('Erro na consulta do CNPJ:', error));
-            }
+        $(document).ready(function() {
+            // Máscara de CPF (apenas números)
+            $('#cpfProprietario').on('input', function() {
+                var value = $(this).val().replace(/\D/g, '');
+                $(this).val(value);
+            });
+
+            // Máscara de CNPJ (apenas números)
+            $('#Cnpj').on('input', function() {
+                var value = $(this).val().replace(/\D/g, '');
+                $(this).val(value);
+            });
+
+            // Máscara de Telefone (apenas números)
+            $('#telefoneProprietario, #telefoneRestaurante').on('input', function() {
+                var value = $(this).val().replace(/\D/g, '');
+                $(this).val(value);
+            });
+
+            // Consulta CNPJ ao sair do campo
+            $('#Cnpj').on('blur', function () {
+                let cnpj = $(this).val();
+
+                if (cnpj.length >= 14) {
+                    fetch(`/Restaurante/ConsultarCnpj?cnpj=${cnpj}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.sucesso) {
+                                $('#NomeRestaurante').val(data.nomeRestaurante);
+                                $('#Cep').val(data.cep);
+                                $('#Rua').val(data.rua);
+                                $('#Numero').val(data.numero);
+                                $('#Bairro').val(data.bairro);
+                                $('#Cidade').val(data.cidade);
+                                $('#Estado').val(data.estado);
+                            } else {
+                                alert(data.mensagem);
+                            }
+                        })
+                        .catch(error => console.error('Erro na consulta do CNPJ:', error));
+                }
+            });
+
+            // Previne caracteres não numéricos nos campos numéricos
+            $('#cpfProprietario, #Cnpj, #telefoneProprietario, #telefoneRestaurante').on('keypress', function(e) {
+                var key = e.which || e.keyCode;
+                var char = String.fromCharCode(key);
+
+                if ([8, 9, 13, 27, 46].indexOf(key) !== -1 ||
+                    (key === 65 && e.ctrlKey === true) ||
+                    (key === 67 && e.ctrlKey === true) ||
+                    (key === 86 && e.ctrlKey === true) ||
+                    (key === 88 && e.ctrlKey === true) ||
+                    (key >= 35 && key <= 40)) {
+                    return;
+                }
+
+                if (!/^\d$/.test(char)) {
+                    e.preventDefault();
+                }
+            });
         });
     </script>
 
     <style>
-        .text-orange {
-            color: #ff6600 !important;
+        .form-control:focus, .form-select:focus {
+            border-color: #ff6600;
+            box-shadow: 0 0 0 0.25rem rgba(255, 102, 0, 0.25);
         }
 
-        .form-label {
-            font-size: 0.9rem;
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+            transition: all 0.3s ease;
+        }
+
+        label {
             color: #495057;
         }
-
-        .form-control, .form-select {
-            border: 1px solid #dee2e6;
-            padding: 0.6rem 0.75rem;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-            .form-control:focus, .form-select:focus {
-                border-color: #ff6600;
-                box-shadow: 0 0 0 0.25rem rgba(255, 102, 0, 0.15);
-            }
-
-        .btn-orange {
-            background-color: #ff6600;
-            border-color: #e65c00;
-            color: white;
-            font-weight: 600;
-        }
-
-            .btn-orange:hover {
-                background-color: #e65c00;
-                color: white;
-            }
-
-        .card {
-            border-radius: 12px;
-        }
     </style>
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
 }

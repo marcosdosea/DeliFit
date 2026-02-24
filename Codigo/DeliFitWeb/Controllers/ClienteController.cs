@@ -5,7 +5,8 @@ using DeliFitWeb.Models;
 using Core;
 using Microsoft.AspNetCore.Identity;
 using Core.Identity.Data;
-using System.Linq;
+using DeliFitWeb.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DeliFitWeb.Controllers
 {
@@ -16,17 +17,14 @@ namespace DeliFitWeb.Controllers
         private readonly IMapper _mapper;
         private readonly IBrasilApiService _brasilApiService;
         private readonly UserManager<UsuarioIdentity> _userManager;
+        private readonly IRestauranteService _restauranteService;
 
-        public ClienteController(
-    IClienteService clienteService,
-    IMapper mapper,
-    IBrasilApiService brasilApiService,
-    UserManager<UsuarioIdentity> userManager)
+        public ClienteController(IClienteService clienteService, IMapper mapper, UserManager<UsuarioIdentity> userManager, IRestauranteService restauranteService)
         {
             _clienteService = clienteService;
             _mapper = mapper;
-            _brasilApiService = brasilApiService;
             _userManager = userManager;
+            _restauranteService = restauranteService;
         }
 
         // GET: ClienteController
@@ -41,11 +39,23 @@ namespace DeliFitWeb.Controllers
         // Redireciona o cliente logado para o seu próprio Details
         public async Task<ActionResult> Perfil()
         {
+            // Tenta buscar o ID do cliente da sessão primeiro
+            var clienteId = HttpContext.Session.GetClienteId();
+
+            if (clienteId.HasValue)
+            {
+                return RedirectToAction(nameof(Details), new { id = clienteId.Value });
+            }
+
+            // Se não estiver na sessão, busca pelo email e armazena
             var userEmail = _userManager.GetUserName(User);
             var cliente = _clienteService.GetByEmail(userEmail);
 
             if (cliente == null)
                 return NotFound("Perfil de cliente não encontrado para o usuário logado.");
+
+            // Armazena na sessão para próximas requisições
+            HttpContext.Session.SetClienteId(cliente.Id);
 
             return RedirectToAction(nameof(Details), new { id = cliente.Id });
         }
@@ -162,6 +172,53 @@ namespace DeliFitWeb.Controllers
         {
             _clienteService.Delete(clienteModel.Id);
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: ClienteController/HomeCliente
+        // Página inicial do cliente logado
+        [Authorize(Roles = "Cliente")]
+        public ActionResult HomeCliente()
+        {
+            var clienteId = GetClienteIdLogado();
+
+            if (!clienteId.HasValue)
+            {
+                TempData["Error"] = "Não foi possível identificar o cliente. Faça login novamente.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            // Busca informações do cliente
+            var cliente = _clienteService.Get(clienteId.Value);
+            ViewBag.NomeCliente = cliente?.Nome;
+
+            // Busca restaurantes ativos
+            var restaurantesAtivos = _restauranteService.GetRestaurantesAtivos();
+            var restaurantesViewModel = _mapper.Map<List<RestauranteViewModel>>(restaurantesAtivos);
+
+            return View(restaurantesViewModel);
+        }
+
+        // Método auxiliar para obter o ID do cliente logado
+        private uint? GetClienteIdLogado()
+        {
+            // Tenta buscar da sessão
+            var clienteId = HttpContext.Session.GetClienteId();
+
+            if (!clienteId.HasValue)
+            {
+                // Se não estiver na sessão, busca pelo email
+                var userEmail = _userManager.GetUserName(User);
+                var cliente = _clienteService.GetByEmail(userEmail);
+
+                if (cliente != null)
+                {
+                    // Armazena na sessão para próximas requisições
+                    HttpContext.Session.SetClienteId(cliente.Id);
+                    clienteId = cliente.Id;
+                }
+            }
+
+            return clienteId;
         }
     }
 }

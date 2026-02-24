@@ -172,4 +172,38 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        $(document).ready(function() {
+            $('#Cep').on('blur', function() {
+                var cep = $(this).val().replace(/\D/g, '');
+
+                if (cep.length === 8) {
+                    $.ajax({
+                        url: 'https://viacep.com.br/ws/' + cep + '/json/',
+                        type: 'GET',
+                        dataType: 'json',
+                        beforeSend: function() {
+                            $('#Rua, #Bairro, #Cidade, #Estado').val('').prop('disabled', true);
+                        },
+                        success: function(data) {
+                            if (!data.erro) {
+                                $('#Rua').val(data.logradouro).prop('disabled', false);
+                                $('#Bairro').val(data.bairro).prop('disabled', false);
+                                $('#Cidade').val(data.localidade).prop('disabled', false);
+                                $('#Estado').val(data.uf).prop('disabled', false);
+                                $('#Numero').focus();
+                            } else {
+                                alert('CEP não encontrado.');
+                                $('#Rua, #Bairro, #Cidade, #Estado').prop('disabled', false);
+                            }
+                        },
+                        error: function() {
+                            alert('Erro ao buscar CEP. Verifique sua conexão.');
+                            $('#Rua, #Bairro, #Cidade, #Estado').prop('disabled', false);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 }

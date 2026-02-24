@@ -6,22 +6,6 @@
 
 <div class="container-fluid p-0">
     <div class="row g-0">
-        <aside class="col-md-2 bg-white border-end min-vh-100 shadow-sm p-3">
-            <div class="mb-4">
-                <a href="javascript:history.back()" class="btn btn-outline-secondary">
-                    <i class="bi bi-arrow-left"></i> Voltar
-                </a>
-            </div>
-
-            <ul class="nav flex-column gap-1">
-                <li class="nav-item mb-2">
-                    <span class="nav-link fw-bold text-dark fs-5">Início</span>
-                </li>
-                <li><a href="#" class="nav-link fw-bold py-1 small" style="color: #ff6600;">- Perfil</a></li>
-                <li><a asp-controller="Item" asp-action="Index" asp-route-idRestaurante="@Model.Id" class="nav-link text-muted py-1 small">- Gestor de Cardápio</a></li>
-                <li><a asp-controller="Atendimento" asp-action="Index" asp-route-idRestaurante="@Model.Id" class="nav-link text-muted py-1 small">- Gestor de Atendimento</a></li>
-            </ul>
-        </aside>
 
         <main class="col-md-10">
             <div class="bg-white border-bottom px-4 py-2 d-flex justify-content-between align-items-center shadow-sm">
@@ -91,6 +75,9 @@
                     </a>
                     <a asp-action="Index" class="btn btn-outline-secondary px-5 ms-2">
                         <i class="bi bi-arrow-left me-2"></i> Voltar para Lista
+                    </a>
+                    <a asp-action="Delete" class="btn btn-danger px-5 ms-2">
+                         Excluir
                     </a>
                 </div>
             </div>

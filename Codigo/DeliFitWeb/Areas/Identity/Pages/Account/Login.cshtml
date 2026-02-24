@@ -2,83 +2,201 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = "Entrar";
     Layout = "~/Views/Shared/_LayoutLogin.cshtml";
 }
 
-<h1>@ViewData["Title"]</h1>
-<div class="row">
-    <div class="col-md-4">
-        <section>
-            <form id="account" method="post">
-                <h2>Use a local account to log in.</h2>
-                <hr />
-                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Telefone" class="form-control telefone-mask" autocomplete="tel" aria-required="true" placeholder="(99) 99999-9999" maxlength="15" />
-                    <label asp-for="Input.Telefone" class="form-label">Telefone</label>
-                    <span asp-validation-for="Input.Telefone" class="text-danger"></span>
-                </div>
-                <div class="form-floating mb-3">
-                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
-                    <label asp-for="Input.Password" class="form-label">Password</label>
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
-                <div class="checkbox mb-3">
-                    <label asp-for="Input.RememberMe" class="form-label">
-                        <input class="form-check-input" asp-for="Input.RememberMe" />
-                        @Html.DisplayNameFor(m => m.Input.RememberMe)
-                    </label>
-                </div>
-                <div>
-                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
-                </div>
-                <div>
-                    <p>
-                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
-                    </p>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" asp-route-role="@Model.Role">Register as a new user</a>
-                    </p>
-                    <p>
-                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
-                    </p>
-                </div>
-            </form>
-        </section>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to log in.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
+<div class="d-flex align-items-center justify-content-center min-vh-100 py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+
+                <!-- Card Principal de Login -->
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-body p-5">
+
+                        <!-- Logo e Título -->
+                        <div class="text-center mb-4">
+                            <h1 class="display-5 fw-bold mb-2" style="color: #ff6600;">
+                                <i class="bi bi-fire"></i> DeliFit
+                            </h1>
+                            <p class="text-muted">Faça login na sua conta</p>
                         </div>
-                    </form>
-                }
-            }
-        </section>
+
+                        <!-- Formulário de Login -->
+                        <form id="account" method="post">
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3" role="alert"></div>
+
+                            <div class="mb-3">
+                                <label asp-for="Input.EmailOrPhone" class="form-label fw-semibold">Email ou Telefone</label>
+                                <input asp-for="Input.EmailOrPhone" 
+                                       id="emailOrPhoneInput" 
+                                       class="form-control form-control-lg rounded-3" 
+                                       autocomplete="username" 
+                                       aria-required="true" 
+                                       placeholder="email@exemplo.com ou (11) 99999-9999" />
+                                <span asp-validation-for="Input.EmailOrPhone" class="text-danger small"></span>
+                                <small class="text-muted">
+                                    <i class="bi bi-info-circle"></i> 
+                                    Clientes usam telefone | Admin/Restaurante usam email
+                                </small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Input.Password" class="form-label fw-semibold">Senha</label>
+                                <input asp-for="Input.Password" 
+                                       class="form-control form-control-lg rounded-3" 
+                                       autocomplete="current-password" 
+                                       aria-required="true" 
+                                       placeholder="Digite sua senha" />
+                                <span asp-validation-for="Input.Password" class="text-danger small"></span>
+                            </div>
+
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" asp-for="Input.RememberMe" />
+                                <label asp-for="Input.RememberMe" class="form-check-label">
+                                    @Html.DisplayNameFor(m => m.Input.RememberMe)
+                                </label>
+                            </div>
+
+                            <button id="login-submit" 
+                                    type="submit" 
+                                    class="btn btn-lg w-100 text-white fw-bold rounded-3 mb-3"
+                                    style="background-color: #ff6600; border: none;">
+                                <i class="bi bi-box-arrow-in-right"></i> Entrar
+                            </button>
+
+                            <div class="text-center">
+                                <a id="forgot-password" 
+                                   asp-page="./ForgotPassword" 
+                                   class="text-decoration-none"
+                                   style="color: #ff6600;">
+                                    Esqueceu sua senha?
+                                </a>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
+                <!-- Links de Cadastro -->
+                <div class="card shadow-sm border-0 rounded-4 mt-3">
+                    <div class="card-body p-4">
+                        <p class="text-center text-muted mb-3 fw-semibold">Não tem uma conta?</p>
+
+                        <div class="d-grid gap-2">
+                            <a asp-page="./Register" 
+                               asp-route-returnUrl="@Model.ReturnUrl" 
+                               asp-route-role="Cliente"
+                               class="btn btn-outline-primary rounded-3">
+                                <i class="bi bi-person-plus"></i> Cadastrar como Cliente
+                            </a>
+
+                            <a href="/Restaurante/SolicitarAdesao"
+                               class="btn btn-outline-success rounded-3">
+                                <i class="bi bi-shop"></i> Solicitar Adesão de Restaurante
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Link para voltar -->
+                <div class="text-center mt-3">
+                    <a href="/" class="text-muted text-decoration-none">
+                        <i class="bi bi-arrow-left"></i> Voltar para página inicial
+                    </a>
+                </div>
+
+            </div>
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        $(document).ready(function() {
+            var input = $('#emailOrPhoneInput');
+
+            // Função para aplicar máscara de telefone
+            function applyPhoneMask(value) {
+                // Remove tudo que não é dígito
+                var numbers = value.replace(/\D/g, '');
+
+                // Aplica a máscara (99) 99999-9999
+                if (numbers.length <= 2) {
+                    return '(' + numbers;
+                } else if (numbers.length <= 7) {
+                    return '(' + numbers.substring(0, 2) + ') ' + numbers.substring(2);
+                } else if (numbers.length <= 11) {
+                    return '(' + numbers.substring(0, 2) + ') ' + numbers.substring(2, 7) + '-' + numbers.substring(7, 11);
+                } else {
+                    // Limita a 11 dígitos
+                    numbers = numbers.substring(0, 11);
+                    return '(' + numbers.substring(0, 2) + ') ' + numbers.substring(2, 7) + '-' + numbers.substring(7, 11);
+                }
+            }
+
+            // Detecta se é email ou telefone e aplica máscara
+            input.on('input', function() {
+                var value = $(this).val();
+
+                // Se contém @@ é email, não aplica máscara
+                if (value.includes('@@')) {
+                    return;
+                }
+
+                // Se começou a digitar números, aplica máscara de telefone
+                var hasOnlyDigitsAndFormatting = /^[\d\s\(\)\-]*$/.test(value);
+                if (hasOnlyDigitsAndFormatting && value.length > 0) {
+                    var cursorPosition = this.selectionStart;
+                    var oldLength = value.length;
+
+                    var maskedValue = applyPhoneMask(value);
+                    $(this).val(maskedValue);
+
+                    // Ajusta posição do cursor
+                    var newLength = maskedValue.length;
+                    var newPosition = cursorPosition + (newLength - oldLength);
+                    this.setSelectionRange(newPosition, newPosition);
+                }
+            });
+
+            // Remove máscara ao colar
+            input.on('paste', function(e) {
+                setTimeout(function() {
+                    var value = input.val();
+                    if (!value.includes('@@')) {
+                        input.val(applyPhoneMask(value));
+                    }
+                }, 10);
+            });
+        });
+    </script>
+
+    <style>
+        .btn-outline-primary {
+            color: #ff6600;
+            border-color: #ff6600;
+        }
+        .btn-outline-primary:hover {
+            background-color: #ff6600;
+            border-color: #ff6600;
+            color: white;
+        }
+        .btn-outline-success {
+            color: #28a745;
+            border-color: #28a745;
+        }
+        .btn-outline-success:hover {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+        .form-control:focus {
+            border-color: #ff6600;
+            box-shadow: 0 0 0 0.25rem rgba(255, 102, 0, 0.25);
+        }
+    </style>
 }
