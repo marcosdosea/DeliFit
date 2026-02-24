@@ -31,44 +31,38 @@
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
 
-            @* Hidden field to carry the desired role (set via query string or defaults to Cliente) *@
+            @* Campos extras exibidos apenas para role Cliente *@
+            @if (Model.Input?.RoleDesejada == "Cliente")
+            {
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Nome" class="form-control" placeholder="Nome completo" />
+                    <label asp-for="Input.Nome">Nome completo</label>
+                    <span asp-validation-for="Input.Nome" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Cpf" class="form-control" placeholder="CPF (somente números)" />
+                    <label asp-for="Input.Cpf">CPF</label>
+                    <span asp-validation-for="Input.Cpf" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Telefone" class="form-control" placeholder="Telefone (somente números)" />
+                    <label asp-for="Input.Telefone">Telefone</label>
+                    <span asp-validation-for="Input.Telefone" class="text-danger"></span>
+                </div>
+
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.DataNascimento" class="form-control" type="date" />
+                    <label asp-for="Input.DataNascimento">Data de Nascimento</label>
+                    <span asp-validation-for="Input.DataNascimento" class="text-danger"></span>
+                </div>
+            }
+
             <input asp-for="Input.RoleDesejada" type="hidden" />
 
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </form>
-    </div>
-
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
-                                article
-                                about setting up this ASP.NET application to support logging in via external services
-                            </a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
-                        </div>
-                    </form>
-                }
-            }
-        </section>
     </div>
 </div>
 

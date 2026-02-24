@@ -18,9 +18,16 @@ namespace DeliFitWeb.Controllers
     {
         private readonly IRestauranteService _restauranteService;
         private readonly IMapper _mapper;
-        private readonly UserManager<UsuarioIdentity> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly IEmailSender _emailSender;
+        private readonly UserManager<UsuarioIdentity>? _userManager;
+        private readonly RoleManager<IdentityRole>? _roleManager;
+        private readonly IEmailSender? _emailSender;
+
+        public RestauranteController(IRestauranteService restauranteService,
+                                     IMapper mapper)
+        {
+            _restauranteService = restauranteService;
+            _mapper = mapper;
+        }
 
         public RestauranteController(IRestauranteService restauranteService,
                                      IMapper mapper,
@@ -192,38 +199,36 @@ namespace DeliFitWeb.Controllers
             var restaurante = _restauranteService.Get(id);
             if (restaurante != null)
             {
-                // Cria usuário Identity para o restaurante com senha gerada
                 var email = restaurante.Email;
-                if (!string.IsNullOrWhiteSpace(email))
+
+                if (!string.IsNullOrWhiteSpace(email) && _userManager != null && _roleManager != null && _emailSender != null)
                 {
                     var user = new UsuarioIdentity { UserName = email, Email = email };
                     var senha = GenerateSecurePassword(12);
                     var createResult = await _userManager.CreateAsync(user, senha);
                     if (createResult.Succeeded)
                     {
-                        // Atribui role e ativa restaurante
                         await _userManager.AddToRoleAsync(user, "GerenteRestaurante");
 
-                        restaurante.Validado = true; // Ativa o restaurante
+                        restaurante.Validado = true;
                         _restauranteService.Edit(restaurante);
 
-                        // Envia e-mail com credenciais 
                         var assunto = "Solicitação aprovada - DeliFit";
                         var mensagem = $"Sua solicitação foi aprovada.\nUsuário: {email}\nSenha: {senha}\nAcesse: {Request.Scheme}://{Request.Host}/Identity/Account/Login";
                         await _emailSender.SendEmailAsync(email, assunto, mensagem);
                     }
                     else
                     {
-                        // Logar falha na criação do usuário 
 
                     }
                 }
                 else
                 {
-                    // Email não informado não é possível criar usuário logar erro
+                    restaurante.Validado = true;
+                    _restauranteService.Edit(restaurante);  
                 }
             }
-            return RedirectToAction(nameof(ListarSolicitacoes));
+                return RedirectToAction(nameof(ListarSolicitacoes));
         }
 
         // POST: RestauranteController/NegarSolicitacao/5
@@ -280,13 +285,13 @@ namespace DeliFitWeb.Controllers
                 return Json(new
                 {
                     sucesso = true,
-                    nomeRestaurante = string.IsNullOrEmpty(data.nome_fantasia) ? data.razao_social : data.nome_fantasia,
-                    cep = data.cep,
-                    rua = data.logradouro,
-                    numero = data.numero,
-                    bairro = data.bairro,
-                    cidade = data.municipio,
-                    estado = data.uf
+                    nomeRestaurante = string.IsNullOrEmpty(data?.nome_fantasia) ? data?.razao_social : data?.nome_fantasia,
+                    cep = data?.cep,
+                    rua = data?.logradouro,
+                    numero = data?.numero,
+                    bairro = data?.bairro,
+                    cidade = data?.municipio,
+                    estado = data?.uf
                 });
             }
 
