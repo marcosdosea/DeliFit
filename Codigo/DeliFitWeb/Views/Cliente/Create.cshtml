@@ -56,7 +56,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label asp-for="Telefone" class="form-label fw-semibold"></label>
-                                <input asp-for="Telefone" class="form-control" placeholder="(99) 99999-9999" />
+                                <input asp-for="Telefone" class="form-control telefone-mask" placeholder="(99) 99999-9999" maxlength="14" />
                                 <span asp-validation-for="Telefone" class="text-danger small"></span>
                             </div>
                         </div>
