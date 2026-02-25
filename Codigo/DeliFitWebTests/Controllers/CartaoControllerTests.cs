@@ -3,8 +3,11 @@ using Core;
 using Core.Service;
 using DeliFitWeb.Mappers;
 using DeliFitWeb.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
+using System.Security.Claims;
 
 namespace DeliFitWeb.Controllers.Tests
 {
@@ -18,6 +21,7 @@ namespace DeliFitWeb.Controllers.Tests
         public void Initialize()
         {
             mockService = new Mock<ICartaoService>();
+            var mockClienteService = new Mock<IClienteService>();
 
             IMapper mapper = new MapperConfiguration(cfg =>
                 cfg.AddProfile(new CartaoProfile())).CreateMapper();
@@ -31,9 +35,22 @@ namespace DeliFitWeb.Controllers.Tests
             mockService.Setup(s => s.Create(It.IsAny<Cartao>()));
             mockService.Setup(s => s.Delete(It.IsAny<uint>()));
 
-            controller = new CartaoController(mockService.Object, mapper);
-        }
+            controller = new CartaoController(mockService.Object, mapper, mockClienteService.Object);
 
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Name, "teste@email.com")
+            }, "mock"));
+
+            var httpContext = new DefaultHttpContext { User = user };
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            controller.TempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
+        }
 
         [TestMethod]
         public void IndexTest_Valido()
@@ -45,7 +62,7 @@ namespace DeliFitWeb.Controllers.Tests
             var lista = viewResult.Model as List<CartaoViewModel>;
 
             Assert.IsNotNull(lista);
-            Assert.HasCount(3, lista);
+            Assert.AreEqual(3, lista.Count);
         }
 
         [TestMethod]
@@ -85,7 +102,6 @@ namespace DeliFitWeb.Controllers.Tests
 
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
         }
-
 
         [TestMethod]
         public void DeleteTest_Get_Valid()
