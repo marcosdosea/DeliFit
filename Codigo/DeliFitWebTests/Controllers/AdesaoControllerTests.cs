@@ -1,14 +1,18 @@
 ﻿using AutoMapper;
 using Core;
 using Core.DTO;
+using Core.Identity.Data;
 using Core.Service;
 using DeliFitWeb.Controllers;
 using DeliFitWeb.Mappers;
 using DeliFitWeb.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
-using System;
-using System.Threading.Tasks;
+using System.Security.Claims;
 
 namespace DeliFitWebTests.Controllers;
 
@@ -17,16 +21,34 @@ public class AdesaoControllerTests
 {
     private RestauranteController? controller;
     private Mock<IRestauranteService>? mockService;
+    private Mock<UserManager<UsuarioIdentity>>? mockUserManager;
 
     [TestInitialize]
     public void Initialize()
     {
         mockService = new Mock<IRestauranteService>();
 
+        mockUserManager = new Mock<UserManager<UsuarioIdentity>>(
+            Mock.Of<IUserStore<UsuarioIdentity>>(), null, null, null, null, null, null, null, null);
+
+        var mockRoleManager = new Mock<RoleManager<IdentityRole>>(
+            Mock.Of<IRoleStore<IdentityRole>>(), null, null, null, null);
+
+        var mockEmailSender = new Mock<IEmailSender>();
+
+        // Configura UserManager para simular criação de usuário com sucesso
+        mockUserManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
+            .ReturnsAsync((UsuarioIdentity?)null);
+        mockUserManager.Setup(x => x.CreateAsync(It.IsAny<UsuarioIdentity>(), It.IsAny<string>()))
+            .ReturnsAsync(IdentityResult.Success);
+        mockUserManager.Setup(x => x.AddToRoleAsync(It.IsAny<UsuarioIdentity>(), It.IsAny<string>()))
+            .ReturnsAsync(IdentityResult.Success);
+
         IMapper mapper = new MapperConfiguration(cfg => cfg.AddProfile(new RestauranteProfile())).CreateMapper();
 
-        // Retornar coleções/objetos novos a cada chamada para evitar efeitos colaterais entre testes
         mockService.Setup(service => service.GetAll()).Returns(() => GetTestRestaurantesCompletosDTO());
+        mockService.Setup(service => service.GetRestaurantesAtivos()).Returns(() => GetTestRestaurantesCompletosDTO());
+        mockService.Setup(service => service.GetRestaurantesPendentes()).Returns(() => GetTestRestaurantesPendentesDTO());
 
         mockService.Setup(service => service.Get(It.Is<uint>(id => id == 1))).Returns(() => GetTargetRestaurantePendente());
         mockService.Setup(service => service.Get(It.Is<uint>(id => id == 2))).Returns(() => GetTargetRestauranteAprovado());
@@ -36,7 +58,26 @@ public class AdesaoControllerTests
         mockService.Setup(service => service.Create(It.IsAny<Restaurante>())).Verifiable();
         mockService.Setup(service => service.Delete(It.IsAny<uint>())).Verifiable();
 
-        controller = new RestauranteController(mockService.Object, mapper);
+        controller = new RestauranteController(
+            mockService.Object,
+            mapper,
+            mockUserManager.Object,
+            mockRoleManager.Object,
+            mockEmailSender.Object);
+
+        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+        {
+            new Claim(ClaimTypes.Name, "teste@email.com")
+        }, "mock"));
+
+        var httpContext = new DefaultHttpContext { User = user };
+
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = httpContext
+        };
+
+        controller.TempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
     }
 
     private static RestauranteViewModel GetNovoRestauranteSolicitacao()
@@ -65,29 +106,6 @@ public class AdesaoControllerTests
     private static Restaurante GetTargetRestaurantePendente()
     {
         return new Restaurante
-        {
-            Id = 1,
-            NomeRestaurante = "Restaurante Pendente 1",
-            NomeProprietario = "Proprietário Pendente",
-            CpfProprietario = "111.111.111-11",
-            Cnpj = "11.111.111/0001-11",
-            Email = "pendente1@email.com",
-            TelefoneProprietario = "(11) 1111-1111",
-            TelefoneRestaurante = "(11) 2222-2222",
-            Rua = "Rua Pendente",
-            Numero = "111",
-            Bairro = "Bairro Pendente",
-            Cidade = "Cidade Pendente",
-            Estado = "SP",
-            Cep = "11111111",
-            Descricao = "Restaurante pendente de aprovação",
-            Validado = false
-        };
-    }
-
-    private static RestauranteViewModel GetTargetRestaurantePendenteViewModel()
-    {
-        return new RestauranteViewModel
         {
             Id = 1,
             NomeRestaurante = "Restaurante Pendente 1",
@@ -154,16 +172,6 @@ public class AdesaoControllerTests
         };
     }
 
-    private static List<Restaurante> GetTestRestaurantesCompletos()
-    {
-        return new List<Restaurante>
-        {
-            GetTargetRestaurantePendente(),
-            GetTargetRestauranteAprovado(),
-            GetTargetRestaurantePendente2()
-        };
-    }
-
     private static List<RestauranteDTO> GetTestRestaurantesCompletosDTO()
     {
         return new List<RestauranteDTO>
@@ -174,21 +182,28 @@ public class AdesaoControllerTests
         };
     }
 
+    private static List<RestauranteDTO> GetTestRestaurantesPendentesDTO()
+    {
+        return new List<RestauranteDTO>
+        {
+            new RestauranteDTO { Id = 1, NomeRestaurante = "Restaurante Pendente 1", Validado = false, Cidade = "Cidade Pendente", Estado = "SP" },
+            new RestauranteDTO { Id = 3, NomeRestaurante = "Restaurante Pendente 2", Validado = false, Cidade = "Cidade Pendente 2", Estado = "MG" }
+        };
+    }
+
     [TestMethod]
     [TestCategory("Unit")]
     [Description("Testando ListarSolicitacoes - deve retornar apenas pendentes")]
     public void ListarSolicitacoesTest()
     {
-        var controllerLocal = new RestauranteController(mockService!.Object,
-            new MapperConfiguration(cfg => cfg.AddProfile(new RestauranteProfile())).CreateMapper());
-
-        var result = Unwrap(controllerLocal.ListarSolicitacoes());
+        var result = controller!.ListarSolicitacoes();
 
         Assert.IsInstanceOfType(result, typeof(ViewResult));
         ViewResult viewResult = (ViewResult)result;
 
         Assert.IsInstanceOfType(viewResult.Model, typeof(List<RestauranteViewModel>));
         List<RestauranteViewModel> viewModel = (List<RestauranteViewModel>)viewResult.Model;
+        Assert.AreEqual(2, viewModel.Count);
     }
 
     [TestMethod]
@@ -196,7 +211,7 @@ public class AdesaoControllerTests
     [Description("Testando DetailsSolicitacao - visualização de solicitação pendente")]
     public void DetailsSolicitacaoTest()
     {
-        var result = Unwrap(controller!.DetailsSolicitacao(1));
+        var result = controller!.DetailsSolicitacao(1);
 
         Assert.IsInstanceOfType(result, typeof(ViewResult));
         ViewResult viewResult = (ViewResult)result;
@@ -252,19 +267,19 @@ public class AdesaoControllerTests
     [Description("Testando SolicitarAdesao - GET")]
     public void SolicitarAdesaoTest_Get()
     {
-        var result = Unwrap(controller!.SolicitarAdesao());
+        var result = controller!.SolicitarAdesao();
 
         Assert.IsInstanceOfType(result, typeof(ViewResult));
     }
 
     [TestMethod]
     [TestCategory("Unit")]
-    [Description("Testando SolicitarAdesao")]
+    [Description("Testando SolicitarAdesao POST")]
     public void SolicitarAdesaoTest()
     {
         var novaSolicitacao = GetNovoRestauranteSolicitacao();
 
-        var result = Unwrap(controller!.SolicitarAdesao(novaSolicitacao));
+        var result = controller!.SolicitarAdesao(novaSolicitacao);
 
         Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
         RedirectToActionResult redirectToActionResult = (RedirectToActionResult)result;
@@ -279,7 +294,7 @@ public class AdesaoControllerTests
     [Description("Testando que Details não permite alterar status")]
     public void Details_NaoPermiteAlterarStatusTest()
     {
-        var result = Unwrap(controller!.Details(1)) as ViewResult;
+        var result = controller!.Details(1) as ViewResult;
         var viewModel = result?.Model as RestauranteViewModel;
         Assert.IsNotNull(viewModel);
     }
@@ -289,7 +304,7 @@ public class AdesaoControllerTests
     [Description("Testando se DetailsSolicitacao permite alterar status")]
     public void DetailsSolicitacao_PermiteAlterarStatusTest()
     {
-        var result = Unwrap(controller!.DetailsSolicitacao(1)) as ViewResult;
+        var result = controller!.DetailsSolicitacao(1) as ViewResult;
         var viewModel = result?.Model as RestauranteViewModel;
 
         Assert.IsNotNull(viewModel);
@@ -300,12 +315,7 @@ public class AdesaoControllerTests
     [Description("Testando filtro de Index - apenas ativos")]
     public void Index_FiltraApenasAtivosTest()
     {
-        var controllerComMockFiltrado = new RestauranteController(
-            mockService!.Object,
-            new MapperConfiguration(cfg => cfg.AddProfile(new RestauranteProfile())).CreateMapper()
-        );
-
-        var result = Unwrap(controllerComMockFiltrado.Index());
+        var result = controller!.Index();
 
         Assert.IsInstanceOfType(result, typeof(ViewResult));
     }
@@ -317,7 +327,7 @@ public class AdesaoControllerTests
     {
         var novoRestauranteViewModel = GetNovoRestauranteSolicitacao();
 
-        var result = Unwrap(controller!.Create(novoRestauranteViewModel));
+        var result = controller!.Create(novoRestauranteViewModel);
 
         Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
 
@@ -325,28 +335,20 @@ public class AdesaoControllerTests
             r.Validado == false)), Times.AtLeastOnce);
     }
 
-    /// <summary>
-    /// Unwrap: se o objeto for um Task{T} retorna seu Result; se for Task (sem resultado) espera até completar e retorna null;
-    /// se não for Task retorna o próprio objeto.
-    /// Implementado via reflection para suportar Task{T} genéricos sem precisar conhecer T.
-    /// </summary>
     private static object? Unwrap(object? maybeTask)
     {
         if (maybeTask is null) return null;
         if (maybeTask is Task task)
         {
-            // Aguarda término
             task.GetAwaiter().GetResult();
 
             var taskType = task.GetType();
             if (taskType.IsGenericType)
             {
-                // Obtém propriedade Result via reflexão para Task<T>
                 var prop = taskType.GetProperty("Result");
                 return prop?.GetValue(task);
             }
 
-            // Task sem resultado
             return null;
         }
 

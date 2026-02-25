@@ -5,6 +5,7 @@ using DeliFitWeb.Mappers;
 using DeliFitWeb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+
 namespace DeliFitWeb.Controllers.Tests
 {
     [TestClass]
@@ -44,7 +45,7 @@ namespace DeliFitWeb.Controllers.Tests
             var lista = viewResult.Model as List<AtendimentoViewModel>;
 
             Assert.IsNotNull(lista);
-            Assert.HasCount(3, lista);
+            Assert.AreEqual(3, lista.Count);
         }
 
         [TestMethod]
@@ -119,7 +120,6 @@ namespace DeliFitWeb.Controllers.Tests
             };
         }
 
-
         private AtendimentoViewModel GetTargetAtendimentoViewModel()
         {
             return new AtendimentoViewModel
@@ -131,7 +131,6 @@ namespace DeliFitWeb.Controllers.Tests
                 HorarioFim = new DateTime(2024, 6, 10, 18, 0, 0)
             };
         }
-
 
         private Atendimento GetTargetAtendimento()
         {
@@ -174,8 +173,6 @@ namespace DeliFitWeb.Controllers.Tests
                     IdRestaurante = 1
                 }
             };
-
-
         }
     }
 }

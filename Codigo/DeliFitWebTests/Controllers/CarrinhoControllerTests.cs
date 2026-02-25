@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Core;
-using Core.DTO;
 using Core.Service;
 using DeliFitWeb.Mappers;
 using DeliFitWeb.Models;
@@ -17,15 +16,12 @@ namespace DeliFitWeb.Controllers.Tests
         [TestInitialize]
         public void Initialize()
         {
-            // Arrange
             var mockService = new Mock<ICarrinhoService>();
             var mockClienteService = new Mock<IClienteService>();
             var mockCartaoService = new Mock<ICartaoService>();
 
             IMapper mapper = new MapperConfiguration(cfg =>
                 cfg.AddProfile(new CarrinhoProfile())).CreateMapper();
-
-
 
             mockService.Setup(service => service.GetAll())
                 .Returns(GetTestCarrinho());
@@ -34,6 +30,7 @@ namespace DeliFitWeb.Controllers.Tests
             mockService.Setup(service => service.Create(It.IsAny<Carrinho>()))
                 .Verifiable();
             mockService.Setup(service => service.Delete(It.IsAny<uint>()));
+
             controller = new CarrinhoController(mockService.Object, mockClienteService.Object, mockCartaoService.Object, mapper);
         }
 
@@ -42,25 +39,21 @@ namespace DeliFitWeb.Controllers.Tests
         [Description("Testando o index")]
         public void IndexTest_Valido()
         {
-            // Act
             var result = controller?.Index();
 
-            // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             ViewResult viewResult = (ViewResult)result;
             Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(List<CarrinhoViewModel>));
 
             List<CarrinhoViewModel>? lista = (List<CarrinhoViewModel>)viewResult.ViewData.Model;
-            Assert.HasCount(3, lista);
+            Assert.AreEqual(3, lista.Count);
         }
 
         [TestMethod()]
         public void DetailsTest_Valido()
         {
-            // Act
             var result = controller?.Details(1);
 
-            // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             ViewResult viewResult = (ViewResult)result;
             Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(CarrinhoViewModel));
@@ -72,19 +65,15 @@ namespace DeliFitWeb.Controllers.Tests
         [TestMethod()]
         public void CreateTest_Get_Valido()
         {
-            // Act
             var result = controller?.Create();
-            // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
 
         [TestMethod()]
         public void CreateTest_Valid()
         {
-            // Act
             var result = controller?.Create(GetNewCarrinho());
 
-            // Assert
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
             RedirectToActionResult redirectToActionResult = (RedirectToActionResult)result;
             Assert.IsNull(redirectToActionResult.ControllerName);
@@ -94,13 +83,10 @@ namespace DeliFitWeb.Controllers.Tests
         [TestMethod()]
         public void CreateTest_Post_Invalid()
         {
-            // Arrange
             controller?.ModelState.AddModelError("FormaDePagamento", "Forma de Pagamento é obrigatório.");
 
-            // Act
             var result = controller?.Create(GetNewCarrinho());
 
-            // Assert
             Assert.AreEqual(1, controller?.ModelState.ErrorCount);
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
             RedirectToActionResult redirectToActionResult = (RedirectToActionResult)result;
@@ -108,16 +94,11 @@ namespace DeliFitWeb.Controllers.Tests
             Assert.AreEqual("Index", redirectToActionResult.ActionName);
         }
 
-        
-
-
         [TestMethod()]
-        public void DeleteTest_Post_Valid()
+        public void DeleteTest_Get_Valid()
         {
-            // Act
             var result = controller?.Delete(1);
 
-            // Assert
             Assert.IsInstanceOfType(result, typeof(ViewResult));
             ViewResult viewResult = (ViewResult)result;
             Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(CarrinhoViewModel));
@@ -127,12 +108,10 @@ namespace DeliFitWeb.Controllers.Tests
         }
 
         [TestMethod()]
-        public void DeleteTest_Get_Valid()
+        public void DeleteTest_Post_Valid()
         {
-            // Act
             var result = controller?.Delete(GetTargetCarrinhoModel());
 
-            // Assert
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
             RedirectToActionResult redirectToActionResult = (RedirectToActionResult)result;
             Assert.IsNull(redirectToActionResult.ControllerName);
@@ -150,8 +129,8 @@ namespace DeliFitWeb.Controllers.Tests
                 ValorFrete = 5.50M,
                 IdCartao = null
             };
-
         }
+
         private static Carrinho GetTargetCarrinho()
         {
             return new Carrinho
@@ -176,7 +155,6 @@ namespace DeliFitWeb.Controllers.Tests
                 ValorFrete = 10.50M,
                 IdCartao = 1
             };
-                
         }
 
         private IEnumerable<Carrinho> GetTestCarrinho()
@@ -200,8 +178,7 @@ namespace DeliFitWeb.Controllers.Tests
                     FormaDePagamento = "C",
                     ValorFrete = 10.50M,
                     IdCartao = 1
-                }, 
-                
+                },
                 new Carrinho
                 {
                     Id = 3,
@@ -211,7 +188,6 @@ namespace DeliFitWeb.Controllers.Tests
                     ValorFrete = 8.00M,
                     IdCartao = null
                 }
-
             };
         }
     }
