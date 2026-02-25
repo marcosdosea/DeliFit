@@ -1,4 +1,3 @@
-
 using DeliFitAPI.Filter;
 using Core;
 using Core.Identity.Data;
@@ -23,7 +22,7 @@ namespace DeliFitAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            
+
 
 
             builder.Services.AddDbContext<DeliFitContext>(options =>
@@ -61,6 +60,7 @@ namespace DeliFitAPI
             builder.Services.AddAuthentication();
             builder.Services.AddAuthorization();
             builder.Services.AddScoped<IEnderecoService, EnderecoService>();
+            builder.Services.AddScoped<ICartaoService, CartaoService>();
 
 
             var app = builder.Build();
