@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Util;
 
 namespace DeliFitAPI.Models
 {
