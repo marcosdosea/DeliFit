@@ -76,8 +76,8 @@
                     <a asp-action="Index" class="btn btn-outline-secondary px-5 ms-2">
                         <i class="bi bi-arrow-left me-2"></i> Voltar para Lista
                     </a>
-                    <a asp-action="Delete" class="btn btn-danger px-5 ms-2">
-                         Excluir
+                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger px-5 ms-2">
+                        <i class="bi bi-trash3 me-2"></i> Excluir
                     </a>
                 </div>
             </div>
