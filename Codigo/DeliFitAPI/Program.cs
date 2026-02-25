@@ -59,6 +59,13 @@ namespace DeliFitAPI
 
             builder.Services.AddAuthentication();
             builder.Services.AddAuthorization();
+
+            // Configuração do AutoMapper
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            // Registro dos serviços
+            builder.Services.AddScoped<IClienteService, ClienteService>();
+            builder.Services.AddScoped<IRestauranteService, RestauranteService>();
             builder.Services.AddScoped<IEnderecoService, EnderecoService>();
             builder.Services.AddScoped<ICartaoService, CartaoService>();
 
