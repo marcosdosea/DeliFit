@@ -33,8 +33,4 @@
     <ProjectReference Include="..\Util\Util.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Filter\" />
-  </ItemGroup>
-
 </Project>

@@ -1,5 +1,7 @@
-﻿using Core;
+﻿using AutoMapper;
+using Core;
 using Core.Service;
+using DeliFitAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeliFitAPI.Controllers
@@ -8,47 +10,73 @@ namespace DeliFitAPI.Controllers
     [ApiController]
     public class CartaoController : ControllerBase
     {
-        private readonly ICartaoService _service;
+        private readonly ICartaoService _cartaoService;
+        private readonly IMapper _mapper;
 
-        public CartaoController(ICartaoService service)
+        public CartaoController(ICartaoService cartaoService, IMapper mapper)
         {
-            _service = service;
+            _cartaoService = cartaoService;
+            _mapper = mapper;
         }
 
+        // GET: api/Cartao
         [HttpGet]
-        public ActionResult<IEnumerable<Cartao>> GetAll()
+        public ActionResult Get()
         {
-            return Ok(_service.GetAll());
+            var listaCartoes = _cartaoService.GetAll();
+            if (listaCartoes == null || !listaCartoes.Any())
+                return NotFound();
+
+            return Ok(listaCartoes);
         }
 
+        // GET api/Cartao/5
         [HttpGet("{id}")]
-        public ActionResult<Cartao> Get(uint id)
+        public ActionResult Get(uint id)
         {
-            var cartao = _service.Get(id);
-            if (cartao == null) return NotFound();
+            var cartao = _cartaoService.Get(id);
+            if (cartao == null)
+                return NotFound();
+
             return Ok(cartao);
         }
 
+        // GET api/Cartao/cliente/5
         [HttpGet("cliente/{idCliente}")]
-        public ActionResult<IEnumerable<Cartao>> GetByCliente(uint idCliente)
+        public ActionResult GetByCliente(uint idCliente)
         {
-            return Ok(_service.GetByCliente(idCliente));
+            var cartoes = _cartaoService.GetByCliente(idCliente);
+            if (cartoes == null || !cartoes.Any())
+                return NotFound();
+
+            return Ok(cartoes);
         }
 
+        // POST api/Cartao
         [HttpPost]
-        public ActionResult<uint> Create([FromBody] Cartao cartao)
+        public ActionResult Post([FromBody] CartaoViewModel cartaoModel)
         {
-            var id = _service.Create(cartao);
-            return CreatedAtAction(nameof(Get), new { id = id }, id);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Dados inválidos");
+            }
+
+            var cartao = _mapper.Map<Cartao>(cartaoModel);
+            _cartaoService.Create(cartao);
+
+            return Ok(cartao);
         }
 
+        // DELETE api/Cartao/5
         [HttpDelete("{id}")]
-        public IActionResult Delete(uint id)
+        public ActionResult Delete(uint id)
         {
-            var existing = _service.Get(id);
-            if (existing == null) return NotFound();
-            _service.Delete(id);
-            return NoContent();
+            var cartao = _cartaoService.Get(id);
+            if (cartao == null)
+                return NotFound();
+
+            _cartaoService.Delete(id);
+            return Ok();
         }
     }
 }

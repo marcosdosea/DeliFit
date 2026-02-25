@@ -16,14 +16,15 @@ namespace DeliFitAPI
 
 
             // Add services to the container with Exception handling.
-            builder.Services.AddControllers(options => options.Filters.Add(new HttpResponseExceptionFilter()));
+            builder.Services.AddControllers(options =>
+            {
+                options.Filters.Add(new HttpResponseExceptionFilter());
+                options.Filters.Add(new CartaoValidationFilter());
+            });
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-
-
-
 
             builder.Services.AddDbContext<DeliFitContext>(options =>
             options.UseMySQL(builder.Configuration.GetConnectionString("DeliFitConnection")));
