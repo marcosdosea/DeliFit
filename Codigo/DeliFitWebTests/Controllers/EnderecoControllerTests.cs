@@ -3,8 +3,12 @@ using Core;
 using Core.Service;
 using DeliFitWeb.Mappers;
 using DeliFitWeb.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
+using System.Security.Claims;
+
 namespace DeliFitWeb.Controllers.Tests
 {
     [TestClass]
@@ -17,6 +21,7 @@ namespace DeliFitWeb.Controllers.Tests
         public void Initialize()
         {
             mockService = new Mock<IEnderecoService>();
+            var mockClienteService = new Mock<IClienteService>();
 
             IMapper mapper = new MapperConfiguration(cfg =>
                 cfg.AddProfile(new EnderecoProfile())).CreateMapper();
@@ -31,7 +36,21 @@ namespace DeliFitWeb.Controllers.Tests
             mockService.Setup(s => s.Edit(It.IsAny<Endereco>()));
             mockService.Setup(s => s.Delete(It.IsAny<uint>()));
 
-            controller = new EnderecoController(mockService.Object, mapper);
+            controller = new EnderecoController(mockService.Object, mapper, mockClienteService.Object);
+
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Name, "teste@email.com")
+            }, "mock"));
+
+            var httpContext = new DefaultHttpContext { User = user };
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            controller.TempData = new TempDataDictionary(httpContext, Mock.Of<ITempDataProvider>());
         }
 
         [TestMethod]
@@ -44,7 +63,7 @@ namespace DeliFitWeb.Controllers.Tests
             var lista = viewResult.Model as List<EnderecoViewModel>;
 
             Assert.IsNotNull(lista);
-            Assert.HasCount(3, lista);
+            Assert.AreEqual(3, lista.Count);
         }
 
         [TestMethod]
@@ -135,7 +154,6 @@ namespace DeliFitWeb.Controllers.Tests
             };
         }
 
-
         private EnderecoViewModel GetTargetEnderecoViewModel()
         {
             return new EnderecoViewModel
@@ -151,7 +169,6 @@ namespace DeliFitWeb.Controllers.Tests
                 Label = "Trabalho"
             };
         }
-
 
         private Endereco GetTargetEndereco()
         {
@@ -172,43 +189,41 @@ namespace DeliFitWeb.Controllers.Tests
         private IEnumerable<Endereco> GetTestEnderecoes()
         {
             return new List<Endereco>
-    {
-        new Endereco
-        {
-            Id = 1,
-            IdCliente = 1,
-            Rua = "Graciliano Ramos",
-            Numero = "1",
-            Bairro = "Centro",
-            Cep = "11111-111",
-            Cidade = "São Paulo",
-            Estado = "SP"
-        },
-        new Endereco
-        {
-            Id = 2,
-            IdCliente = 1,
-            Rua = "Machado de Assis",
-            Numero = "2",
-            Bairro = "Centro",
-            Cep = "22222-222",
-            Cidade = "São Paulo",
-            Estado = "SP"
-        },
-        new Endereco
-        {
-            Id = 3,
-            IdCliente = 1,
-            Rua = "Marcos Dósea",
-            Numero = "3",
-            Bairro = "Centro",
-            Cep = "33333-333",
-            Cidade = "São Paulo",
-            Estado = "SP"
+            {
+                new Endereco
+                {
+                    Id = 1,
+                    IdCliente = 1,
+                    Rua = "Graciliano Ramos",
+                    Numero = "1",
+                    Bairro = "Centro",
+                    Cep = "11111-111",
+                    Cidade = "São Paulo",
+                    Estado = "SP"
+                },
+                new Endereco
+                {
+                    Id = 2,
+                    IdCliente = 1,
+                    Rua = "Machado de Assis",
+                    Numero = "2",
+                    Bairro = "Centro",
+                    Cep = "22222-222",
+                    Cidade = "São Paulo",
+                    Estado = "SP"
+                },
+                new Endereco
+                {
+                    Id = 3,
+                    IdCliente = 1,
+                    Rua = "Marcos Dósea",
+                    Numero = "3",
+                    Bairro = "Centro",
+                    Cep = "33333-333",
+                    Cidade = "São Paulo",
+                    Estado = "SP"
+                }
+            };
         }
-    };
-        }
-
-
     }
 }
