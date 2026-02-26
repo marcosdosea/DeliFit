@@ -1,4 +1,5 @@
 using BibliotecaWeb.Helpers;
+using DeliFitWeb.Helpers;
 using Core;
 using Core.Service;
 using Core.Identity.Data;
@@ -129,17 +130,9 @@ public class Program
         {
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<UsuarioIdentity>>();
+            var delifitContext = scope.ServiceProvider.GetRequiredService<DeliFitContext>();
 
-            string[] roleNames = { "Admin", "GerenteRestaurante", "Cliente" };
-
-            foreach (var roleName in roleNames)
-            {
-                // Verifica se a role já existe, se não, cria.
-                if (!await roleManager.RoleExistsAsync(roleName))
-                {
-                    await roleManager.CreateAsync(new IdentityRole(roleName));
-                }
-            }
+            await DatabaseSeeder.SeedAsync(userManager, roleManager, delifitContext);
         }
 
 
