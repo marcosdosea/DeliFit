@@ -25,8 +25,22 @@ namespace Service
             var restaurante = _context.Restaurantes.Find(id);
             if (restaurante != null)
             {
+                // Remove Atendimentos relacionados
+                _context.Entry(restaurante).Collection(c => c.Atendimentos).Load();
+                _context.Atendimentos.RemoveRange(restaurante.Atendimentos);
+
+                // Remove Itens relacionados
                 _context.Entry(restaurante).Collection(c => c.Items).Load();
                 _context.Items.RemoveRange(restaurante.Items);
+
+                // Remove Pagamentos relacionados
+                _context.Entry(restaurante).Collection(c => c.Pagamentos).Load();
+                _context.Pagamentos.RemoveRange(restaurante.Pagamentos);
+
+                // Remove Pedidos relacionados
+                _context.Entry(restaurante).Collection(c => c.Pedidos).Load();
+                _context.Pedidos.RemoveRange(restaurante.Pedidos);
+
                 _context.Restaurantes.Remove(restaurante);
                 _context.SaveChanges();
             }

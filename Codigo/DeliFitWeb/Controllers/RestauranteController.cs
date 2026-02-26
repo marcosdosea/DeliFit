@@ -46,7 +46,6 @@ namespace DeliFitWeb.Controllers
             RandomNumberGenerator.Fill(bytes);
             var chars = bytes.Select(b => valid[b % valid.Length]).ToArray();
 
-
             if (!chars.Any(c => digits.Contains(c)))
             {
                 var pos = Math.Abs(BitConverter.ToInt32(bytes, 0)) % length;
@@ -65,7 +64,6 @@ namespace DeliFitWeb.Controllers
             return View(listaRestaurantesModel);
         }
 
-
         [Authorize(Roles = "Admin")]
         public ActionResult ListarSolicitacoes()
         {
@@ -79,6 +77,10 @@ namespace DeliFitWeb.Controllers
         public ActionResult Details(uint id)
         {
             Restaurante? restaurante = _restauranteService.Get(id);
+
+            if (restaurante == null)
+                return RedirectToAction(nameof(Index));
+
             RestauranteViewModel restauranteModel = _mapper.Map<RestauranteViewModel>(restaurante);
 
             ViewBag.CanChangeStatus = false;
@@ -91,6 +93,10 @@ namespace DeliFitWeb.Controllers
         public ActionResult DetailsSolicitacao(uint id)
         {
             Restaurante? restaurante = _restauranteService.Get(id);
+
+            if (restaurante == null)
+                return RedirectToAction(nameof(ListarSolicitacoes));
+
             RestauranteViewModel restauranteModel = _mapper.Map<RestauranteViewModel>(restaurante);
 
             ViewBag.CanChangeStatus = true;
@@ -109,14 +115,12 @@ namespace DeliFitWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(RestauranteViewModel restauranteModel)
         {
-
             if (ModelState.IsValid)
             {
                 var restaurante = _mapper.Map<Restaurante>(restauranteModel);
                 _restauranteService.Create(restaurante);
                 return RedirectToAction(nameof(Index));
             }
-
 
             return RedirectToAction(nameof(Index));
         }
@@ -203,8 +207,11 @@ namespace DeliFitWeb.Controllers
         public ActionResult Delete(uint id)
         {
             Restaurante? restaurante = _restauranteService.Get(id);
-            RestauranteViewModel restauranteModel = _mapper.Map<RestauranteViewModel>(restaurante);
 
+            if (restaurante == null)
+                return RedirectToAction(nameof(Index));
+
+            RestauranteViewModel restauranteModel = _mapper.Map<RestauranteViewModel>(restaurante);
             return View(restauranteModel);
         }
 
@@ -303,7 +310,7 @@ namespace DeliFitWeb.Controllers
                             await _emailSender.SendEmailAsync(email, assunto, mensagem);
                             TempData["Success"] = $"Solicitação aprovada! Email com credenciais enviado para {email}.";
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
                             TempData["Success"] = $"Solicitação aprovada! Porém não foi possível enviar o email. Senha gerada: {senha}";
                         }
