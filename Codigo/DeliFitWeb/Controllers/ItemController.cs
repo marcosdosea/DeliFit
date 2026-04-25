@@ -119,6 +119,7 @@ namespace DeliFitWeb.Controllers
                 try
                 {
                     var item = _mapper.Map<Item>(itemModel);
+
                     var itemId = _itemService.Create(item);
                     TempData["Success"] = $"Item '{item.Nome}' criado com sucesso!";
                     return RedirectToAction(nameof(Index));
