@@ -21,6 +21,7 @@ namespace DeliFitWeb.Controllers
             _mapper = mapper;
             _restauranteService = restauranteService;
         }
+
         // GET: ItemController
         [Authorize(Roles = "GerenteRestaurante,Admin")]
         public ActionResult Index(uint? idRestaurante)
@@ -62,6 +63,20 @@ namespace DeliFitWeb.Controllers
             Item? item = _itemService.Get(id);
             ItemViewModel itemModel = _mapper.Map<ItemViewModel>(item);
             return View(itemModel);
+        }
+
+        /// <summary>
+        /// Serve a foto de um item diretamente do banco para uso nas views via <img src="...">.
+        /// </summary>
+        [HttpGet]
+        public ActionResult Foto(uint id)
+        {
+            var item = _itemService.Get(id);
+
+            if (item?.Foto == null || item.Foto.Length == 0)
+                return NotFound();
+
+            return File(item.Foto, "image/jpeg");
         }
 
         // GET: ItemController/Create
@@ -119,6 +134,15 @@ namespace DeliFitWeb.Controllers
                 try
                 {
                     var item = _mapper.Map<Item>(itemModel);
+
+                    // Trata a foto manualmente após o mapeamento
+                    if (itemModel.FotoFile != null && itemModel.FotoFile.Length > 0)
+                    {
+                        using var ms = new MemoryStream();
+                        itemModel.FotoFile.CopyTo(ms);
+                        item.Foto = ms.ToArray();
+                    }
+
                     var itemId = _itemService.Create(item);
                     TempData["Success"] = $"Item '{item.Nome}' criado com sucesso!";
                     return RedirectToAction(nameof(Index));
@@ -141,7 +165,6 @@ namespace DeliFitWeb.Controllers
         {
             Item? item = _itemService.Get(id);
             ItemViewModel itemModel = _mapper.Map<ItemViewModel>(item);
-
             return View(itemModel);
         }
 
@@ -153,6 +176,22 @@ namespace DeliFitWeb.Controllers
             if (ModelState.IsValid)
             {
                 var item = _mapper.Map<Item>(itemModel);
+
+                // Trata a foto manualmente após o mapeamento
+                if (itemModel.FotoFile != null && itemModel.FotoFile.Length > 0)
+                {
+                    // Nova foto enviada: converte e salva
+                    using var ms = new MemoryStream();
+                    itemModel.FotoFile.CopyTo(ms);
+                    item.Foto = ms.ToArray();
+                }
+                else
+                {
+                    // Nenhuma foto nova: preserva a foto já existente no banco
+                    var itemExistente = _itemService.Get(itemModel.Id);
+                    item.Foto = itemExistente?.Foto;
+                }
+
                 _itemService.Edit(item);
                 return RedirectToAction(nameof(Index));
             }
