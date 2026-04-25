@@ -6,22 +6,39 @@
 
 <div class="container mt-4">
     <div class="card shadow">
-        <div class="card-header text-white">
+        <div class="card-header text-white" style="background-color: #ff6600;">
             <div class="d-flex justify-content-between align-items-center">
                 <h4 class="mb-0">
                     <i class="bi bi-info-circle me-2"></i>Detalhes do Item
                 </h4>
-                <div class="mb-4">
-                    <a href="javascript:history.back()" class="btn btn-outline-secondary" style="background-color: #FFFFFF">
-                        <i class="bi bi-arrow-left"></i> Voltar
-                    </a>
-                </div>
+                <a href="javascript:history.back()" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-arrow-left"></i> Voltar
+                </a>
             </div>
         </div>
 
         <div class="card-body">
-            <!-- Informações Principais -->
+
             <div class="row mb-4">
+
+                <div class="col-md-4 d-flex align-items-center justify-content-center mb-4 mb-md-0">
+                    @if (Model.Foto != null && Model.Foto.Length > 0)
+                    {
+                        <img src="@Url.Action("Foto", "Item", new { id = Model.Id })"
+                             alt="Foto de @Model.Nome"
+                             class="img-fluid rounded shadow-sm"
+                             style="max-height: 280px; object-fit: contain; border: 2px solid #f0f0f0;" />
+                    }
+                    else
+                    {
+                        <div class="rounded d-flex flex-column align-items-center justify-content-center bg-light border"
+                             style="width: 100%; height: 220px;">
+                            <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                            <small class="text-muted mt-2">Sem foto cadastrada</small>
+                        </div>
+                    }
+                </div>
+
                 <div class="col-md-8">
                     <h5 class="text-primary mb-3">Informações do Produto</h5>
 
@@ -42,30 +59,21 @@
                         <label class="form-label fw-bold text-muted">Preço</label>
                         <p class="fs-4 text-success">R$ @Model.Preco.ToString("N2")</p>
                     </div>
-                </div>
 
-                <div class="col-md-4">
-                    <h5 class="text-primary mb-3">Especificações</h5>
-
-                    <!-- Tamanho e Restrições alinhados -->
                     <div class="row g-3">
                         @if (!string.IsNullOrEmpty(Model.Tamanho))
                         {
-                            <div class="col-12">
+                            <div class="col-auto">
                                 <label class="form-label fw-bold text-muted">Tamanho</label>
-                                <p class="fs-6">
-                                    <i class="bi bi-rulers me-2 text-primary"></i>@Model.Tamanho
-                                </p>
+                                <p><i class="bi bi-rulers me-2 text-primary"></i>@Model.Tamanho</p>
                             </div>
                         }
 
                         @if (!string.IsNullOrEmpty(Model.Volume))
                         {
-                            <div class="col-12">
+                            <div class="col-auto">
                                 <label class="form-label fw-bold text-muted">Volume</label>
-                                <p class="fs-6">
-                                    <i class="bi bi-cup me-2 text-primary"></i>@Model.Volume
-                                </p>
+                                <p><i class="bi bi-cup me-2 text-primary"></i>@Model.Volume</p>
                             </div>
                         }
 
@@ -84,12 +92,12 @@
                 </div>
             </div>
 
-            <!-- Informações Nutricionais -->
             <div class="row">
                 <div class="col-12">
                     <h5 class="text-primary mb-3">Informações Nutricionais</h5>
 
                     <div class="row g-3">
+
                         <div class="col-md-3 col-sm-6">
                             <div class="card bg-info bg-opacity-10 border-info h-100">
                                 <div class="card-body text-center d-flex flex-column justify-content-center">
@@ -103,7 +111,7 @@
                         @if (Model.Proteina.HasValue)
                         {
                             <div class="col-md-3 col-sm-6">
-                                <div class="card  bg-success bg-opacity-10 border-success h-100">
+                                <div class="card bg-success bg-opacity-10 border-success h-100">
                                     <div class="card-body text-center d-flex flex-column justify-content-center">
                                         <h6 class="text-muted mb-2">Proteínas</h6>
                                         <h3 class="text-success mb-1">@Model.Proteina.Value.ToString("N1")</h3>
@@ -138,69 +146,33 @@
                                 </div>
                             </div>
                         }
+
                     </div>
                 </div>
             </div>
+
         </div>
 
-        <div class="card-footer bg-light">
-            <div class="d-flex justify-content-between align-items-center">
-                <small class="text-muted">
-                    <i class="bi bi-clock me-1"></i>Última atualização: @DateTime.Now.ToString("dd/MM/yyyy")
-                </small>
-                <div class="btn-group">
-                    @Html.ActionLink("Editar", "Edit", new { id = Model.Id }, new { @class = "btn btn-outline-primary" })
-                   
-                </div>
-            </div>
+        <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+            <small class="text-muted">
+                <i class="bi bi-clock me-1"></i>Última atualização: @DateTime.Now.ToString("dd/MM/yyyy")
+            </small>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary">
+                <i class="bi bi-pencil me-1"></i>Editar
+            </a>
         </div>
     </div>
 </div>
 
 <style>
-    .card {
-        border-radius: 10px;
+    .card { border-radius: 10px; }
+
+    .card .card {
+        transition: transform 0.2s;
+        min-height: 120px;
     }
 
-        .card .card {
-            transition: transform 0.2s;
-            min-height: 120px;
-        }
+    .card .card:hover { transform: translateY(-3px); }
 
-            .card .card:hover {
-                transform: translateY(-3px);
-            }
-
-    .card-header{
-        background-color: #ff6600;
-    }
-
-    h3 {
-        margin-bottom: 0.2rem;
-    }
-
-    .badge {
-        font-size: 0.9rem;
-        padding: 0.5rem 1rem;
-    }
-
-    /* Estilo para os campos de especificação */
-    .specification-item {
-        border-left: 3px solid #ff6600;
-        padding-left: 1rem;
-        margin-bottom: 1rem;
-    }
-
-    /* Alinhamento vertical para os campos */
-    .col-md-4 .col-12 {
-        margin-bottom: 1.5rem;
-    }
-   
-
-    /* Ajuste para telas menores */
-    @@media (max-width: 768px) {
-        .col-md-4 .col-12 {
-            margin-bottom: 1rem;
-        }
-    }
+    .card-header { background-color: #ff6600; }
 </style>
