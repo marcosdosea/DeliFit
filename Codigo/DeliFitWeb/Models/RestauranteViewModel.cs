@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Http;
 using Util;
 
 namespace DeliFitWeb.Models
@@ -9,11 +10,19 @@ namespace DeliFitWeb.Models
         [Key]
         public uint Id { get; set; }
 
-
         public bool Validado { get; set; }
 
+        /// <summary>
+        /// Bytes da foto armazenada no banco (usado para exibição nas views).
+        /// </summary>
+        public byte[]? Foto { get; set; } = null;
+
+        /// <summary>
+        /// Arquivo enviado pelo formulário. Não é mapeado pelo AutoMapper.
+        /// </summary>
         [NotMapped]
-        public byte[]? Foto{ get; set; } = null;
+        [Display(Name = "Foto do Restaurante")]
+        public IFormFile? FotoFile { get; set; }
 
         [Display(Name = "Nome do Restaurante")]
         [Required(ErrorMessage = "Preenchimento do campo Nome do Restaurante é obrigatório.")]
@@ -89,6 +98,5 @@ namespace DeliFitWeb.Models
         [Required(ErrorMessage = "O campo Estado é obrigatório.")]
         [StringLength(15, ErrorMessage = "O estado deve ter no máximo 15 caracteres.")]
         public string Estado { get; set; } = string.Empty;
-
     }
 }
