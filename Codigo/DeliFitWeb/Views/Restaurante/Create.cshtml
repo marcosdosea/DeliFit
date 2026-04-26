@@ -19,10 +19,43 @@
         </div>
     </div>
 
-    <form asp-action="Create">
+    <form asp-action="Create" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="alert alert-danger shadow-sm border-0" role="alert"></div>
 
         <div class="row">
+
+            <div class="col-lg-12 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0 pt-4 ps-4">
+                        <h5 class="fw-bold mb-0 text-orange"><i class="bi bi-image me-2"></i>Foto do Restaurante</h5>
+                    </div>
+                    <div class="card-body p-4">
+
+                        <div class="mb-2">
+                            <label asp-for="FotoFile" class="form-label fw-semibold">
+                                Selecione uma Imagem
+                                <span class="fw-normal text-muted small">(opcional &middot; JPEG ou PNG &middot; máx. 2 MB)</span>
+                            </label>
+                            <input asp-for="FotoFile"
+                                   type="file"
+                                   accept="image/jpeg,image/png"
+                                   class="form-control"
+                                   onchange="previewFoto(this)" />
+                            <span asp-validation-for="FotoFile" class="text-danger small"></span>
+                        </div>
+
+                        <div id="previewContainer" class="d-none text-center mt-3">
+                            <img id="fotoPreview"
+                                 src="#"
+                                 alt="Pré-visualização"
+                                 class="rounded"
+                                 style="max-height: 200px; max-width: 100%; object-fit: contain; border: 2px dashed #ff6600;" />
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
             <div class="col-lg-12 mb-4">
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-white border-0 pt-4 ps-4">
@@ -64,12 +97,12 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label asp-for="NomeRestaurante" class="form-label fw-semibold"></label>
-                                <input asp-for="NomeRestaurante" class="form-control" placeholder="Ex: Fit & Cia" />
+                                <input asp-for="NomeRestaurante" id="NomeRestaurante" class="form-control" placeholder="Ex: Fit & Cia" />
                                 <span asp-validation-for="NomeRestaurante" class="text-danger small"></span>
                             </div>
                             <div class="col-md-3">
                                 <label asp-for="Cnpj" class="form-label fw-semibold"></label>
-                                <input asp-for="Cnpj" class="form-control" placeholder="00.000.000/0000-00" />
+                                <input asp-for="Cnpj" id="Cnpj" class="form-control" placeholder="00.000.000/0000-00" />
                                 <span asp-validation-for="Cnpj" class="text-danger small"></span>
                             </div>
                             <div class="col-md-3">
@@ -84,32 +117,32 @@
                         <div class="row g-3">
                             <div class="col-md-3">
                                 <label asp-for="Cep" class="form-label fw-semibold"></label>
-                                <input asp-for="Cep" class="form-control" />
+                                <input asp-for="Cep" id="Cep" class="form-control" />
                                 <span asp-validation-for="Cep" class="text-danger small"></span>
                             </div>
                             <div class="col-md-6">
                                 <label asp-for="Rua" class="form-label fw-semibold"></label>
-                                <input asp-for="Rua" class="form-control" />
+                                <input asp-for="Rua" id="Rua" class="form-control" />
                                 <span asp-validation-for="Rua" class="text-danger small"></span>
                             </div>
                             <div class="col-md-3">
                                 <label asp-for="Numero" class="form-label fw-semibold"></label>
-                                <input asp-for="Numero" class="form-control" />
+                                <input asp-for="Numero" id="Numero" class="form-control" />
                                 <span asp-validation-for="Numero" class="text-danger small"></span>
                             </div>
                             <div class="col-md-5">
                                 <label asp-for="Cidade" class="form-label fw-semibold"></label>
-                                <input asp-for="Cidade" class="form-control" />
+                                <input asp-for="Cidade" id="Cidade" class="form-control" />
                                 <span asp-validation-for="Cidade" class="text-danger small"></span>
                             </div>
                             <div class="col-md-4">
                                 <label asp-for="Bairro" class="form-label fw-semibold"></label>
-                                <input asp-for="Bairro" class="form-control" />
+                                <input asp-for="Bairro" id="Bairro" class="form-control" />
                                 <span asp-validation-for="Bairro" class="text-danger small"></span>
                             </div>
                             <div class="col-md-3">
                                 <label asp-for="Estado" class="form-label fw-semibold"></label>
-                                <select asp-for="Estado" class="form-select">
+                                <select asp-for="Estado" id="Estado" class="form-select">
                                     <option value="">Selecione...</option>
                                     <option value="AC">Acre</option>
                                     <option value="AL">Alagoas</option>
@@ -157,18 +190,36 @@
 
 @section Scripts {
 
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 
     <script>
+        function previewFoto(input) {
+            const container = document.getElementById('previewContainer');
+            const preview = document.getElementById('fotoPreview');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    container.classList.remove('d-none');
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                container.classList.add('d-none');
+                preview.src = '#';
+            }
+        }
+
         document.getElementById('Cnpj').addEventListener('blur', function () {
             let cnpj = this.value;
-            
+
             if (cnpj.length >= 14) {
                 fetch(`/Restaurante/ConsultarCnpj?cnpj=${cnpj}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.sucesso) {
-
                             document.getElementById('NomeRestaurante').value = data.nomeRestaurante;
                             document.getElementById('Cep').value = data.cep;
                             document.getElementById('Rua').value = data.rua;
@@ -184,6 +235,7 @@
             }
         });
     </script>
+
     <style>
         .text-orange {
             color: #ff6600 !important;
@@ -221,8 +273,4 @@
             border-radius: 12px;
         }
     </style>
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-}
 }

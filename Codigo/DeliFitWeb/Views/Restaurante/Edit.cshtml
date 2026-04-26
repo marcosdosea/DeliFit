@@ -8,7 +8,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h2 class="fw-bold">Editar Cadastro</h2>
-            <p class="text-muted">Atualize as informações do estabelecimento ou altere o status de exibição.</p>
+            <p class="text-muted">Atualize as informações do estabelecimento.</p>
         </div>
         <div class="row mb-4 align-items-center">
             <div class="col-md-6">
@@ -19,7 +19,6 @@
         </div>
     </div>
 
-    @* Mensagens de sucesso/erro *@
     @if (TempData["Success"] != null)
     {
         <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
@@ -35,11 +34,66 @@
         </div>
     }
 
-    <form asp-action="Edit">
+    <form asp-action="Edit" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="alert alert-danger shadow-sm border-0" role="alert"></div>
+
         <input type="hidden" asp-for="Id" />
-        
+        @* Preserva o status de validação ao editar — sem isso o restaurante volta para pendente *@
+        <input type="hidden" asp-for="Validado" />
+
         <div class="row">
+
+            <div class="col-lg-12 mb-4">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0 pt-4 ps-4">
+                        <h5 class="fw-bold mb-0 text-orange"><i class="bi bi-image me-2"></i>Foto do Restaurante</h5>
+                    </div>
+                    <div class="card-body p-4">
+
+                        @if (Model.Foto != null && Model.Foto.Length > 0)
+                        {
+                            <div class="mb-3 text-center">
+                                <p class="small fw-bold text-muted text-uppercase mb-2">Foto Atual</p>
+                                <img src="@Url.Action("Foto", "Restaurante", new { id = Model.Id })"
+                                     alt="Foto do restaurante"
+                                     class="rounded"
+                                     style="max-height: 200px; max-width: 100%; object-fit: contain; border: 2px solid #ff6600;" />
+                            </div>
+                        }
+
+                        <div class="mb-2">
+                            <label asp-for="FotoFile" class="form-label fw-semibold">
+                                @(Model.Foto != null && Model.Foto.Length > 0 ? "Substituir Foto" : "Adicionar Foto")
+                                <span class="fw-normal text-muted small">(opcional &middot; JPEG ou PNG &middot; máx. 2 MB)</span>
+                            </label>
+                            <input asp-for="FotoFile"
+                                   type="file"
+                                   accept="image/jpeg,image/png"
+                                   class="form-control"
+                                   onchange="previewFoto(this)" />
+                            <span asp-validation-for="FotoFile" class="text-danger small"></span>
+
+                            @if (Model.Foto != null && Model.Foto.Length > 0)
+                            {
+                                <small class="text-muted d-block mt-1">
+                                    <i class="bi bi-info-circle me-1"></i>Deixe em branco para manter a foto atual.
+                                </small>
+                            }
+                        </div>
+
+                        <div id="previewContainer" class="d-none text-center mt-3">
+                            <p class="small fw-bold text-muted text-uppercase mb-2">Nova Foto</p>
+                            <img id="fotoPreview"
+                                 src="#"
+                                 alt="Pré-visualização"
+                                 class="rounded"
+                                 style="max-height: 200px; max-width: 100%; object-fit: contain; border: 2px dashed #ff6600;" />
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
             <div class="col-lg-12 mb-4">
                 <div class="card border-0 shadow-sm">
                     <div class="card-header bg-white border-0 pt-4 ps-4">
@@ -139,6 +193,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
 
         <div class="d-flex justify-content-end align-items-center mt-2 mb-5 gap-3">
@@ -154,17 +209,6 @@
     <style>
         .text-orange {
             color: #ff6600 !important;
-        }
-
-        .bg-status-light {
-            background-color: #fcfcfc;
-            border-left: 5px solid #ff6600;
-        }
-
-        /* Custom Orange Switch */
-        .custom-switch-orange .form-check-input:checked {
-            background-color: #ff6600;
-            border-color: #e65c00;
         }
 
         .form-label {
@@ -193,7 +237,27 @@
             border-radius: 12px;
         }
     </style>
+
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        function previewFoto(input) {
+            const container = document.getElementById('previewContainer');
+            const preview = document.getElementById('fotoPreview');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    preview.src = e.target.result;
+                    container.classList.remove('d-none');
+                };
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                container.classList.add('d-none');
+                preview.src = '#';
+            }
+        }
+    </script>
 }
