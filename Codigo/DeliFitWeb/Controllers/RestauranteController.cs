@@ -60,7 +60,6 @@ namespace DeliFitWeb.Controllers
         {
             var listaRestaurantes = _restauranteService.GetRestaurantesAtivos();
             var listaRestaurantesModel = _mapper.Map<List<RestauranteViewModel>>(listaRestaurantes);
-
             return View(listaRestaurantesModel);
         }
 
@@ -69,7 +68,6 @@ namespace DeliFitWeb.Controllers
         {
             var listaRestaurantes = _restauranteService.GetRestaurantesPendentes();
             var listaRestaurantesModel = _mapper.Map<List<RestauranteViewModel>>(listaRestaurantes);
-
             return View(listaRestaurantesModel);
         }
 
@@ -82,9 +80,7 @@ namespace DeliFitWeb.Controllers
                 return RedirectToAction(nameof(Index));
 
             RestauranteViewModel restauranteModel = _mapper.Map<RestauranteViewModel>(restaurante);
-
             ViewBag.CanChangeStatus = false;
-
             return View(restauranteModel);
         }
 
@@ -98,9 +94,7 @@ namespace DeliFitWeb.Controllers
                 return RedirectToAction(nameof(ListarSolicitacoes));
 
             RestauranteViewModel restauranteModel = _mapper.Map<RestauranteViewModel>(restaurante);
-
             ViewBag.CanChangeStatus = true;
-
             return View(restauranteModel);
         }
 
@@ -118,11 +112,33 @@ namespace DeliFitWeb.Controllers
             if (ModelState.IsValid)
             {
                 var restaurante = _mapper.Map<Restaurante>(restauranteModel);
+
+                if (restauranteModel.FotoFile != null && restauranteModel.FotoFile.Length > 0)
+                {
+                    using var ms = new MemoryStream();
+                    restauranteModel.FotoFile.CopyTo(ms);
+                    restaurante.Foto = ms.ToArray();
+                }
+
                 _restauranteService.Create(restaurante);
                 return RedirectToAction(nameof(Index));
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        /// <summary>
+        /// Serve a foto de um restaurante diretamente do banco para uso nas views via img src.
+        /// </summary>
+        [HttpGet]
+        public ActionResult Foto(uint id)
+        {
+            var restaurante = _restauranteService.Get(id);
+
+            if (restaurante?.Foto == null || restaurante.Foto.Length == 0)
+                return NotFound();
+
+            return File(restaurante.Foto, "image/jpeg");
         }
 
         // GET: RestauranteController/Edit/5
@@ -137,7 +153,7 @@ namespace DeliFitWeb.Controllers
             }
             else if (User.IsInRole("GerenteRestaurante"))
             {
-                // Se não foi passado ID, busca da sessão (gerente editando seu próprio restaurante)
+                // Se nï¿½o foi passado ID, busca da sessï¿½o (gerente editando seu prï¿½prio restaurante)
                 var restauranteIdSessao = GetRestauranteIdLogado();
                 if (!restauranteIdSessao.HasValue)
                 {
@@ -154,9 +170,7 @@ namespace DeliFitWeb.Controllers
             Restaurante? restaurante = _restauranteService.Get(restauranteId);
 
             if (restaurante == null)
-            {
                 return NotFound("Restaurante não encontrado.");
-            }
 
             RestauranteViewModel restauranteModel = _mapper.Map<RestauranteViewModel>(restaurante);
             return View(restauranteModel);
@@ -168,7 +182,7 @@ namespace DeliFitWeb.Controllers
         [Authorize(Roles = "Admin,GerenteRestaurante")]
         public ActionResult Edit(RestauranteViewModel restauranteModel)
         {
-            // Se for gerente, verifica se está editando o próprio restaurante
+            // Se for gerente, verifica se estï¿½ editando o prï¿½prio restaurante
             if (User.IsInRole("GerenteRestaurante"))
             {
                 var restauranteIdSessao = GetRestauranteIdLogado();
@@ -184,14 +198,27 @@ namespace DeliFitWeb.Controllers
                 try
                 {
                     var restaurante = _mapper.Map<Restaurante>(restauranteModel);
+
+                    if (restauranteModel.FotoFile != null && restauranteModel.FotoFile.Length > 0)
+                    {
+                        // Nova foto enviada: converte e salva
+                        using var ms = new MemoryStream();
+                        restauranteModel.FotoFile.CopyTo(ms);
+                        restaurante.Foto = ms.ToArray();
+                    }
+                    else
+                    {
+                        // Nenhuma foto nova: preserva a foto já existente no banco
+                        var restauranteExistente = _restauranteService.Get(restauranteModel.Id);
+                        restaurante.Foto = restauranteExistente?.Foto;
+                    }
+
                     _restauranteService.Edit(restaurante);
                     TempData["Success"] = "Perfil atualizado com sucesso!";
 
-                    // Redireciona para página apropriada
                     if (User.IsInRole("GerenteRestaurante"))
-                    {
                         return RedirectToAction("Home", "Restaurante");
-                    }
+
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
@@ -220,22 +247,16 @@ namespace DeliFitWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(uint id, RestauranteViewModel restauranteModel)
         {
-            // Busca o restaurante para obter o email
             var restaurante = _restauranteService.Get(id);
 
             if (restaurante != null && !string.IsNullOrEmpty(restaurante.Email) && _userManager != null)
             {
-                // Remove o usuário do Identity primeiro
                 var user = await _userManager.FindByEmailAsync(restaurante.Email);
                 if (user != null)
-                {
                     await _userManager.DeleteAsync(user);
-                }
             }
 
-            // Remove o restaurante do banco delifit
             _restauranteService.Delete(id);
-
             return RedirectToAction(nameof(Index));
         }
 
@@ -253,15 +274,24 @@ namespace DeliFitWeb.Controllers
             if (ModelState.IsValid)
             {
                 var restaurante = _mapper.Map<Restaurante>(restauranteModel);
-                // Define como não validado (pendente de aprovação)
+
+                // Foto enviada na solicitação: converte e salva
+                if (restauranteModel.FotoFile != null && restauranteModel.FotoFile.Length > 0)
+                {
+                    using var ms = new MemoryStream();
+                    restauranteModel.FotoFile.CopyTo(ms);
+                    restaurante.Foto = ms.ToArray();
+                }
+
+                // Restaurante começa como não validado (aguarda aprovação do admin)
                 restaurante.Validado = false;
+
                 _restauranteService.Create(restaurante);
 
                 TempData["Success"] = "Solicitação enviada com sucesso! Aguarde a aprovação do administrador.";
                 return RedirectToAction("Index", "Home");
             }
 
-            // Se houver erros de validação, retorna para a view com os erros
             return View(restauranteModel);
         }
 
@@ -284,7 +314,6 @@ namespace DeliFitWeb.Controllers
 
                 if (!string.IsNullOrWhiteSpace(email) && _userManager != null && _roleManager != null && _emailSender != null)
                 {
-                    // Verifica se já existe usuário com este email
                     var existingUser = await _userManager.FindByEmailAsync(email);
                     if (existingUser != null)
                     {
@@ -324,7 +353,6 @@ namespace DeliFitWeb.Controllers
                 }
                 else
                 {
-                    // Se não houver email ou serviços configurados, apenas ativa o restaurante
                     restaurante.Validado = true;
                     _restauranteService.Edit(restaurante);
                     TempData["Success"] = "Solicitação aprovada! (Email não configurado)";
@@ -346,20 +374,15 @@ namespace DeliFitWeb.Controllers
         {
             try
             {
-                // Busca o restaurante para obter o email
                 var restaurante = _restauranteService.Get(id);
 
                 if (restaurante != null && !string.IsNullOrEmpty(restaurante.Email) && _userManager != null)
                 {
-                    // Remove o usuário do Identity se existir
                     var user = await _userManager.FindByEmailAsync(restaurante.Email);
                     if (user != null)
-                    {
                         await _userManager.DeleteAsync(user);
-                    }
                 }
 
-                // Remove o restaurante do banco delifit
                 _restauranteService.Delete(id);
                 TempData["Success"] = "Solicitação negada e removida com sucesso.";
             }
@@ -374,15 +397,11 @@ namespace DeliFitWeb.Controllers
         [Authorize(Roles = "GerenteRestaurante")]
         public ActionResult MeuRestaurante()
         {
-            // Tenta buscar o ID do restaurante da sessão
             var restauranteId = GetRestauranteIdLogado();
 
             if (restauranteId.HasValue)
-            {
                 return RedirectToAction(nameof(Details), new { id = restauranteId.Value });
-            }
 
-            // Se não encontrou na sessão nem pelo email
             return NotFound("O restaurante associado a este utilizador não foi encontrado.");
         }
 
@@ -390,9 +409,7 @@ namespace DeliFitWeb.Controllers
         public async Task<IActionResult> ConsultarCnpj(string cnpj)
         {
             if (string.IsNullOrEmpty(cnpj))
-            {
                 return Json(new { sucesso = false, mensagem = "CNPJ inválido." });
-            }
 
             cnpj = new string(cnpj.Where(char.IsDigit).ToArray());
 
@@ -431,23 +448,18 @@ namespace DeliFitWeb.Controllers
             return View();
         }
 
-        // Método auxiliar para obter o ID do restaurante logado
         private uint? GetRestauranteIdLogado()
         {
-            // Tenta buscar da sessão
             var restauranteId = HttpContext.Session.GetRestauranteId();
 
             if (!restauranteId.HasValue)
             {
-                // Se não estiver na sessão, busca pelo email
                 var userEmail = User.Identity?.Name;
                 if (!string.IsNullOrEmpty(userEmail))
                 {
                     var restaurante = _restauranteService.GetByEmail(userEmail);
-
                     if (restaurante != null)
                     {
-                        // Armazena na sessão para próximas requisições
                         HttpContext.Session.SetRestauranteId(restaurante.Id);
                         restauranteId = restaurante.Id;
                     }
