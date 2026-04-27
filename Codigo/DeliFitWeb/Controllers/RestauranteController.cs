@@ -18,18 +18,21 @@ namespace DeliFitWeb.Controllers
     public class RestauranteController : Controller
     {
         private readonly IRestauranteService _restauranteService;
+        private readonly IItemService _itemService;
         private readonly IMapper _mapper;
         private readonly UserManager<UsuarioIdentity>? _userManager;
         private readonly RoleManager<IdentityRole>? _roleManager;
         private readonly IEmailSender? _emailSender;
 
         public RestauranteController(IRestauranteService restauranteService,
+                                     IItemService itemService,
                                      IMapper mapper,
                                      UserManager<UsuarioIdentity> userManager,
                                      RoleManager<IdentityRole> roleManager,
                                      IEmailSender emailSender)
         {
             _restauranteService = restauranteService;
+            _itemService = itemService;
             _mapper = mapper;
             _userManager = userManager;
             _roleManager = roleManager;
@@ -71,7 +74,7 @@ namespace DeliFitWeb.Controllers
             return View(listaRestaurantesModel);
         }
 
-        // GET: RestauranteController/Details/5
+        // GET: RestauranteController/Details/5 (Admin)
         public ActionResult Details(uint id)
         {
             Restaurante? restaurante = _restauranteService.Get(id);
@@ -81,6 +84,26 @@ namespace DeliFitWeb.Controllers
 
             RestauranteViewModel restauranteModel = _mapper.Map<RestauranteViewModel>(restaurante);
             ViewBag.CanChangeStatus = false;
+            return View(restauranteModel);
+        }
+
+        // GET: RestauranteController/VerEstabelecimento/5 (Cliente)
+        // Página pública de um restaurante com seu cardápio
+        [Authorize(Roles = "Cliente")]
+        public ActionResult VerEstabelecimento(uint id)
+        {
+            Restaurante? restaurante = _restauranteService.Get(id);
+
+            if (restaurante == null)
+                return RedirectToAction("HomeCliente", "Cliente");
+
+            var restauranteModel = _mapper.Map<RestauranteViewModel>(restaurante);
+
+            // Carrega os itens do cardápio deste restaurante
+            var itens = _itemService.GetByRestaurante(id);
+            var itensModel = _mapper.Map<List<ItemViewModel>>(itens);
+
+            ViewBag.Itens = itensModel;
             return View(restauranteModel);
         }
 
@@ -208,7 +231,7 @@ namespace DeliFitWeb.Controllers
                     }
                     else
                     {
-                        // Nenhuma foto nova: preserva a foto já existente no banco
+                        // Nenhuma foto nova: preserva a foto jï¿½ existente no banco
                         var restauranteExistente = _restauranteService.Get(restauranteModel.Id);
                         restaurante.Foto = restauranteExistente?.Foto;
                     }
@@ -275,7 +298,7 @@ namespace DeliFitWeb.Controllers
             {
                 var restaurante = _mapper.Map<Restaurante>(restauranteModel);
 
-                // Foto enviada na solicitação: converte e salva
+                // Foto enviada na solicitaï¿½ï¿½o: converte e salva
                 if (restauranteModel.FotoFile != null && restauranteModel.FotoFile.Length > 0)
                 {
                     using var ms = new MemoryStream();
@@ -283,7 +306,7 @@ namespace DeliFitWeb.Controllers
                     restaurante.Foto = ms.ToArray();
                 }
 
-                // Restaurante começa como não validado (aguarda aprovação do admin)
+                // Restaurante comeï¿½a como nï¿½o validado (aguarda aprovaï¿½ï¿½o do admin)
                 restaurante.Validado = false;
 
                 _restauranteService.Create(restaurante);
