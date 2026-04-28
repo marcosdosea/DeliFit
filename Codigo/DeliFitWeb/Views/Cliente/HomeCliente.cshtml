@@ -7,430 +7,463 @@
 <style>
     body {
         background-color: #f8f9fa;
-        padding-bottom: 80px;
+        padding-bottom: 90px;
     }
 
-    .search-container {
-        background-color: white;
-        padding: 15px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    /* ── Header ── */
+    .top-header {
+        background: white;
+        padding: 14px 16px 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-bottom: 1px solid #f0f0f0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
 
     .search-box {
+        flex: 1;
         position: relative;
-        width: 100%;
     }
 
-    .search-box input {
-        width: 100%;
-        padding: 12px 45px 12px 45px;
-        border: 1px solid #dee2e6;
-        border-radius: 25px;
-        font-size: 0.95rem;
-        background-color: #f8f9fa;
-    }
+        .search-box input {
+            width: 100%;
+            padding: 11px 16px 11px 42px;
+            border: 1.5px solid #e8e8e8;
+            border-radius: 50px;
+            font-size: 0.92rem;
+            background: #f8f9fa;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
 
-    .search-box .search-icon {
-        position: absolute;
-        left: 15px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #6c757d;
-    }
+            .search-box input:focus {
+                border-color: #ff6600;
+                box-shadow: 0 0 0 3px rgba(255,102,0,0.1);
+                background: white;
+            }
 
-    .cart-icon {
-        position: fixed;
-        top: 15px;
-        right: 15px;
-        background-color: #ff6600;
+        .search-box .si {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #aaa;
+            font-size: 0.95rem;
+        }
+
+    .cart-btn {
+        background: #ff6600;
         color: white;
-        width: 50px;
-        height: 50px;
+        width: 44px;
+        height: 44px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 4px 8px rgba(255, 102, 0, 0.3);
-        z-index: 1000;
         text-decoration: none;
-        font-size: 1.5rem;
+        font-size: 1.15rem;
+        flex-shrink: 0;
+        box-shadow: 0 3px 10px rgba(255,102,0,0.35);
+        transition: transform 0.15s, box-shadow 0.15s;
     }
 
-    .cart-icon:hover {
-        background-color: #e65c00;
+        .cart-btn:hover {
+            transform: scale(1.05);
+            color: white;
+        }
+
+    /* ── Greeting ── */
+    .greeting-bar {
+        padding: 14px 16px 0;
+    }
+
+        .greeting-bar h5 {
+            font-weight: 700;
+            color: #1a1a1a;
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .greeting-bar p {
+            color: #888;
+            font-size: 0.82rem;
+            margin: 2px 0 0;
+        }
+
+    /* ── Banner ── */
+    .hero-banner {
+        margin: 14px 16px;
+        background: linear-gradient(135deg, #ff6600 0%, #ff9933 100%);
+        border-radius: 18px;
+        padding: 22px 20px;
         color: white;
-    }
-
-    .banner {
-        background: linear-gradient(135deg, #ff6600 0%, #ff8533 100%);
-        color: white;
-        padding: 30px 20px;
-        margin: 20px 0;
-        border-radius: 15px;
-        text-align: center;
-        box-shadow: 0 4px 10px rgba(255, 102, 0, 0.2);
-    }
-
-    .banner h2 {
-        font-size: 1.8rem;
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
-
-    .banner p {
-        font-size: 1rem;
-        margin: 0;
-    }
-
-    .section-title {
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: #212529;
-        margin: 25px 0 15px 0;
-    }
-
-    .categories {
-        display: flex;
-        gap: 15px;
-        overflow-x: auto;
-        padding: 10px 0;
-        margin-bottom: 20px;
-    }
-
-    .category-item {
-        text-align: center;
-        min-width: 90px;
-        text-decoration: none;
-        color: #212529;
-    }
-
-    .category-icon {
-        width: 70px;
-        height: 70px;
-        border-radius: 50%;
-        background-color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        transition: all 0.3s;
-    }
-
-    .category-icon i {
-        font-size: 2rem;
-        color: #ff6600;
-    }
-
-    .category-item:hover .category-icon {
-        transform: scale(1.1);
-        box-shadow: 0 4px 12px rgba(255, 102, 0, 0.3);
-    }
-
-    .category-name {
-        font-size: 0.85rem;
-        font-weight: 500;
-    }
-
-    .restaurant-card {
-        background: white;
-        border-radius: 15px;
+        position: relative;
         overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        margin-bottom: 20px;
-        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+        .hero-banner h2 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin: 0 0 4px;
+        }
+
+        .hero-banner p {
+            font-size: 0.85rem;
+            margin: 0;
+            opacity: 0.9;
+        }
+
+    /* ── Section title ── */
+    .section-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 20px 16px 12px;
+    }
+
+    /* ── Categories ── */
+    .categories-scroll {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding: 0 16px 4px;
+        scrollbar-width: none;
+    }
+
+        .categories-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+    .cat-chip {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+        cursor: pointer;
+        text-decoration: none;
+        color: #444;
+        transition: transform 0.2s;
+    }
+
+        .cat-chip:hover {
+            transform: translateY(-2px);
+        }
+
+    .cat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+        transition: box-shadow 0.2s, background 0.2s;
+    }
+
+    .cat-chip.active .cat-icon,
+    .cat-chip:hover .cat-icon {
+        background: #fff3e6;
+        box-shadow: 0 4px 16px rgba(255,102,0,0.25);
+    }
+
+    .cat-chip span {
+        font-size: 0.75rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    /* ── Restaurant Cards ── */
+    #restaurantList, #filteredList {
+        padding: 0 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+    }
+
+    .rest-card {
+        background: white;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 3px 14px rgba(0,0,0,0.08);
         text-decoration: none;
         color: inherit;
         display: block;
+        transition: transform 0.2s, box-shadow 0.2s;
     }
 
-    .restaurant-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-        text-decoration: none;
-        color: inherit;
-    }
+        .rest-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.13);
+            color: inherit;
+            text-decoration: none;
+        }
 
-    .restaurant-image {
+    .rest-img {
         width: 100%;
-        height: 180px;
-        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        height: 170px;
+        background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
         display: flex;
         align-items: center;
         justify-content: center;
         position: relative;
+        overflow: hidden;
     }
 
-    .restaurant-image i {
-        font-size: 4rem;
-        color: #dee2e6;
-    }
+        .rest-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-    .restaurant-badge {
+        .rest-img .fallback-icon {
+            font-size: 3.5rem;
+            color: #ccc;
+        }
+
+    .rest-badge {
         position: absolute;
         top: 10px;
         right: 10px;
-        background-color: #28a745;
-        color: white;
-        padding: 5px 12px;
+        padding: 4px 12px;
         border-radius: 20px;
-        font-size: 0.75rem;
-        font-weight: bold;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
     }
 
-    .restaurant-info {
-        padding: 15px;
+        .rest-badge.open {
+            background: #22c55e;
+            color: white;
+        }
+
+        .rest-badge.close {
+            background: #ef4444;
+            color: white;
+        }
+
+    .rest-info {
+        padding: 14px 16px 16px;
     }
 
-    .restaurant-name {
-        font-size: 1.2rem;
-        font-weight: bold;
-        margin-bottom: 5px;
-        color: #212529;
+    .rest-name {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0 0 4px;
     }
 
-    .restaurant-description {
-        font-size: 0.9rem;
-        color: #6c757d;
-        margin-bottom: 10px;
+    .rest-desc {
+        font-size: 0.82rem;
+        color: #888;
+        margin: 0 0 10px;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
 
-    .restaurant-meta {
+    .rest-meta {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        font-size: 0.85rem;
+        font-size: 0.82rem;
     }
 
-    .rating {
-        color: #ffc107;
-    }
-
-    .delivery-info {
-        color: #6c757d;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 60px 20px;
-        color: #6c757d;
-    }
-
-    .empty-state i {
-        font-size: 4rem;
-        margin-bottom: 20px;
-        color: #dee2e6;
-    }
-
-    .welcome-message {
-        background-color: white;
-        padding: 15px;
-        margin: 15px 0;
-        border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-
-    .welcome-message h5 {
-        margin: 0;
-        color: #212529;
+    .rest-rating {
+        color: #ff6600;
         font-weight: 600;
     }
+
+    .rest-location {
+        color: #aaa;
+    }
+
+    /* ── Empty ── */
+    .empty-state {
+        text-align: center;
+        padding: 50px 20px;
+        color: #aaa;
+    }
+
+        .empty-state i {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 12px;
+        }
 </style>
 
-<div class="container-fluid px-0">
-    <a asp-controller="Carrinho" asp-action="Index" class="cart-icon">
+<div class="top-header">
+    <div class="search-box">
+        <i class="bi bi-search si"></i>
+        <input type="text" id="searchInput" placeholder="Buscar restaurantes..." />
+    </div>
+    <a asp-controller="Carrinho" asp-action="Index" class="cart-btn">
         <i class="bi bi-cart3"></i>
     </a>
-
-    <div class="search-container">
-        <div class="search-box">
-            <i class="bi bi-search search-icon"></i>
-            <input type="text" id="searchInput" placeholder="Buscar restaurantes..." />
-        </div>
-    </div>
-
-    <div class="container">
-        @if (ViewBag.NomeCliente != null)
-        {
-            <div class="welcome-message">
-                <h5><i class="bi bi-person-circle me-2"></i>Olá, @ViewBag.NomeCliente! 👋</h5>
-            </div>
-        }
-
-        <div class="banner">
-            <h2><i class="bi bi-fire"></i> DeliFit</h2>
-            <p>Comidas com Macros - Sabor e Saúde na Sua Porta</p>
-        </div>
-
-        <h3 class="section-title">Categorias</h3>
-        <div class="categories">
-            <a href="#" class="category-item" data-category="Pratos">
-                <div class="category-icon">
-                    <i class="bi bi-egg-fried"></i>
-                </div>
-                <div class="category-name">Pratos</div>
-            </a>
-
-            <a href="#" class="category-item" data-category="Proteínas">
-                <div class="category-icon">
-                    <i class="bi bi-apple"></i>
-                </div>
-                <div class="category-name">Proteínas</div>
-            </a>
-
-            <a href="#" class="category-item" data-category="Saladas">
-                <div class="category-icon">
-                    <i class="bi bi-flower3"></i>
-                </div>
-                <div class="category-name">Saladas</div>
-            </a>
-
-            <a href="#" class="category-item" data-category="Bebidas">
-                <div class="category-icon">
-                    <i class="bi bi-cup-straw"></i>
-                </div>
-                <div class="category-name">Bebidas</div>
-            </a>
-
-            <a href="#" class="category-item" data-category="Sobremesas">
-                <div class="category-icon">
-                    <i class="bi bi-cake2"></i>
-                </div>
-                <div class="category-name">Sobremesas</div>
-            </a>
-
-            <a href="#" class="category-item" data-category="Lanches">
-                <div class="category-icon">
-                    <i class="bi bi-basket"></i>
-                </div>
-                <div class="category-name">Lanches</div>
-            </a>
-        </div>
-
-        <h3 class="section-title">Restaurantes Disponíveis</h3>
-        <div id="restaurantList">
-            @if (Model == null || !Model.Any())
-            {
-                <div class="empty-state">
-                    <i class="bi bi-shop"></i>
-                    <p>Nenhum restaurante disponível no momento</p>
-                </div>
-            }
-            else
-            {
-                foreach (var restaurante in Model)
-                {
-                    <a asp-controller="Restaurante" asp-action="Details" asp-route-id="@restaurante.Id" class="restaurant-card">
-                        <div class="restaurant-image">
-                            <i class="bi bi-shop"></i>
-                            @if (restaurante.Validado)
-                            {
-                                <span class="restaurant-badge">ABERTO</span>
-                            }
-                            else
-                            {
-                                <span class="restaurant-badge" style="background-color: #dc3545;">FECHADO</span>
-                            }
-                        </div>
-                        <div class="restaurant-info">
-                            <div class="restaurant-name">@restaurante.NomeRestaurante</div>
-                            <div class="restaurant-description">@(restaurante.Descricao ?? "Restaurante especializado em comida saudável")</div>
-                            <div class="restaurant-meta">
-                                <span class="rating">
-                                    <i class="bi bi-star-fill"></i> 4.5
-                                </span>
-                                <span class="delivery-info">
-                                    <i class="bi bi-telephone"></i> @restaurante.TelefoneRestaurante
-                                </span>
-                            </div>
-                        </div>
-                    </a>
-                }
-            }
-        </div>
-
-        <div id="filteredList" style="display: none;"></div>
-    </div>
 </div>
+
+<div class="greeting-bar">
+    @if (ViewBag.NomeCliente != null)
+    {
+        <h5>Olá, @ViewBag.NomeCliente! 👋</h5>
+        <p>O que você vai pedir hoje?</p>
+    }
+    else
+    {
+        <h5>Olá! 👋</h5>
+        <p>O que você vai pedir hoje?</p>
+    }
+</div>
+
+<div class="hero-banner">
+    <h2>DeliFit</h2>
+    <p>Alimentação saudável com controle de macros e calorias</p>
+</div>
+
+<p class="section-title">Categorias</p>
+<div class="categories-scroll">
+    <a href="#" class="cat-chip active" data-category="">
+        <div class="cat-icon"><i class="bi bi-grid-3x3-gap" style="color:#ff6600;"></i></div>
+        <span>Ver tudo</span>
+    </a>
+    <a href="#" class="cat-chip" data-category="Vegetariano">
+        <div class="cat-icon"><i class="bi bi-flower3" style="color:#22c55e;"></i></div>
+        <span>Vegetariano</span>
+    </a>
+    <a href="#" class="cat-chip" data-category="Vegano">
+        <div class="cat-icon"><i class="bi bi-apple" style="color:#16a34a;"></i></div>
+        <span>Vegano</span>
+    </a>
+    <a href="#" class="cat-chip" data-category="Sem Glúten">
+        <div class="cat-icon"><i class="bi bi-egg-fried" style="color:#f59e0b;"></i></div>
+        <span>Sem Glúten</span>
+    </a>
+    <a href="#" class="cat-chip" data-category="Sem Lactose">
+        <div class="cat-icon"><i class="bi bi-cup-straw" style="color:#3b82f6;"></i></div>
+        <span>Sem Lactose</span>
+    </a>
+    <a href="#" class="cat-chip" data-category="">
+        <div class="cat-icon"><i class="bi bi-basket" style="color:#ff6600;"></i></div>
+        <span>Lanches</span>
+    </a>
+</div>
+
+<p class="section-title">Restaurantes Disponíveis</p>
+
+<div id="restaurantList">
+    @if (Model == null || !Model.Any())
+    {
+        <div class="empty-state">
+            <i class="bi bi-shop"></i>
+            <p>Nenhum restaurante disponível no momento</p>
+        </div>
+    }
+    else
+    {
+        foreach (var r in Model)
+        {
+            <a asp-controller="Restaurante" asp-action="VerEstabelecimento" asp-route-id="@r.Id" class="rest-card">
+                <div class="rest-img">
+                    <img src="@Url.Action("Foto", "Restaurante", new { id = r.Id })"
+                         alt="@r.NomeRestaurante"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                    <div class="fallback-icon" style="display:none; width:100%; height:100%; align-items:center; justify-content:center;">
+                        <i class="bi bi-shop"></i>
+                    </div>
+                    <span class="rest-badge @(r.Validado ? "open" : "close")">
+                        @(r.Validado ? "ABERTO" : "FECHADO")
+                    </span>
+                </div>
+                <div class="rest-info">
+                    <p class="rest-name">@r.NomeRestaurante</p>
+                    <p class="rest-desc">@(r.Descricao ?? "Restaurante especializado em comida saudável")</p>
+                    <div class="rest-meta">
+                        <span class="rest-rating"><i class="bi bi-star-fill me-1"></i>4.5</span>
+                        <span class="rest-location"><i class="bi bi-geo-alt me-1"></i>@r.Cidade</span>
+                    </div>
+                </div>
+            </a>
+        }
+    }
+</div>
+
+<div id="filteredList" style="display:none;"></div>
 
 @section Scripts {
     <script>
         const restaurantes = @Html.Raw(Json.Serialize(
-            (Model ?? Enumerable.Empty<DeliFitWeb.Models.RestauranteViewModel>())
-            .Select(r => new {
-                id = r.Id,
-                nome = r.NomeRestaurante,
-                descricao = r.Descricao ?? "Restaurante especializado em comida saudável",
-                telefone = r.TelefoneRestaurante,
-                validado = r.Validado
-            }).ToList()
-        ));
+                    (Model ?? Enumerable.Empty<DeliFitWeb.Models.RestauranteViewModel>())
+                    .Select(r => new
+                    {
+                            id = r.Id,
+                            nome = r.NomeRestaurante,
+                            descricao = r.Descricao ?? "Restaurante especializado em comida saudável",
+                            cidade = r.Cidade,
+                            validado = r.Validado
+                    }).ToList()
+            ));
 
-        const restaurantListOriginal = document.getElementById('restaurantList');
-        const filteredList = document.getElementById('filteredList');
-        const searchInput = document.getElementById('searchInput');
+        const listOriginal = document.getElementById('restaurantList');
+        const listFiltered = document.getElementById('filteredList');
+        const search = document.getElementById('searchInput');
 
-        searchInput.addEventListener('input', function (e) {
-            const filtro = e.target.value.toLowerCase().trim();
-
-            if (filtro === '') {
-                restaurantListOriginal.style.display = 'block';
-                filteredList.style.display = 'none';
-                filteredList.innerHTML = '';
-                return;
-            }
-
-            const restaurantesFiltrados = restaurantes.filter(r =>
-                r.nome.toLowerCase().includes(filtro) ||
-                (r.descricao && r.descricao.toLowerCase().includes(filtro))
-            );
-
-            if (restaurantesFiltrados.length === 0) {
-                restaurantListOriginal.style.display = 'none';
-                filteredList.style.display = 'block';
-                filteredList.innerHTML = `
-                    <div class="empty-state">
-                        <i class="bi bi-search"></i>
-                        <p>Nenhum restaurante encontrado para "${e.target.value}"</p>
-                    </div>
-                `;
-                return;
-            }
-
-            restaurantListOriginal.style.display = 'none';
-            filteredList.style.display = 'block';
-            filteredList.innerHTML = restaurantesFiltrados.map(r => `
-                <a href="/Restaurante/Details/${r.id}" class="restaurant-card">
-                    <div class="restaurant-image">
+        function buildCard(r) {
+            const badge = r.validado
+                ? `<span class="rest-badge open">ABERTO</span>`
+                : `<span class="rest-badge close">FECHADO</span>`;
+            return `
+            <a href="/Restaurante/VerEstabelecimento/${r.id}" class="rest-card">
+                <div class="rest-img">
+                    <img src="/Restaurante/Foto/${r.id}" alt="${r.nome}"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                    <div class="fallback-icon" style="display:none; width:100%; height:100%; align-items:center; justify-content:center;">
                         <i class="bi bi-shop"></i>
-                        ${r.validado ? '<span class="restaurant-badge">ABERTO</span>' : '<span class="restaurant-badge" style="background-color: #dc3545;">FECHADO</span>'}
                     </div>
-                    <div class="restaurant-info">
-                        <div class="restaurant-name">${r.nome}</div>
-                        <div class="restaurant-description">${r.descricao}</div>
-                        <div class="restaurant-meta">
-                            <span class="rating">
-                                <i class="bi bi-star-fill"></i> 4.5
-                            </span>
-                            <span class="delivery-info">
-                                <i class="bi bi-telephone"></i> ${r.telefone}
-                            </span>
-                        </div>
+                    ${badge}
+                </div>
+                <div class="rest-info">
+                    <p class="rest-name">${r.nome}</p>
+                    <p class="rest-desc">${r.descricao}</p>
+                    <div class="rest-meta">
+                        <span class="rest-rating"><i class="bi bi-star-fill me-1"></i>4.5</span>
+                        <span class="rest-location"><i class="bi bi-geo-alt me-1"></i>${r.cidade || ''}</span>
                     </div>
-                </a>
-            `).join('');
+                </div>
+            </a>`;
+        }
+
+        search.addEventListener('input', function () {
+            const q = this.value.toLowerCase().trim();
+            if (!q) {
+                listOriginal.style.display = 'flex';
+                listFiltered.style.display = 'none';
+                listFiltered.innerHTML = '';
+                return;
+            }
+            const found = restaurantes.filter(r =>
+                r.nome.toLowerCase().includes(q) ||
+                (r.descricao && r.descricao.toLowerCase().includes(q))
+            );
+            listOriginal.style.display = 'none';
+            listFiltered.style.display = 'flex';
+            listFiltered.innerHTML = found.length
+                ? found.map(buildCard).join('')
+                : `<div class="empty-state"><i class="bi bi-search"></i><p>Nenhum resultado para "${this.value}"</p></div>`;
         });
 
-        document.querySelectorAll('.category-item').forEach(item => {
-            item.addEventListener('click', function (e) {
+        // Category chips (visual toggle only for now)
+        document.querySelectorAll('.cat-chip').forEach(chip => {
+            chip.addEventListener('click', function(e) {
                 e.preventDefault();
-                const categoria = this.dataset.category;
-                console.log('Categoria selecionada:', categoria);
-                alert(`Filtro por categoria "${categoria}" será implementado em breve!`);
+                document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
             });
         });
     </script>

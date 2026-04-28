@@ -1,0 +1,552 @@
+﻿@model DeliFitWeb.Models.RestauranteViewModel
+
+@{
+    ViewData["Title"] = Model.NomeRestaurante;
+    var itens = ViewBag.Itens as List<DeliFitWeb.Models.ItemViewModel> ?? new List<DeliFitWeb.Models.ItemViewModel>();
+    var categorias = itens
+        .GroupBy(i => string.IsNullOrEmpty(i.Restricao) ? "Pratos" : i.Restricao)
+        .OrderBy(g => g.Key)
+        .ToList();
+}
+
+<style>
+    body {
+        background: #f8f9fa;
+        padding-bottom: 90px;
+    }
+
+    /* ── Top bar ── */
+    .top-bar {
+        background: white;
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 200;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+
+    .back-btn {
+        width: 38px;
+        height: 38px;
+        background: #f4f4f4;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #333;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+
+        .back-btn:hover {
+            background: #ffe8d6;
+            color: #ff6600;
+        }
+
+    .cart-btn {
+        width: 38px;
+        height: 38px;
+        background: #ff6600;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1rem;
+        text-decoration: none;
+        box-shadow: 0 3px 10px rgba(255,102,0,0.35);
+    }
+
+        .cart-btn:hover {
+            color: white;
+        }
+
+    /* ── Hero ── */
+    .hero {
+        width: 100%;
+        height: 220px;
+        background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .hero-fallback {
+        font-size: 5rem;
+        color: #ccc;
+        position: absolute;
+    }
+
+    /* ── Info card ── */
+    .info-card {
+        background: white;
+        margin: -24px 16px 16px;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 6px 24px rgba(0,0,0,0.1);
+        position: relative;
+        z-index: 10;
+    }
+
+    .rest-name {
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin: 0 0 6px;
+    }
+
+    .rest-meta-row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        font-size: 0.82rem;
+        color: #666;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+    }
+
+        .rest-meta-row .dot {
+            color: #ddd;
+        }
+
+    .rating-badge {
+        background: #fff3e6;
+        color: #ff6600;
+        font-weight: 700;
+        border-radius: 20px;
+        padding: 3px 10px;
+        font-size: 0.8rem;
+    }
+
+    .status-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .status-pill {
+        padding: 4px 14px;
+        border-radius: 20px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+    }
+
+        .status-pill.open {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .status-pill.close {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+    .frete-pill {
+        background: #eff6ff;
+        color: #2563eb;
+        padding: 4px 14px;
+        border-radius: 20px;
+        font-size: 0.78rem;
+        font-weight: 600;
+    }
+
+    .delivery-info {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #888;
+        font-size: 0.8rem;
+    }
+
+    /* ── Category tabs ── */
+    .cat-tabs {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 0 16px 8px;
+        scrollbar-width: none;
+        position: sticky;
+        top: 66px;
+        z-index: 100;
+        background: #f8f9fa;
+        padding-top: 6px;
+    }
+
+        .cat-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+    .cat-tab {
+        flex-shrink: 0;
+        padding: 7px 18px;
+        border-radius: 50px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        cursor: pointer;
+        background: white;
+        color: #555;
+        border: 1.5px solid #e8e8e8;
+        text-decoration: none;
+        transition: all 0.2s;
+        white-space: nowrap;
+    }
+
+        .cat-tab.active, .cat-tab:hover {
+            background: #ff6600;
+            color: white;
+            border-color: #ff6600;
+            text-decoration: none;
+        }
+
+    /* ── Section header ── */
+    .section-header {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        padding: 16px 16px 8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+        .section-header::after {
+            content: '';
+            flex: 1;
+            height: 1.5px;
+            background: #f0f0f0;
+            border-radius: 2px;
+        }
+
+    /* ── Item Cards ── */
+    .items-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 0 16px;
+        margin-bottom: 8px;
+    }
+
+    .item-card {
+        background: white;
+        border-radius: 16px;
+        display: flex;
+        gap: 0;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+        transition: transform 0.2s, box-shadow 0.2s;
+        cursor: pointer;
+    }
+
+        .item-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+
+    .item-img {
+        width: 110px;
+        min-width: 110px;
+        height: 110px;
+        background: #f4f4f4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+
+        .item-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-img .no-img {
+            font-size: 2rem;
+            color: #ddd;
+        }
+
+    .item-body {
+        flex: 1;
+        padding: 12px 14px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-width: 0;
+    }
+
+    .item-name {
+        font-size: 0.92rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0 0 3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .item-desc {
+        font-size: 0.75rem;
+        color: #999;
+        margin: 0 0 8px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        line-height: 1.4;
+    }
+
+    .macros-row {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+        margin-bottom: 8px;
+    }
+
+    .macro-chip {
+        background: #f8f9fa;
+        border: 1px solid #e8e8e8;
+        border-radius: 6px;
+        padding: 2px 7px;
+        font-size: 0.68rem;
+        font-weight: 600;
+        color: #555;
+        white-space: nowrap;
+    }
+
+        .macro-chip.cal {
+            border-color: #fde68a;
+            background: #fefce8;
+            color: #92400e;
+        }
+
+        .macro-chip.prot {
+            border-color: #bbf7d0;
+            background: #f0fdf4;
+            color: #166534;
+        }
+
+        .macro-chip.carb {
+            border-color: #bfdbfe;
+            background: #eff6ff;
+            color: #1e40af;
+        }
+
+        .macro-chip.fat {
+            border-color: #fecaca;
+            background: #fff1f2;
+            color: #9f1239;
+        }
+
+    .item-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .item-price {
+        font-size: 1rem;
+        font-weight: 800;
+        color: #ff6600;
+    }
+
+    .item-restricao {
+        font-size: 0.7rem;
+        background: #f0fdf4;
+        color: #16a34a;
+        border: 1px solid #bbf7d0;
+        border-radius: 8px;
+        padding: 2px 8px;
+        font-weight: 600;
+    }
+
+    /* ── Empty ── */
+    .empty-menu {
+        text-align: center;
+        padding: 40px 20px;
+        color: #bbb;
+    }
+
+        .empty-menu i {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+</style>
+
+<div class="top-bar">
+    <a href="javascript:history.back()" class="back-btn">
+        <i class="bi bi-chevron-left"></i>
+    </a>
+    <strong style="font-size:0.95rem; color:#1a1a1a; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:60%;">
+        @Model.NomeRestaurante
+    </strong>
+    <a asp-controller="Carrinho" asp-action="Index" class="cart-btn">
+        <i class="bi bi-cart3"></i>
+    </a>
+</div>
+
+<div class="hero">
+    <img src="@Url.Action("Foto", "Restaurante", new { id = Model.Id })"
+         alt="@Model.NomeRestaurante"
+         onerror="this.style.display='none'; document.getElementById('heroFallback').style.display='flex';" />
+    <div id="heroFallback" class="hero-fallback" style="display:none; width:100%; height:100%; background:#f0f0f0; align-items:center; justify-content:center;">
+        <i class="bi bi-shop"></i>
+    </div>
+</div>
+
+<div class="info-card">
+    <p class="rest-name">@Model.NomeRestaurante</p>
+
+    <div class="rest-meta-row">
+        <span class="rating-badge"><i class="bi bi-star-fill me-1"></i>4.5</span>
+        <span class="dot">•</span>
+        <span><i class="bi bi-clock me-1"></i>30–45 min</span>
+        <span class="dot">•</span>
+        <span><i class="bi bi-geo-alt me-1"></i>@Model.Cidade</span>
+    </div>
+
+    <div class="status-row">
+        @if (Model.Validado)
+        {
+            <span class="status-pill open"><i class="bi bi-check-circle-fill me-1"></i>Loja Aberta</span>
+        }
+        else
+        {
+            <span class="status-pill close"><i class="bi bi-x-circle-fill me-1"></i>Loja Fechada</span>
+        }
+        <span class="frete-pill"><i class="bi bi-truck me-1"></i>Entrega disponível</span>
+    </div>
+
+    @if (!string.IsNullOrEmpty(Model.Descricao))
+    {
+        <p style="font-size:0.83rem; color:#888; margin: 10px 0 0;">@Model.Descricao</p>
+    }
+</div>
+
+@if (!itens.Any())
+{
+    <div class="empty-menu">
+        <i class="bi bi-journal-x"></i>
+        <p>Este restaurante ainda não cadastrou itens no cardápio.</p>
+    </div>
+}
+else
+{
+    <!-- Category tabs -->
+    <div class="cat-tabs" id="catTabs">
+        <a href="#" class="cat-tab active" data-target="all">Ver tudo</a>
+        @foreach (var cat in categorias)
+        {
+            <a href="#cat-@cat.Key.Replace(" ", "-")" class="cat-tab" data-target="cat-@cat.Key.Replace(" ", "-")">
+                @cat.Key
+            </a>
+        }
+    </div>
+
+    <!-- Items by category -->
+    @foreach (var cat in categorias)
+    {
+        var sectionId = "cat-" + cat.Key.Replace(" ", "-");
+        <div class="cat-section" id="@sectionId">
+            <div class="section-header">@cat.Key</div>
+            <div class="items-grid">
+                @foreach (var item in cat)
+                {
+                    <div class="item-card">
+                        <div class="item-img">
+                            <img src="@Url.Action("Foto", "Item", new { id = item.Id })"
+                                 alt="@item.Nome"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+                            <div class="no-img" style="display:none; width:100%; height:100%; align-items:center; justify-content:center;">
+                                <i class="bi bi-egg-fried"></i>
+                            </div>
+                        </div>
+                        <div class="item-body">
+                            <div>
+                                <p class="item-name">@item.Nome</p>
+                                @if (!string.IsNullOrEmpty(item.Descricao))
+                                {
+                                    <p class="item-desc">@item.Descricao</p>
+                                }
+                                <div class="macros-row">
+                                    <span class="macro-chip cal">@item.Calorias.ToString("0") kcal</span>
+                                    @if (item.Proteina.HasValue)
+                                    {
+                                        <span class="macro-chip prot">@item.Proteina.Value.ToString("0")g Prot</span>
+                                    }
+                                    @if (item.Carboidratos.HasValue)
+                                    {
+                                        <span class="macro-chip carb">@item.Carboidratos.Value.ToString("0")g Carb</span>
+                                    }
+                                    @if (item.Gordura.HasValue)
+                                    {
+                                        <span class="macro-chip fat">@item.Gordura.Value.ToString("0")g Gord</span>
+                                    }
+                                </div>
+                            </div>
+                            <div class="item-footer">
+                                <span class="item-price">R$ @item.Preco.ToString("N2")</span>
+                                @if (!string.IsNullOrEmpty(item.Restricao))
+                                {
+                                    <span class="item-restricao">@item.Restricao</span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+}
+
+@section Scripts {
+    <script>
+        // Category tab smooth scroll + active state
+        document.querySelectorAll('.cat-tab').forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                const target = this.getAttribute('data-target');
+                if (target === 'all') {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    e.preventDefault();
+                }
+                // otherwise let href="#..." scroll
+            });
+        });
+
+        // Highlight tab on scroll
+        const sections = document.querySelectorAll('.cat-section');
+        const tabs = document.querySelectorAll('.cat-tab[data-target]');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const top = section.getBoundingClientRect().top;
+                if (top < 150) current = section.id;
+            });
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.getAttribute('data-target') === current) {
+                    tab.classList.add('active');
+                }
+            });
+            if (!current) tabs[0]?.classList.add('active');
+        });
+    </script>
+}
