@@ -1,4 +1,4 @@
-using AutoMapper;
+ï»¿using AutoMapper;
 using Core.Service;
 using Microsoft.AspNetCore.Mvc;
 using DeliFitWeb.Models;
@@ -17,13 +17,19 @@ namespace DeliFitWeb.Controllers
         private readonly IMapper _mapper;
         private readonly UserManager<UsuarioIdentity> _userManager;
         private readonly IRestauranteService _restauranteService;
+        private readonly IItemService _itemService;
 
-        public ClienteController(IClienteService clienteService, IMapper mapper, UserManager<UsuarioIdentity> userManager, IRestauranteService restauranteService)
+        public ClienteController(IClienteService clienteService,
+                                 IMapper mapper,
+                                 UserManager<UsuarioIdentity> userManager,
+                                 IRestauranteService restauranteService,
+                                 IItemService itemService)
         {
             _clienteService = clienteService;
             _mapper = mapper;
             _userManager = userManager;
             _restauranteService = restauranteService;
+            _itemService = itemService;
         }
 
         // GET: ClienteController
@@ -35,10 +41,10 @@ namespace DeliFitWeb.Controllers
         }
 
         // GET: ClienteController/Perfil
-        // Redireciona o cliente logado para o seu próprio Details
+        // Redireciona o cliente logado para o seu prÃ³prio Details
         public async Task<ActionResult> Perfil()
         {
-            // Tenta buscar o ID do cliente da sessão primeiro
+            // Tenta buscar o ID do cliente da sessÃ£o primeiro
             var clienteId = HttpContext.Session.GetClienteId();
 
             if (clienteId.HasValue)
@@ -46,14 +52,12 @@ namespace DeliFitWeb.Controllers
                 return RedirectToAction(nameof(Details), new { id = clienteId.Value });
             }
 
-            // Se não estiver na sessão, busca pelo email e armazena
             var userEmail = _userManager.GetUserName(User);
             var cliente = _clienteService.GetByEmail(userEmail);
 
             if (cliente == null)
-                return NotFound("Perfil de cliente não encontrado para o usuário logado.");
+                return NotFound("Perfil de cliente nÃ£o encontrado para o usuÃ¡rio logado.");
 
-            // Armazena na sessão para próximas requisições
             HttpContext.Session.SetClienteId(cliente.Id);
 
             return RedirectToAction(nameof(Details), new { id = cliente.Id });
@@ -80,21 +84,19 @@ namespace DeliFitWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Validação e normalização do telefone
                 if (clienteModel == null || string.IsNullOrWhiteSpace(clienteModel.Telefone))
                 {
-                    ModelState.AddModelError("Telefone", "Telefone inválido.");
+                    ModelState.AddModelError("Telefone", "Telefone invÃ¡lido.");
                     return View(clienteModel);
                 }
 
                 var normalized = new string(clienteModel.Telefone.Where(char.IsDigit).ToArray());
                 if (normalized.Length != 11)
                 {
-                    ModelState.AddModelError("Telefone", "O telefone deve conter 11 dígitos.");
+                    ModelState.AddModelError("Telefone", "O telefone deve conter 11 dÃ­gitos.");
                     return View(clienteModel);
                 }
 
-                // Atualiza o modelo com o telefone normalizado (somente dígitos)
                 clienteModel.Telefone = normalized;
 
                 var cliente = _mapper.Map<Cliente>(clienteModel);
@@ -121,21 +123,19 @@ namespace DeliFitWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                // Validação e normalização do telefone antes de salvar
                 if (clienteModel == null || string.IsNullOrWhiteSpace(clienteModel.Telefone))
                 {
-                    ModelState.AddModelError("Telefone", "Telefone inválido.");
+                    ModelState.AddModelError("Telefone", "Telefone invÃ¡lido.");
                     return View(clienteModel);
                 }
 
                 var normalized = new string(clienteModel.Telefone.Where(char.IsDigit).ToArray());
                 if (normalized.Length != 11)
                 {
-                    ModelState.AddModelError("Telefone", "O telefone deve conter 11 dígitos.");
+                    ModelState.AddModelError("Telefone", "O telefone deve conter 11 dÃ­gitos.");
                     return View(clienteModel);
                 }
 
-                // Atualiza o modelo com o telefone normalizado
                 clienteModel.Telefone = normalized;
 
                 var cliente = _mapper.Map<Cliente>(clienteModel);
@@ -159,12 +159,10 @@ namespace DeliFitWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(ClienteViewModel clienteModel)
         {
-            // Busca o cliente para obter o email
             var cliente = _clienteService.Get(clienteModel.Id);
 
             if (cliente != null && !string.IsNullOrEmpty(cliente.Email))
             {
-                // Remove o usuário do Identity primeiro
                 var user = await _userManager.FindByEmailAsync(cliente.Email);
                 if (user != null)
                 {
@@ -172,13 +170,11 @@ namespace DeliFitWeb.Controllers
                 }
             }
 
-            // Remove o cliente do banco delifit
             _clienteService.Delete(clienteModel.Id);
             return RedirectToAction(nameof(Index));
         }
 
         // GET: ClienteController/HomeCliente
-        // Página inicial do cliente logado
         [Authorize(Roles = "Cliente")]
         public ActionResult HomeCliente()
         {
@@ -186,36 +182,37 @@ namespace DeliFitWeb.Controllers
 
             if (!clienteId.HasValue)
             {
-                TempData["Error"] = "Não foi possível identificar o cliente. Faça login novamente.";
+                TempData["Error"] = "NÃ£o foi possÃ­vel identificar o cliente. FaÃ§a login novamente.";
                 return RedirectToAction("Index", "Home");
             }
 
-            // Busca informações do cliente
-            var cliente = _clienteService.Get(clienteId.Value);
-            ViewBag.NomeCliente = cliente?.Nome;
-
-            // Busca restaurantes ativos
-            var restaurantesAtivos = _restauranteService.GetRestaurantesAtivos();
+            // Restaurantes ativos
+            var restaurantesAtivos = _restauranteService.GetRestaurantesAtivos().ToList();
             var restaurantesViewModel = _mapper.Map<List<RestauranteViewModel>>(restaurantesAtivos);
+
+            // Itens de todos os restaurantes ativos
+            // Menos consultas no banco
+            var restauranteIds = restaurantesAtivos.Select(r => r.Id).ToHashSet();
+            var itensRestaurantesAtivos = _itemService
+                .GetAll()
+                .Where(i => restauranteIds.Contains(i.IdRestaurante))
+                .ToList();
+            ViewBag.Itens = _mapper.Map<List<ItemViewModel>>(itensRestaurantesAtivos);
 
             return View(restaurantesViewModel);
         }
 
-        // Método auxiliar para obter o ID do cliente logado
         private uint? GetClienteIdLogado()
         {
-            // Tenta buscar da sessão
             var clienteId = HttpContext.Session.GetClienteId();
 
             if (!clienteId.HasValue)
             {
-                // Se não estiver na sessão, busca pelo email
                 var userEmail = _userManager.GetUserName(User);
                 var cliente = _clienteService.GetByEmail(userEmail);
 
                 if (cliente != null)
                 {
-                    // Armazena na sessão para próximas requisições
                     HttpContext.Session.SetClienteId(cliente.Id);
                     clienteId = cliente.Id;
                 }

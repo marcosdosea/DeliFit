@@ -2,26 +2,57 @@
 
 @{
     ViewData["Title"] = "DeliFit - Início";
+    var itens = ViewBag.Itens as List<DeliFitWeb.Models.ItemViewModel> ?? new List<DeliFitWeb.Models.ItemViewModel>();
+    var clienteId = ViewBag.ClienteId is uint cid ? cid : 0u;
 }
 
 <style>
     body {
-        background-color: #f8f9fa;
-        padding-bottom: 90px;
+        background: #f4f5f7;
+        padding-bottom: 80px;
     }
 
-    /* ── Header ── */
-    .top-header {
+    /* ───── HEADER ───── */
+    .app-header {
         background: white;
-        padding: 14px 16px 10px;
+        padding: 14px 16px 12px;
+        position: sticky;
+        top: 0;
+        z-index: 200;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+
+    .addr-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+    }
+
+        .addr-row a {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #1a1a1a;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+            .addr-row a i.loc {
+                color: #ff6600;
+                font-size: 1.1rem;
+            }
+
+        .addr-row .chev {
+            color: #aaa;
+            font-size: 0.75rem;
+        }
+
+    .search-row {
         display: flex;
         align-items: center;
         gap: 10px;
-        border-bottom: 1px solid #f0f0f0;
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
 
     .search-box {
@@ -31,10 +62,10 @@
 
         .search-box input {
             width: 100%;
-            padding: 11px 16px 11px 42px;
-            border: 1.5px solid #e8e8e8;
+            padding: 10px 16px 10px 40px;
+            border: 1.5px solid #ebebeb;
             border-radius: 50px;
-            font-size: 0.92rem;
+            font-size: 0.88rem;
             background: #f8f9fa;
             outline: none;
             transition: border-color 0.2s, box-shadow 0.2s;
@@ -51,94 +82,53 @@
             left: 13px;
             top: 50%;
             transform: translateY(-50%);
-            color: #aaa;
-            font-size: 0.95rem;
+            color: #bbb;
+            font-size: 0.9rem;
         }
 
     .cart-btn {
         background: #ff6600;
         color: white;
-        width: 44px;
-        height: 44px;
+        width: 42px;
+        height: 42px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
+        font-size: 1.1rem;
         text-decoration: none;
-        font-size: 1.15rem;
         flex-shrink: 0;
         box-shadow: 0 3px 10px rgba(255,102,0,0.35);
-        transition: transform 0.15s, box-shadow 0.15s;
+        transition: transform 0.15s;
     }
 
         .cart-btn:hover {
-            transform: scale(1.05);
+            transform: scale(1.06);
             color: white;
         }
 
-    /* ── Greeting ── */
-    .greeting-bar {
-        padding: 14px 16px 0;
-    }
-
-        .greeting-bar h5 {
-            font-weight: 700;
-            color: #1a1a1a;
-            font-size: 1rem;
-            margin: 0;
-        }
-
-        .greeting-bar p {
-            color: #888;
-            font-size: 0.82rem;
-            margin: 2px 0 0;
-        }
-
-    /* ── Banner ── */
-    .hero-banner {
-        margin: 14px 16px;
-        background: linear-gradient(135deg, #ff6600 0%, #ff9933 100%);
-        border-radius: 18px;
-        padding: 22px 20px;
-        color: white;
-        position: relative;
-        overflow: hidden;
-    }
-
-        .hero-banner h2 {
-            font-size: 1.3rem;
-            font-weight: 800;
-            margin: 0 0 4px;
-        }
-
-        .hero-banner p {
-            font-size: 0.85rem;
-            margin: 0;
-            opacity: 0.9;
-        }
-
-    /* ── Section title ── */
-    .section-title {
-        font-size: 1.05rem;
-        font-weight: 700;
+    /* ───── SECTION TITLE ───── */
+    .sec-title {
+        font-size: 1rem;
+        font-weight: 800;
         color: #1a1a1a;
-        margin: 20px 16px 12px;
+        padding: 18px 16px 10px;
     }
 
-    /* ── Categories ── */
-    .categories-scroll {
+    /* ───── CATEGORIES ───── */
+    .cat-scroll {
         display: flex;
         gap: 10px;
         overflow-x: auto;
-        padding: 0 16px 4px;
+        padding: 0 16px 6px;
         scrollbar-width: none;
     }
 
-        .categories-scroll::-webkit-scrollbar {
+        .cat-scroll::-webkit-scrollbar {
             display: none;
         }
 
-    .cat-chip {
+    .cat-item {
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -146,247 +136,334 @@
         flex-shrink: 0;
         cursor: pointer;
         text-decoration: none;
-        color: #444;
-        transition: transform 0.2s;
+        color: #555;
     }
 
-        .cat-chip:hover {
-            transform: translateY(-2px);
-        }
-
     .cat-icon {
-        width: 60px;
-        height: 60px;
+        width: 58px;
+        height: 58px;
         border-radius: 50%;
         background: white;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.6rem;
-        box-shadow: 0 3px 12px rgba(0,0,0,0.1);
-        transition: box-shadow 0.2s, background 0.2s;
+        font-size: 1.5rem;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        transition: all 0.2s;
+        border: 2px solid transparent;
     }
 
-    .cat-chip.active .cat-icon,
-    .cat-chip:hover .cat-icon {
+    .cat-item.active .cat-icon,
+    .cat-item:hover .cat-icon {
+        border-color: #ff6600;
         background: #fff3e6;
-        box-shadow: 0 4px 16px rgba(255,102,0,0.25);
     }
 
-    .cat-chip span {
-        font-size: 0.75rem;
+    .cat-item span {
+        font-size: 0.72rem;
         font-weight: 600;
         white-space: nowrap;
+        color: #444;
     }
 
-    /* ── Restaurant Cards ── */
-    #restaurantList, #filteredList {
-        padding: 0 16px;
+    .cat-item.active span {
+        color: #ff6600;
+    }
+
+    /* ───── RESTAURANTS horizontal scroll ───── */
+    .rest-scroll {
         display: flex;
-        flex-direction: column;
         gap: 14px;
+        overflow-x: auto;
+        padding: 0 16px 6px;
+        scrollbar-width: none;
     }
 
-    .rest-card {
+        .rest-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+    .rest-card-h {
+        flex-shrink: 0;
+        width: 190px;
         background: white;
-        border-radius: 18px;
+        border-radius: 16px;
         overflow: hidden;
-        box-shadow: 0 3px 14px rgba(0,0,0,0.08);
+        box-shadow: 0 3px 12px rgba(0,0,0,0.08);
         text-decoration: none;
         color: inherit;
-        display: block;
         transition: transform 0.2s, box-shadow 0.2s;
+        display: block;
     }
 
-        .rest-card:hover {
+        .rest-card-h:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.13);
+            box-shadow: 0 8px 22px rgba(0,0,0,0.13);
             color: inherit;
             text-decoration: none;
         }
 
-    .rest-img {
+    .rest-img-h {
         width: 100%;
-        height: 170px;
-        background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+        height: 110px;
+        background: linear-gradient(135deg, #f0f0f0, #e4e4e4);
         display: flex;
         align-items: center;
         justify-content: center;
-        position: relative;
         overflow: hidden;
+        position: relative;
     }
 
-        .rest-img img {
+        .rest-img-h img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .rest-img .fallback-icon {
-            font-size: 3.5rem;
-            color: #ccc;
-        }
-
-    .rest-badge {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        padding: 4px 12px;
-        border-radius: 20px;
-        font-size: 0.7rem;
-        font-weight: 700;
-        letter-spacing: 0.5px;
+    .rest-fallback {
+        font-size: 2.5rem;
+        color: #ccc;
     }
 
-        .rest-badge.open {
+    .rest-badge-h {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        padding: 3px 9px;
+        border-radius: 20px;
+        font-size: 0.65rem;
+        font-weight: 700;
+    }
+
+        .rest-badge-h.open {
             background: #22c55e;
             color: white;
         }
 
-        .rest-badge.close {
+        .rest-badge-h.close {
             background: #ef4444;
             color: white;
         }
 
-    .rest-info {
-        padding: 14px 16px 16px;
+    .rest-body-h {
+        padding: 10px 12px 12px;
     }
 
-    .rest-name {
-        font-size: 1rem;
+    .rest-name-h {
+        font-size: 0.85rem;
         font-weight: 700;
         color: #1a1a1a;
-        margin: 0 0 4px;
+        margin: 0 0 3px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
-    .rest-desc {
-        font-size: 0.82rem;
-        color: #888;
-        margin: 0 0 10px;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
+    .rest-meta-h {
+        font-size: 0.72rem;
+        color: #aaa;
+        display: flex;
+        gap: 8px;
+    }
+
+    /* ───── DISHES GRID ───── */
+    .dishes-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        padding: 0 16px;
+    }
+
+    .dish-card {
+        background: white;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        color: inherit;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+        .dish-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            color: inherit;
+            text-decoration: none;
+        }
+
+    .dish-img {
+        width: 100%;
+        height: 100px;
+        background: linear-gradient(135deg, #f5f5f5, #eaeaea);
+        display: flex;
+        align-items: center;
+        justify-content: center;
         overflow: hidden;
     }
 
-    .rest-meta {
+        .dish-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .dish-no-img {
+        font-size: 2rem;
+        color: #ddd;
+    }
+
+    .dish-body {
+        padding: 9px 10px 11px;
+    }
+
+    .dish-name {
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0 0 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .dish-macros {
+        display: flex;
+        gap: 4px;
+        flex-wrap: wrap;
+        margin-bottom: 6px;
+    }
+
+    .macro {
+        font-size: 0.62rem;
+        font-weight: 600;
+        padding: 1px 5px;
+        border-radius: 5px;
+    }
+
+        .macro.cal {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+
+        .macro.prot {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+    .dish-footer {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        font-size: 0.82rem;
     }
 
-    .rest-rating {
+    .dish-price {
+        font-size: 0.9rem;
+        font-weight: 800;
         color: #ff6600;
-        font-weight: 600;
     }
 
-    .rest-location {
-        color: #aaa;
+    .dish-rest {
+        font-size: 0.62rem;
+        color: #bbb;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 55%;
+        text-align: right;
     }
 
-    /* ── Empty ── */
+    /* ───── EMPTY ───── */
     .empty-state {
         text-align: center;
-        padding: 50px 20px;
-        color: #aaa;
+        padding: 30px 20px;
+        color: #bbb;
     }
 
         .empty-state i {
-            font-size: 3rem;
+            font-size: 2.5rem;
             display: block;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
 </style>
 
-<div class="top-header">
-    <div class="search-box">
-        <i class="bi bi-search si"></i>
-        <input type="text" id="searchInput" placeholder="Buscar restaurantes..." />
+<!-- ══════════════ HEADER ══════════════ -->
+<div class="app-header">
+    <div class="addr-row">
+        <a asp-controller="Endereco" asp-action="Index" asp-route-idCliente="@clienteId">
+            <i class="bi bi-geo-alt-fill loc"></i>
+            <span>Meus Endereços</span>
+            <i class="bi bi-chevron-right chev"></i>
+        </a>
     </div>
-    <a asp-controller="Carrinho" asp-action="Index" class="cart-btn">
-        <i class="bi bi-cart3"></i>
-    </a>
+    <div class="search-row">
+        <div class="search-box">
+            <i class="bi bi-search si"></i>
+            <input type="text" id="searchInput" placeholder="Buscar restaurantes ou pratos..." />
+        </div>
+        <a asp-controller="Carrinho" asp-action="Index" class="cart-btn">
+            <i class="bi bi-cart3"></i>
+        </a>
+    </div>
 </div>
 
-<div class="greeting-bar">
-    @if (ViewBag.NomeCliente != null)
-    {
-        <h5>Olá, @ViewBag.NomeCliente! 👋</h5>
-        <p>O que você vai pedir hoje?</p>
-    }
-    else
-    {
-        <h5>Olá! 👋</h5>
-        <p>O que você vai pedir hoje?</p>
-    }
-</div>
-
-<div class="hero-banner">
-    <h2>DeliFit</h2>
-    <p>Alimentação saudável com controle de macros e calorias</p>
-</div>
-
-<p class="section-title">Categorias</p>
-<div class="categories-scroll">
-    <a href="#" class="cat-chip active" data-category="">
+<!-- ══════════════ CATEGORIAS ══════════════ -->
+<p class="sec-title">Categorias</p>
+<div class="cat-scroll">
+    <a href="#" class="cat-item active" data-filter="">
         <div class="cat-icon"><i class="bi bi-grid-3x3-gap" style="color:#ff6600;"></i></div>
         <span>Ver tudo</span>
     </a>
-    <a href="#" class="cat-chip" data-category="Vegetariano">
+    <a href="#" class="cat-item" data-filter="Vegetariano">
         <div class="cat-icon"><i class="bi bi-flower3" style="color:#22c55e;"></i></div>
         <span>Vegetariano</span>
     </a>
-    <a href="#" class="cat-chip" data-category="Vegano">
+    <a href="#" class="cat-item" data-filter="Vegano">
         <div class="cat-icon"><i class="bi bi-apple" style="color:#16a34a;"></i></div>
         <span>Vegano</span>
     </a>
-    <a href="#" class="cat-chip" data-category="Sem Glúten">
+    <a href="#" class="cat-item" data-filter="Sem Glúten">
         <div class="cat-icon"><i class="bi bi-egg-fried" style="color:#f59e0b;"></i></div>
         <span>Sem Glúten</span>
     </a>
-    <a href="#" class="cat-chip" data-category="Sem Lactose">
+    <a href="#" class="cat-item" data-filter="Sem Lactose">
         <div class="cat-icon"><i class="bi bi-cup-straw" style="color:#3b82f6;"></i></div>
         <span>Sem Lactose</span>
     </a>
-    <a href="#" class="cat-chip" data-category="">
-        <div class="cat-icon"><i class="bi bi-basket" style="color:#ff6600;"></i></div>
-        <span>Lanches</span>
-    </a>
 </div>
 
-<p class="section-title">Restaurantes Disponíveis</p>
-
-<div id="restaurantList">
+<!-- ══════════════ RESTAURANTES ══════════════ -->
+<p class="sec-title">Estabelecimentos</p>
+<div class="rest-scroll" id="restScroll">
     @if (Model == null || !Model.Any())
     {
-        <div class="empty-state">
+        <div class="empty-state" style="width:100%;">
             <i class="bi bi-shop"></i>
-            <p>Nenhum restaurante disponível no momento</p>
+            <p>Nenhum restaurante disponível</p>
         </div>
     }
     else
     {
         foreach (var r in Model)
         {
-            <a asp-controller="Restaurante" asp-action="VerEstabelecimento" asp-route-id="@r.Id" class="rest-card">
-                <div class="rest-img">
+            <a asp-controller="Restaurante" asp-action="VerEstabelecimento" asp-route-id="@r.Id" class="rest-card-h">
+                <div class="rest-img-h">
                     <img src="@Url.Action("Foto", "Restaurante", new { id = r.Id })"
                          alt="@r.NomeRestaurante"
-                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-                    <div class="fallback-icon" style="display:none; width:100%; height:100%; align-items:center; justify-content:center;">
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+                    <div class="rest-fallback" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;">
                         <i class="bi bi-shop"></i>
                     </div>
-                    <span class="rest-badge @(r.Validado ? "open" : "close")">
+                    <span class="rest-badge-h @(r.Validado ? "open" : "close")">
                         @(r.Validado ? "ABERTO" : "FECHADO")
                     </span>
                 </div>
-                <div class="rest-info">
-                    <p class="rest-name">@r.NomeRestaurante</p>
-                    <p class="rest-desc">@(r.Descricao ?? "Restaurante especializado em comida saudável")</p>
-                    <div class="rest-meta">
-                        <span class="rest-rating"><i class="bi bi-star-fill me-1"></i>4.5</span>
-                        <span class="rest-location"><i class="bi bi-geo-alt me-1"></i>@r.Cidade</span>
+                <div class="rest-body-h">
+                    <p class="rest-name-h">@r.NomeRestaurante</p>
+                    <div class="rest-meta-h">
+                        <span><i class="bi bi-star-fill" style="color:#ff6600;"></i> 4.5</span>
+                        <span><i class="bi bi-geo-alt"></i> @r.Cidade</span>
                     </div>
                 </div>
             </a>
@@ -394,77 +471,142 @@
     }
 </div>
 
-<div id="filteredList" style="display:none;"></div>
+<!-- ══════════════ PRATOS ══════════════ -->
+<p class="sec-title" id="pratosTitle">Pratos em Destaque</p>
+<div class="dishes-grid" id="dishesGrid">
+    @{
+        var restDict = (Model ?? Enumerable.Empty<RestauranteViewModel>())
+                        .ToDictionary(r => r.Id, r => r.NomeRestaurante);
+    }
+    @if (!itens.Any())
+    {
+        <div class="empty-state" style="grid-column:1/-1;">
+            <i class="bi bi-egg-fried"></i>
+            <p>Nenhum prato disponível</p>
+        </div>
+    }
+    else
+    {
+        foreach (var item in itens)
+        {
+            var nomeRest = restDict.TryGetValue(item.IdRestaurante, out var n) ? n : "";
+            <a asp-controller="Restaurante" asp-action="VerEstabelecimento"
+               asp-route-id="@item.IdRestaurante"
+               class="dish-card" data-restricao="@item.Restricao">
+                <div class="dish-img">
+                    <img src="@Url.Action("Foto", "Item", new { id = item.Id })"
+                         alt="@item.Nome"
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+                    <div class="dish-no-img" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;">
+                        <i class="bi bi-egg-fried"></i>
+                    </div>
+                </div>
+                <div class="dish-body">
+                    <p class="dish-name" title="@item.Nome">@item.Nome</p>
+                    <div class="dish-macros">
+                        <span class="macro cal">@item.Calorias.ToString("0") kcal</span>
+                        @if (item.Proteina.HasValue)
+                        {
+                            <span class="macro prot">@item.Proteina.Value.ToString("0")g P</span>
+                        }
+                    </div>
+                    <div class="dish-footer">
+                        <span class="dish-price">R$ @item.Preco.ToString("N2")</span>
+                        <span class="dish-rest">@nomeRest</span>
+                    </div>
+                </div>
+            </a>
+        }
+    }
+</div>
 
 @section Scripts {
     <script>
-        const restaurantes = @Html.Raw(Json.Serialize(
+        const todosRestaurantes = @Html.Raw(Json.Serialize(
                     (Model ?? Enumerable.Empty<DeliFitWeb.Models.RestauranteViewModel>())
-                    .Select(r => new
+                    .Select(r => new { id = r.Id, nome = r.NomeRestaurante, cidade = r.Cidade, validado = r.Validado }).ToList()
+            ));
+
+        const todosItens = @Html.Raw(Json.Serialize(
+                    itens.Select(i => new
                     {
-                            id = r.Id,
-                            nome = r.NomeRestaurante,
-                            descricao = r.Descricao ?? "Restaurante especializado em comida saudável",
-                            cidade = r.Cidade,
-                            validado = r.Validado
+                            id = i.Id,
+                            nome = i.Nome,
+                            preco = i.Preco,
+                            calorias = i.Calorias,
+                            proteina = i.Proteina,
+                            restricao = i.Restricao ?? "",
+                            idRestaurante = i.IdRestaurante
                     }).ToList()
             ));
 
-        const listOriginal = document.getElementById('restaurantList');
-        const listFiltered = document.getElementById('filteredList');
-        const search = document.getElementById('searchInput');
+        const rDict = {};
+        todosRestaurantes.forEach(r => rDict[r.id] = r.nome);
 
-        function buildCard(r) {
-            const badge = r.validado
-                ? `<span class="rest-badge open">ABERTO</span>`
-                : `<span class="rest-badge close">FECHADO</span>`;
-            return `
-            <a href="/Restaurante/VerEstabelecimento/${r.id}" class="rest-card">
-                <div class="rest-img">
-                    <img src="/Restaurante/Foto/${r.id}" alt="${r.nome}"
-                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
-                    <div class="fallback-icon" style="display:none; width:100%; height:100%; align-items:center; justify-content:center;">
-                        <i class="bi bi-shop"></i>
-                    </div>
-                    ${badge}
-                </div>
-                <div class="rest-info">
-                    <p class="rest-name">${r.nome}</p>
-                    <p class="rest-desc">${r.descricao}</p>
-                    <div class="rest-meta">
-                        <span class="rest-rating"><i class="bi bi-star-fill me-1"></i>4.5</span>
-                        <span class="rest-location"><i class="bi bi-geo-alt me-1"></i>${r.cidade || ''}</span>
-                    </div>
-                </div>
-            </a>`;
-        }
-
-        search.addEventListener('input', function () {
+        // ── Busca ──
+        document.getElementById('searchInput').addEventListener('input', function () {
             const q = this.value.toLowerCase().trim();
-            if (!q) {
-                listOriginal.style.display = 'flex';
-                listFiltered.style.display = 'none';
-                listFiltered.innerHTML = '';
-                return;
-            }
-            const found = restaurantes.filter(r =>
-                r.nome.toLowerCase().includes(q) ||
-                (r.descricao && r.descricao.toLowerCase().includes(q))
-            );
-            listOriginal.style.display = 'none';
-            listFiltered.style.display = 'flex';
-            listFiltered.innerHTML = found.length
-                ? found.map(buildCard).join('')
-                : `<div class="empty-state"><i class="bi bi-search"></i><p>Nenhum resultado para "${this.value}"</p></div>`;
+            if (!q) { renderRest(todosRestaurantes); renderItens(todosItens); return; }
+            renderRest(todosRestaurantes.filter(r => r.nome.toLowerCase().includes(q)));
+            renderItens(todosItens.filter(i => i.nome.toLowerCase().includes(q)));
         });
 
-        // Category chips (visual toggle only for now)
-        document.querySelectorAll('.cat-chip').forEach(chip => {
-            chip.addEventListener('click', function(e) {
+        // ── Categorias ──
+        document.querySelectorAll('.cat-item').forEach(cat => {
+            cat.addEventListener('click', function (e) {
                 e.preventDefault();
-                document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+                document.querySelectorAll('.cat-item').forEach(c => c.classList.remove('active'));
                 this.classList.add('active');
+                const f = this.dataset.filter;
+                renderItens(f ? todosItens.filter(i => i.restricao === f) : todosItens);
+                renderRest(todosRestaurantes);
             });
         });
+
+        // ── Renders ──
+        function renderRest(lista) {
+            const el = document.getElementById('restScroll');
+            el.innerHTML = lista.length ? lista.map(r => `
+                <a href="/Restaurante/VerEstabelecimento/${r.id}" class="rest-card-h">
+                    <div class="rest-img-h">
+                        <img src="/Restaurante/Foto/${r.id}" alt="${r.nome}"
+                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+                        <div class="rest-fallback" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;"><i class="bi bi-shop"></i></div>
+                        <span class="rest-badge-h ${r.validado ? 'open' : 'close'}">${r.validado ? 'ABERTO' : 'FECHADO'}</span>
+                    </div>
+                    <div class="rest-body-h">
+                        <p class="rest-name-h">${r.nome}</p>
+                        <div class="rest-meta-h">
+                            <span><i class="bi bi-star-fill" style="color:#ff6600;"></i> 4.5</span>
+                            <span><i class="bi bi-geo-alt"></i> ${r.cidade || ''}</span>
+                        </div>
+                    </div>
+                </a>`).join('')
+            : `<div class="empty-state" style="width:100%;"><i class="bi bi-shop d-block mb-2" style="font-size:2rem;"></i><p>Nenhum resultado</p></div>`;
+        }
+
+        function renderItens(lista) {
+            const el = document.getElementById('dishesGrid');
+            el.innerHTML = lista.length ? lista.map(i => `
+                <a href="/Restaurante/VerEstabelecimento/${i.idRestaurante}" class="dish-card">
+                    <div class="dish-img">
+                        <img src="/Item/Foto/${i.id}" alt="${i.nome}"
+                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+                        <div class="dish-no-img" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;"><i class="bi bi-egg-fried"></i></div>
+                    </div>
+                    <div class="dish-body">
+                        <p class="dish-name">${i.nome}</p>
+                        <div class="dish-macros">
+                            <span class="macro cal">${Math.round(i.calorias)} kcal</span>
+                           ${i.proteina !== null && i.proteina !== undefined ? `<span class="macro prot">${Math.round(i.proteina)}g P</span>` : ''}
+                        </div>
+                        <div class="dish-footer">
+                            <span class="dish-price">R$ ${parseFloat(i.preco).toFixed(2).replace('.', ',')}</span>
+                            <span class="dish-rest">${rDict[i.idRestaurante] || ''}</span>
+                        </div>
+                    </div>
+                </a>`).join('')
+            : `<div class="empty-state" style="grid-column:1/-1;"><i class="bi bi-egg-fried d-block mb-2" style="font-size:2rem;"></i><p>Nenhum prato encontrado</p></div>`;
+        }
     </script>
 }
