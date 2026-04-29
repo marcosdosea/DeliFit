@@ -598,7 +598,7 @@
                         <p class="dish-name">${i.nome}</p>
                         <div class="dish-macros">
                             <span class="macro cal">${Math.round(i.calorias)} kcal</span>
-                            ${i.proteina ? `<span class="macro prot">${Math.round(i.proteina)}g P</span>` : ''}
+                           ${i.proteina !== null && i.proteina !== undefined ? `<span class="macro prot">${Math.round(i.proteina)}g P</span>` : ''}
                         </div>
                         <div class="dish-footer">
                             <span class="dish-price">R$ ${parseFloat(i.preco).toFixed(2).replace('.', ',')}</span>

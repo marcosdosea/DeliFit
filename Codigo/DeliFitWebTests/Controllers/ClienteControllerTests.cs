@@ -25,6 +25,7 @@ namespace DeliFitWeb.Controllers.Tests
                 new Mock<IUserStore<UsuarioIdentity>>().Object,
                 null, null, null, null, null, null, null, null);
             var mockRestauranteService = new Mock<IRestauranteService>();
+            var mockItemService = new Mock<IItemService>();
 
             IMapper mapper = new MapperConfiguration(cfg =>
                 cfg.AddProfile(new ClienteProfile())).CreateMapper();
@@ -53,7 +54,8 @@ namespace DeliFitWeb.Controllers.Tests
                 mockService.Object,
                 mapper,
                 mockUserManager.Object,
-                mockRestauranteService.Object
+                mockRestauranteService.Object,
+                mockItemService.Object
             );
         }
 

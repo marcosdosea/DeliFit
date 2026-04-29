@@ -186,24 +186,18 @@ namespace DeliFitWeb.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            var cliente = _clienteService.Get(clienteId.Value);
-            ViewBag.NomeCliente = cliente?.Nome;
-
             // Restaurantes ativos
             var restaurantesAtivos = _restauranteService.GetRestaurantesAtivos().ToList();
             var restaurantesViewModel = _mapper.Map<List<RestauranteViewModel>>(restaurantesAtivos);
 
             // Itens de todos os restaurantes ativos
-            var todosItens = new List<ItemViewModel>();
-            foreach (var r in restaurantesAtivos)
-            {
-                var itens = _itemService.GetByRestaurante(r.Id);
-                todosItens.AddRange(_mapper.Map<List<ItemViewModel>>(itens));
-            }
-            ViewBag.Itens = todosItens;
-
-            // Endereço principal do cliente para exibição no header
-            ViewBag.ClienteId = clienteId.Value;
+            // Menos consultas no banco
+            var restauranteIds = restaurantesAtivos.Select(r => r.Id).ToHashSet();
+            var itensRestaurantesAtivos = _itemService
+                .GetAll()
+                .Where(i => restauranteIds.Contains(i.IdRestaurante))
+                .ToList();
+            ViewBag.Itens = _mapper.Map<List<ItemViewModel>>(itensRestaurantesAtivos);
 
             return View(restaurantesViewModel);
         }
