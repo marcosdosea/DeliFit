@@ -8,217 +8,197 @@ using Core.Identity.Data;
 using DeliFitWeb.Helpers;
 using Microsoft.AspNetCore.Authorization;
 
-namespace DeliFitWeb.Controllers
+namespace DeliFitWeb.Controllers;
+
+public class ClienteController : Controller
 {
-    public class ClienteController : Controller
+    private readonly IClienteService _clienteService;
+    private readonly IMapper _mapper;
+    private readonly UserManager<UsuarioIdentity> _userManager;
+    private readonly IRestauranteService _restauranteService;
+    private readonly IItemService _itemService;
+    private readonly ICategoriaService _categoriaService;
+
+    public ClienteController(IClienteService clienteService,
+                             IMapper mapper,
+                             UserManager<UsuarioIdentity> userManager,
+                             IRestauranteService restauranteService,
+                             IItemService itemService,
+                             ICategoriaService categoriaService)
     {
+        _clienteService = clienteService;
+        _mapper = mapper;
+        _userManager = userManager;
+        _restauranteService = restauranteService;
+        _itemService = itemService;
+        _categoriaService = categoriaService;
+    }
 
-        private readonly IClienteService _clienteService;
-        private readonly IMapper _mapper;
-        private readonly UserManager<UsuarioIdentity> _userManager;
-        private readonly IRestauranteService _restauranteService;
-        private readonly IItemService _itemService;
+    // GET: ClienteController
+    public ActionResult Index()
+    {
+        var listaClientes = _clienteService.GetAll();
+        var listaClientesViewModel = _mapper.Map<List<ClienteViewModel>>(listaClientes);
+        return View(listaClientesViewModel);
+    }
 
-        public ClienteController(IClienteService clienteService,
-                                 IMapper mapper,
-                                 UserManager<UsuarioIdentity> userManager,
-                                 IRestauranteService restauranteService,
-                                 IItemService itemService)
+    // GET: ClienteController/Perfil
+    public async Task<ActionResult> Perfil()
+    {
+        var clienteId = HttpContext.Session.GetClienteId();
+
+        if (clienteId.HasValue)
+            return RedirectToAction(nameof(Details), new { id = clienteId.Value });
+
+        var userEmail = _userManager.GetUserName(User);
+        var cliente = _clienteService.GetByEmail(userEmail);
+
+        if (cliente == null)
+            return NotFound("Perfil de cliente não encontrado para o usuário logado.");
+
+        HttpContext.Session.SetClienteId(cliente.Id);
+        return RedirectToAction(nameof(Details), new { id = cliente.Id });
+    }
+
+    // GET: ClienteController/Details/5
+    public ActionResult Details(uint id)
+    {
+        Cliente? cliente = _clienteService.Get(id);
+        ClienteViewModel clienteModel = _mapper.Map<ClienteViewModel>(cliente);
+        return View(clienteModel);
+    }
+
+    // GET: ClienteController/Create
+    public ActionResult Create()
+    {
+        return View(new ClienteViewModel());
+    }
+
+    // POST: ClienteController/Create
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public ActionResult Create(ClienteViewModel clienteModel)
+    {
+        if (ModelState.IsValid)
         {
-            _clienteService = clienteService;
-            _mapper = mapper;
-            _userManager = userManager;
-            _restauranteService = restauranteService;
-            _itemService = itemService;
+            var cliente = _mapper.Map<Cliente>(clienteModel);
+            _clienteService.Create(cliente);
+            return RedirectToAction(nameof(Index));
         }
+        return View(clienteModel);
+    }
 
-        // GET: ClienteController
-        public ActionResult Index()
+    // GET: ClienteController/Edit/5
+    public ActionResult Edit(uint id)
+    {
+        Cliente? cliente = _clienteService.Get(id);
+        ClienteViewModel clienteModel = _mapper.Map<ClienteViewModel>(cliente);
+        return View(clienteModel);
+    }
+
+    // POST: ClienteController/Edit/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public ActionResult Edit(ClienteViewModel clienteModel)
+    {
+        if (ModelState.IsValid)
         {
-            var listaClientes = _clienteService.GetAll();
-            var listaClientesViewModel = _mapper.Map<List<ClienteViewModel>>(listaClientes);
-            return View(listaClientesViewModel);
-        }
-
-        // GET: ClienteController/Perfil
-        // Redireciona o cliente logado para o seu próprio Details
-        public async Task<ActionResult> Perfil()
-        {
-            // Tenta buscar o ID do cliente da sessão primeiro
-            var clienteId = HttpContext.Session.GetClienteId();
-
-            if (clienteId.HasValue)
+            if (string.IsNullOrWhiteSpace(clienteModel.Telefone))
             {
-                return RedirectToAction(nameof(Details), new { id = clienteId.Value });
+                ModelState.AddModelError("Telefone", "O telefone é obrigatório.");
+                return View(clienteModel);
             }
 
+            var normalized = new string(clienteModel.Telefone.Where(char.IsDigit).ToArray());
+            if (normalized.Length != 11)
+            {
+                ModelState.AddModelError("Telefone", "O telefone deve conter 11 dígitos.");
+                return View(clienteModel);
+            }
+
+            clienteModel.Telefone = normalized;
+            var cliente = _mapper.Map<Cliente>(clienteModel);
+            _clienteService.Edit(cliente);
+            return RedirectToAction(nameof(Index));
+        }
+        return View(clienteModel);
+    }
+
+    // GET: ClienteController/Delete/5
+    public ActionResult Delete(uint id)
+    {
+        Cliente? cliente = _clienteService.Get(id);
+        ClienteViewModel clienteModel = _mapper.Map<ClienteViewModel>(cliente);
+        return View(clienteModel);
+    }
+
+    // POST: ClienteController/Delete/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<ActionResult> Delete(ClienteViewModel clienteModel)
+    {
+        var cliente = _clienteService.Get(clienteModel.Id);
+
+        if (cliente != null && !string.IsNullOrEmpty(cliente.Email))
+        {
+            var user = await _userManager.FindByEmailAsync(cliente.Email);
+            if (user != null)
+                await _userManager.DeleteAsync(user);
+        }
+
+        _clienteService.Delete(clienteModel.Id);
+        return RedirectToAction(nameof(Index));
+    }
+
+    // GET: ClienteController/HomeCliente
+    [Authorize(Roles = "Cliente")]
+    public ActionResult HomeCliente()
+    {
+        var clienteId = GetClienteIdLogado();
+
+        if (!clienteId.HasValue)
+        {
+            TempData["Error"] = "Não foi possível identificar o cliente. Faça login novamente.";
+            return RedirectToAction("Index", "Home");
+        }
+
+        // Restaurantes ativos
+        var restaurantesAtivos = _restauranteService.GetRestaurantesAtivos().ToList();
+        var restaurantesViewModel = _mapper.Map<List<RestauranteViewModel>>(restaurantesAtivos);
+
+        // Itens de todos os restaurantes ativos
+        var restauranteIds = restaurantesAtivos.Select(r => r.Id).ToHashSet();
+        var itensRestaurantesAtivos = _itemService
+            .GetAll()
+            .Where(i => restauranteIds.Contains(i.IdRestaurante))
+            .ToList();
+        ViewBag.Itens = _mapper.Map<List<ItemViewModel>>(itensRestaurantesAtivos);
+
+        // Categorias dinâmicas do banco
+        var categorias = _categoriaService.ListarCategorias().ToList();
+        ViewBag.Categorias = _mapper.Map<List<CategoriaViewModel>>(categorias);
+
+        ViewBag.ClienteId = clienteId.Value;
+
+        return View(restaurantesViewModel);
+    }
+
+    private uint? GetClienteIdLogado()
+    {
+        var clienteId = HttpContext.Session.GetClienteId();
+
+        if (!clienteId.HasValue)
+        {
             var userEmail = _userManager.GetUserName(User);
             var cliente = _clienteService.GetByEmail(userEmail);
 
-            if (cliente == null)
-                return NotFound("Perfil de cliente não encontrado para o usuário logado.");
-
-            HttpContext.Session.SetClienteId(cliente.Id);
-
-            return RedirectToAction(nameof(Details), new { id = cliente.Id });
-        }
-
-        // GET: ClienteController/Details/5
-        public ActionResult Details(uint id)
-        {
-            Cliente? cliente = _clienteService.Get(id);
-            ClienteViewModel clienteModel = _mapper.Map<ClienteViewModel>(cliente);
-            return View(clienteModel);
-        }
-
-        // GET: ClienteController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: ClienteController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> CreateAsync(ClienteViewModel clienteModel)
-        {
-            if (ModelState.IsValid)
+            if (cliente != null)
             {
-                if (clienteModel == null || string.IsNullOrWhiteSpace(clienteModel.Telefone))
-                {
-                    ModelState.AddModelError("Telefone", "Telefone inválido.");
-                    return View(clienteModel);
-                }
-
-                var normalized = new string(clienteModel.Telefone.Where(char.IsDigit).ToArray());
-                if (normalized.Length != 11)
-                {
-                    ModelState.AddModelError("Telefone", "O telefone deve conter 11 dígitos.");
-                    return View(clienteModel);
-                }
-
-                clienteModel.Telefone = normalized;
-
-                var cliente = _mapper.Map<Cliente>(clienteModel);
-                _clienteService.Create(cliente);
-
-                return RedirectToAction(nameof(Index));
+                HttpContext.Session.SetClienteId(cliente.Id);
+                clienteId = cliente.Id;
             }
-
-            return View(clienteModel);
         }
 
-        // GET: ClienteController/Edit/5
-        public ActionResult Edit(uint id)
-        {
-            Cliente? cliente = _clienteService.Get(id);
-            ClienteViewModel clienteModel = _mapper.Map<ClienteViewModel>(cliente);
-            return View(clienteModel);
-        }
-
-        // POST: ClienteController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(ClienteViewModel clienteModel)
-        {
-            if (ModelState.IsValid)
-            {
-                if (clienteModel == null || string.IsNullOrWhiteSpace(clienteModel.Telefone))
-                {
-                    ModelState.AddModelError("Telefone", "Telefone inválido.");
-                    return View(clienteModel);
-                }
-
-                var normalized = new string(clienteModel.Telefone.Where(char.IsDigit).ToArray());
-                if (normalized.Length != 11)
-                {
-                    ModelState.AddModelError("Telefone", "O telefone deve conter 11 dígitos.");
-                    return View(clienteModel);
-                }
-
-                clienteModel.Telefone = normalized;
-
-                var cliente = _mapper.Map<Cliente>(clienteModel);
-                _clienteService.Edit(cliente);
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(clienteModel);
-        }
-
-        // GET: ClienteController/Delete/5
-        public ActionResult Delete(uint id)
-        {
-            Cliente? cliente = _clienteService.Get(id);
-            ClienteViewModel clienteModel = _mapper.Map<ClienteViewModel>(cliente);
-            return View(clienteModel);
-        }
-
-        // POST: ClienteController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Delete(ClienteViewModel clienteModel)
-        {
-            var cliente = _clienteService.Get(clienteModel.Id);
-
-            if (cliente != null && !string.IsNullOrEmpty(cliente.Email))
-            {
-                var user = await _userManager.FindByEmailAsync(cliente.Email);
-                if (user != null)
-                {
-                    await _userManager.DeleteAsync(user);
-                }
-            }
-
-            _clienteService.Delete(clienteModel.Id);
-            return RedirectToAction(nameof(Index));
-        }
-
-        // GET: ClienteController/HomeCliente
-        [Authorize(Roles = "Cliente")]
-        public ActionResult HomeCliente()
-        {
-            var clienteId = GetClienteIdLogado();
-
-            if (!clienteId.HasValue)
-            {
-                TempData["Error"] = "Não foi possível identificar o cliente. Faça login novamente.";
-                return RedirectToAction("Index", "Home");
-            }
-
-            // Restaurantes ativos
-            var restaurantesAtivos = _restauranteService.GetRestaurantesAtivos().ToList();
-            var restaurantesViewModel = _mapper.Map<List<RestauranteViewModel>>(restaurantesAtivos);
-
-            // Itens de todos os restaurantes ativos
-            // Menos consultas no banco
-            var restauranteIds = restaurantesAtivos.Select(r => r.Id).ToHashSet();
-            var itensRestaurantesAtivos = _itemService
-                .GetAll()
-                .Where(i => restauranteIds.Contains(i.IdRestaurante))
-                .ToList();
-            ViewBag.Itens = _mapper.Map<List<ItemViewModel>>(itensRestaurantesAtivos);
-
-            return View(restaurantesViewModel);
-        }
-
-        private uint? GetClienteIdLogado()
-        {
-            var clienteId = HttpContext.Session.GetClienteId();
-
-            if (!clienteId.HasValue)
-            {
-                var userEmail = _userManager.GetUserName(User);
-                var cliente = _clienteService.GetByEmail(userEmail);
-
-                if (cliente != null)
-                {
-                    HttpContext.Session.SetClienteId(cliente.Id);
-                    clienteId = cliente.Id;
-                }
-            }
-
-            return clienteId;
-        }
+        return clienteId;
     }
 }
