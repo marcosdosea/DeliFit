@@ -18,4 +18,10 @@ public interface IRestauranteService
     IEnumerable<RestauranteDTO> GetRestaurantesAtivos();
     IEnumerable<RestauranteDTO> GetRestaurantesPendentes();
     Restaurante? GetByEmail(string email);
+
+    /// <summary>Busca restaurantes ativos cujo nome contenha o termo.</summary>
+    IEnumerable<RestauranteDTO> Buscar(string termo);
+
+    /// <summary>Retorna restaurantes ativos que possuem itens com a restrição/categoria indicada.</summary>
+    IEnumerable<RestauranteDTO> GetByRestricao(string restricao);
 }
