@@ -1,92 +1,413 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Core;
 using Core.Service;
 using DeliFitWeb.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using DeliFitWeb.Helpers;
 
 namespace DeliFitWeb.Controllers;
 
+[Authorize(Roles = "Cliente")]
 public class CarrinhoController : Controller
 {
     private readonly ICarrinhoService _carrinhoService;
     private readonly IClienteService _clienteService;
     private readonly ICartaoService _cartaoService;
-
+    private readonly IItemService _itemService;
+    private readonly IPedidoService _pedidoService;
+    private readonly IEnderecoService _enderecoService;
+    private readonly IRestauranteService _restauranteService;
     private readonly IMapper _mapper;
 
-    public CarrinhoController(ICarrinhoService carrinhoService,
-                                IClienteService clienteService,
-                                ICartaoService cartaoService,
-                                IMapper mapper)
+    private const string SessaoCarrinho = "CarrinhoSessao";
+    private const string SessaoFormaPagamento = "FormaPagamento";
+    private const string SessaoIdCartao = "CarrinhoIdCartao";
+    private const string SessaoIdEndereco = "CarrinhoIdEndereco";
+
+    public CarrinhoController(
+        ICarrinhoService carrinhoService,
+        IClienteService clienteService,
+        ICartaoService cartaoService,
+        IItemService itemService,
+        IPedidoService pedidoService,
+        IEnderecoService enderecoService,
+        IRestauranteService restauranteService,
+        IMapper mapper)
     {
+        _carrinhoService = carrinhoService;
         _clienteService = clienteService;
         _cartaoService = cartaoService;
-        _carrinhoService = carrinhoService;
+        _itemService = itemService;
+        _pedidoService = pedidoService;
+        _enderecoService = enderecoService;
+        _restauranteService = restauranteService;
         _mapper = mapper;
     }
 
-    public void CarregarDados()
-    {
-        var clientes = _clienteService.GetAll();
-        ViewBag.Clientes = _mapper.Map<List<ClienteViewModel>>(clientes);
+    // ─── M14: Tela do carrinho ────────────────────────────────────────────────
 
-        var cartoes = _cartaoService.GetAll();
-        ViewBag.Cartoes = _mapper.Map<List<CartaoViewModel>>(cartoes);
-    }
-
+    /// <summary>
+    /// GET: Exibe o carrinho atual (tela M14)
+    /// </summary>
     public ActionResult Index()
     {
-        var carrinhos = _carrinhoService.GetAll();
-        var viewModels = _mapper.Map<List<CarrinhoViewModel>>(carrinhos);
-        return View(viewModels);
+        var itens = ObterItensDaSessao();
+        var clienteId = GetClienteIdLogado();
+
+        // Endereços do cliente para seleção
+        if (clienteId.HasValue)
+        {
+            var enderecos = _enderecoService.GetAll()
+                .Where(e => e.IdCliente == clienteId.Value)
+                .ToList();
+            ViewBag.Enderecos = enderecos;
+
+            var idEnderecoSelecionado = HttpContext.Session.GetInt32(SessaoIdEndereco);
+            ViewBag.IdEnderecoSelecionado = idEnderecoSelecionado;
+        }
+
+        var formaPagamento = HttpContext.Session.GetString(SessaoFormaPagamento);
+        ViewBag.FormaPagamento = formaPagamento;
+
+        var idCartaoSessao = HttpContext.Session.GetInt32(SessaoIdCartao);
+        ViewBag.IdCartaoSelecionado = idCartaoSessao;
+
+        // Nome do cartão selecionado (para exibição)
+        if (idCartaoSessao.HasValue)
+        {
+            var cartao = _cartaoService.Get((uint)idCartaoSessao.Value);
+            ViewBag.CartaoSelecionado = cartao;
+        }
+
+        return View(itens);
     }
 
-    public ActionResult Details(uint id)
-    {
-        var carrinho = _carrinhoService.Get(id);
-        var viewModel = _mapper.Map<CarrinhoViewModel>(carrinho);
-        return View(viewModel);
-    }
+    // ─── Adicionar item (vindo do modal M09) ─────────────────────────────────
 
-    public ActionResult Create()
-    {
-        CarregarDados();
-        return View(new CarrinhoViewModel());
-    }
-
-
+    /// <summary>
+    /// POST: Adiciona item ao carrinho de sessão. Chamado pelo modal "Montar Refeição".
+    /// </summary>
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public ActionResult Create(CarrinhoViewModel viewModel)
+    public ActionResult AdicionarItem(uint idItem, int quantidade, string? tamanho, string? observacao)
     {
-        if (!ModelState.IsValid)
+        var item = _itemService.Get(idItem);
+        if (item == null)
         {
-            CarregarDados();
+            TempData["Error"] = "Item não encontrado.";
+            return RedirectToAction("Index");
+        }
+
+        var restaurante = _restauranteService.Get(item.IdRestaurante);
+
+        var itens = ObterItensDaSessao();
+
+        // Verifica se o carrinho já tem itens de outro restaurante
+        if (itens.Any() && itens.First().IdRestaurante != item.IdRestaurante)
+        {
+            TempData["Error"] = "Seu carrinho já tem itens de outro restaurante. Finalize ou esvazie o carrinho antes de adicionar itens de um novo restaurante.";
+            return RedirectToAction("VerEstabelecimento", "Restaurante", new { id = item.IdRestaurante });
+        }
+
+        // Verifica se já existe o mesmo item+tamanho no carrinho
+        var existente = itens.FirstOrDefault(i => i.IdItem == idItem && i.Tamanho == tamanho);
+        if (existente != null)
+        {
+            existente.Quantidade += quantidade;
+        }
+        else
+        {
+            itens.Add(new CarrinhoSessaoItem
+            {
+                IdItem = idItem,
+                NomeItem = item.Nome,
+                PrecoUnitario = item.Preco,
+                Quantidade = quantidade,
+                Tamanho = tamanho,
+                Observacao = observacao,
+                IdRestaurante = item.IdRestaurante,
+                NomeRestaurante = restaurante?.NomeRestaurante ?? ""
+            });
+        }
+
+        SalvarItensSessao(itens);
+        TempData["Success"] = $"'{item.Nome}' adicionado ao carrinho!";
+        return RedirectToAction("VerEstabelecimento", "Restaurante", new { id = item.IdRestaurante });
+    }
+
+    // ─── Remover item ─────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// POST: Remove um item do carrinho pelo índice
+    /// </summary>
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public ActionResult RemoverItem(int indice)
+    {
+        var itens = ObterItensDaSessao();
+        if (indice >= 0 && indice < itens.Count)
+            itens.RemoveAt(indice);
+        SalvarItensSessao(itens);
+        return RedirectToAction(nameof(Index));
+    }
+
+    // ─── Atualizar quantidade ─────────────────────────────────────────────────
+
+    /// <summary>
+    /// POST: Atualiza a quantidade de um item do carrinho
+    /// </summary>
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public ActionResult AtualizarQuantidade(int indice, int quantidade)
+    {
+        var itens = ObterItensDaSessao();
+        if (indice >= 0 && indice < itens.Count)
+        {
+            if (quantidade <= 0)
+                itens.RemoveAt(indice);
+            else
+                itens[indice].Quantidade = quantidade;
+        }
+        SalvarItensSessao(itens);
+        return RedirectToAction(nameof(Index));
+    }
+
+    // ─── Esvaziar carrinho ────────────────────────────────────────────────────
+
+    /// <summary>
+    /// POST: Remove todos os itens do carrinho de sessão
+    /// </summary>
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public ActionResult Esvaziar()
+    {
+        HttpContext.Session.Remove(SessaoCarrinho);
+        HttpContext.Session.Remove(SessaoFormaPagamento);
+        HttpContext.Session.Remove(SessaoIdCartao);
+        HttpContext.Session.Remove(SessaoIdEndereco);
+        return RedirectToAction(nameof(Index));
+    }
+
+    // ─── M15: Selecionar forma de pagamento ───────────────────────────────────
+
+    /// <summary>
+    /// GET: Tela M15 - Selecionar forma de pagamento
+    /// </summary>
+    public ActionResult SelecionarPagamento()
+    {
+        var clienteId = GetClienteIdLogado();
+        if (!clienteId.HasValue)
+        {
+            TempData["Error"] = "Faça login para continuar.";
+            return RedirectToAction("Index", "Home");
+        }
+
+        var cartoes = _cartaoService.GetByCliente(clienteId.Value).ToList();
+        ViewBag.Cartoes = cartoes;
+
+        var formaSelecionada = HttpContext.Session.GetString(SessaoFormaPagamento);
+        var idCartaoSelecionado = HttpContext.Session.GetInt32(SessaoIdCartao);
+
+        ViewBag.FormaSelecionada = formaSelecionada;
+        ViewBag.IdCartaoSelecionado = idCartaoSelecionado;
+
+        return View();
+    }
+
+    /// <summary>
+    /// POST: Salva a forma de pagamento selecionada na sessão e volta ao carrinho
+    /// </summary>
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public ActionResult SelecionarPagamento(string formaPagamento, uint? idCartao)
+    {
+        if (string.IsNullOrEmpty(formaPagamento))
+        {
+            TempData["Error"] = "Selecione uma forma de pagamento.";
+            return RedirectToAction(nameof(SelecionarPagamento));
+        }
+
+        // Validação: cartão exige id
+        if (formaPagamento == "C" && (!idCartao.HasValue || idCartao == 0))
+        {
+            TempData["Error"] = "Selecione um cartão para pagamento com cartão.";
+            return RedirectToAction(nameof(SelecionarPagamento));
+        }
+
+        HttpContext.Session.SetString(SessaoFormaPagamento, formaPagamento);
+
+        if (formaPagamento == "C" && idCartao.HasValue)
+            HttpContext.Session.SetInt32(SessaoIdCartao, (int)idCartao.Value);
+        else
+            HttpContext.Session.Remove(SessaoIdCartao);
+
+        TempData["Success"] = "Forma de pagamento selecionada!";
+        return RedirectToAction(nameof(Index));
+    }
+
+    // ─── Selecionar endereço ──────────────────────────────────────────────────
+
+    /// <summary>
+    /// POST: Salva o endereço de entrega selecionado na sessão
+    /// </summary>
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public ActionResult SelecionarEndereco(uint idEndereco)
+    {
+        HttpContext.Session.SetInt32(SessaoIdEndereco, (int)idEndereco);
+        return RedirectToAction(nameof(Index));
+    }
+
+    // ─── Fazer Pedido ─────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// POST: Cria o Carrinho + Pedido(s) + PedidoItems no banco. Fluxo final.
+    /// </summary>
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public ActionResult FazerPedido()
+    {
+        var clienteId = GetClienteIdLogado();
+        if (!clienteId.HasValue)
+        {
+            TempData["Error"] = "Faça login para continuar.";
+            return RedirectToAction("Index", "Home");
+        }
+
+        var itens = ObterItensDaSessao();
+        if (!itens.Any())
+        {
+            TempData["Error"] = "Seu carrinho está vazio.";
             return RedirectToAction(nameof(Index));
         }
 
-        var carrinho = _mapper.Map<Carrinho>(viewModel);
-        _carrinhoService.Create(carrinho);
+        var formaPagamento = HttpContext.Session.GetString(SessaoFormaPagamento);
+        if (string.IsNullOrEmpty(formaPagamento))
+        {
+            TempData["Error"] = "Selecione uma forma de pagamento antes de finalizar.";
+            return RedirectToAction(nameof(Index));
+        }
 
-        return RedirectToAction(nameof(Index));
+        var idEnderecoSessao = HttpContext.Session.GetInt32(SessaoIdEndereco);
+        if (!idEnderecoSessao.HasValue)
+        {
+            TempData["Error"] = "Selecione um endereço de entrega antes de finalizar.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        uint? idCartao = null;
+        if (formaPagamento == "C")
+        {
+            var idCartaoSessao = HttpContext.Session.GetInt32(SessaoIdCartao);
+            if (!idCartaoSessao.HasValue)
+            {
+                TempData["Error"] = "Selecione um cartão para pagamento com cartão.";
+                return RedirectToAction(nameof(Index));
+            }
+            idCartao = (uint)idCartaoSessao.Value;
+        }
+
+        try
+        {
+            // Agrupa itens por restaurante (pode haver mais de um restaurante no pedido futuro,
+            // mas a validação ao adicionar já garante 1 restaurante por carrinho)
+            var restaurantesNoCarrinho = itens.Select(i => i.IdRestaurante).Distinct().ToList();
+
+            // Cria o Carrinho no banco
+            var carrinho = new Carrinho
+            {
+                IdCliente = clienteId.Value,
+                FormaDePagamento = formaPagamento,
+                ValorFrete = 0, // Pode ser calculado futuramente
+                IdCartao = idCartao,
+                Observacao = null
+            };
+            var idCarrinho = _carrinhoService.Create(carrinho);
+
+            // Para cada restaurante (atualmente sempre 1), cria um Pedido
+            foreach (var idRestaurante in restaurantesNoCarrinho)
+            {
+                var itensDoPedido = itens.Where(i => i.IdRestaurante == idRestaurante).ToList();
+                var totalPedido = itensDoPedido.Sum(i => i.Subtotal);
+
+                var pedido = new Pedido
+                {
+                    Data = DateTime.Now,
+                    Preco = totalPedido,
+                    IdRestaurante = idRestaurante,
+                    IdCarrinho = idCarrinho
+                };
+
+                // Adiciona os PedidoItems
+                foreach (var it in itensDoPedido)
+                {
+                    pedido.Pedidoitems.Add(new Pedidoitem
+                    {
+                        IdItem = it.IdItem,
+                        Quantidade = it.Quantidade,
+                        Preco = it.PrecoUnitario
+                    });
+                }
+
+                _pedidoService.Create(pedido);
+            }
+
+            // Limpa o carrinho da sessão
+            HttpContext.Session.Remove(SessaoCarrinho);
+            HttpContext.Session.Remove(SessaoFormaPagamento);
+            HttpContext.Session.Remove(SessaoIdCartao);
+            HttpContext.Session.Remove(SessaoIdEndereco);
+
+            TempData["Success"] = "Pedido realizado com sucesso! 🎉";
+            return RedirectToAction("Index", "Pedido");
+        }
+        catch (Exception ex)
+        {
+            TempData["Error"] = $"Erro ao realizar pedido: {ex.Message}";
+            return RedirectToAction(nameof(Index));
+        }
     }
 
-    public ActionResult Delete(uint id)
-    {
-        var carrinho = _carrinhoService.Get(id);
-        if (carrinho == null)
-            return NotFound();
+    // ─── Auxiliares ───────────────────────────────────────────────────────────
 
-        var viewModel = _mapper.Map<CarrinhoViewModel>(carrinho);
-        return View(viewModel);
+    private List<CarrinhoSessaoItem> ObterItensDaSessao()
+    {
+        return HttpContext.Session.GetObject<List<CarrinhoSessaoItem>>(SessaoCarrinho)
+               ?? new List<CarrinhoSessaoItem>();
     }
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public ActionResult Delete(CarrinhoViewModel viewModel)
+    private void SalvarItensSessao(List<CarrinhoSessaoItem> itens)
     {
-        _carrinhoService.Delete(viewModel.Id);
-        return RedirectToAction(nameof(Index));
+        HttpContext.Session.SetObject(SessaoCarrinho, itens);
+    }
+
+    private uint? GetClienteIdLogado()
+    {
+        var clienteId = HttpContext.Session.GetClienteId();
+
+        if (!clienteId.HasValue)
+        {
+            var userEmail = User.Identity?.Name;
+            if (!string.IsNullOrEmpty(userEmail))
+            {
+                var cliente = _clienteService.GetByEmail(userEmail);
+                if (cliente != null)
+                {
+                    HttpContext.Session.SetClienteId(cliente.Id);
+                    clienteId = cliente.Id;
+                }
+            }
+        }
+
+        return clienteId;
+    }
+
+    // Expõe contagem de itens para o badge no header (usada via ViewComponent ou AJAX)
+    [AllowAnonymous]
+    public JsonResult ContarItens()
+    {
+        var itens = ObterItensDaSessao();
+        return Json(new { total = itens.Sum(i => i.Quantidade) });
     }
 }
