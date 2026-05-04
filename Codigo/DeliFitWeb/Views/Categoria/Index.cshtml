@@ -1,21 +1,172 @@
-@model IEnumerable<CategoriaViewModel>
+﻿@model List<DeliFitWeb.Models.CategoriaViewModel>
 
-<h2>Categorias</h2>
+@{
+    ViewData["Title"] = "Categorias";
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Categoria</th>
-            <th>Quantidade de Itens</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var categoria in Model)
-        {
-            <tr>
-                <td>@categoria.Nome</td>
-                <td>@categoria.QuantidadeItens</td>
-            </tr>
+    // Mapa de ícones por nome de restrição/categoria
+    string IconeCategoria(string nome) => nome?.ToLower() switch
+    {
+        "vegetariano" => "bi-flower3",
+        "vegano" => "bi-apple",
+        "sem glúten" => "bi-egg-fried",
+        "sem lactose" => "bi-cup-straw",
+        "fitness" => "bi-heart-pulse",
+        "low carb" => "bi-lightning",
+        "zero lactose" => "bi-droplet-half",
+        "proteico" => "bi-trophy",
+        _ => "bi-grid"
+    };
+
+    string CorCategoria(int idx) => (idx % 6) switch
+    {
+        0 => "#22c55e",
+        1 => "#3b82f6",
+        2 => "#f59e0b",
+        3 => "#8b5cf6",
+        4 => "#ef4444",
+        5 => "#14b8a6",
+        _ => "#ff6600"
+    };
+}
+
+<style>
+    body {
+        background: #f8f9fa;
+        padding-bottom: 90px;
+    }
+
+    .top-bar {
+        background: white;
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        position: sticky;
+        top: 0;
+        z-index: 200;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+
+    .back-btn {
+        width: 38px;
+        height: 38px;
+        background: #f4f4f4;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #333;
+        font-size: 1rem;
+        text-decoration: none;
+    }
+
+        .back-btn:hover {
+            background: #ffe8d6;
+            color: #ff6600;
         }
-    </tbody>
-</table>
+
+    .page-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #1a1a1a;
+    }
+
+    .cat-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        padding: 16px;
+    }
+
+    .cat-card {
+        background: white;
+        border-radius: 18px;
+        padding: 22px 16px 18px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+        text-decoration: none;
+        color: inherit;
+        transition: transform 0.2s, box-shadow 0.2s;
+        cursor: pointer;
+    }
+
+        .cat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 22px rgba(0,0,0,0.12);
+            text-decoration: none;
+            color: inherit;
+        }
+
+    .cat-icon-wrap {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.7rem;
+    }
+
+    .cat-nome {
+        font-size: 0.92rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        text-align: center;
+    }
+
+    .cat-qtd {
+        font-size: 0.75rem;
+        color: #aaa;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #bbb;
+    }
+
+        .empty-state i {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 12px;
+        }
+</style>
+
+<div class="top-bar">
+    <a href="javascript:history.back()" class="back-btn">
+        <i class="bi bi-chevron-left"></i>
+    </a>
+    <span class="page-title">Categorias</span>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="empty-state">
+        <i class="bi bi-grid"></i>
+        <p>Nenhuma categoria disponível</p>
+    </div>
+}
+else
+{
+    <div class="cat-grid">
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            var cat = Model[i];
+            var cor = CorCategoria(i);
+            var icone = IconeCategoria(cat.Nome);
+            <a class="cat-card"
+               asp-controller="Categoria" asp-action="Ver"
+               asp-route-categoria="@cat.Nome">
+                <div class="cat-icon-wrap"
+                     style="background: @(cor)22; color: @cor;">
+                    <i class="bi @icone"></i>
+                </div>
+                <div class="cat-nome">@cat.Nome</div>
+                <div class="cat-qtd">@cat.QuantidadeItens item(s)</div>
+            </a>
+        }
+    </div>
+}
