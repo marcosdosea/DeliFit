@@ -1,166 +1,633 @@
-@model List<DeliFitWeb.Models.CarrinhoViewModel>
+﻿@model List<DeliFitWeb.Models.CarrinhoSessaoItem>
 
 @{
-    ViewData["Title"] = "Seus Carrinhos";
+    ViewData["Title"] = "Carrinho";
+
+    string DetectarBandeira(string numero)
+    {
+        if (string.IsNullOrEmpty(numero)) return "Cartão";
+        return numero[0] switch
+        {
+            '4' => "Visa",
+            '5' => "Mastercard",
+            '3' => "Amex",
+            '6' => "Elo",
+            _ => "Cartão"
+        };
+    }
+    var itens = Model ?? new List<DeliFitWeb.Models.CarrinhoSessaoItem>();
+    var subtotal = itens.Sum(i => i.Subtotal);
+    decimal valorFrete = 0m;
+    var total = subtotal + valorFrete;
+    var formaPagamento = ViewBag.FormaPagamento as string;
+    var cartaoSelecionado = ViewBag.CartaoSelecionado as Core.Cartao;
+    var enderecos = ViewBag.Enderecos as List<Core.Endereco> ?? new List<Core.Endereco>();
+    var idEnderecoSelecionado = ViewBag.IdEnderecoSelecionado as int?;
+
+    string NomeFormaPagamento(string? f) => f switch
+    {
+        "D" => "Dinheiro",
+        "P" => "Pix",
+        "C" => "Cartão",
+        _ => "Não selecionado"
+    };
 }
 
-<div class="container-fluid p-0 bg-white">
-    <div class="row g-0">
-        <main class="col-12 p-5 bg-light">
-            <div class="container">
-
-                <!-- HEADER -->
-                <div class="d-flex align-items-center mb-4">
-                    <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary me-3">
-                        <i class="bi bi-chevron-left"></i>
-                    </a>
-
-                    <h2 class="fw-bold m-0">Seus Carrinhos</h2>
-                </div>
-
-                @if (!Model.Any())
-                {
-                    <div class="alert alert-info">
-                        Voc� ainda n�o possui carrinhos cadastrados.
-                    </div>
-                }
-                else
-                {
-                    @foreach (var carrinho in Model)
-                    {
-                        <div class="card border-0 shadow-sm mb-3">
-                            <div class="card-body d-flex justify-content-between align-items-center">
-
-                                <!-- INFO -->
-                                <div class="d-flex align-items-center gap-3">
-                                    <div class="rounded-circle bg-light d-flex align-items-center justify-content-center"
-                                         style="width:60px;height:60px;">
-                                        <i class="bi bi-cart3 fs-3 text-muted"></i>
-                                    </div>
-
-                                    <div>
-                                        <h6 class="fw-bold mb-1">
-                                            Carrinho #@carrinho.Id
-                                        </h6>
-
-                                        <p class="text-muted small mb-0">
-                                            Cliente: @carrinho.Cliente?.Nome
-                                        </p>
-
-                                        <p class="text-muted small mb-0">
-                                            Forma de pagamento:
-                                            @{
-                                                var fp = carrinho.FormaDePagamento switch
-                                                {
-                                                    "P" => "PIX",
-                                                    "C" => "Cart�o",
-                                                    "D" => "Dinheiro",
-                                                    _ => "N�o definida"
-                                                };
-                                            }
-                                            @fp
-                                            � Frete: R$ @carrinho.ValorFrete.ToString("F2")
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <!-- A��ES -->
-                                <div class="d-flex align-items-center gap-2">
-
-                                    <a asp-action="Details"
-                                       asp-route-id="@carrinho.Id"
-                                       class="btn btn-outline-secondary btn-sm action-btn">
-                                        <i class="bi bi-eye me-1"></i> Detalhes
-                                    </a>
-
-                                    <form asp-action="Delete" method="post" class="d-inline">
-                                        <input type="hidden" name="Id" value="@carrinho.Id" />
-                                        <button type="button"
-                                                class="btn btn-outline-danger btn-sm btn-cancel"
-                                                data-bs-id="@carrinho.Id"
-                                                data-bs-nome="@carrinho.Cliente?.Nome">
-                                            <i class="bi bi-trash me-1"></i> Cancelar
-                                        </button>
-                                    </form>
-
-                                </div>
-
-                            </div>
-                        </div>
-                    }
-                }
-
-                <!-- NOVO CARRINHO -->
-                <div class="mt-4 text-center">
-                    <a asp-action="Create"
-                       class="btn px-4 py-2 fw-bold"
-                       style="background-color:#ff6600;color:white;border-radius:30px;">
-                        Criar novo carrinho
-                    </a>
-                </div>
-
-            </div>
-        </main>
-    </div>
-</div>
-
-
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="confirmDeleteLabel"><i class="bi bi-exclamation-triangle-fill me-2"></i>Cancelar carrinho</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
-            </div>
-            <div class="modal-body">
-                <p class="mb-2">Voc� est� prestes a cancelar o <strong id="modalCarrinhoId">#0</strong>.</p>
-                <p class="text-muted small mb-0" id="modalClienteNome"></p>
-                <p class="small text-muted mt-2">Esta a��o n�o pode ser desfeita.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Voltar</button>
-                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Confirmar cancelamento</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <style>
-    .card {
+    body {
+        background: #f8f9fa;
+        padding-bottom: 100px;
+    }
+
+    .top-bar {
+        background: white;
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        position: sticky;
+        top: 0;
+        z-index: 200;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+
+    .back-btn {
+        width: 38px;
+        height: 38px;
+        background: #f4f4f4;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #333;
+        font-size: 1rem;
+        text-decoration: none;
+    }
+
+        .back-btn:hover {
+            background: #ffe8d6;
+            color: #ff6600;
+        }
+
+    .page-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #1a1a1a;
+    }
+
+    .section-card {
+        background: white;
+        border-radius: 16px;
+        margin: 12px 16px;
+        padding: 16px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+
+    .section-label {
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: #aaa;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 10px;
+    }
+
+    /* Restaurante info */
+    .rest-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .rest-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: #f0f0f0;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+        .rest-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .rest-name {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #1a1a1a;
+    }
+
+    .rest-meta {
+        font-size: 0.78rem;
+        color: #888;
+        margin-top: 2px;
+    }
+
+    /* Endereço */
+    .endereco-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 0;
+        border-bottom: 1px solid #f4f4f4;
+        cursor: pointer;
+    }
+
+        .endereco-row:last-child {
+            border-bottom: none;
+        }
+
+        .endereco-row input[type=radio] {
+            accent-color: #ff6600;
+            width: 18px;
+            height: 18px;
+        }
+
+    .endereco-label {
+        flex: 1;
+        font-size: 0.85rem;
+        color: #333;
+    }
+
+        .endereco-label strong {
+            display: block;
+            font-size: 0.9rem;
+            color: #1a1a1a;
+        }
+
+    /* Items */
+    .item-row {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        padding: 12px 0;
+        border-bottom: 1px solid #f8f8f8;
+    }
+
+        .item-row:last-child {
+            border-bottom: none;
+        }
+
+    .item-thumb {
+        width: 60px;
+        height: 60px;
         border-radius: 12px;
+        background: #f4f4f4;
+        overflow: hidden;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .item-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .item-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+        .item-info .nome {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: #1a1a1a;
+        }
+
+        .item-info .detalhe {
+            font-size: 0.75rem;
+            color: #aaa;
+            margin-top: 2px;
+        }
+
+        .item-info .preco {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #ff6600;
+            margin-top: 6px;
+        }
+
+    .item-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+        .item-actions button {
+            width: 28px;
+            height: 28px;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+    .btn-minus {
+        background: #f4f4f4;
+        color: #555;
+    }
+
+    .btn-plus {
+        background: #ff6600;
+        color: white;
+    }
+
+    .qty-val {
+        font-weight: 700;
+        font-size: 0.9rem;
+        min-width: 20px;
+        text-align: center;
+    }
+
+    .btn-remove {
+        background: none;
+        border: none;
+        color: #ccc;
+        font-size: 1.1rem;
+        cursor: pointer;
+        padding: 4px;
+    }
+
+        .btn-remove:hover {
+            color: #e53e3e;
+        }
+
+    /* Totais */
+    .total-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 7px 0;
+        font-size: 0.88rem;
+        color: #555;
+    }
+
+        .total-row.grande {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #1a1a1a;
+            border-top: 1.5px solid #f0f0f0;
+            margin-top: 4px;
+            padding-top: 12px;
+        }
+
+    /* Pagamento */
+    .pagamento-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .pagamento-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .pagamento-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        background: #fff3e6;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #ff6600;
+        font-size: 1rem;
+    }
+
+    .pagamento-nome {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #1a1a1a;
+    }
+
+    .pagamento-sub {
+        font-size: 0.75rem;
+        color: #aaa;
+    }
+
+    .btn-selecionar {
+        background: #ff6600;
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 7px 18px;
+        font-size: 0.82rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+        .btn-selecionar:hover {
+            background: #e55a00;
+            color: white;
+        }
+
+    /* Botão Fazer Pedido */
+    .btn-fazer-pedido {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 16px;
+        background: white;
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+        z-index: 300;
+    }
+
+        .btn-fazer-pedido button {
+            width: 100%;
+            padding: 15px;
+            background: #ff6600;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+            .btn-fazer-pedido button:hover {
+                background: #e55a00;
+            }
+
+            .btn-fazer-pedido button:disabled {
+                background: #ccc;
+                cursor: not-allowed;
+            }
+
+    .empty-cart {
+        text-align: center;
+        padding: 60px 20px;
+        color: #aaa;
+    }
+
+        .empty-cart i {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+    .alert-strip {
+        margin: 12px 16px 0;
+        border-radius: 12px;
+        font-size: 0.85rem;
     }
 </style>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-      
-        if (typeof bootstrap === 'undefined') {
-            console.warn('Bootstrap JS n�o encontrado. A confirma��o estilizada requer Bootstrap JavaScript.');
-            return;
+<div class="top-bar">
+    <a href="javascript:history.back()" class="back-btn">
+        <i class="bi bi-chevron-left"></i>
+    </a>
+    <span class="page-title">Carrinho</span>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-strip alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-strip alert-dismissible fade show" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (!itens.Any())
+{
+    <div class="empty-cart">
+        <i class="bi bi-cart-x"></i>
+        <p style="font-weight:600; color:#555;">Seu carrinho está vazio</p>
+        <p style="font-size:0.85rem;">Adicione itens do cardápio de um restaurante</p>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-warning mt-3"
+           style="border-radius:30px; font-weight:700; background:#ff6600; border:none; color:white; padding:12px 30px;">
+            Explorar restaurantes
+        </a>
+    </div>
+}
+else
+{
+    @* ── Info do restaurante ── *@
+    var nomeRest = itens.First().NomeRestaurante;
+    var idRest = itens.First().IdRestaurante;
+    <div class="section-card">
+        <div class="rest-info">
+            <div class="rest-avatar">
+                <img src="@Url.Action("Foto", "Restaurante", new { id = idRest })"
+                     alt="@nomeRest"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+                <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;">
+                    <i class="bi bi-shop" style="color:#ccc;font-size:1.5rem;"></i>
+                </div>
+            </div>
+            <div>
+                <div class="rest-name">@nomeRest</div>
+                <div class="rest-meta">
+                    @itens.Sum(i => i.Quantidade) iten(s) &nbsp;·&nbsp;
+                    R$ @subtotal.ToString("N2")
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* ── Endereço de entrega ── *@
+    <div class="section-card">
+        <div class="section-label"><i class="bi bi-geo-alt me-1"></i>Endereço de entrega</div>
+        @if (!enderecos.Any())
+        {
+            <div style="font-size:0.85rem; color:#aaa;">
+                Nenhum endereço cadastrado.
+                <a asp-controller="Endereco" asp-action="Create" style="color:#ff6600; font-weight:600;">Adicionar endereço</a>
+            </div>
         }
+        else
+        {
+            <form asp-action="SelecionarEndereco" asp-controller="Carrinho" method="post">
+                @Html.AntiForgeryToken()
+                @foreach (var end in enderecos)
+                {
+                    <label class="endereco-row">
+                        <input type="radio" name="idEndereco" value="@end.Id"
+                        @(idEnderecoSelecionado.HasValue && idEnderecoSelecionado.Value == (int)end.Id ? "checked" : "")
+                               onchange="this.form.submit()" />
+                        <div class="endereco-label">
+                            <strong>@end.Label</strong>
+                            @end.Rua, @end.Numero – @end.Bairro, @end.Cidade / @end.Estado
+                        </div>
+                    </label>
+                }
+            </form>
+        }
+    </div>
 
-        let currentForm = null;
-        const modalEl = document.getElementById('confirmDeleteModal');
-        const modal = new bootstrap.Modal(modalEl);
+    @* ── Frete e tempo estimado ── *@
+    <div class="section-card">
+        <div class="section-label"><i class="bi bi-truck me-1"></i>Entrega</div>
+        <div class="total-row">
+            <span>Tempo estimado</span>
+            <span style="font-weight:600;">30–45 min</span>
+        </div>
+        <div class="total-row">
+            <span>Frete</span>
+            <span style="font-weight:600; color:#16a34a;">Grátis</span>
+        </div>
+    </div>
 
-        document.querySelectorAll('.btn-cancel').forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                currentForm = this.closest('form');
-                const id = this.getAttribute('data-bs-id') || '';
-                const nome = this.getAttribute('data-bs-nome') || '';
+    @* ── Lista de itens ── *@
+    <div class="section-card">
+        <div class="section-label"><i class="bi bi-bag me-1"></i>Seus itens</div>
+        @for (int i = 0; i < itens.Count; i++)
+        {
+            var it = itens[i];
+            <div class="item-row">
+                <div class="item-thumb">
+                    <img src="@Url.Action("Foto", "Item", new { id = it.IdItem })"
+                         alt="@it.NomeItem"
+                         onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\'bi bi-egg-fried\' style=\'color:#ddd;font-size:1.4rem;\'></i>';" />
+                </div>
+                <div class="item-info">
+                    <div class="nome">@it.NomeItem</div>
+                    <div class="detalhe">
+                        @if (!string.IsNullOrEmpty(it.Tamanho))
+                        {
+                            <span>Tamanho @it.Tamanho</span>
+                        }
+                        @if (!string.IsNullOrEmpty(it.Observacao))
+                        {
+                            <span>&nbsp;· @it.Observacao</span>
+                        }
+                    </div>
+                    <div class="preco">R$ @it.Subtotal.ToString("N2")</div>
+                </div>
+                <div class="item-actions">
+                    @* Decrementar *@
+                    <form asp-action="AtualizarQuantidade" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="indice" value="@i" />
+                        <input type="hidden" name="quantidade" value="@(it.Quantidade - 1)" />
+                        <button type="submit" class="btn-minus">
+                            <i class="bi bi-dash"></i>
+                        </button>
+                    </form>
+                    <span class="qty-val">@it.Quantidade</span>
+                    @* Incrementar *@
+                    <form asp-action="AtualizarQuantidade" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="indice" value="@i" />
+                        <input type="hidden" name="quantidade" value="@(it.Quantidade + 1)" />
+                        <button type="submit" class="btn-plus">
+                            <i class="bi bi-plus"></i>
+                        </button>
+                    </form>
+                    @* Remover *@
+                    <form asp-action="RemoverItem" method="post" style="display:inline;"
+                          onsubmit="return confirm('Remover este item?')">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="indice" value="@i" />
+                        <button type="submit" class="btn-remove">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
 
-                document.getElementById('modalCarrinhoId').textContent = '#' + id;
-                document.getElementById('modalClienteNome').textContent = nome ? 'Cliente: ' + nome : '';
+    @* ── Totais ── *@
+    <div class="section-card">
+        <div class="section-label"><i class="bi bi-receipt me-1"></i>Resumo</div>
+        <div class="total-row">
+            <span>Subtotal</span>
+            <span>R$ @subtotal.ToString("N2")</span>
+        </div>
+        <div class="total-row">
+            <span>Taxa de entrega</span>
+            <span style="color:#16a34a;">Grátis</span>
+        </div>
+        <div class="total-row grande">
+            <span>Total</span>
+            <span>R$ @total.ToString("N2")</span>
+        </div>
+    </div>
 
-                modal.show();
-            });
-        });
+    @* ── Forma de pagamento ── *@
+    <div class="section-card">
+        <div class="section-label"><i class="bi bi-credit-card me-1"></i>Forma de pagamento</div>
+        <div class="pagamento-row">
+            <div class="pagamento-info">
+                <div class="pagamento-icon">
+                    @if (formaPagamento == "D")
+                    {
+                        <i class="bi bi-cash"></i>
+                    }
+                    else if (formaPagamento == "P")
+                    {
 
-        document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
-            if (currentForm) {
-                
-                currentForm.submit();
-            }
-        });
-    });
-</script>
+                        <i class="bi bi-qr-code"></i>
+                    }
+                    else if (formaPagamento == "C")
+                    {
+
+                        <i class="bi bi-credit-card-2-front"></i>
+                    }
+                    else
+                    {
+
+                        <i class="bi bi-wallet2"></i>
+                    }
+                </div>
+                <div>
+                    <div class="pagamento-nome">@NomeFormaPagamento(formaPagamento)</div>
+                    @if (formaPagamento == "C" && cartaoSelecionado != null)
+                    {
+                        <div class="pagamento-sub">
+                            @DetectarBandeira(cartaoSelecionado.Numero) – final @cartaoSelecionado.Numero.Substring(cartaoSelecionado.Numero.Length - 4)
+                        </div>
+                    }
+                </div>
+            </div>
+            <a asp-action="SelecionarPagamento" asp-controller="Carrinho" class="btn-selecionar">
+                @(string.IsNullOrEmpty(formaPagamento) ? "Selecionar" : "Alterar")
+            </a>
+        </div>
+    </div>
+
+    @* ── Botão Fazer Pedido ── *@
+    <div class="btn-fazer-pedido">
+        <form asp-action="FazerPedido" asp-controller="Carrinho" method="post">
+            @Html.AntiForgeryToken()
+            <button type="submit"
+                @(string.IsNullOrEmpty(formaPagamento) || !idEnderecoSelecionado.HasValue ? "disabled" : "")>
+                @if (string.IsNullOrEmpty(formaPagamento))
+                {
+                    <span>Selecione a forma de pagamento</span>
+                }
+                else if (!idEnderecoSelecionado.HasValue)
+                {
+                    <span>Selecione o endereço de entrega</span>
+                }
+                else
+                {
+                    <span>Fazer Pedido &nbsp;·&nbsp; R$ @total.ToString("N2")</span>
+                }
+            </button>
+        </form>
+    </div>
+}
