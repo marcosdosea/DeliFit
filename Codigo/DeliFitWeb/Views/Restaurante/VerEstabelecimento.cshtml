@@ -7,6 +7,7 @@
         .GroupBy(i => string.IsNullOrEmpty(i.Restricao) ? "Pratos" : i.Restricao)
         .OrderBy(g => g.Key)
         .ToList();
+    bool isCliente = User.IsInRole("Cliente");
 }
 
 <style>
@@ -59,11 +60,29 @@
         font-size: 1rem;
         text-decoration: none;
         box-shadow: 0 3px 10px rgba(255,102,0,0.35);
+        position: relative;
     }
 
         .cart-btn:hover {
             color: white;
         }
+
+    .cart-badge {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        background: #e53e3e;
+        color: white;
+        font-size: 0.65rem;
+        font-weight: 700;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid white;
+    }
 
     /* ── Hero ── */
     .hero {
@@ -164,14 +183,6 @@
         font-weight: 600;
     }
 
-    .delivery-info {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        color: #888;
-        font-size: 0.8rem;
-    }
-
     /* ── Category tabs ── */
     .cat-tabs {
         display: flex;
@@ -244,7 +255,6 @@
         background: white;
         border-radius: 16px;
         display: flex;
-        gap: 0;
         overflow: hidden;
         box-shadow: 0 2px 10px rgba(0,0,0,0.07);
         transition: transform 0.2s, box-shadow 0.2s;
@@ -385,6 +395,251 @@
             display: block;
             margin-bottom: 10px;
         }
+
+    /* ─────────────── MODAL M09 ─────────────── */
+    .modal-backdrop-custom {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.55);
+        z-index: 1050;
+        align-items: flex-end;
+    }
+
+        .modal-backdrop-custom.show {
+            display: flex;
+        }
+
+    .modal-sheet {
+        background: white;
+        width: 100%;
+        border-radius: 24px 24px 0 0;
+        padding: 0 0 30px;
+        max-height: 92vh;
+        overflow-y: auto;
+        animation: slideUp 0.28s ease;
+    }
+
+    @@keyframes slideUp {
+        from {
+            transform: translateY(100%);
+        }
+
+        to {
+            transform: translateY(0);
+        }
+    }
+
+    .modal-handle {
+        width: 40px;
+        height: 4px;
+        background: #e0e0e0;
+        border-radius: 4px;
+        margin: 12px auto 0;
+    }
+
+    .modal-img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        display: block;
+    }
+
+    .modal-img-placeholder {
+        width: 100%;
+        height: 160px;
+        background: linear-gradient(135deg,#f4f4f4,#e8e8e8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3rem;
+        color: #ccc;
+    }
+
+    .modal-body {
+        padding: 16px 20px;
+    }
+
+    .modal-nome {
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: #1a1a1a;
+    }
+
+    .modal-preco {
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: #ff6600;
+        margin-top: 4px;
+    }
+
+    .modal-desc {
+        font-size: 0.83rem;
+        color: #888;
+        margin: 8px 0 16px;
+        line-height: 1.5;
+    }
+
+    /* Macros no modal */
+    .modal-macros {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+    }
+
+    .modal-macro {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+        min-width: 60px;
+        border: 1.5px solid #f0f0f0;
+        border-radius: 12px;
+        padding: 8px 6px;
+    }
+
+        .modal-macro .val {
+            font-size: 1rem;
+            font-weight: 800;
+            color: #1a1a1a;
+        }
+
+        .modal-macro .lbl {
+            font-size: 0.68rem;
+            color: #aaa;
+            margin-top: 2px;
+        }
+
+    /* Seleção de tamanho */
+    .tamanho-group {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .tamanho-btn {
+        flex: 1;
+        padding: 10px 6px;
+        border: 2px solid #e8e8e8;
+        border-radius: 12px;
+        background: white;
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: #555;
+        cursor: pointer;
+        transition: all 0.15s;
+        text-align: center;
+    }
+
+        .tamanho-btn.active {
+            border-color: #ff6600;
+            background: #fff3e6;
+            color: #ff6600;
+        }
+
+    /* Observação */
+    .obs-label {
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: #555;
+        margin-bottom: 6px;
+    }
+
+    .obs-input {
+        width: 100%;
+        border: 1.5px solid #e8e8e8;
+        border-radius: 12px;
+        padding: 10px 14px;
+        font-size: 0.85rem;
+        resize: none;
+        font-family: inherit;
+        outline: none;
+        transition: border 0.2s;
+    }
+
+        .obs-input:focus {
+            border-color: #ff6600;
+        }
+
+    /* Footer do modal */
+    .modal-footer-custom {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 20px 0;
+        border-top: 1px solid #f4f4f4;
+        margin-top: 16px;
+    }
+
+    .qty-control {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .qty-btn {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+    }
+
+        .qty-btn.minus {
+            background: #f4f4f4;
+            color: #555;
+        }
+
+        .qty-btn.plus {
+            background: #ff6600;
+            color: white;
+        }
+
+    .qty-num {
+        font-weight: 800;
+        font-size: 1rem;
+        min-width: 24px;
+        text-align: center;
+    }
+
+    .btn-adicionar {
+        flex: 1;
+        background: #ff6600;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 13px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+        .btn-adicionar:hover {
+            background: #e55a00;
+        }
+
+    .restricao-tags {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+    }
+
+    .restricao-tag {
+        font-size: 0.72rem;
+        border-radius: 8px;
+        padding: 3px 10px;
+        font-weight: 600;
+        background: #f0fdf4;
+        color: #16a34a;
+        border: 1px solid #bbf7d0;
+    }
 </style>
 
 <div class="top-bar">
@@ -394,10 +649,33 @@
     <strong style="font-size:0.95rem; color:#1a1a1a; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:60%;">
         @Model.NomeRestaurante
     </strong>
-    <a asp-controller="Carrinho" asp-action="Index" class="cart-btn">
-        <i class="bi bi-cart3"></i>
-    </a>
+    @if (isCliente)
+    {
+        <a asp-controller="Carrinho" asp-action="Index" class="cart-btn" id="cartBtn">
+            <i class="bi bi-cart3"></i>
+            <span class="cart-badge d-none" id="cartBadge">0</span>
+        </a>
+    }
+    else
+    {
+        <div style="width:38px;"></div>
+    }
 </div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show m-3" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show m-3" role="alert">
+        @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
 
 <div class="hero">
     <img src="@Url.Action("Foto", "Restaurante", new { id = Model.Id })"
@@ -466,7 +744,17 @@ else
             <div class="items-grid">
                 @foreach (var item in cat)
                 {
-                    <div class="item-card">
+                    <div class="item-card @(isCliente ? "item-clickable" : "")"
+                         data-id="@item.Id"
+                         data-nome="@item.Nome"
+                         data-preco="@item.Preco.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)"
+                         data-tamanho="@(item.Tamanho ?? "")"
+                         data-desc="@(item.Descricao ?? "")"
+                         data-cal="@item.Calorias.ToString("0")"
+                         data-prot="@(item.Proteina.HasValue ? item.Proteina.Value.ToString("0") : "")"
+                         data-carb="@(item.Carboidratos.HasValue ? item.Carboidratos.Value.ToString("0") : "")"
+                         data-gord="@(item.Gordura.HasValue ? item.Gordura.Value.ToString("0") : "")"
+                         data-restricao="@(item.Restricao ?? "")">
                         <div class="item-img">
                             <img src="@Url.Action("Foto", "Item", new { id = item.Id })"
                                  alt="@item.Nome"
@@ -513,40 +801,235 @@ else
     }
 }
 
+@* ─────────────── MODAL M09 - Montar Refeição ─────────────── *@
+@if (isCliente)
+{
+    <div class="modal-backdrop-custom" id="modalBackdrop" onclick="fecharModal(event)">
+        <div class="modal-sheet" id="modalSheet">
+            <div class="modal-handle"></div>
+
+            <div id="modalImgWrap">
+                <div class="modal-img-placeholder" id="modalImgPlaceholder">
+                    <i class="bi bi-egg-fried"></i>
+                </div>
+                <img id="modalImg" class="modal-img" src="" alt=""
+                     style="display:none;"
+                     onerror="this.style.display='none'; document.getElementById('modalImgPlaceholder').style.display='flex';" />
+            </div>
+
+            <div class="modal-body">
+                <div class="modal-nome" id="modalNome"></div>
+                <div class="modal-preco" id="modalPreco"></div>
+                <div id="modalRestrTags" class="restricao-tags"></div>
+                <div class="modal-desc" id="modalDesc"></div>
+
+                <!-- Macros -->
+                <div class="modal-macros" id="modalMacros"></div>
+
+                <!-- Tamanho -->
+                <div id="modalTamanhoSection" style="display:none; margin-bottom:16px;">
+                    <div class="obs-label">Tamanho da porção</div>
+                    <div class="tamanho-group" id="tamanhoGroup">
+                        <button type="button" class="tamanho-btn" data-t="P" onclick="selecionarTamanho('P')">P<br><span style="font-weight:400;font-size:0.72rem;">Pequeno</span></button>
+                        <button type="button" class="tamanho-btn" data-t="M" onclick="selecionarTamanho('M')">M<br><span style="font-weight:400;font-size:0.72rem;">Médio</span></button>
+                        <button type="button" class="tamanho-btn" data-t="G" onclick="selecionarTamanho('G')">G<br><span style="font-weight:400;font-size:0.72rem;">Grande</span></button>
+                    </div>
+                </div>
+
+                <!-- Observação -->
+                <div class="obs-label">Observação <span style="font-weight:400;color:#bbb;">(opcional)</span></div>
+                <textarea class="obs-input" id="modalObs" rows="2"
+                          placeholder="Ex: sem cebola, molho à parte..."></textarea>
+            </div>
+
+            <!-- Footer: qtd + botão adicionar -->
+            <div class="modal-footer-custom">
+                <div class="qty-control">
+                    <button type="button" class="qty-btn minus" onclick="alterarQtd(-1)">
+                        <i class="bi bi-dash"></i>
+                    </button>
+                    <span class="qty-num" id="modalQtd">1</span>
+                    <button type="button" class="qty-btn plus" onclick="alterarQtd(1)">
+                        <i class="bi bi-plus"></i>
+                    </button>
+                </div>
+
+                <form asp-action="AdicionarItem" asp-controller="Carrinho"
+                      method="post" id="formAdicionar" style="flex:1;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="idItem" id="inputIdItem" />
+                    <input type="hidden" name="quantidade" id="inputQtd" />
+                    <input type="hidden" name="tamanho" id="inputTamanho" />
+                    <input type="hidden" name="observacao" id="inputObs" />
+                    <button type="submit" class="btn-adicionar" id="btnAdicionar">
+                        Adicionar &nbsp;·&nbsp; R$ <span id="modalTotalSpan">0,00</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
 @section Scripts {
     <script>
-        // Category tab smooth scroll + active state
+        // ── Tabs ──
         document.querySelectorAll('.cat-tab').forEach(tab => {
             tab.addEventListener('click', function(e) {
                 document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
                 this.classList.add('active');
-
                 const target = this.getAttribute('data-target');
                 if (target === 'all') {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                     e.preventDefault();
                 }
-                // otherwise let href="#..." scroll
             });
         });
 
-        // Highlight tab on scroll
         const sections = document.querySelectorAll('.cat-section');
         const tabs = document.querySelectorAll('.cat-tab[data-target]');
-
         window.addEventListener('scroll', () => {
             let current = '';
-            sections.forEach(section => {
-                const top = section.getBoundingClientRect().top;
-                if (top < 150) current = section.id;
-            });
-            tabs.forEach(tab => {
-                tab.classList.remove('active');
-                if (tab.getAttribute('data-target') === current) {
-                    tab.classList.add('active');
-                }
+            sections.forEach(s => { if (s.getBoundingClientRect().top < 150) current = s.id; });
+            tabs.forEach(t => {
+                t.classList.remove('active');
+                if (t.getAttribute('data-target') === current) t.classList.add('active');
             });
             if (!current) tabs[0]?.classList.add('active');
+        });
+
+        // ── Badge do carrinho ──
+        (function atualizarBadge() {
+            fetch('/Carrinho/ContarItens')
+                .then(r => r.json())
+                .then(d => {
+                    const badge = document.getElementById('cartBadge');
+                    if (!badge) return;
+                    if (d.total > 0) {
+                        badge.textContent = d.total;
+                        badge.classList.remove('d-none');
+                    } else {
+                        badge.classList.add('d-none');
+                    }
+                })
+                .catch(() => {});
+        })();
+
+        // ─────────── Modal M09 ───────────
+        let _qtd = 1;
+        let _preco = 0;
+        let _tamanhoObrigatorio = false;
+        let _tamanhoSelecionado = '';
+
+        function abrirModal(idItem, nome, preco, tamanho, descricao, cal, prot, carb, gord, restricao) {
+            _qtd = 1;
+            _preco = parseFloat(preco);
+            _tamanhoObrigatorio = tamanho !== '';
+            _tamanhoSelecionado = tamanho !== '' ? '' : null; // null = não tem tamanho
+
+            // Dados básicos
+            document.getElementById('inputIdItem').value = idItem;
+            document.getElementById('modalNome').textContent = nome;
+            document.getElementById('modalPreco').textContent = 'R$ ' + preco.replace('.', ',');
+            document.getElementById('modalDesc').textContent = descricao || '';
+            document.getElementById('modalObs').value = '';
+            document.getElementById('modalQtd').textContent = '1';
+            document.getElementById('inputQtd').value = '1';
+            document.getElementById('inputObs').value = '';
+            document.getElementById('inputTamanho').value = '';
+
+            // Imagem
+            const img = document.getElementById('modalImg');
+            const placeholder = document.getElementById('modalImgPlaceholder');
+            img.src = '/Item/Foto/' + idItem;
+            img.style.display = 'block';
+            placeholder.style.display = 'none';
+
+            // Restrição
+            const tagsEl = document.getElementById('modalRestrTags');
+            tagsEl.innerHTML = restricao
+                ? `<span class="restricao-tag"><i class="bi bi-shield-check me-1"></i>${restricao}</span>`
+                : '';
+
+            // Macros
+            const macrosEl = document.getElementById('modalMacros');
+            macrosEl.innerHTML = '';
+            if (cal)  macrosEl.innerHTML += `<div class="modal-macro"><span class="val">${cal}</span><span class="lbl">kcal</span></div>`;
+            if (prot) macrosEl.innerHTML += `<div class="modal-macro"><span class="val">${prot}g</span><span class="lbl">Prot</span></div>`;
+            if (carb) macrosEl.innerHTML += `<div class="modal-macro"><span class="val">${carb}g</span><span class="lbl">Carb</span></div>`;
+            if (gord) macrosEl.innerHTML += `<div class="modal-macro"><span class="val">${gord}g</span><span class="lbl">Gord</span></div>`;
+
+            // Tamanho
+            const secTam = document.getElementById('modalTamanhoSection');
+            if (tamanho !== '') {
+                secTam.style.display = 'block';
+                document.querySelectorAll('.tamanho-btn').forEach(b => b.classList.remove('active'));
+            } else {
+                secTam.style.display = 'none';
+            }
+
+            atualizarBotaoAdicionar();
+
+            // Exibe modal
+            document.getElementById('modalBackdrop').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function fecharModal(e) {
+            if (e && e.target !== document.getElementById('modalBackdrop')) return;
+            document.getElementById('modalBackdrop').classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        function selecionarTamanho(t) {
+            _tamanhoSelecionado = t;
+            document.getElementById('inputTamanho').value = t;
+            document.querySelectorAll('.tamanho-btn').forEach(b => {
+                b.classList.toggle('active', b.dataset.t === t);
+            });
+            atualizarBotaoAdicionar();
+        }
+
+        function alterarQtd(delta) {
+            _qtd = Math.max(1, _qtd + delta);
+            document.getElementById('modalQtd').textContent = _qtd;
+            document.getElementById('inputQtd').value = _qtd;
+            atualizarBotaoAdicionar();
+        }
+
+        function atualizarBotaoAdicionar() {
+            const total = (_preco * _qtd).toFixed(2).replace('.', ',');
+            document.getElementById('modalTotalSpan').textContent = total;
+            document.getElementById('inputObs').value = document.getElementById('modalObs').value;
+        }
+
+        // Atualiza observação antes de submeter
+        // ── Clique nos cards de item (substitui onclick inline) ──
+        document.querySelectorAll('.item-clickable').forEach(function(card) {
+            card.addEventListener('click', function() {
+                const d = this.dataset;
+                abrirModal(d.id, d.nome, d.preco, d.tamanho, d.desc, d.cal, d.prot, d.carb, d.gord, d.restricao);
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const obsEl = document.getElementById('modalObs');
+            if (obsEl) {
+                obsEl.addEventListener('input', () => {
+                    document.getElementById('inputObs').value = obsEl.value;
+                    atualizarBotaoAdicionar();
+                });
+            }
+
+            // Validação: tamanho obrigatório
+            const form = document.getElementById('formAdicionar');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    if (_tamanhoObrigatorio && !_tamanhoSelecionado) {
+                        e.preventDefault();
+                        alert('Selecione um tamanho para continuar.');
+                    }
+                });
+            }
         });
     </script>
 }
