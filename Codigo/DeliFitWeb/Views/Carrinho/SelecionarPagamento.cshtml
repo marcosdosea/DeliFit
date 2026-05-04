@@ -1,0 +1,331 @@
+﻿@{
+    ViewData["Title"] = "Selecionar Forma de Pagamento";
+
+    string DetectarBandeira(string numero)
+    {
+        if (string.IsNullOrEmpty(numero)) return "Cartão";
+        return numero[0] switch
+        {
+            '4' => "Visa",
+            '5' => "Mastercard",
+            '3' => "Amex",
+            '6' => "Elo",
+            _ => "Cartão"
+        };
+    }
+    var cartoes = ViewBag.Cartoes as List<Core.Cartao> ?? new List<Core.Cartao>();
+    var formaSelecionada = ViewBag.FormaSelecionada as string;
+    var idCartaoSelecionado = ViewBag.IdCartaoSelecionado as int?;
+}
+
+<style>
+    body {
+        background: #f8f9fa;
+        padding-bottom: 30px;
+    }
+
+    .top-bar {
+        background: white;
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        position: sticky;
+        top: 0;
+        z-index: 200;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+
+    .back-btn {
+        width: 38px;
+        height: 38px;
+        background: #f4f4f4;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #333;
+        font-size: 1rem;
+        text-decoration: none;
+    }
+
+        .back-btn:hover {
+            background: #ffe8d6;
+            color: #ff6600;
+        }
+
+    .page-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #1a1a1a;
+    }
+
+    .section-title {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #aaa;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        padding: 18px 16px 8px;
+    }
+
+    .opcao-card {
+        background: white;
+        margin: 0 16px 10px;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .opcao-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 16px;
+        cursor: pointer;
+        transition: background 0.15s;
+        border: none;
+        width: 100%;
+        background: transparent;
+        text-align: left;
+    }
+
+        .opcao-item:not(:last-child) {
+            border-bottom: 1px solid #f4f4f4;
+        }
+
+        .opcao-item:hover {
+            background: #fff8f4;
+        }
+
+        .opcao-item.selected {
+            background: #fff3e6;
+        }
+
+    .opcao-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+    }
+
+        .opcao-icon.dinheiro {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .opcao-icon.pix {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .opcao-icon.cartao {
+            background: #ede9fe;
+            color: #7c3aed;
+        }
+
+    .opcao-label {
+        flex: 1;
+    }
+
+        .opcao-label .nome {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: #1a1a1a;
+        }
+
+        .opcao-label .sub {
+            font-size: 0.78rem;
+            color: #aaa;
+            margin-top: 2px;
+        }
+
+    .check-icon {
+        color: #ff6600;
+        font-size: 1.1rem;
+    }
+
+    /* Seção cartões do app */
+    .cartao-card-item {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 16px;
+        cursor: pointer;
+        transition: background 0.15s;
+        border-bottom: 1px solid #f4f4f4;
+    }
+
+        .cartao-card-item:last-child {
+            border-bottom: none;
+        }
+
+        .cartao-card-item:hover {
+            background: #fff8f4;
+        }
+
+        .cartao-card-item.selected {
+            background: #fff3e6;
+        }
+
+    .cartao-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: #f4f4f4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: #555;
+    }
+
+    .btn-confirmar {
+        margin: 20px 16px 0;
+        width: calc(100% - 32px);
+        background: #ff6600;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 15px;
+        font-size: 1rem;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+        .btn-confirmar:hover {
+            background: #e55a00;
+        }
+
+    .add-cartao-link {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 16px;
+        font-size: 0.85rem;
+        color: #ff6600;
+        font-weight: 600;
+        text-decoration: none;
+        margin: 0 16px;
+    }
+
+        .add-cartao-link i {
+            font-size: 1.1rem;
+        }
+</style>
+
+<div class="top-bar">
+    <a href="javascript:history.back()" class="back-btn">
+        <i class="bi bi-chevron-left"></i>
+    </a>
+    <span class="page-title">Selecionar forma de pagamento</span>
+</div>
+
+<form asp-action="SelecionarPagamento" asp-controller="Carrinho" method="post" id="formPagamento">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="formaPagamento" id="inputForma" value="@(formaSelecionada ?? "")" />
+    <input type="hidden" name="idCartao" id="inputCartao" value="@(idCartaoSelecionado?.ToString() ?? "")" />
+
+    @* ── Pagar na entrega ── *@
+    <div class="section-title">Pagar na entrega</div>
+
+    <div class="opcao-card">
+        <button type="button" class="opcao-item @(formaSelecionada == "D" ? "selected" : "")"
+                onclick="selecionarForma('D', null)">
+            <div class="opcao-icon dinheiro"><i class="bi bi-cash-coin"></i></div>
+            <div class="opcao-label">
+                <div class="nome">Dinheiro</div>
+                <div class="sub">Pague ao entregador</div>
+            </div>
+            <i class="bi bi-check-circle-fill check-icon @(formaSelecionada == "D" ? "" : "d-none")" id="check-D"></i>
+        </button>
+
+        <button type="button" class="opcao-item @(formaSelecionada == "P" ? "selected" : "")"
+                onclick="selecionarForma('P', null)">
+            <div class="opcao-icon pix"><i class="bi bi-qr-code-scan"></i></div>
+            <div class="opcao-label">
+                <div class="nome">Pix</div>
+                <div class="sub">Transferência instantânea</div>
+            </div>
+            <i class="bi bi-check-circle-fill check-icon @(formaSelecionada == "P" ? "" : "d-none")" id="check-P"></i>
+        </button>
+    </div>
+
+    @* ── Pagar pelo aplicativo ── *@
+    <div class="section-title">Pagar pelo aplicativo</div>
+
+    @if (!cartoes.Any())
+    {
+        <div style="margin: 0 16px 10px; padding: 14px; background:white; border-radius:14px;
+            font-size:0.85rem; color:#aaa; text-align:center;">
+            Nenhum cartão cadastrado
+        </div>
+    }
+    else
+    {
+        <div class="opcao-card">
+            @foreach (var c in cartoes)
+            {
+                var isSelected = formaSelecionada == "C" && idCartaoSelecionado.HasValue
+                                 && idCartaoSelecionado.Value == (int)c.Id;
+                <div class="cartao-card-item @(isSelected ? "selected" : "")"
+                     onclick="selecionarForma('C', @c.Id)" style="cursor:pointer;">
+                    <div class="cartao-avatar"><i class="bi bi-credit-card-2-front"></i></div>
+                    <div class="opcao-label">
+                        <div class="nome">@DetectarBandeira(c.Numero) – final @c.Numero.Substring(c.Numero.Length - 4)</div>
+                        <div class="sub">@c.Nome</div>
+                    </div>
+                    <i class="bi bi-check-circle-fill check-icon @(isSelected ? "" : "d-none")"
+                       id="check-C-@c.Id"></i>
+                </div>
+            }
+        </div>
+    }
+
+    <a asp-controller="Cartao" asp-action="Create" class="add-cartao-link">
+        <i class="bi bi-plus-circle"></i> Adicionar novo cartão
+    </a>
+
+    @* ── Confirmar ── *@
+    <button type="submit" class="btn-confirmar" id="btnConfirmar">
+        Confirmar pagamento
+    </button>
+</form>
+
+@section Scripts {
+    <script>
+        function selecionarForma(forma, idCartao) {
+            // Atualiza inputs ocultos
+            document.getElementById('inputForma').value = forma;
+            document.getElementById('inputCartao').value = idCartao ?? '';
+
+            // Remove todas as marcações visuais
+            document.querySelectorAll('.opcao-item, .cartao-card-item').forEach(el => {
+                el.classList.remove('selected');
+            });
+            document.querySelectorAll('.check-icon').forEach(el => {
+                el.classList.add('d-none');
+            });
+
+            if (forma === 'C' && idCartao) {
+                // Marca o item do cartão selecionado
+                const checkEl = document.getElementById('check-C-' + idCartao);
+                if (checkEl) {
+                    checkEl.classList.remove('d-none');
+                    checkEl.closest('.cartao-card-item')?.classList.add('selected');
+                }
+            } else {
+                const checkEl = document.getElementById('check-' + forma);
+                if (checkEl) {
+                    checkEl.classList.remove('d-none');
+                    checkEl.closest('.opcao-item')?.classList.add('selected');
+                }
+            }
+        }
+    </script>
+}
