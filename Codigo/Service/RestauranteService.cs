@@ -1,6 +1,7 @@
 ﻿using Core;
 using Core.DTO;
 using Core.Service;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service
 {
@@ -126,6 +127,51 @@ namespace Service
         {
             return _context.Restaurantes
                 .FirstOrDefault(r => r.Email == email);
+        }
+
+        /// <summary>
+        /// Busca restaurantes ativos cujo nome contenha o termo (case-insensitive).
+        /// </summary>
+        public IEnumerable<RestauranteDTO> Buscar(string termo)
+        {
+            if (string.IsNullOrWhiteSpace(termo))
+                return GetRestaurantesAtivos();
+
+            var termoLower = termo.ToLower();
+            return _context.Restaurantes
+                .Where(r => r.Validado && r.NomeRestaurante.ToLower().Contains(termoLower))
+                .Select(r => new RestauranteDTO
+                {
+                    Id = r.Id,
+                    NomeRestaurante = r.NomeRestaurante,
+                    Validado = r.Validado,
+                    Cidade = r.Cidade,
+                    Estado = r.Estado
+                })
+                .ToList();
+        }
+
+        /// <summary>
+        /// Retorna restaurantes ativos que possuem ao menos um item com a restrição indicada.
+        /// </summary>
+        public IEnumerable<RestauranteDTO> GetByRestricao(string restricao)
+        {
+            var idsComRestricao = _context.Items
+                .Where(i => i.Restricao == restricao)
+                .Select(i => i.IdRestaurante)
+                .Distinct();
+
+            return _context.Restaurantes
+                .Where(r => r.Validado && idsComRestricao.Contains(r.Id))
+                .Select(r => new RestauranteDTO
+                {
+                    Id = r.Id,
+                    NomeRestaurante = r.NomeRestaurante,
+                    Validado = r.Validado,
+                    Cidade = r.Cidade,
+                    Estado = r.Estado
+                })
+                .ToList();
         }
     }
 }

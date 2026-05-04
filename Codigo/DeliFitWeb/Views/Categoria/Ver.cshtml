@@ -1,0 +1,132 @@
+﻿@model List<DeliFitWeb.Models.RestauranteViewModel>
+
+@{
+    ViewData["Title"] = ViewBag.Categoria ?? "Categoria";
+    string categoria = ViewBag.Categoria ?? "";
+}
+
+<style>
+    body { background: #f8f9fa; padding-bottom: 90px; }
+
+    .top-bar {
+        background: white; padding: 14px 16px;
+        display: flex; align-items: center; gap: 12px;
+        position: sticky; top: 0; z-index: 200;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+    .back-btn {
+        width: 38px; height: 38px; background: #f4f4f4; border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        color: #333; font-size: 1rem; text-decoration: none;
+    }
+    .back-btn:hover { background: #ffe8d6; color: #ff6600; }
+    .page-title { font-size: 1.05rem; font-weight: 700; color: #1a1a1a; }
+
+    .rest-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        padding: 16px;
+    }
+
+    .rest-card {
+        background: white; border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+        text-decoration: none; color: inherit;
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex; flex-direction: column;
+    }
+    .rest-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 22px rgba(0,0,0,0.12);
+        text-decoration: none; color: inherit;
+    }
+
+    .rest-img {
+        width: 100%; height: 100px;
+        background: linear-gradient(135deg,#f0f0f0,#e4e4e4);
+        display: flex; align-items: center; justify-content: center;
+        overflow: hidden; position: relative;
+    }
+    .rest-img img { width: 100%; height: 100%; object-fit: cover; }
+    .rest-img .fallback { font-size: 2.2rem; color: #ccc; position: absolute; }
+
+    .rest-badge {
+        position: absolute; top: 6px; right: 6px;
+        padding: 2px 8px; border-radius: 20px;
+        font-size: 0.62rem; font-weight: 700;
+    }
+    .rest-badge.open  { background: #22c55e; color: white; }
+    .rest-badge.close { background: #ef4444; color: white; }
+
+    .rest-body { padding: 10px 12px 12px; flex: 1; }
+    .rest-nome {
+        font-size: 0.85rem; font-weight: 700; color: #1a1a1a;
+        margin: 0 0 4px; white-space: nowrap;
+        overflow: hidden; text-overflow: ellipsis;
+    }
+    .rest-nota {
+        font-size: 0.72rem; color: #aaa;
+        display: flex; gap: 6px; align-items: center;
+    }
+
+    .rest-meta {
+        font-size: 0.72rem; color: #aaa;
+        margin-top: 4px; display: flex; gap: 6px; flex-wrap: wrap;
+    }
+
+    .empty-state {
+        text-align: center; padding: 60px 20px; color: #bbb;
+    }
+    .empty-state i { font-size: 3rem; display: block; margin-bottom: 12px; }
+</style>
+
+<div class="top-bar">
+    <a href="javascript:history.back()" class="back-btn">
+        <i class="bi bi-chevron-left"></i>
+    </a>
+    <span class="page-title">@categoria</span>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="empty-state">
+        <i class="bi bi-shop"></i>
+        <p>Nenhum restaurante encontrado para "<strong>@categoria</strong>"</p>
+    </div>
+}
+else
+{
+    <div class="rest-grid">
+        @foreach (var r in Model)
+        {
+            <a class="rest-card"
+               asp-controller="Restaurante" asp-action="VerEstabelecimento"
+               asp-route-id="@r.Id">
+                <div class="rest-img">
+                    <img src="@Url.Action("Foto", "Restaurante", new { id = r.Id })"
+                         alt="@r.NomeRestaurante"
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+                    <div class="fallback" style="display:none; width:100%; height:100%; align-items:center; justify-content:center;">
+                        <i class="bi bi-shop"></i>
+                    </div>
+                    <span class="rest-badge @(r.Validado ? "open" : "close")">
+                        @(r.Validado ? "ABERTO" : "FECHADO")
+                    </span>
+                </div>
+                <div class="rest-body">
+                    <div class="rest-nome">@r.NomeRestaurante</div>
+                    <div class="rest-nota">
+                        <i class="bi bi-star-fill" style="color:#ff6600; font-size:0.7rem;"></i>
+                        4.5
+                    </div>
+                    <div class="rest-meta">
+                        <span><i class="bi bi-clock"></i> 30–45 min</span>
+                        <span><i class="bi bi-truck" style="color:#16a34a;"></i> Grátis</span>
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+}

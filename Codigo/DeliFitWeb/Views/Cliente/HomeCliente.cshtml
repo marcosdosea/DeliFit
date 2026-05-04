@@ -1,9 +1,23 @@
-@model IEnumerable<DeliFitWeb.Models.RestauranteViewModel>
+﻿@model IEnumerable<DeliFitWeb.Models.RestauranteViewModel>
 
 @{
     ViewData["Title"] = "DeliFit - Início";
     var itens = ViewBag.Itens as List<DeliFitWeb.Models.ItemViewModel> ?? new List<DeliFitWeb.Models.ItemViewModel>();
     var clienteId = ViewBag.ClienteId is uint cid ? cid : 0u;
+    var categorias = ViewBag.Categorias as List<DeliFitWeb.Models.CategoriaViewModel> ?? new List<DeliFitWeb.Models.CategoriaViewModel>();
+
+    string IconeCategoria(string nome) => nome?.ToLower() switch
+    {
+        "vegetariano" => "bi-flower3",
+        "vegano" => "bi-apple",
+        "sem glúten" => "bi-egg-fried",
+        "sem lactose" => "bi-cup-straw",
+        "fitness" => "bi-heart-pulse",
+        "low carb" => "bi-lightning",
+        "zero lactose" => "bi-droplet-half",
+        "proteico" => "bi-trophy",
+        _ => "bi-grid"
+    };
 }
 
 <style>
@@ -59,31 +73,35 @@
         flex: 1;
         position: relative;
     }
+    /* Campo de busca agora é um link para M23 */
+    .search-link {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+        padding: 10px 16px 10px 40px;
+        border: 1.5px solid #ebebeb;
+        border-radius: 50px;
+        font-size: 0.88rem;
+        background: #f8f9fa;
+        color: #aaa;
+        text-decoration: none;
+        cursor: text;
+        position: relative;
+    }
 
-        .search-box input {
-            width: 100%;
-            padding: 10px 16px 10px 40px;
-            border: 1.5px solid #ebebeb;
-            border-radius: 50px;
-            font-size: 0.88rem;
-            background: #f8f9fa;
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-            .search-box input:focus {
-                border-color: #ff6600;
-                box-shadow: 0 0 0 3px rgba(255,102,0,0.1);
-                background: white;
-            }
-
-        .search-box .si {
+        .search-link i.si {
             position: absolute;
             left: 13px;
             top: 50%;
             transform: translateY(-50%);
             color: #bbb;
             font-size: 0.9rem;
+        }
+
+        .search-link:hover {
+            border-color: #ff6600;
+            background: white;
         }
 
     .cart-btn {
@@ -100,12 +118,30 @@
         flex-shrink: 0;
         box-shadow: 0 3px 10px rgba(255,102,0,0.35);
         transition: transform 0.15s;
+        position: relative;
     }
 
         .cart-btn:hover {
             transform: scale(1.06);
             color: white;
         }
+
+    .cart-badge {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        background: #e53e3e;
+        color: white;
+        font-size: 0.65rem;
+        font-weight: 700;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid white;
+    }
 
     /* ───── SECTION TITLE ───── */
     .sec-title {
@@ -206,7 +242,7 @@
     .rest-img-h {
         width: 100%;
         height: 110px;
-        background: linear-gradient(135deg, #f0f0f0, #e4e4e4);
+        background: linear-gradient(135deg,#f0f0f0,#e4e4e4);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -296,7 +332,7 @@
     .dish-img {
         width: 100%;
         height: 100px;
-        background: linear-gradient(135deg, #f5f5f5, #eaeaea);
+        background: linear-gradient(135deg,#f5f5f5,#eaeaea);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -386,6 +422,65 @@
             display: block;
             margin-bottom: 8px;
         }
+
+    /* ───── BOTTOM NAV (M01 wireframe: Início / Pedidos / Consumo / Menu) ───── */
+    .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        border-top: 1px solid #f0f0f0;
+        display: flex;
+        z-index: 500;
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+    }
+
+    .nav-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 0 10px;
+        gap: 3px;
+        text-decoration: none;
+        color: #aaa;
+        font-size: 0.65rem;
+        font-weight: 600;
+        transition: color 0.15s;
+        position: relative;
+    }
+
+        .nav-item i {
+            font-size: 1.3rem;
+        }
+
+        .nav-item.active {
+            color: #ff6600;
+        }
+
+        .nav-item:hover {
+            color: #ff6600;
+            text-decoration: none;
+        }
+
+    .nav-badge {
+        position: absolute;
+        top: 6px;
+        background: #e53e3e;
+        color: white;
+        font-size: 0.6rem;
+        font-weight: 700;
+        border-radius: 50%;
+        width: 16px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid white;
+        right: calc(50% - 14px);
+    }
 </style>
 
 <!-- ══════════════ HEADER ══════════════ -->
@@ -398,39 +493,38 @@
         </a>
     </div>
     <div class="search-row">
-        <div class="search-box">
+        <!-- Campo de busca leva para M23 -->
+        <a asp-controller="Categoria" asp-action="Buscar" class="search-link">
             <i class="bi bi-search si"></i>
-            <input type="text" id="searchInput" placeholder="Buscar restaurantes ou pratos..." />
-        </div>
-        <a asp-controller="Carrinho" asp-action="Index" class="cart-btn">
+            Buscar restaurantes ou pratos...
+        </a>
+        <!-- Carrinho com badge -->
+        <a asp-controller="Carrinho" asp-action="Index" class="cart-btn" id="cartBtnHome">
             <i class="bi bi-cart3"></i>
+            <span class="cart-badge d-none" id="cartBadgeHome">0</span>
         </a>
     </div>
 </div>
 
-<!-- ══════════════ CATEGORIAS ══════════════ -->
+<!-- ══════════════ CATEGORIAS (dinâmicas do banco) ══════════════ -->
 <p class="sec-title">Categorias</p>
 <div class="cat-scroll">
-    <a href="#" class="cat-item active" data-filter="">
+    <a class="cat-item active" data-filter=""
+       asp-controller="Categoria" asp-action="Index">
         <div class="cat-icon"><i class="bi bi-grid-3x3-gap" style="color:#ff6600;"></i></div>
         <span>Ver tudo</span>
     </a>
-    <a href="#" class="cat-item" data-filter="Vegetariano">
-        <div class="cat-icon"><i class="bi bi-flower3" style="color:#22c55e;"></i></div>
-        <span>Vegetariano</span>
-    </a>
-    <a href="#" class="cat-item" data-filter="Vegano">
-        <div class="cat-icon"><i class="bi bi-apple" style="color:#16a34a;"></i></div>
-        <span>Vegano</span>
-    </a>
-    <a href="#" class="cat-item" data-filter="Sem Glúten">
-        <div class="cat-icon"><i class="bi bi-egg-fried" style="color:#f59e0b;"></i></div>
-        <span>Sem Glúten</span>
-    </a>
-    <a href="#" class="cat-item" data-filter="Sem Lactose">
-        <div class="cat-icon"><i class="bi bi-cup-straw" style="color:#3b82f6;"></i></div>
-        <span>Sem Lactose</span>
-    </a>
+    @foreach (var cat in categorias)
+    {
+        <a class="cat-item"
+           asp-controller="Categoria" asp-action="Ver"
+           asp-route-categoria="@cat.Nome">
+            <div class="cat-icon">
+                <i class="bi @IconeCategoria(cat.Nome)" style="color:#ff6600;"></i>
+            </div>
+            <span>@cat.Nome</span>
+        </a>
+    }
 </div>
 
 <!-- ══════════════ RESTAURANTES ══════════════ -->
@@ -447,7 +541,8 @@
     {
         foreach (var r in Model)
         {
-            <a asp-controller="Restaurante" asp-action="VerEstabelecimento" asp-route-id="@r.Id" class="rest-card-h">
+            <a asp-controller="Restaurante" asp-action="VerEstabelecimento"
+               asp-route-id="@r.Id" class="rest-card-h">
                 <div class="rest-img-h">
                     <img src="@Url.Action("Foto", "Restaurante", new { id = r.Id })"
                          alt="@r.NomeRestaurante"
@@ -520,8 +615,45 @@
     }
 </div>
 
+<!-- ══════════════ BARRA DE NAVEGAÇÃO INFERIOR (M01) ══════════════ -->
+<nav class="bottom-nav">
+    <a asp-controller="Cliente" asp-action="HomeCliente" class="nav-item active">
+        <i class="bi bi-house-fill"></i>
+        <span>Início</span>
+    </a>
+    <a asp-controller="Pedido" asp-action="Index" class="nav-item">
+        <i class="bi bi-bag-fill"></i>
+        <span>Pedidos</span>
+    </a>
+    <a asp-controller="Carrinho" asp-action="Index" class="nav-item" id="navCarrinho">
+        <i class="bi bi-cart3"></i>
+        <span id="navCarrinhoBadge" class="nav-badge d-none">0</span>
+        <span>Carrinho</span>
+    </a>
+    <a asp-controller="Cliente" asp-action="Perfil" class="nav-item">
+        <i class="bi bi-person-fill"></i>
+        <span>Perfil</span>
+    </a>
+</nav>
+
 @section Scripts {
     <script>
+        // ── Badge do carrinho ──
+        (function atualizarBadge() {
+            fetch('/Carrinho/ContarItens')
+                .then(r => r.json())
+                .then(d => {
+                    const headerBadge = document.getElementById('cartBadgeHome');
+                    const navBadge    = document.getElementById('navCarrinhoBadge');
+                    if (d.total > 0) {
+                        if (headerBadge) { headerBadge.textContent = d.total; headerBadge.classList.remove('d-none'); }
+                        if (navBadge)    { navBadge.textContent = d.total;    navBadge.classList.remove('d-none'); }
+                    }
+                })
+                .catch(() => {});
+        })();
+
+        // ── Serializa dados para filtro JS das categorias no dishesGrid ──
         const todosRestaurantes = @Html.Raw(Json.Serialize(
                     (Model ?? Enumerable.Empty<DeliFitWeb.Models.RestauranteViewModel>())
                     .Select(r => new { id = r.Id, nome = r.NomeRestaurante, cidade = r.Cidade, validado = r.Validado }).ToList()
@@ -542,26 +674,6 @@
 
         const rDict = {};
         todosRestaurantes.forEach(r => rDict[r.id] = r.nome);
-
-        // ── Busca ──
-        document.getElementById('searchInput').addEventListener('input', function () {
-            const q = this.value.toLowerCase().trim();
-            if (!q) { renderRest(todosRestaurantes); renderItens(todosItens); return; }
-            renderRest(todosRestaurantes.filter(r => r.nome.toLowerCase().includes(q)));
-            renderItens(todosItens.filter(i => i.nome.toLowerCase().includes(q)));
-        });
-
-        // ── Categorias ──
-        document.querySelectorAll('.cat-item').forEach(cat => {
-            cat.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelectorAll('.cat-item').forEach(c => c.classList.remove('active'));
-                this.classList.add('active');
-                const f = this.dataset.filter;
-                renderItens(f ? todosItens.filter(i => i.restricao === f) : todosItens);
-                renderRest(todosRestaurantes);
-            });
-        });
 
         // ── Renders ──
         function renderRest(lista) {
@@ -598,7 +710,7 @@
                         <p class="dish-name">${i.nome}</p>
                         <div class="dish-macros">
                             <span class="macro cal">${Math.round(i.calorias)} kcal</span>
-                           ${i.proteina !== null && i.proteina !== undefined ? `<span class="macro prot">${Math.round(i.proteina)}g P</span>` : ''}
+                            ${i.proteina !== null && i.proteina !== undefined ? `<span class="macro prot">${Math.round(i.proteina)}g P</span>` : ''}
                         </div>
                         <div class="dish-footer">
                             <span class="dish-price">R$ ${parseFloat(i.preco).toFixed(2).replace('.', ',')}</span>
