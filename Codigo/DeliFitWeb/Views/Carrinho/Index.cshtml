@@ -22,7 +22,8 @@
     var formaPagamento = ViewBag.FormaPagamento as string;
     var cartaoSelecionado = ViewBag.CartaoSelecionado as Core.Cartao;
     var enderecos = ViewBag.Enderecos as List<Core.Endereco> ?? new List<Core.Endereco>();
-    var idEnderecoSelecionado = ViewBag.IdEnderecoSelecionado as int?;
+    int? idEnderecoSelecionado = null;
+    try { if (ViewBag.IdEnderecoSelecionado != null) idEnderecoSelecionado = (int)ViewBag.IdEnderecoSelecionado; } catch { }
 
     string NomeFormaPagamento(string? f) => f switch
     {
@@ -337,14 +338,8 @@
 
     /* Botão Fazer Pedido */
     .btn-fazer-pedido {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        padding: 16px;
-        background: white;
-        box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
-        z-index: 300;
+        margin: 0 0 24px 0;
+        padding: 0 16px;
     }
 
         .btn-fazer-pedido button {
@@ -452,9 +447,10 @@ else
         <div class="section-label"><i class="bi bi-geo-alt me-1"></i>Endereço de entrega</div>
         @if (!enderecos.Any())
         {
-            <div style="font-size:0.85rem; color:#aaa;">
-                Nenhum endereço cadastrado.
-                <a asp-controller="Endereco" asp-action="Create" style="color:#ff6600; font-weight:600;">Adicionar endereço</a>
+            <div style="font-size:0.85rem; color:#e53e3e; background:#fff5f5; border-radius:10px; padding:12px; border:1px solid #fed7d7;">
+                <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                Você não tem endereço cadastrado.
+                <a asp-controller="Endereco" asp-action="Create" style="color:#ff6600; font-weight:700;">Cadastrar agora</a>
             </div>
         }
         else
@@ -614,14 +610,10 @@ else
         <form asp-action="FazerPedido" asp-controller="Carrinho" method="post">
             @Html.AntiForgeryToken()
             <button type="submit"
-                @(string.IsNullOrEmpty(formaPagamento) || !idEnderecoSelecionado.HasValue ? "disabled" : "")>
+                @(string.IsNullOrEmpty(formaPagamento) ? "disabled" : "")>
                 @if (string.IsNullOrEmpty(formaPagamento))
                 {
                     <span>Selecione a forma de pagamento</span>
-                }
-                else if (!idEnderecoSelecionado.HasValue)
-                {
-                    <span>Selecione o endereço de entrega</span>
                 }
                 else
                 {
