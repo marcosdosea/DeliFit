@@ -15,13 +15,15 @@ namespace DeliFitWeb.Controllers
         private readonly IMapper _mapper;
         private readonly IClienteService _clienteService;
         private readonly ICarrinhoService _carrinhoService;
+        private readonly IRestauranteService _restauranteService;
 
-        public PedidoController(IPedidoService pedidoService, IMapper mapper, IClienteService clienteService, ICarrinhoService carrinhoService)
+        public PedidoController(IPedidoService pedidoService, IMapper mapper, IClienteService clienteService, ICarrinhoService carrinhoService, IRestauranteService restauranteService)
         {
             _pedidoService = pedidoService;
             _mapper = mapper;
             _clienteService = clienteService;
             _carrinhoService = carrinhoService;
+            _restauranteService = restauranteService;
         }
 
         // GET: PedidoController
@@ -67,6 +69,28 @@ namespace DeliFitWeb.Controllers
         {
             Pedido? pedido = _pedidoService.Get(id);
             PedidoViewModel pedidoViewModel = _mapper.Map<PedidoViewModel>(pedido);
+            return View(pedidoViewModel);
+        }
+
+        // GET: PedidoController/Acompanhar/5 — Tela M16
+        public ActionResult Acompanhar(uint id)
+        {
+            Pedido? pedido = _pedidoService.Get(id);
+            if (pedido == null)
+                return RedirectToAction(nameof(Index));
+
+            PedidoViewModel pedidoViewModel = _mapper.Map<PedidoViewModel>(pedido);
+
+            // Carrega nome do restaurante
+            ViewBag.NomeRestaurante = _restauranteService != null
+                ? _restauranteService.Get(pedido.IdRestaurante)?.NomeRestaurante ?? ""
+                : "";
+
+            // Carrega itens do pedido
+            ViewBag.Itens = pedido.Pedidoitems?.ToList() ?? new List<Pedidoitem>();
+
+            // Carrega forma de pagamento do carrinho
+            ViewBag.FormaPagamento = "";
 
             return View(pedidoViewModel);
         }
