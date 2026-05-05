@@ -509,12 +509,12 @@
 <!-- ══════════════ CATEGORIAS (dinâmicas do banco) ══════════════ -->
 <p class="sec-title">Categorias</p>
 <div class="cat-scroll">
-    <a class="cat-item active" data-filter=""
-       asp-controller="Categoria" asp-action="Index">
+    <a class="cat-item active" data-filter="" href="#"
+       onclick="event.preventDefault(); renderRest(todosRestaurantes); renderItens(todosItens);">
         <div class="cat-icon"><i class="bi bi-grid-3x3-gap" style="color:#ff6600;"></i></div>
         <span>Ver tudo</span>
     </a>
-    @foreach (var cat in categorias)
+    @foreach (var cat in categorias.Where(c => !string.IsNullOrWhiteSpace(c.Nome)))
     {
         <a class="cat-item"
            asp-controller="Categoria" asp-action="Ver"
