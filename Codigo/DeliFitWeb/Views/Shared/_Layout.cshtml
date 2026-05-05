@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ï»¿<!DOCTYPE html>
 <html lang="pt-br">
 <head>
 
@@ -115,7 +115,7 @@
 			font-size: 0.9rem;
 		}
 
-		/* Estilo para botão de logout no menu inferior do cliente */
+		/* Estilo para botï¿½o de logout no menu inferior do cliente */
 		.navbar-dark .nav-link button {
 			background: transparent;
 			border: none;
@@ -126,6 +126,11 @@
 
 		.navbar-dark .nav-link button:hover {
 			color: rgba(255, 255, 255, 0.75);
+		}
+
+		.no-sidebar {
+			margin-left: 0 !important;
+			padding: 0 !important;
 		}
 
 		@@media (max-width: 768px) {
@@ -172,7 +177,7 @@
 						<li class="nav-item">
 							<a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "HomeAdmin" ? "active" : "")"
 							   asp-controller="Restaurante" asp-action="HomeAdmin">
-								<i class="bi bi-house-door"></i> Início
+								<i class="bi bi-house-door"></i> Inï¿½cio
 							</a>
 						</li>
 
@@ -184,7 +189,7 @@
 
 						<li class="nav-item">
 							<a class="nav-link" asp-controller="Restaurante" asp-action="ListarSolicitacoes">
-								<i class="bi bi-clock-history"></i> Listar Solicitações
+								<i class="bi bi-clock-history"></i> Listar Solicitaï¿½ï¿½es
 							</a>
 						</li>
 
@@ -213,13 +218,13 @@
 						<li class="nav-item">
 							<a class="nav-link"
 							   asp-controller="Restaurante" asp-action="Home">
-								<i class="bi bi-house-door"></i> Início
+								<i class="bi bi-house-door"></i> Inï¿½cio
 							</a>
 						</li>
 
 						<li class="nav-item">
 							<a class="nav-link" asp-controller="Item" asp-action="Index">
-								<i class="bi bi-journal-text"></i> Cardápio
+								<i class="bi bi-journal-text"></i> Cardï¿½pio
 							</a>
 						</li>
 
@@ -243,7 +248,7 @@
 
 						<li class="nav-item">
 							<a class="nav-link" href="#">
-								<i class="bi bi-star"></i> Avaliações
+								<i class="bi bi-star"></i> Avaliaï¿½ï¿½es
 							</a>
 						</li>
 					}
@@ -254,46 +259,54 @@
 		@* ================= CLIENTE ================= *@
 		@if (User.IsInRole("Cliente"))
 		{
-			<nav class="navbar navbar-dark bg-dark fixed-bottom">
-				<div class="container-fluid d-flex justify-content-around">
+			<style>
+				.cliente-bottom-nav {
+					position: fixed; bottom: 0; left: 0; right: 0;
+					background: white; border-top: 1px solid #f0f0f0;
+					display: flex; z-index: 1050;
+					box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+				}
+				.cliente-nav-item {
+					flex: 1; display: flex; flex-direction: column;
+					align-items: center; justify-content: center;
+					padding: 8px 0 10px; gap: 3px;
+					text-decoration: none; color: #aaa;
+					font-size: 0.65rem; font-weight: 600;
+					transition: color 0.15s;
+				}
+				.cliente-nav-item i { font-size: 1.3rem; }
+				.cliente-nav-item:hover { color: #ff6600; text-decoration: none; }
+				.cliente-nav-item.active { color: #ff6600; }
+				/* Padding para o conteÃºdo nÃ£o ficar atrÃ¡s da nav */
+				.main-content { padding-bottom: 70px !important; }
+			</style>
 
-					<a class="nav-link text-white text-center"
-					   asp-controller="Cliente" asp-action="HomeCliente">
-						<i class="bi bi-house-door d-block"></i>
-						<small>Início</small>
-					</a>
-
-					<a class="nav-link text-white text-center"
-					   asp-controller="Carrinho" asp-action="Index">
-						<i class="bi bi-cart d-block"></i>
-						<small>Carrinho</small>
-					</a>
-
-					<a class="nav-link text-white text-center"
-					   asp-controller="Endereco" asp-action="Index">
-						<i class="bi bi-geo-alt d-block"></i>
-						<small>Endereços</small>
-					</a>
-
-					<a class="nav-link text-white text-center"
-					   asp-controller="Cliente" asp-action="Perfil">
-						<i class="bi bi-person d-block"></i>
-						<small>Perfil</small>
-					</a>
-
-					<form method="post" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/" class="m-0">
-						<button type="submit" class="nav-link text-white text-center bg-transparent border-0 p-0" style="cursor: pointer;">
-							<i class="bi bi-box-arrow-right d-block" style="font-size: 1.5rem;"></i>
-							<small>Sair</small>
-						</button>
-					</form>
-
-				</div>
+			<nav class="cliente-bottom-nav">
+				<a class="cliente-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Cliente" && ViewContext.RouteData.Values["action"]?.ToString() == "HomeCliente" ? "active" : "")"
+				   asp-controller="Cliente" asp-action="HomeCliente">
+					<i class="bi bi-house-fill"></i>
+					<span>InÃ­cio</span>
+				</a>
+				<a class="cliente-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Pedido" ? "active" : "")"
+				   asp-controller="Pedido" asp-action="Index">
+					<i class="bi bi-bag-fill"></i>
+					<span>Pedidos</span>
+				</a>
+				<a class="cliente-nav-item"
+				   href="#" onclick="event.preventDefault(); alert('Em breve: tela de Consumo!');">
+					<i class="bi bi-graph-up"></i>
+					<span>Consumo</span>
+				</a>
+				<a class="cliente-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Cliente" && ViewContext.RouteData.Values["action"]?.ToString() == "Perfil" ? "active" : "")"
+				   asp-controller="Cliente" asp-action="Perfil">
+					<i class="bi bi-person-fill"></i>
+					<span>Menu</span>
+				</a>
 			</nav>
 		}
 	}
 
-	<div class="main-content">
+	<div class="main-content @(User.IsInRole("Cliente") ? "no-sidebar" : "")">
 		<main role="main" class="pb-3">
 			@RenderBody()
 		</main>
@@ -311,9 +324,9 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
-    <!-- Validação de telefone -->
+    <!-- Validaï¿½ï¿½o de telefone -->
 
-    <!-- Máscara de telefone: formata visualmente como (99) 99999-9999 e envia apenas dígitos -->
+    <!-- Mï¿½scara de telefone: formata visualmente como (99) 99999-9999 e envia apenas dï¿½gitos -->
     <script>
         (function($){
             function formatPhone(value){
