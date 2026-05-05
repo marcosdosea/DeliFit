@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Core;
 using Core.DTO;
 using DeliFitWeb.Models;
@@ -9,8 +9,7 @@ namespace DeliFitWeb.Mappers
     {
         public PedidoProfile()
         {
-            CreateMap<Pedido, PedidoProfile>().ReverseMap();
+            CreateMap<Pedido, PedidoViewModel>().ReverseMap();
         }
     }
 }
-
