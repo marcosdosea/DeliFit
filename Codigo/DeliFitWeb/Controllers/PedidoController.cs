@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Core;
 using Core.Service;
 using DeliFitWeb.Models;
@@ -14,12 +14,14 @@ namespace DeliFitWeb.Controllers
         private readonly IPedidoService _pedidoService;
         private readonly IMapper _mapper;
         private readonly IClienteService _clienteService;
+        private readonly ICarrinhoService _carrinhoService;
 
-        public PedidoController(IPedidoService pedidoService, IMapper mapper, IClienteService clienteService)
+        public PedidoController(IPedidoService pedidoService, IMapper mapper, IClienteService clienteService, ICarrinhoService carrinhoService)
         {
             _pedidoService = pedidoService;
             _mapper = mapper;
             _clienteService = clienteService;
+            _carrinhoService = carrinhoService;
         }
 
         // GET: PedidoController
@@ -34,9 +36,15 @@ namespace DeliFitWeb.Controllers
                 var clienteId = GetClienteIdLogado();
                 if (clienteId.HasValue)
                 {
-                    // Pedido -> Carrinho -> Cliente
+                    // Filtra pelos carrinhos do cliente e depois pelos pedidos desses carrinhos
+                    // Evita acessar IdCarrinhoNavigation que pode ser null (não carregado pelo EF)
+                    var carrinhoIds = _carrinhoService.GetAll()
+                        .Where(c => c.IdCliente == clienteId.Value)
+                        .Select(c => c.Id)
+                        .ToHashSet();
+
                     listaPedidos = _pedidoService.GetAll()
-                        .Where(p => p.IdCarrinhoNavigation.IdCliente == clienteId.Value);
+                        .Where(p => carrinhoIds.Contains(p.IdCarrinho));
                 }
                 else
                 {
