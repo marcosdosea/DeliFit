@@ -1,0 +1,377 @@
+﻿@model DeliFitWeb.Models.PedidoViewModel
+
+@{
+    ViewData["Title"] = "Status do Pedido";
+    string nomeRestaurante = ViewBag.NomeRestaurante ?? "";
+    string formaPagamento = ViewBag.FormaPagamento ?? "";
+}
+
+<style>
+    body {
+        background: #f8f9fa;
+        padding-bottom: 40px;
+    }
+
+    .top-bar {
+        background: white;
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        position: sticky;
+        top: 0;
+        z-index: 200;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+
+    .back-btn {
+        width: 38px;
+        height: 38px;
+        background: #f4f4f4;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #333;
+        font-size: 1rem;
+        text-decoration: none;
+    }
+
+        .back-btn:hover {
+            background: #ffe8d6;
+            color: #ff6600;
+        }
+
+    .page-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #1a1a1a;
+    }
+
+    /* ── Timeline de status ── */
+    .status-section {
+        background: white;
+        margin: 16px 16px 0;
+        border-radius: 20px;
+        padding: 24px 20px;
+        box-shadow: 0 3px 14px rgba(0,0,0,0.07);
+    }
+
+    .status-title {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #aaa;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 20px;
+    }
+
+    .timeline {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        position: relative;
+    }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 22px;
+            left: 22px;
+            right: 22px;
+            height: 3px;
+            background: #f0f0f0;
+            z-index: 0;
+        }
+
+    .timeline-progress {
+        position: absolute;
+        top: 22px;
+        left: 22px;
+        height: 3px;
+        background: #ff6600;
+        z-index: 1;
+        transition: width 0.5s ease;
+        width: 25%; /* Em análise = primeiro passo */
+    }
+
+    .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        z-index: 2;
+        flex: 1;
+    }
+
+    .step-circle {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: #f4f4f4;
+        border: 3px solid #e8e8e8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        color: #ccc;
+        transition: all 0.3s;
+    }
+
+    .step.active .step-circle {
+        background: #ff6600;
+        border-color: #ff6600;
+        color: white;
+        box-shadow: 0 4px 14px rgba(255,102,0,0.4);
+    }
+
+    .step.done .step-circle {
+        background: #22c55e;
+        border-color: #22c55e;
+        color: white;
+    }
+
+    .step-label {
+        font-size: 0.62rem;
+        font-weight: 600;
+        color: #bbb;
+        text-align: center;
+        line-height: 1.3;
+    }
+
+    .step.active .step-label {
+        color: #ff6600;
+    }
+
+    .step.done .step-label {
+        color: #22c55e;
+    }
+
+    /* ── Restaurante ── */
+    .rest-section {
+        background: white;
+        margin: 12px 16px 0;
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .rest-avatar {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: #f4f4f4;
+        overflow: hidden;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .rest-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .rest-nome {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #1a1a1a;
+    }
+
+    .rest-sub {
+        font-size: 0.75rem;
+        color: #aaa;
+        margin-top: 2px;
+    }
+
+    /* ── Resumo ── */
+    .section-card {
+        background: white;
+        margin: 12px 16px 0;
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+
+    .section-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #aaa;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 12px;
+    }
+
+    .resumo-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.88rem;
+        color: #555;
+        padding: 5px 0;
+    }
+
+        .resumo-row.total {
+            font-weight: 800;
+            font-size: 1rem;
+            color: #1a1a1a;
+            border-top: 1.5px solid #f0f0f0;
+            margin-top: 6px;
+            padding-top: 10px;
+        }
+
+    /* ── Botões ── */
+    .btns-section {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-primary-orange {
+        background: #ff6600;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 14px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        display: block;
+    }
+
+        .btn-primary-orange:hover {
+            background: #e55a00;
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-outline-red {
+        background: white;
+        color: #e53e3e;
+        border: 1.5px solid #e53e3e;
+        border-radius: 50px;
+        padding: 13px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        display: block;
+    }
+
+        .btn-outline-red:hover {
+            background: #fff5f5;
+            color: #e53e3e;
+            text-decoration: none;
+        }
+</style>
+
+<div class="top-bar">
+    <a asp-controller="Pedido" asp-action="Index" class="back-btn">
+        <i class="bi bi-chevron-left"></i>
+    </a>
+    <span class="page-title">Status do pedido</span>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success mx-3 mt-3 mb-0 rounded-3" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>@TempData["Success"]
+    </div>
+}
+
+@* ── Timeline M16 ── *@
+<div class="status-section">
+    <div class="status-title"><i class="bi bi-clock me-1"></i>Acompanhe seu pedido</div>
+    <div class="timeline">
+        <div class="timeline-progress" id="progressBar"></div>
+
+        <div class="step active" id="step1">
+            <div class="step-circle"><i class="bi bi-file-text"></i></div>
+            <span class="step-label">Em<br>análise</span>
+        </div>
+        <div class="step" id="step2">
+            <div class="step-circle"><i class="bi bi-check-lg"></i></div>
+            <span class="step-label">Aprovado</span>
+        </div>
+        <div class="step" id="step3">
+            <div class="step-circle"><i class="bi bi-bag-check"></i></div>
+            <span class="step-label">Em<br>produção</span>
+        </div>
+        <div class="step" id="step4">
+            <div class="step-circle"><i class="bi bi-box-seam"></i></div>
+            <span class="step-label">Enviado</span>
+        </div>
+        <div class="step" id="step5">
+            <div class="step-circle"><i class="bi bi-house-check"></i></div>
+            <span class="step-label">Entregue</span>
+        </div>
+    </div>
+</div>
+
+@* ── Restaurante ── *@
+<div class="rest-section">
+    <div class="rest-avatar">
+        <img src="@Url.Action("Foto", "Restaurante", new { id = Model.IdRestaurante })"
+             alt="@nomeRestaurante"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+        <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;">
+            <i class="bi bi-shop" style="color:#ccc;font-size:1.5rem;"></i>
+        </div>
+    </div>
+    <div>
+        <div class="rest-nome">@nomeRestaurante</div>
+        <div class="rest-sub">Pedido #@Model.Id &nbsp;·&nbsp; @Model.Data?.ToString("dd/MM/yyyy HH:mm")</div>
+    </div>
+</div>
+
+@* ── Resumo do pedido ── *@
+<div class="section-card">
+    <div class="section-label"><i class="bi bi-receipt me-1"></i>Resumo do pedido</div>
+    <div class="resumo-row">
+        <span>Subtotal</span>
+        <span>R$ @Model.Preco.ToString("N2")</span>
+    </div>
+    <div class="resumo-row">
+        <span>Taxa de entrega</span>
+        <span style="color:#16a34a;">Grátis</span>
+    </div>
+    <div class="resumo-row total">
+        <span>Total</span>
+        <span>R$ @Model.Preco.ToString("N2")</span>
+    </div>
+    <div class="resumo-row" style="margin-top:8px;">
+        <span style="color:#aaa;">Forma de pagamento</span>
+        <span style="font-weight:600;">
+            @(formaPagamento == "D" ? "Dinheiro" : formaPagamento == "P" ? "Pix" : formaPagamento == "C" ? "Cartão" : "—")
+        </span>
+    </div>
+</div>
+
+@* ── Botões ── *@
+<div class="btns-section">
+    <a asp-controller="Pedido" asp-action="Index" class="btn-primary-orange">
+        Ver todos os pedidos
+    </a>
+    <a asp-controller="Cliente" asp-action="HomeCliente" class="btn-outline-red">
+        Voltar para o início
+    </a>
+</div>
+
+@section Scripts {
+    <script>
+        // Simula animação da barra de progresso (Em análise = passo 1)
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.getElementById('progressBar').style.width = '0%';
+            }, 100);
+        });
+    </script>
+}
