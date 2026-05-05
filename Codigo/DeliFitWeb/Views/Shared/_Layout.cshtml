@@ -12,143 +12,143 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
 	<style>
-		:root {
-			--delifit-orange: #ff6600;
-			--delifit-dark-orange: #e65c00;
-			--sidebar-width: 260px;
-		}
-
-		body {
-			overflow-x: hidden;
-			background-color: #f8f9fa;
-		}
-
-		.sidebar {
-			width: var(--sidebar-width);
-			height: 100vh;
-			position: fixed;
-			left: 0;
-			top: 0;
-			background-color: #ffffff;
-			border-right: 1px solid #dee2e6;
-			padding: 20px 0;
-			z-index: 1000;
-			box-shadow: 2px 0 5px rgba(0,0,0,0.05);
-			display: flex;
-			flex-direction: column;
-		}
-
-		.navbar-brand {
-			font-weight: bold;
-			font-size: 1.5rem;
-			color: var(--delifit-orange) !important;
-			text-align: center;
-			display: block;
-			margin-bottom: 10px;
-			padding: 0 15px;
-		}
-
-		.login-area {
-			padding: 0 20px 20px 20px;
-			border-bottom: 1px solid #eee;
-			margin-bottom: 15px;
-		}
-
-			.login-area a {
-				display: block;
-				padding: 6px 0;
-				font-size: 0.9rem;
+			:root {
+				--delifit-orange: #ff6600;
+				--delifit-dark-orange: #e65c00;
+				--sidebar-width: 260px;
 			}
 
-		.nav-pills .nav-link {
-			color: #495057;
-			border-radius: 0 25px 25px 0;
-			margin-right: 15px;
-			padding: 12px 25px;
-			transition: all 0.3s;
-		}
-
-			.nav-pills .nav-link:hover {
-				background-color: #fff3e6;
-				color: var(--delifit-orange);
+			body {
+				overflow-x: hidden;
+				background-color: #f8f9fa;
 			}
 
-			.nav-pills .nav-link.active {
-				background-color: var(--delifit-orange) !important;
-				color: white !important;
-			}
-
-		.nav-link i {
-			margin-right: 10px;
-		}
-
-		.main-content {
-			margin-left: var(--sidebar-width);
-			padding: 30px;
-			min-height: 100vh;
-			display: flex;
-			flex-direction: column;
-		}
-
-		a {
-			color: var(--delifit-orange);
-			text-decoration: none;
-		}
-
-			a:hover {
-				color: var(--delifit-dark-orange);
-			}
-
-		.btn-primary {
-			background-color: var(--delifit-orange);
-			border-color: var(--delifit-dark-orange);
-		}
-
-			.btn-primary:hover {
-				background-color: var(--delifit-dark-orange);
-				border-color: #cc5200;
-			}
-
-		footer {
-			margin-top: auto;
-			padding: 20px 0;
-			font-size: 0.9rem;
-		}
-
-		/* Estilo para bot�o de logout no menu inferior do cliente */
-		.navbar-dark .nav-link button {
-			background: transparent;
-			border: none;
-			color: white;
-			padding: 0;
-			width: 100%;
-		}
-
-		.navbar-dark .nav-link button:hover {
-			color: rgba(255, 255, 255, 0.75);
-		}
-
-		.no-sidebar {
-			margin-left: 0 !important;
-			padding: 0 !important;
-		}
-
-		@@media (max-width: 768px) {
 			.sidebar {
-				width: 100%;
-				height: auto;
-				position: relative;
+				width: var(--sidebar-width);
+				height: 100vh;
+				position: fixed;
+				left: 0;
+				top: 0;
+				background-color: #ffffff;
+				border-right: 1px solid #dee2e6;
+				padding: 20px 0;
+				z-index: 1000;
+				box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+				display: flex;
+				flex-direction: column;
+			}
+
+			.navbar-brand {
+				font-weight: bold;
+				font-size: 1.5rem;
+				color: var(--delifit-orange) !important;
+				text-align: center;
+				display: block;
+				margin-bottom: 10px;
+				padding: 0 15px;
+			}
+
+			.login-area {
+				padding: 0 20px 20px 20px;
+				border-bottom: 1px solid #eee;
+				margin-bottom: 15px;
+			}
+
+				.login-area a {
+					display: block;
+					padding: 6px 0;
+					font-size: 0.9rem;
+				}
+
+			.nav-pills .nav-link {
+				color: #495057;
+				border-radius: 0 25px 25px 0;
+				margin-right: 15px;
+				padding: 12px 25px;
+				transition: all 0.3s;
+			}
+
+				.nav-pills .nav-link:hover {
+					background-color: #fff3e6;
+					color: var(--delifit-orange);
+				}
+
+				.nav-pills .nav-link.active {
+					background-color: var(--delifit-orange) !important;
+					color: white !important;
+				}
+
+			.nav-link i {
+				margin-right: 10px;
 			}
 
 			.main-content {
-				margin-left: 0;
+				margin-left: var(--sidebar-width);
+				padding: 30px;
+				min-height: 100vh;
+				display: flex;
+				flex-direction: column;
 			}
 
-			.nav-pills .nav-link {
-				border-radius: 25px;
-				margin: 5px 15px;
+			a {
+				color: var(--delifit-orange);
+				text-decoration: none;
 			}
-		}
+
+				a:hover {
+					color: var(--delifit-dark-orange);
+				}
+
+			.btn-primary {
+				background-color: var(--delifit-orange);
+				border-color: var(--delifit-dark-orange);
+			}
+
+				.btn-primary:hover {
+					background-color: var(--delifit-dark-orange);
+					border-color: #cc5200;
+				}
+
+			footer {
+				margin-top: auto;
+				padding: 20px 0;
+				font-size: 0.9rem;
+			}
+
+			/* Estilo para bot�o de logout no menu inferior do cliente */
+			.navbar-dark .nav-link button {
+				background: transparent;
+				border: none;
+				color: white;
+				padding: 0;
+				width: 100%;
+			}
+
+				.navbar-dark .nav-link button:hover {
+					color: rgba(255, 255, 255, 0.75);
+				}
+
+			.no-sidebar {
+				margin-left: 0 !important;
+				padding: 0 !important;
+			}
+
+			@@media (max-width: 768px) {
+				.sidebar {
+					width: 100%;
+					height: auto;
+					position: relative;
+				}
+
+				.main-content {
+					margin-left: 0;
+				}
+
+				.nav-pills .nav-link {
+					border-radius: 25px;
+					margin: 5px 15px;
+				}
+			}
 	</style>
 </head>
 
@@ -260,25 +260,49 @@
 		@if (User.IsInRole("Cliente"))
 		{
 			<style>
-				.cliente-bottom-nav {
-					position: fixed; bottom: 0; left: 0; right: 0;
-					background: white; border-top: 1px solid #f0f0f0;
-					display: flex; z-index: 1050;
-					box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
-				}
-				.cliente-nav-item {
-					flex: 1; display: flex; flex-direction: column;
-					align-items: center; justify-content: center;
-					padding: 8px 0 10px; gap: 3px;
-					text-decoration: none; color: #aaa;
-					font-size: 0.65rem; font-weight: 600;
-					transition: color 0.15s;
-				}
-				.cliente-nav-item i { font-size: 1.3rem; }
-				.cliente-nav-item:hover { color: #ff6600; text-decoration: none; }
-				.cliente-nav-item.active { color: #ff6600; }
-				/* Padding para o conteúdo não ficar atrás da nav */
-				.main-content { padding-bottom: 70px !important; }
+					.cliente-bottom-nav {
+						position: fixed;
+						bottom: 0;
+						left: 0;
+						right: 0;
+						background: white;
+						border-top: 1px solid #f0f0f0;
+						display: flex;
+						z-index: 1050;
+						box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+					}
+
+					.cliente-nav-item {
+						flex: 1;
+						display: flex;
+						flex-direction: column;
+						align-items: center;
+						justify-content: center;
+						padding: 8px 0 10px;
+						gap: 3px;
+						text-decoration: none;
+						color: #aaa;
+						font-size: 0.65rem;
+						font-weight: 600;
+						transition: color 0.15s;
+					}
+
+						.cliente-nav-item i {
+							font-size: 1.3rem;
+						}
+
+						.cliente-nav-item:hover {
+							color: #ff6600;
+							text-decoration: none;
+						}
+
+						.cliente-nav-item.active {
+							color: #ff6600;
+						}
+					/* Padding para o conteúdo não ficar atrás da nav */
+					.main-content {
+						padding-bottom: 70px !important;
+					}
 			</style>
 
 			<nav class="cliente-bottom-nav">
@@ -319,45 +343,44 @@
 		</footer>
 	</div>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+	<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="~/js/site.js" asp-append-version="true"></script>
 
-    <!-- Valida��o de telefone -->
+	<!-- Valida��o de telefone -->
+	<!-- M�scara de telefone: formata visualmente como (99) 99999-9999 e envia apenas d�gitos -->
+	<script>
+		(function($){
+		function formatPhone(value){
+		if(!value) return '';
+		var v = value.replace(/\D/g,'').slice(0,11);
+		if(v.length <= 2) return '(' + v;
+		if(v.length <= 7) return '(' + v.slice(0,2) + ')' + v.slice(2);
+		return '(' + v.slice(0,2) + ')' + v.slice(2,7) + '-' + v.slice(7);
+		}
 
-    <!-- M�scara de telefone: formata visualmente como (99) 99999-9999 e envia apenas d�gitos -->
-    <script>
-        (function($){
-            function formatPhone(value){
-                if(!value) return '';
-                var v = value.replace(/\D/g,'').slice(0,11);
-                if(v.length <= 2) return '(' + v;
-                if(v.length <= 7) return '(' + v.slice(0,2) + ')' + v.slice(2);
-                return '(' + v.slice(0,2) + ')' + v.slice(2,7) + '-' + v.slice(7);
-            }
+		$(function(){
+		// Apply formatting on input for elements with class .telefone-mask
+		$(document).on('input', '.telefone-mask', function(e){
+		var el = $(this);
+		var pos = this.selectionStart;
+		var old = el.val();
+		var formatted = formatPhone(old);
+		el.val(formatted);
+		});
 
-            $(function(){
-                // Apply formatting on input for elements with class .telefone-mask
-                $(document).on('input', '.telefone-mask', function(e){
-                    var el = $(this);
-                    var pos = this.selectionStart;
-                    var old = el.val();
-                    var formatted = formatPhone(old);
-                    el.val(formatted);
-                });
-
-                // antes de enviar normaliza o telefone
-                $(document).on('submit', 'form', function(){
-                    $(this).find('.telefone-mask').each(function(){
-                        var v = $(this).val() || '';
-                        var digits = v.replace(/\D/g, '').slice(0,11);
-                        $(this).val(digits);
-                    });
-                });
-            });
-        })(jQuery);
-    </script>
+		// antes de enviar normaliza o telefone
+		$(document).on('submit', 'form', function(){
+		$(this).find('.telefone-mask').each(function(){
+		var v = $(this).val() || '';
+		var digits = v.replace(/\D/g, '').slice(0,11);
+		$(this).val(digits);
+		});
+		});
+		});
+		})(jQuery);
+	</script>
 
 	@await RenderSectionAsync("Scripts", required: false)
 
