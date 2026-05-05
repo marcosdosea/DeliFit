@@ -342,6 +342,7 @@ public class CarrinhoController : Controller
             }
 
             // Para cada restaurante, cria um Pedido
+            uint idPedidoCriado = 0;
             foreach (var idRestaurante in restaurantesNoCarrinho)
             {
                 var itensDoPedido = itens.Where(i => i.IdRestaurante == idRestaurante).ToList();
@@ -366,7 +367,7 @@ public class CarrinhoController : Controller
                     });
                 }
 
-                _pedidoService.Create(pedido);
+                idPedidoCriado = _pedidoService.Create(pedido);
             }
 
             // Limpa sessão
@@ -376,7 +377,7 @@ public class CarrinhoController : Controller
             HttpContext.Session.Remove(SessaoIdEndereco);
 
             TempData["Success"] = "Pedido realizado com sucesso! 🎉";
-            return RedirectToAction("Index", "Pedido");
+            return RedirectToAction("Acompanhar", "Pedido", new { id = idPedidoCriado });
         }
         catch (Exception ex)
         {
