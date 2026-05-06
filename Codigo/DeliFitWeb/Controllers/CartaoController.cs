@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Core;
 using Core.Service;
 using DeliFitWeb.Models;
@@ -52,10 +52,14 @@ public class CartaoController : Controller
         return View(listaViewModel);
     }
 
-
     public ActionResult Details(uint id)
     {
         var cartao = _cartaoService.Get(id);
+        if (cartao == null)
+        {
+            TempData["Error"] = "Cartão não encontrado.";
+            return RedirectToAction(nameof(Index));
+        }
         var viewModel = _mapper.Map<CartaoViewModel>(cartao);
         return View(viewModel);
     }
@@ -105,6 +109,17 @@ public class CartaoController : Controller
             }
         }
 
+        // Monta o DateTime de validade a partir dos campos auxiliares de mês e ano
+        if (viewModel.ValidadeMes >= 1 && viewModel.ValidadeMes <= 12 && viewModel.ValidadeAno >= 2024)
+        {
+            viewModel.Validade = new DateTime((int)viewModel.ValidadeAno, (int)viewModel.ValidadeMes, 1);
+            ModelState.Remove(nameof(viewModel.Validade));
+        }
+        else
+        {
+            ModelState.AddModelError("ValidadeMes", "Informe um mês e ano de validade válidos.");
+        }
+
         if (ModelState.IsValid)
         {
             try
@@ -112,19 +127,25 @@ public class CartaoController : Controller
                 var cartao = _mapper.Map<Cartao>(viewModel);
                 _cartaoService.Create(cartao);
                 TempData["Success"] = "Cartão adicionado com sucesso!";
+                return RedirectToAction(nameof(Index), new { idCliente = viewModel.IdCliente });
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Erro ao adicionar cartão: {ex.Message}");
-                return View(viewModel);
             }
         }
-        return RedirectToAction(nameof(Index), new { idCliente = viewModel.IdCliente });
+
+        return View(viewModel);
     }
 
     public ActionResult Delete(uint id)
     {
         var cartao = _cartaoService.Get(id);
+        if (cartao == null)
+        {
+            TempData["Error"] = "Cartão não encontrado.";
+            return RedirectToAction(nameof(Index));
+        }
         var viewModel = _mapper.Map<CartaoViewModel>(cartao);
         return View(viewModel);
     }
@@ -133,7 +154,15 @@ public class CartaoController : Controller
     [ValidateAntiForgeryToken]
     public ActionResult Delete(uint id, CartaoViewModel viewModel)
     {
-        _cartaoService.Delete(viewModel.Id);
+        try
+        {
+            _cartaoService.Delete(viewModel.Id);
+            TempData["Success"] = "Cartão excluído com sucesso!";
+        }
+        catch (Exception ex)
+        {
+            TempData["Error"] = $"Erro ao excluir cartão: {ex.Message}";
+        }
         return RedirectToAction(nameof(Index), new { idCliente = viewModel.IdCliente });
     }
 
