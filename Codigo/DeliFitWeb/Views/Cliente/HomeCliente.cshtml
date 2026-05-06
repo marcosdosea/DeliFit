@@ -510,7 +510,8 @@
 <p class="sec-title">Categorias</p>
 <div class="cat-scroll">
     <a class="cat-item active" data-filter=""
-       asp-controller="Categoria" asp-action="Index">
+       onclick="event.preventDefault(); renderRest(todosRestaurantes); renderItens(todosItens);"
+       href="#">
         <div class="cat-icon"><i class="bi bi-grid-3x3-gap" style="color:#ff6600;"></i></div>
         <span>Ver tudo</span>
     </a>
@@ -625,14 +626,13 @@
         <i class="bi bi-bag-fill"></i>
         <span>Pedidos</span>
     </a>
-    <a asp-controller="Carrinho" asp-action="Index" class="nav-item" id="navCarrinho">
-        <i class="bi bi-cart3"></i>
-        <span id="navCarrinhoBadge" class="nav-badge d-none">0</span>
-        <span>Carrinho</span>
-    </a>
     <a asp-controller="Cliente" asp-action="Perfil" class="nav-item">
         <i class="bi bi-person-fill"></i>
-        <span>Perfil</span>
+        <span>Consumo</span>
+    </a>
+    <a asp-controller="Categoria" asp-action="Index" class="nav-item">
+        <i class="bi bi-grid-fill"></i>
+        <span>Menu</span>
     </a>
 </nav>
 
@@ -644,10 +644,10 @@
                 .then(r => r.json())
                 .then(d => {
                     const headerBadge = document.getElementById('cartBadgeHome');
-                    const navBadge    = document.getElementById('navCarrinhoBadge');
+                    const navBadge    = null;
                     if (d.total > 0) {
                         if (headerBadge) { headerBadge.textContent = d.total; headerBadge.classList.remove('d-none'); }
-                        if (navBadge)    { navBadge.textContent = d.total;    navBadge.classList.remove('d-none'); }
+
                     }
                 })
                 .catch(() => {});

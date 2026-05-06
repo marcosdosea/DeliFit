@@ -15,7 +15,7 @@
     }
     var cartoes = ViewBag.Cartoes as List<Core.Cartao> ?? new List<Core.Cartao>();
     var formaSelecionada = ViewBag.FormaSelecionada as string;
-    var idCartaoSelecionado = ViewBag.IdCartaoSelecionado as int?;
+    int? idCartaoSelecionado = ViewBag.IdCartaoSelecionado != null ? (int?)ViewBag.IdCartaoSelecionado : null;
 }
 
 <style>

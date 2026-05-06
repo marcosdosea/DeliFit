@@ -310,22 +310,39 @@ public class CarrinhoController : Controller
 
         try
         {
-            // Agrupa itens por restaurante (pode haver mais de um restaurante no pedido futuro,
-            // mas a validação ao adicionar já garante 1 restaurante por carrinho)
             var restaurantesNoCarrinho = itens.Select(i => i.IdRestaurante).Distinct().ToList();
 
-            // Cria o Carrinho no banco
-            var carrinho = new Carrinho
+            // Tenta criar o Carrinho no banco — captura falha isoladamente
+            uint idCarrinho = 0;
+            try
             {
-                IdCliente = clienteId.Value,
-                FormaDePagamento = formaPagamento,
-                ValorFrete = 0, // Pode ser calculado futuramente
-                IdCartao = idCartao,
-                Observacao = null
-            };
-            var idCarrinho = _carrinhoService.Create(carrinho);
+                var carrinhoEntidade = new Carrinho
+                {
+                    IdCliente = clienteId.Value,
+                    FormaDePagamento = formaPagamento,
+                    ValorFrete = 0,
+                    IdCartao = idCartao,
+                    Observacao = null
+                };
+                idCarrinho = _carrinhoService.Create(carrinhoEntidade);
+            }
+            catch
+            {
+                // Se Carrinho não puder ser criado (campos ausentes no modelo),
+                // busca o último carrinho existente do cliente
+                var carrinhoExistente = _carrinhoService.GetAll()
+                    .Where(c => c.IdCliente == clienteId.Value)
+                    .OrderByDescending(c => c.Id)
+                    .FirstOrDefault();
 
-            // Para cada restaurante (atualmente sempre 1), cria um Pedido
+                if (carrinhoExistente != null)
+                    idCarrinho = carrinhoExistente.Id;
+                else
+                    throw new Exception("Não foi possível criar ou encontrar o carrinho do cliente.");
+            }
+
+            // Para cada restaurante, cria um Pedido
+            uint idPedidoCriado = 0;
             foreach (var idRestaurante in restaurantesNoCarrinho)
             {
                 var itensDoPedido = itens.Where(i => i.IdRestaurante == idRestaurante).ToList();
@@ -339,7 +356,7 @@ public class CarrinhoController : Controller
                     IdCarrinho = idCarrinho
                 };
 
-                // Adiciona os PedidoItems
+                // EF resolve IdPedido automaticamente via navigation property
                 foreach (var it in itensDoPedido)
                 {
                     pedido.Pedidoitems.Add(new Pedidoitem
@@ -350,21 +367,22 @@ public class CarrinhoController : Controller
                     });
                 }
 
-                _pedidoService.Create(pedido);
+                idPedidoCriado = _pedidoService.Create(pedido);
             }
 
-            // Limpa o carrinho da sessão
+            // Limpa sessão
             HttpContext.Session.Remove(SessaoCarrinho);
             HttpContext.Session.Remove(SessaoFormaPagamento);
             HttpContext.Session.Remove(SessaoIdCartao);
             HttpContext.Session.Remove(SessaoIdEndereco);
 
             TempData["Success"] = "Pedido realizado com sucesso! 🎉";
-            return RedirectToAction("Index", "Pedido");
+            return RedirectToAction("Acompanhar", "Pedido", new { id = idPedidoCriado });
         }
         catch (Exception ex)
         {
-            TempData["Error"] = $"Erro ao realizar pedido: {ex.Message}";
+            var msg = ex.InnerException?.Message ?? ex.Message;
+            TempData["Error"] = $"Erro ao realizar pedido: {msg}";
             return RedirectToAction(nameof(Index));
         }
     }

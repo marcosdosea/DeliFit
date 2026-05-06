@@ -56,6 +56,10 @@ namespace Service
             var pedido = _context.Pedidos.Find(id);
             if (pedido != null)
             {
+                // Remove os PedidoItems primeiro (FK constraint)
+                _context.Entry(pedido).Collection(p => p.Pedidoitems).Load();
+                _context.Pedidoitems.RemoveRange(pedido.Pedidoitems);
+
                 _context.Remove(pedido);
                 _context.SaveChanges();
             }
