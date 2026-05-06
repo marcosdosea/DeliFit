@@ -33,6 +33,10 @@ namespace DeliFitWeb.Controllers.Tests
                 Mock.Of<IRoleStore<IdentityRole>>(), null, null, null, null);
 
             var mockEmailSender = new Mock<IEmailSender>();
+            var mockItemService = new Mock<IItemService>();
+            var mockPedidoService = new Mock<IPedidoService>();
+            var mockClienteService = new Mock<IClienteService>();
+            var mockCarrinhoService = new Mock<ICarrinhoService>();
 
             mockUserManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync((UsuarioIdentity?)null);
@@ -59,6 +63,10 @@ namespace DeliFitWeb.Controllers.Tests
 
             controller = new RestauranteController(
                 mockService.Object,
+                mockItemService.Object,
+                mockPedidoService.Object,
+                mockClienteService.Object,
+                mockCarrinhoService.Object,
                 mapper,
                 mockUserManager.Object,
                 mockRoleManager.Object,

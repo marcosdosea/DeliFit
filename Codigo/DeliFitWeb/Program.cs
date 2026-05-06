@@ -67,7 +67,6 @@ public class Program
         builder.Services.AddTransient<IRestauranteService, RestauranteService>();
         builder.Services.AddTransient<IPagamentoService, PagamentoService>();
         builder.Services.AddTransient<ICategoriaService, CategoriaService>();
-        builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         builder.Services.AddTransient<ICartaoService, CartaoService>();
         builder.Services.AddTransient<ICarrinhoService, CarrinhoService>();
 
