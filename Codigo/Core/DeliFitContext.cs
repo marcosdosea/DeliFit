@@ -110,10 +110,13 @@ public partial class DeliFitContext : DbContext
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.FormaDePagamento)
                 .HasComment("P para PIX,C para CARTÃO, D para DINHEIRO ")
-                .HasColumnType("enum('P','C','D')");
+                .HasColumnType("enum('P','C','D')")
+                .HasColumnName("formaDePagamento");
             entity.Property(e => e.IdCartao).HasColumnName("idCartao");
             entity.Property(e => e.IdCliente).HasColumnName("idCliente");
-            entity.Property(e => e.Observacao).HasMaxLength(100);
+            entity.Property(e => e.Observacao)
+                .HasMaxLength(100)
+                .HasColumnName("observacao");
             entity.Property(e => e.ValorFrete)
                 .HasPrecision(10)
                 .HasColumnName("valorFrete");

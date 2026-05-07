@@ -363,7 +363,7 @@
 </div>
 
 <div class="content-area">
-    <!-- M…TRICAS -->
+    <!-- M√âTRICAS -->
     <div class="metrics-container" id="metricsContainer">
         <div class="metric-card">
             <div class="metric-label">Entregas Hoje</div>
@@ -376,7 +376,7 @@
         </div>
 
         <div class="metric-card">
-            <div class="metric-label">Tempo MÈdio</div>
+            <div class="metric-label">Tempo M√©dio</div>
             <div class="metric-value" id="metricTempo">--</div>
         </div>
     </div>
@@ -526,7 +526,7 @@
                 </div>
                 <div class="order-body">
                     <div class="order-client">${order.nomeCliente || 'Cliente'}</div>
-                    <div class="order-address">${order.enderecoCliente || 'EndereÁo n„o informado'}</div>
+                    <div class="order-address">${order.enderecoCliente || 'Endere√ßo n√£o informado'}</div>
                     <div class="order-price">
                         <span style="color: #888;">Valor</span>
                         <strong>${formatPrice(order.preco)}</strong>
@@ -546,7 +546,7 @@
             return card;
         }
 
-        // Atualiza mÈtricas
+        // Atualiza m√©tricas
         function updateMetrics() {
             const entregasHoje = allOrders.filter(o => o.status === 3).length;
             const ativos = allOrders.filter(o => o.status < 3).length;
@@ -567,7 +567,7 @@
             document.getElementById('metricTempo').textContent = tempoMedio;
         }
 
-        // AvanÁa pedido para prÛximo status
+        // Avan√ßa pedido para pr√≥ximo status
         function advanceOrder(orderId, currentStatus) {
             const nextStatus = currentStatus < 3 ? currentStatus + 1 : 3;
 
@@ -600,7 +600,7 @@
             window.location.href = '@Url.Action("Details", "Pedido")?id=' + orderId;
         }
 
-        // Eventos dos botıes
+        // Eventos dos bot√µes
         document.getElementById('btnRefresh').addEventListener('click', loadOrders);
 
         document.getElementById('btnFechar').addEventListener('click', () => {
@@ -630,7 +630,7 @@
             autoRefreshInterval = setInterval(loadOrders, 15000);
         }
 
-        // Inicia ao carregar a p·gina
+        // Inicia ao carregar a p√°gina
         document.addEventListener('DOMContentLoaded', startAutoRefresh);
 
         // Para o auto-refresh ao descarregar
