@@ -1,48 +1,519 @@
 @model DeliFitWeb.Models.PedidoViewModel
+@using Core;
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalhes do Pedido";
+    string nomeRestaurante = ViewBag.NomeRestaurante ?? "";
+    var itens = ViewBag.Itens as List<Pedidoitem> ?? new List<Pedidoitem>();
+    char statusPedido = ViewBag.StatusPedido ?? 'P';
+    string nomeCliente = ViewBag.NomeCliente ?? "Cliente";
+    string telefoneCliente = ViewBag.TelefoneCliente ?? "";
+    string enderecoCliente = ViewBag.EnderecoCliente ?? "Não informado";
+    string numeroCliente = ViewBag.NumeroCliente ?? "";
+    string bairroCliente = ViewBag.BairroCliente ?? "";
 }
 
-<h1>Details</h1>
+<style>
+    body {
+        background: #f8f9fa;
+        padding-bottom: 40px;
+    }
 
-<div>
-    <h4>PedidoViewModel</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdCarrinho)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdCarrinho)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IdRestaurante)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IdRestaurante)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Data)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Data)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Preco)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Preco)
-        </dd>
-    </dl>
+    .top-bar {
+        background: white;
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        position: sticky;
+        top: 0;
+        z-index: 200;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+
+    .back-btn {
+        width: 38px;
+        height: 38px;
+        background: #f4f4f4;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #333;
+        font-size: 1rem;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .back-btn:hover {
+        background: #ffe8d6;
+        color: #ff6600;
+    }
+
+    .page-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #1a1a1a;
+    }
+
+    /* ── Seções de conteúdo ── */
+    .details-section {
+        background: white;
+        margin: 16px;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .section-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .section-title i {
+        font-size: 1.2rem;
+        color: #ff6600;
+    }
+
+    /* ── Status Timeline ── */
+    .timeline {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        position: relative;
+        margin: 24px 0;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        top: 18px;
+        left: 18px;
+        right: 18px;
+        height: 2px;
+        background: #e8e8e8;
+        z-index: 0;
+    }
+
+    .step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        z-index: 2;
+        flex: 1;
+    }
+
+    .step-circle {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: #f4f4f4;
+        border: 2px solid #ddd;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        color: #999;
+        transition: all 0.3s;
+    }
+
+    .step.done .step-circle {
+        background: #22c55e;
+        border-color: #22c55e;
+        color: white;
+    }
+
+    .step.active .step-circle {
+        background: #ff6600;
+        border-color: #ff6600;
+        color: white;
+        box-shadow: 0 4px 12px rgba(255,102,0,0.35);
+    }
+
+    .step-label {
+        font-size: 0.65rem;
+        font-weight: 600;
+        color: #999;
+        text-align: center;
+        line-height: 1.2;
+    }
+
+    .step.done .step-label {
+        color: #22c55e;
+    }
+
+    .step.active .step-label {
+        color: #ff6600;
+    }
+
+    /* ── Info Grid ── */
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .info-label {
+        font-size: 0.75rem;
+        color: #999;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+    }
+
+    .info-value {
+        font-size: 0.95rem;
+        color: #333;
+        font-weight: 500;
+    }
+
+    /* ── Itens do Pedido ── */
+    .items-list {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .item-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px;
+        background: #f9f9f9;
+        border-radius: 8px;
+        border-left: 3px solid #ff6600;
+    }
+
+    .item-name {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .item-qty {
+        font-size: 0.8rem;
+        color: #999;
+        margin: 0 12px;
+    }
+
+    .item-price {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #ff6600;
+    }
+
+    /* ── Resumo Financeiro ── */
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #e8e8e8;
+    }
+
+    .summary-row:last-child {
+        border-bottom: none;
+    }
+
+    .summary-label {
+        font-size: 0.85rem;
+        color: #666;
+    }
+
+    .summary-value {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #333;
+    }
+
+    .summary-row.total {
+        padding: 12px 0;
+        border-top: 2px solid #ff6600;
+        border-bottom: none;
+        font-weight: 700;
+        font-size: 1rem;
+    }
+
+    .summary-row.total .summary-label {
+        color: #1a1a1a;
+    }
+
+    .summary-row.total .summary-value {
+        color: #ff6600;
+        font-size: 1.1rem;
+    }
+
+    /* ── Botões de Ação ── */
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+        margin-top: 20px;
+    }
+
+    .btn {
+        flex: 1;
+        padding: 12px 16px;
+        border-radius: 8px;
+        border: none;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .btn-primary {
+        background: #ff6600;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #e55a00;
+        box-shadow: 0 4px 12px rgba(255,102,0,0.3);
+    }
+
+    .btn-secondary {
+        background: #f4f4f4;
+        color: #666;
+    }
+
+    .btn-secondary:hover {
+        background: #e8e8e8;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 20px;
+        color: #999;
+    }
+
+    .empty-state i {
+        font-size: 2rem;
+        display: block;
+        margin-bottom: 8px;
+        color: #ddd;
+    }
+</style>
+
+<div class="top-bar">
+    <a href="javascript:history.back()" class="back-btn">
+        <i class="bi bi-chevron-left"></i>
+    </a>
+    <span class="page-title">Pedido #@Model.Id.ToString("D3")</span>
 </div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new {  id = Model.Id  }) |
-    <a asp-action="Index">Back to List</a>
+
+<!-- Seção de Status -->
+<div class="details-section">
+    <div class="section-title">
+        <i class="bi bi-hourglass-split"></i>
+        Status do Pedido
+    </div>
+
+    <div class="timeline">
+        @{
+            var steps = new[] { 
+                new { status = 'P', name = "Pendente", icon = "bi-clock" },
+                new { status = 'E', name = "Em Preparo", icon = "bi-fire" },
+                new { status = 'S', name = "Em Entrega", icon = "bi-truck" },
+                new { status = 'F', name = "Finalizado", icon = "bi-check-circle" }
+            };
+        }
+        @foreach (var step in steps)
+        {
+            var isDone = step.status < statusPedido || (step.status == statusPedido && statusPedido == 'F');
+            var isActive = step.status == statusPedido && statusPedido != 'F';
+            var stepClass = isDone ? "step done" : (isActive ? "step active" : "step");
+
+            <div class="@stepClass">
+                <div class="step-circle">
+                    <i class="bi @step.icon"></i>
+                </div>
+                <div class="step-label">@step.name</div>
+            </div>
+        }
+    </div>
 </div>
+
+<!-- Seção de Informações do Restaurante e Pedido -->
+<div class="details-section">
+    <div class="section-title">
+        <i class="bi bi-info-circle"></i>
+        Informações do Pedido
+    </div>
+
+    <div class="info-grid">
+        <div class="info-item">
+            <span class="info-label">Restaurante</span>
+            <span class="info-value">@nomeRestaurante</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Data do Pedido</span>
+            <span class="info-value">@Model.Data?.ToString("dd/MM/yyyy HH:mm")</span>
+        </div>
+    </div>
+</div>
+
+<!-- Seção de Informações do Cliente -->
+<div class="details-section">
+    <div class="section-title">
+        <i class="bi bi-person-circle"></i>
+        Dados do Cliente
+    </div>
+
+    <div class="info-grid">
+        <div class="info-item">
+            <span class="info-label">Nome</span>
+            <span class="info-value">@nomeCliente</span>
+        </div>
+        <div class="info-item">
+            <span class="info-label">Telefone</span>
+            <span class="info-value">@(!string.IsNullOrEmpty(telefoneCliente) ? telefoneCliente : "Não informado")</span>
+        </div>
+    </div>
+
+    <div class="info-grid">
+        <div class="info-item" style="grid-column: 1 / -1;">
+            <span class="info-label">Endereço</span>
+            <span class="info-value">
+                @if (!string.IsNullOrEmpty(enderecoCliente) && enderecoCliente != "Não informado")
+                {
+                    @enderecoCliente<text>, </text>@numeroCliente
+                    @if (!string.IsNullOrEmpty(bairroCliente))
+                    {
+                        <text>, </text>@bairroCliente
+                    }
+                }
+                else
+                {
+                    <text>Não informado</text>
+                }
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- Seção de Itens do Pedido -->
+<div class="details-section">
+    <div class="section-title">
+        <i class="bi bi-bag-check"></i>
+        Itens do Pedido
+    </div>
+
+    @if (itens.Any())
+    {
+        <div class="items-list">
+            @foreach (var item in itens)
+            {
+                <div class="item-row">
+                    <span class="item-name">@item.IdItemNavigation?.Nome</span>
+                    <span class="item-qty">x@item.Quantidade</span>
+                    <span class="item-price">@item.Preco.ToString("C")</span>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="empty-state">
+            <i class="bi bi-inbox"></i>
+            <p>Nenhum item neste pedido</p>
+        </div>
+    }
+</div>
+
+<!-- Seção de Resumo Financeiro -->
+<div class="details-section">
+    <div class="section-title">
+        <i class="bi bi-receipt"></i>
+        Resumo Financeiro
+    </div>
+
+    <div class="summary-row">
+        <span class="summary-label">Subtotal</span>
+        <span class="summary-value">@itens.Sum(i => i.Preco).ToString("C")</span>
+    </div>
+
+    <div class="summary-row total">
+        <span class="summary-label">Total</span>
+        <span class="summary-value">@Model.Preco.ToString("C")</span>
+    </div>
+</div>
+
+<!-- Seção de Ações -->
+@if (statusPedido == 'S')
+{
+    <div class="details-section">
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="finalizarPedido(@Model.Id)">
+                <i class="bi bi-check-lg"></i>
+                Finalizar Pedido
+            </button>
+            <a href="javascript:history.back()" class="btn btn-secondary" style="text-decoration: none;">
+                <i class="bi bi-arrow-left"></i>
+                Voltar
+            </a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="details-section">
+        <div class="action-buttons">
+            <a href="javascript:history.back()" class="btn btn-secondary" style="text-decoration: none;">
+                <i class="bi bi-arrow-left"></i>
+                Voltar
+            </a>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        function finalizarPedido(pedidoId) {
+            if (confirm('Tem certeza que deseja finalizar este pedido?')) {
+                fetch('@Url.Action("AtualizarStatusPedido", "Restaurante")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('[name="__RequestVerificationToken"]')?.value || ''
+                    },
+                    body: JSON.stringify({
+                        pedidoId: pedidoId,
+                        novoStatus: 3
+                    })
+                })
+                .then(r => {
+                    if (r.ok) {
+                        alert('Pedido finalizado com sucesso!');
+                        window.history.back();
+                    } else {
+                        alert('Erro ao finalizar pedido');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    alert('Erro ao finalizar pedido');
+                });
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+}
