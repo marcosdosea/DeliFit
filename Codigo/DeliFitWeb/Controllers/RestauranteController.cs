@@ -19,6 +19,9 @@ namespace DeliFitWeb.Controllers
     {
         private readonly IRestauranteService _restauranteService;
         private readonly IItemService _itemService;
+        private readonly IPedidoService _pedidoService;
+        private readonly IClienteService _clienteService;
+        private readonly ICarrinhoService _carrinhoService;
         private readonly IMapper _mapper;
         private readonly UserManager<UsuarioIdentity>? _userManager;
         private readonly RoleManager<IdentityRole>? _roleManager;
@@ -26,6 +29,9 @@ namespace DeliFitWeb.Controllers
 
         public RestauranteController(IRestauranteService restauranteService,
                                      IItemService itemService,
+                                     IPedidoService pedidoService,
+                                     IClienteService clienteService,
+                                     ICarrinhoService carrinhoService,
                                      IMapper mapper,
                                      UserManager<UsuarioIdentity> userManager,
                                      RoleManager<IdentityRole> roleManager,
@@ -33,6 +39,9 @@ namespace DeliFitWeb.Controllers
         {
             _restauranteService = restauranteService;
             _itemService = itemService;
+            _pedidoService = pedidoService;
+            _clienteService = clienteService;
+            _carrinhoService = carrinhoService;
             _mapper = mapper;
             _userManager = userManager;
             _roleManager = roleManager;
@@ -469,6 +478,137 @@ namespace DeliFitWeb.Controllers
         public IActionResult HomeAdmin()
         {
             return View();
+        }
+
+        [Authorize(Roles = "GerenteRestaurante")]
+        [HttpGet]
+        public IActionResult GetPedidosRestaurante()
+        {
+            try
+            {
+                var restauranteId = GetRestauranteIdLogado();
+                if (!restauranteId.HasValue)
+                {
+                    return Json(new { erro = "Restaurante não identificado" });
+                }
+
+                // Obtém todos os pedidos do restaurante
+                var pedidos = _pedidoService.GetAll()
+                    .Where(p => p.IdRestaurante == restauranteId.Value)
+                    .OrderByDescending(p => p.Data)
+                    .ToList();
+
+                // Mapeia status de char para int (P=0, E=1, S=2, F=3)
+                var statusCharToInt = new Dictionary<char?, int>
+                {
+                    { 'P', 0 },
+                    { 'E', 1 },
+                    { 'S', 2 },
+                    { 'F', 3 }
+                };
+
+                var resultado = pedidos.Select(p =>
+                {
+                    // Obtém dados do cliente através do carrinho
+                    var carrinho = _carrinhoService.Get(p.IdCarrinho);
+                    var cliente = carrinho != null ? _clienteService.Get(carrinho.IdCliente) : null;
+                    var endereco = cliente?.Enderecos?.FirstOrDefault();
+
+                    int status = statusCharToInt.ContainsKey(p.Status) 
+                        ? statusCharToInt[p.Status] 
+                        : 0;
+
+                    return new
+                    {
+                        id = p.Id,
+                        data = p.Data,
+                        preco = p.Preco,
+                        status = status,
+                        nomeCliente = cliente?.Nome ?? "Cliente",
+                        enderecoCliente = endereco != null ? 
+                            $"{endereco.Rua}, {endereco.Numero}, {endereco.Bairro}" : 
+                            "Endereço não informado"
+                    };
+                }).ToList();
+
+                return Json(resultado);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, Json(new { erro = ex.Message }));
+            }
+        }
+
+        [Authorize(Roles = "GerenteRestaurante")]
+        [HttpPost]
+        public IActionResult AtualizarStatusPedido([FromBody] AtualizarStatusPedidoRequest request)
+        {
+            try
+            {
+                if (request == null || request.PedidoId == 0)
+                {
+                    return BadRequest("Dados inválidos");
+                }
+
+                var pedido = _pedidoService.Get(request.PedidoId);
+                if (pedido == null)
+                {
+                    return NotFound("Pedido não encontrado");
+                }
+
+                // Verifica se o gerente é do restaurante correto
+                var restauranteId = GetRestauranteIdLogado();
+                if (pedido.IdRestaurante != restauranteId)
+                {
+                    return Forbid();
+                }
+
+                // Mapeia o novo status (0=P, 1=E, 2=S, 3=F)
+                char[] statusMap = { 'P', 'E', 'S', 'F' };
+                if (request.NovoStatus < 0 || request.NovoStatus > 3)
+                {
+                    return BadRequest("Status inválido");
+                }
+
+                pedido.Status = statusMap[request.NovoStatus];
+                _pedidoService.Edit(pedido);
+
+                return Ok(new { sucesso = true, mensagem = "Pedido atualizado com sucesso" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { erro = ex.Message });
+            }
+        }
+
+        [Authorize(Roles = "GerenteRestaurante")]
+        [HttpPost]
+        public IActionResult AlternarStatusLoja()
+        {
+            try
+            {
+                var restauranteId = GetRestauranteIdLogado();
+                if (!restauranteId.HasValue)
+                {
+                    return BadRequest("Restaurante não identificado");
+                }
+
+                var restaurante = _restauranteService.Get(restauranteId.Value);
+                if (restaurante == null)
+                {
+                    return NotFound("Restaurante não encontrado");
+                }
+
+                // Alterna o status validado (usamos como proxy para loja aberta/fechada)
+                restaurante.Validado = !restaurante.Validado;
+                _restauranteService.Edit(restaurante);
+
+                return Ok(new { sucesso = true, aberto = restaurante.Validado });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { erro = ex.Message });
+            }
         }
 
         private uint? GetRestauranteIdLogado()

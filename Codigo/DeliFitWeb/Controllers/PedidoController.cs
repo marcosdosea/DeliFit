@@ -68,7 +68,37 @@ namespace DeliFitWeb.Controllers
         public ActionResult Details(uint id)
         {
             Pedido? pedido = _pedidoService.Get(id);
+            if (pedido == null)
+                return RedirectToAction(nameof(Index));
+
             PedidoViewModel pedidoViewModel = _mapper.Map<PedidoViewModel>(pedido);
+
+            // Carrega nome do restaurante
+            ViewBag.NomeRestaurante = _restauranteService != null
+                ? _restauranteService.Get(pedido.IdRestaurante)?.NomeRestaurante ?? ""
+                : "";
+
+            // Carrega itens do pedido
+            ViewBag.Itens = pedido.Pedidoitems?.ToList() ?? new List<Pedidoitem>();
+
+            // Carrega dados do cliente via carrinho
+            var carrinho = _carrinhoService.Get(pedido.IdCarrinho);
+            if (carrinho != null)
+            {
+                var cliente = _clienteService.Get(carrinho.IdCliente);
+                if (cliente != null)
+                {
+                    ViewBag.NomeCliente = cliente.Nome ?? "";
+                    ViewBag.TelefoneCliente = cliente.Telefone ?? "";
+                    ViewBag.EnderecoCliente = cliente.Enderecos?.FirstOrDefault()?.Rua ?? "Não informado";
+                    ViewBag.NumeroCliente = cliente.Enderecos?.FirstOrDefault()?.Numero ?? "";
+                    ViewBag.BairroCliente = cliente.Enderecos?.FirstOrDefault()?.Bairro ?? "";
+                }
+            }
+
+            // Carrega status do pedido
+            ViewBag.StatusPedido = pedido.Status ?? 'P';
+
             return View(pedidoViewModel);
         }
 
@@ -143,6 +173,20 @@ namespace DeliFitWeb.Controllers
         {
             _pedidoService.Delete(pedidoModel.Id);
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public IActionResult DeleteAjax([FromBody] uint id)
+        {
+            try
+            {
+                _pedidoService.Delete(id);
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         // Método auxiliar para obter o ID do cliente logado
