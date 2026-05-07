@@ -141,8 +141,9 @@
 
     .kanban-container {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(4, 1fr);
         gap: 20px;
+        overflow-x: auto;
     }
 
     .kanban-column {
@@ -325,10 +326,12 @@
         .header-actions {
             width: 100%;
             justify-content: center;
+            flex-wrap: wrap;
         }
 
         .kanban-container {
             grid-template-columns: 1fr;
+            overflow-x: visible;
         }
     }
 </style>
@@ -516,8 +519,24 @@
                 return `${Math.floor(diff / 3600)}h`;
             };
 
-            const nextStatus = status < 3 ? status + 1 : 3;
-            const nextStatusName = statusMap[nextStatus];
+            // Determina o rótulo e ação do botão principal
+            let buttonLabel = '';
+            let buttonIcon = '';
+            let buttonAction = '';
+
+            if (status < 3) {
+                // Para status < 3, avança para o próximo
+                const nextStatus = status + 1;
+                const nextStatusName = statusMap[nextStatus];
+                buttonLabel = `Para ${nextStatusName.split(' ')[0]}`;
+                buttonIcon = 'bi-arrow-right';
+                buttonAction = `advanceOrder(${order.id}, ${status})`;
+            } else if (status === 3) {
+                // Status 3 = EM ENTREGA, botão finaliza
+                buttonLabel = 'Finalizar Pedido';
+                buttonIcon = 'bi-check-lg';
+                buttonAction = `finalizeOrder(${order.id})`;
+            }
 
             card.innerHTML = `
                 <div class="order-header">
@@ -532,9 +551,9 @@
                         <strong>${formatPrice(order.preco)}</strong>
                     </div>
                     <div class="order-actions">
-                        <button class="btn-action btn-advance" onclick="advanceOrder(${order.id}, ${status})">
-                            <i class="bi bi-arrow-right" style="margin-right: 4px;"></i>
-                            Para ${nextStatusName.split(' ')[0]}
+                        <button class="btn-action btn-advance" onclick="${buttonAction}">
+                            <i class="bi ${buttonIcon}" style="margin-right: 4px;"></i>
+                            ${buttonLabel}
                         </button>
                         <button class="btn-action btn-view" onclick="viewOrder(${order.id})">
                             Ver Detalhes
@@ -595,6 +614,36 @@
             });
         }
 
+        // Finaliza pedido (mudar status para Finalizado)
+        function finalizeOrder(orderId) {
+            if (confirm('Tem certeza que deseja finalizar este pedido?')) {
+
+                fetch('@Url.Action("DeleteAjax", "Pedido")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(orderId)
+                })
+                .then(r => {
+                    if (r.ok) {
+
+                        allOrders = allOrders.filter(o => o.id !== orderId);
+
+                        renderKanban();
+                        updateMetrics();
+
+                    } else {
+                        alert('Erro ao finalizar pedido');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                    alert('Erro ao finalizar pedido');
+                });
+            }
+        }
+
         // Visualiza pedido
         function viewOrder(orderId) {
             window.location.href = '@Url.Action("Details", "Pedido")?id=' + orderId;
@@ -616,8 +665,8 @@
                     if (r.ok) {
                         lojaAberta = !lojaAberta;
                         document.getElementById('statusBadge').className = 'status-badge ' + (lojaAberta ? 'aberto' : 'fechado');
-                        document.getElementById('statusBadge').textContent = lojaAberta ? '? Loja Aberta' : '? Loja Fechada';
-                        document.getElementById('btnFechar').textContent = lojaAberta ? '?? Fechar Loja' : '?? Abrir Loja';
+                        document.getElementById('statusBadge').textContent = lojaAberta ? 'Loja Aberta' : 'Loja Fechada';
+                        document.getElementById('btnFechar').textContent = lojaAberta ? 'Fechar Loja' :  'Abrir Loja';
                     }
                 })
                 .catch(error => console.error('Erro:', error));

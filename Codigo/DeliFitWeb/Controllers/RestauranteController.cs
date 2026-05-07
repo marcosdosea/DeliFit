@@ -498,6 +498,15 @@ namespace DeliFitWeb.Controllers
                     .OrderByDescending(p => p.Data)
                     .ToList();
 
+                // Mapeia status de char para int (P=0, E=1, S=2, F=3)
+                var statusCharToInt = new Dictionary<char?, int>
+                {
+                    { 'P', 0 },
+                    { 'E', 1 },
+                    { 'S', 2 },
+                    { 'F', 3 }
+                };
+
                 var resultado = pedidos.Select(p =>
                 {
                     // Obtém dados do cliente através do carrinho
@@ -505,12 +514,16 @@ namespace DeliFitWeb.Controllers
                     var cliente = carrinho != null ? _clienteService.Get(carrinho.IdCliente) : null;
                     var endereco = cliente?.Enderecos?.FirstOrDefault();
 
+                    int status = statusCharToInt.ContainsKey(p.Status) 
+                        ? statusCharToInt[p.Status] 
+                        : 0;
+
                     return new
                     {
                         id = p.Id,
                         data = p.Data,
                         preco = p.Preco,
-                        status = 0, // Padrão - pode ser estendido para incluir campo real
+                        status = status,
                         nomeCliente = cliente?.Nome ?? "Cliente",
                         enderecoCliente = endereco != null ? 
                             $"{endereco.Rua}, {endereco.Numero}, {endereco.Bairro}" : 
@@ -550,13 +563,17 @@ namespace DeliFitWeb.Controllers
                     return Forbid();
                 }
 
-                // Aqui você poderia atualizar um campo de status se existisse
-                // Por enquanto, apenas retornamos sucesso
-                // Se implementar um campo de status, descomente:
-                // pedido.Status = (char)request.NovoStatus;
-                // _pedidoService.Edit(pedido);
+                // Mapeia o novo status (0=P, 1=E, 2=S, 3=F)
+                char[] statusMap = { 'P', 'E', 'S', 'F' };
+                if (request.NovoStatus < 0 || request.NovoStatus > 3)
+                {
+                    return BadRequest("Status inválido");
+                }
 
-                return Ok(new { sucesso = true, mensagem = "Pedido atualizado" });
+                pedido.Status = statusMap[request.NovoStatus];
+                _pedidoService.Edit(pedido);
+
+                return Ok(new { sucesso = true, mensagem = "Pedido atualizado com sucesso" });
             }
             catch (Exception ex)
             {

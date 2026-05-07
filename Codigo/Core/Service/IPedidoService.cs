@@ -6,5 +6,6 @@
         IEnumerable<Pedido> GetAll();
         Pedido? Get(uint id);
         void Delete(uint id);
+        void Edit(Pedido pedido);
     }
 }

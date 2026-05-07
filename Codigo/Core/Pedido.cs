@@ -15,6 +15,8 @@ public partial class Pedido
 
     public uint IdCarrinho { get; set; }
 
+    public char? Status { get; set; } = 'P'; // P=Pendente, E=EmPreparo, S=EmEntrega, F=Finalizado
+
     public enum StatusPedido
     {
         Pendente,       // P

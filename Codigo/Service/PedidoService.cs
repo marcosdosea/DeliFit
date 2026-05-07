@@ -69,6 +69,23 @@ namespace Service
             }
         }
 
+        /// <summary>
+        /// Atualizar dados de um pedido na base de dados
+        /// </summary>
+        /// <param name="pedido">dados atualizados do pedido</param>
+        public void Edit(Pedido pedido)
+        {
+            var existente = _context.Pedidos.FirstOrDefault(p => p.Id == pedido.Id);
+            if (existente == null)
+                throw new ServiceException("Pedido não encontrado");
+
+            existente.Status = pedido.Status;
+            existente.Data = pedido.Data;
+            existente.Preco = pedido.Preco;
+
+            _context.SaveChanges();
+        }
+
 
     }
 }

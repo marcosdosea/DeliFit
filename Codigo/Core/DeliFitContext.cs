@@ -319,6 +319,10 @@ public partial class DeliFitContext : DbContext
             entity.Property(e => e.Preco)
                 .HasPrecision(10)
                 .HasColumnName("preco");
+            entity.Property(e => e.Status)
+                .HasColumnType("enum('P','E','S','F')")
+                .HasComment("P=Pendente, E=EmPreparo, S=EmEntrega, F=Finalizado")
+                .HasColumnName("status");
 
             entity.HasOne(d => d.IdCarrinhoNavigation).WithMany(p => p.Pedidos)
                 .HasForeignKey(d => d.IdCarrinho)
