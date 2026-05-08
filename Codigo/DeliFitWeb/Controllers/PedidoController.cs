@@ -119,10 +119,23 @@ namespace DeliFitWeb.Controllers
             // Carrega itens do pedido
             ViewBag.Itens = pedido.Pedidoitems?.ToList() ?? new List<Pedidoitem>();
 
-            // Carrega forma de pagamento do carrinho
-            ViewBag.FormaPagamento = "";
+            var carrinho = _carrinhoService.Get(pedido.IdCarrinho);
+            ViewBag.FormaPagamento = carrinho?.FormaDePagamento ?? "";
+
+            ViewBag.StatusPedido = pedido.Status ?? 'P';
 
             return View(pedidoViewModel);
+        }
+
+        // GET: PedidoController/GetStatus/5 — Endpoint de polling para o cliente
+        [HttpGet]
+        public IActionResult GetStatus(uint id)
+        {
+            Pedido? pedido = _pedidoService.Get(id);
+            if (pedido == null)
+                return NotFound();
+
+            return Json(new { status = pedido.Status?.ToString() ?? "P" });
         }
 
         // GET: PedidoController/Create

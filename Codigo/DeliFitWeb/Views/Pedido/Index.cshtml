@@ -101,12 +101,25 @@
         font-weight: 700;
         padding: 4px 12px;
         border-radius: 20px;
-        background: #fff3e6;
-        color: #ff6600;
         white-space: nowrap;
     }
 
-        .pedido-status.entregue {
+        .pedido-status.status-P {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+
+        .pedido-status.status-E {
+            background: #fff3e6;
+            color: #ff6600;
+        }
+
+        .pedido-status.status-S {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .pedido-status.status-F {
             background: #dcfce7;
             color: #16a34a;
         }
@@ -194,7 +207,6 @@
             margin-bottom: 12px;
         }
 
-    /* ── Bottom nav ── */
     .bottom-nav {
         position: fixed;
         bottom: 0;
@@ -272,7 +284,17 @@ else
 {
     @foreach (var pedido in Model.OrderByDescending(p => p.Data))
     {
-        <div class="pedido-card">
+        var statusChar = pedido.Status?.ToString() ?? "P";
+        var statusLabel = statusChar switch
+        {
+            "P" => "Pendente",
+            "E" => "Em preparo",
+            "S" => "Em entrega",
+            "F" => "Entregue",
+            _ => "Pendente"
+        };
+
+        <div class="pedido-card" data-pedido-id="@pedido.Id" data-status="@statusChar">
             <div class="pedido-header">
                 <div class="rest-avatar">
                     <img src="@Url.Action("Foto", "Restaurante", new { id = pedido.IdRestaurante })"
@@ -286,7 +308,7 @@ else
                     <div class="pedido-code">Pedido #@pedido.Id</div>
                     <div class="pedido-rest">Restaurante #@pedido.IdRestaurante</div>
                 </div>
-                <span class="pedido-status">Em andamento</span>
+                <span class="pedido-status status-@statusChar" id="badge-@pedido.Id">@statusLabel</span>
             </div>
 
             <div class="pedido-divider"></div>
@@ -315,7 +337,6 @@ else
     }
 }
 
-@* ── Bottom nav conforme wireframe M01: Início / Pedidos / Consumo / Menu ── *@
 <nav class="bottom-nav">
     <a asp-controller="Cliente" asp-action="HomeCliente" class="nav-item">
         <i class="bi bi-house-fill"></i>
@@ -334,3 +355,79 @@ else
         <span>Menu</span>
     </a>
 </nav>
+
+@section Scripts {
+    <script>
+        const STATUS_LABEL = {
+            'P': 'Pendente',
+            'E': 'Em preparo',
+            'S': 'Em entrega',
+            'F': 'Entregue'
+        };
+
+        const INTERVALO_MS = 10000; // polling a cada 10 segundos
+
+        // Coleta apenas os pedidos ainda não finalizados para monitorar
+        function coletarPedidosAtivos() {
+            return Array.from(document.querySelectorAll('.pedido-card'))
+                .filter(el => el.dataset.status !== 'F')
+                .map(el => ({
+                    id: el.dataset.pedidoId,
+                    cardEl: el
+                }));
+        }
+
+        function aplicarStatusNoBadge(cardEl, novoStatus) {
+            const badge = cardEl.querySelector('.pedido-status');
+            if (!badge) return;
+
+            // Remove classes de status anteriores
+            badge.classList.remove('status-P', 'status-E', 'status-S', 'status-F');
+            badge.classList.add('status-' + novoStatus);
+            badge.textContent = STATUS_LABEL[novoStatus] ?? novoStatus;
+
+            // Atualiza data-status no card para excluir do próximo ciclo se finalizado
+            cardEl.dataset.status = novoStatus;
+        }
+
+        async function consultarPedidosAtivos() {
+            const ativos = coletarPedidosAtivos();
+            if (ativos.length === 0) return; // todos finalizados, sem consultas
+
+            await Promise.all(ativos.map(async ({ id, cardEl }) => {
+                try {
+                    const resp = await fetch(`/Pedido/GetStatus/${id}`, {
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    if (!resp.ok) return;
+
+                    const dados = await resp.json();
+                    const novoStatus = (dados.status ?? 'P').toUpperCase();
+
+                    if (novoStatus !== cardEl.dataset.status) {
+                        aplicarStatusNoBadge(cardEl, novoStatus);
+                    }
+                } catch (_) {
+                    // falha silenciosa; tenta no próximo ciclo
+                }
+            }));
+        }
+
+        let pollingTimer = null;
+
+        function iniciarPolling() {
+            consultarPedidosAtivos(); // consulta imediata ao abrir a tela
+            pollingTimer = setInterval(consultarPedidosAtivos, INTERVALO_MS);
+        }
+
+        function pararPolling() {
+            if (pollingTimer) {
+                clearInterval(pollingTimer);
+                pollingTimer = null;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', iniciarPolling);
+        window.addEventListener('beforeunload', pararPolling);
+    </script>
+}

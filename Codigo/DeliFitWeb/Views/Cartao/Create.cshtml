@@ -1,7 +1,7 @@
-@model DeliFitWeb.Models.CartaoViewModel
+Ôªø@model DeliFitWeb.Models.CartaoViewModel
 
 @{
-    ViewData["Title"] = "Cadastrar Cart„o";
+    ViewData["Title"] = "Cadastrar Cart√£o";
     var idClienteContexto = Context.Request.Query["idCliente"];
 }
 
@@ -12,8 +12,8 @@
 
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
-                        <h2 class="fw-bold m-0">Novo Cart„o</h2>
-                        <p class="text-muted">Cadastre um cart„o para este cliente.</p>
+                        <h2 class="fw-bold m-0">Novo Cart√£o</h2>
+                        <p class="text-muted">Cadastre um cart√£o para este cliente.</p>
                     </div>
                 </div>
 
@@ -33,7 +33,7 @@
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-header bg-white border-0 pt-4 ps-4">
                             <h5 class="fw-bold mb-0 text-orange">
-                                <i class="bi bi-credit-card me-2"></i>Dados do Cart„o
+                                <i class="bi bi-credit-card me-2"></i>Dados do Cart√£o
                             </h5>
                         </div>
 
@@ -42,7 +42,7 @@
                             <div class="row g-3 mb-3">
                                 <div class="col-md-6">
                                     <label asp-for="Nome" class="form-label fw-semibold"></label>
-                                    <input asp-for="Nome" class="form-control" placeholder="Nome impresso no cart„o" />
+                                    <input asp-for="Nome" class="form-control" placeholder="Nome impresso no cart√£o" />
                                     <span asp-validation-for="Nome" class="text-danger small"></span>
                                 </div>
 
@@ -56,14 +56,29 @@
                             <div class="row g-3 mb-3">
                                 <div class="col-md-6">
                                     <label asp-for="Numero" class="form-label fw-semibold"></label>
-                                    <input asp-for="Numero" class="form-control" placeholder="N˙mero do cart„o" />
+                                    <input asp-for="Numero" class="form-control" placeholder="N√∫mero do cart√£o" />
                                     <span asp-validation-for="Numero" class="text-danger small"></span>
                                 </div>
 
                                 <div class="col-md-3">
-                                    <label asp-for="Validade" class="form-label fw-semibold"></label>
-                                    <input asp-for="Validade" class="form-control" type="month" />
-                                    <span asp-validation-for="Validade" class="text-danger small"></span>
+                                    <label class="form-label fw-semibold">Validade</label>
+                                    <div class="d-flex gap-2">
+                                        <select name="ValidadeMes" class="form-select">
+                                            <option value="">M√™s</option>
+                                            @for (int m = 1; m <= 12; m++)
+                                            {
+                                                <option value="@m">@m.ToString("D2")</option>
+                                            }
+                                        </select>
+                                        <select name="ValidadeAno" class="form-select">
+                                            <option value="">Ano</option>
+                                            @for (int a = DateTime.Now.Year; a <= DateTime.Now.Year + 15; a++)
+                                            {
+                                                <option value="@a">@a</option>
+                                            }
+                                        </select>
+                                    </div>
+                                    <span asp-validation-for="ValidadeMes" class="text-danger small"></span>
                                 </div>
 
                                 <div class="col-md-3">
@@ -84,7 +99,7 @@
                         </a>
 
                         <button type="submit" class="btn btn-orange px-5 py-2 fw-bold shadow-sm">
-                            <i class="bi bi-check-circle me-2"></i>Salvar Cart„o
+                            <i class="bi bi-check-circle me-2"></i>Salvar Cart√£o
                         </button>
                     </div>
 
