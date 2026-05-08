@@ -16,14 +16,22 @@ namespace DeliFitWeb.Controllers
         private readonly IClienteService _clienteService;
         private readonly ICarrinhoService _carrinhoService;
         private readonly IRestauranteService _restauranteService;
+        private readonly IAvaliacaoService _avaliacaoService;
 
-        public PedidoController(IPedidoService pedidoService, IMapper mapper, IClienteService clienteService, ICarrinhoService carrinhoService, IRestauranteService restauranteService)
+        public PedidoController(
+            IPedidoService pedidoService,
+            IMapper mapper,
+            IClienteService clienteService,
+            ICarrinhoService carrinhoService,
+            IRestauranteService restauranteService,
+            IAvaliacaoService avaliacaoService)
         {
             _pedidoService = pedidoService;
             _mapper = mapper;
             _clienteService = clienteService;
             _carrinhoService = carrinhoService;
             _restauranteService = restauranteService;
+            _avaliacaoService = avaliacaoService;
         }
 
         // GET: PedidoController
@@ -34,12 +42,9 @@ namespace DeliFitWeb.Controllers
 
             if (User.IsInRole("Cliente"))
             {
-                // Cliente vê apenas seus próprios pedidos
                 var clienteId = GetClienteIdLogado();
                 if (clienteId.HasValue)
                 {
-                    // Filtra pelos carrinhos do cliente e depois pelos pedidos desses carrinhos
-                    // Evita acessar IdCarrinhoNavigation que pode ser null (não carregado pelo EF)
                     var carrinhoIds = _carrinhoService.GetAll()
                         .Where(c => c.IdCliente == clienteId.Value)
                         .Select(c => c.Id)
@@ -56,7 +61,6 @@ namespace DeliFitWeb.Controllers
             }
             else
             {
-                // Admin vê todos os pedidos
                 listaPedidos = _pedidoService.GetAll();
             }
 
@@ -73,15 +77,9 @@ namespace DeliFitWeb.Controllers
 
             PedidoViewModel pedidoViewModel = _mapper.Map<PedidoViewModel>(pedido);
 
-            // Carrega nome do restaurante
-            ViewBag.NomeRestaurante = _restauranteService != null
-                ? _restauranteService.Get(pedido.IdRestaurante)?.NomeRestaurante ?? ""
-                : "";
-
-            // Carrega itens do pedido
+            ViewBag.NomeRestaurante = _restauranteService?.Get(pedido.IdRestaurante)?.NomeRestaurante ?? "";
             ViewBag.Itens = pedido.Pedidoitems?.ToList() ?? new List<Pedidoitem>();
 
-            // Carrega dados do cliente via carrinho
             var carrinho = _carrinhoService.Get(pedido.IdCarrinho);
             if (carrinho != null)
             {
@@ -96,7 +94,6 @@ namespace DeliFitWeb.Controllers
                 }
             }
 
-            // Carrega status do pedido
             ViewBag.StatusPedido = pedido.Status ?? 'P';
 
             return View(pedidoViewModel);
@@ -111,12 +108,7 @@ namespace DeliFitWeb.Controllers
 
             PedidoViewModel pedidoViewModel = _mapper.Map<PedidoViewModel>(pedido);
 
-            // Carrega nome do restaurante
-            ViewBag.NomeRestaurante = _restauranteService != null
-                ? _restauranteService.Get(pedido.IdRestaurante)?.NomeRestaurante ?? ""
-                : "";
-
-            // Carrega itens do pedido
+            ViewBag.NomeRestaurante = _restauranteService?.Get(pedido.IdRestaurante)?.NomeRestaurante ?? "";
             ViewBag.Itens = pedido.Pedidoitems?.ToList() ?? new List<Pedidoitem>();
 
             var carrinho = _carrinhoService.Get(pedido.IdCarrinho);
@@ -124,10 +116,13 @@ namespace DeliFitWeb.Controllers
 
             ViewBag.StatusPedido = pedido.Status ?? 'P';
 
+            // Verifica se o pedido já foi avaliado — impede dupla avaliação
+            ViewBag.AvaliacaoExistente = _avaliacaoService.GetByPedido(id);
+
             return View(pedidoViewModel);
         }
 
-        // GET: PedidoController/GetStatus/5 — Endpoint de polling para o cliente
+        // GET: PedidoController/GetStatus/5
         [HttpGet]
         public IActionResult GetStatus(uint id)
         {
@@ -150,9 +145,6 @@ namespace DeliFitWeb.Controllers
         [Authorize(Roles = "Cliente")]
         public ActionResult Create(PedidoViewModel pedidoModel)
         {
-            // Nota: Pedido requer IdCarrinho, não IdCliente diretamente
-            // O carrinho já deve existir e estar vinculado ao cliente
-
             if (ModelState.IsValid)
             {
                 try
@@ -175,7 +167,6 @@ namespace DeliFitWeb.Controllers
         {
             Pedido? pedido = _pedidoService.Get(id);
             PedidoViewModel pedidoModel = _mapper.Map<PedidoViewModel>(pedido);
-
             return View(pedidoModel);
         }
 
@@ -202,23 +193,18 @@ namespace DeliFitWeb.Controllers
             }
         }
 
-        // Método auxiliar para obter o ID do cliente logado
         private uint? GetClienteIdLogado()
         {
-            // Tenta buscar da sessão
             var clienteId = HttpContext.Session.GetClienteId();
 
             if (!clienteId.HasValue)
             {
-                // Se não estiver na sessão, busca pelo email
                 var userEmail = User.Identity?.Name;
                 if (!string.IsNullOrEmpty(userEmail))
                 {
                     var cliente = _clienteService.GetByEmail(userEmail);
-
                     if (cliente != null)
                     {
-                        // Armazena na sessão para próximas requisições
                         HttpContext.Session.SetClienteId(cliente.Id);
                         clienteId = cliente.Id;
                     }

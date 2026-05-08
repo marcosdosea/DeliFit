@@ -1,15 +1,14 @@
-﻿using Core;
+﻿namespace Core.Service;
 
-namespace Core.Service
+public interface IAvaliacaoService
 {
-    public interface IAvaliacaoService
-    {
-        void Create(Avaliacao avaliacao);
-        Avaliacao? Get(uint id);
-        IEnumerable<Avaliacao> GetAll();
-        void Update(Avaliacao avaliacao);
-        void Delete(uint id);
-        IEnumerable<Avaliacao> GetByPedido(uint idPedido);
-        IEnumerable<Avaliacao> GetByCliente(uint idCliente);
-    }
+    void Create(Core.Avaliacao avaliacao);
+    void Edit(Core.Avaliacao avaliacao);
+    void Delete(uint id);
+    Core.Avaliacao? Get(uint id);
+    IEnumerable<Core.Avaliacao> GetAll();
+    IEnumerable<Core.Avaliacao> GetByCliente(uint idCliente);
+
+    /// <summary>Retorna a avaliação de um pedido específico, ou null se ainda não avaliado.</summary>
+    Core.Avaliacao? GetByPedido(uint idPedido);
 }
