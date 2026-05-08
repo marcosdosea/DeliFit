@@ -1,4 +1,4 @@
-using BibliotecaWeb.Helpers;
+﻿using BibliotecaWeb.Helpers;
 using Core;
 using Core.Service;
 using Core.Identity.Data;
@@ -60,6 +60,7 @@ public class Program
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
         builder.Services.AddTransient<IAtendimentoService, AtendimentoService>();
+        builder.Services.AddTransient<IAvaliacaoService, AvaliacaoService>();
         builder.Services.AddTransient<IItemService, ItemService>();
         builder.Services.AddTransient<IClienteService, ClienteService>();
         builder.Services.AddTransient<IPedidoService, PedidoService>();
