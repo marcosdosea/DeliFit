@@ -1,4 +1,4 @@
-using AutoMapper;
+ï»¿using AutoMapper;
 using Core;
 using Core.Service;
 using DeliFitWeb.Models;
@@ -97,7 +97,6 @@ namespace DeliFitWeb.Controllers
         }
 
         // GET: RestauranteController/VerEstabelecimento/5 (Cliente)
-        // Página pública de um restaurante com seu cardápio
         [Authorize(Roles = "Cliente")]
         public ActionResult VerEstabelecimento(uint id)
         {
@@ -108,7 +107,6 @@ namespace DeliFitWeb.Controllers
 
             var restauranteModel = _mapper.Map<RestauranteViewModel>(restaurante);
 
-            // Carrega os itens do cardápio deste restaurante
             var itens = _itemService.GetByRestaurante(id);
             var itensModel = _mapper.Map<List<ItemViewModel>>(itens);
 
@@ -117,7 +115,6 @@ namespace DeliFitWeb.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        // GET: RestauranteController/DetailsSolicitacao/5
         public ActionResult DetailsSolicitacao(uint id)
         {
             Restaurante? restaurante = _restauranteService.Get(id);
@@ -159,9 +156,6 @@ namespace DeliFitWeb.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        /// <summary>
-        /// Serve a foto de um restaurante diretamente do banco para uso nas views via img src.
-        /// </summary>
         [HttpGet]
         public ActionResult Foto(uint id)
         {
@@ -178,31 +172,29 @@ namespace DeliFitWeb.Controllers
         {
             uint restauranteId;
 
-            // Se foi passado um ID, usa ele (Admin editando qualquer restaurante)
             if (id.HasValue)
             {
                 restauranteId = id.Value;
             }
             else if (User.IsInRole("GerenteRestaurante"))
             {
-                // Se nï¿½o foi passado ID, busca da sessï¿½o (gerente editando seu prï¿½prio restaurante)
                 var restauranteIdSessao = GetRestauranteIdLogado();
                 if (!restauranteIdSessao.HasValue)
                 {
-                    TempData["Error"] = "Não foi possível identificar o restaurante. Faça login novamente.";
+                    TempData["Error"] = "NÃ£o foi possÃ­vel identificar o restaurante. FaÃ§a login novamente.";
                     return RedirectToAction("Home", "Restaurante");
                 }
                 restauranteId = restauranteIdSessao.Value;
             }
             else
             {
-                return BadRequest("ID do restaurante não fornecido.");
+                return BadRequest("ID do restaurante nÃ£o fornecido.");
             }
 
             Restaurante? restaurante = _restauranteService.Get(restauranteId);
 
             if (restaurante == null)
-                return NotFound("Restaurante não encontrado.");
+                return NotFound("Restaurante nÃ£o encontrado.");
 
             RestauranteViewModel restauranteModel = _mapper.Map<RestauranteViewModel>(restaurante);
             return View(restauranteModel);
@@ -214,13 +206,12 @@ namespace DeliFitWeb.Controllers
         [Authorize(Roles = "Admin,GerenteRestaurante")]
         public ActionResult Edit(RestauranteViewModel restauranteModel)
         {
-            // Se for gerente, verifica se estï¿½ editando o prï¿½prio restaurante
             if (User.IsInRole("GerenteRestaurante"))
             {
                 var restauranteIdSessao = GetRestauranteIdLogado();
                 if (!restauranteIdSessao.HasValue || restauranteIdSessao.Value != restauranteModel.Id)
                 {
-                    TempData["Error"] = "Você não tem permissão para editar este restaurante.";
+                    TempData["Error"] = "VocÃª nÃ£o tem permissÃ£o para editar este restaurante.";
                     return RedirectToAction("Home", "Restaurante");
                 }
             }
@@ -233,14 +224,12 @@ namespace DeliFitWeb.Controllers
 
                     if (restauranteModel.FotoFile != null && restauranteModel.FotoFile.Length > 0)
                     {
-                        // Nova foto enviada: converte e salva
                         using var ms = new MemoryStream();
                         restauranteModel.FotoFile.CopyTo(ms);
                         restaurante.Foto = ms.ToArray();
                     }
                     else
                     {
-                        // Nenhuma foto nova: preserva a foto jï¿½ existente no banco
                         var restauranteExistente = _restauranteService.Get(restauranteModel.Id);
                         restaurante.Foto = restauranteExistente?.Foto;
                     }
@@ -307,7 +296,6 @@ namespace DeliFitWeb.Controllers
             {
                 var restaurante = _mapper.Map<Restaurante>(restauranteModel);
 
-                // Foto enviada na solicitaï¿½ï¿½o: converte e salva
                 if (restauranteModel.FotoFile != null && restauranteModel.FotoFile.Length > 0)
                 {
                     using var ms = new MemoryStream();
@@ -315,12 +303,11 @@ namespace DeliFitWeb.Controllers
                     restaurante.Foto = ms.ToArray();
                 }
 
-                // Restaurante comeï¿½a como nï¿½o validado (aguarda aprovaï¿½ï¿½o do admin)
                 restaurante.Validado = false;
 
                 _restauranteService.Create(restaurante);
 
-                TempData["Success"] = "Solicitação enviada com sucesso! Aguarde a aprovação do administrador.";
+                TempData["Success"] = "SolicitaÃ§Ã£o enviada com sucesso! Aguarde a aprovaÃ§Ã£o do administrador.";
                 return RedirectToAction("Index", "Home");
             }
 
@@ -338,7 +325,7 @@ namespace DeliFitWeb.Controllers
                 var restaurante = _restauranteService.Get(id);
                 if (restaurante == null)
                 {
-                    TempData["Error"] = "Restaurante não encontrado.";
+                    TempData["Error"] = "Restaurante nÃ£o encontrado.";
                     return RedirectToAction(nameof(ListarSolicitacoes));
                 }
 
@@ -349,7 +336,7 @@ namespace DeliFitWeb.Controllers
                     var existingUser = await _userManager.FindByEmailAsync(email);
                     if (existingUser != null)
                     {
-                        TempData["Error"] = $"Já existe um usuário cadastrado com o email {email}.";
+                        TempData["Error"] = $"JÃ¡ existe um usuÃ¡rio cadastrado com o email {email}.";
                         return RedirectToAction(nameof(DetailsSolicitacao), new { id });
                     }
 
@@ -366,20 +353,20 @@ namespace DeliFitWeb.Controllers
 
                         try
                         {
-                            var assunto = "Solicitação aprovada - DeliFit";
-                            var mensagem = $"Sua solicitação foi aprovada.\nUsuário: {email}\nSenha: {senha}\nAcesse: {Request.Scheme}://{Request.Host}/Identity/Account/Login";
+                            var assunto = "SolicitaÃ§Ã£o aprovada - DeliFit";
+                            var mensagem = $"Sua solicitaÃ§Ã£o foi aprovada.\nUsuÃ¡rio: {email}\nSenha: {senha}\nAcesse: {Request.Scheme}://{Request.Host}/Identity/Account/Login";
                             await _emailSender.SendEmailAsync(email, assunto, mensagem);
-                            TempData["Success"] = $"Solicitação aprovada! Email com credenciais enviado para {email}.";
+                            TempData["Success"] = $"SolicitaÃ§Ã£o aprovada! Email com credenciais enviado para {email}.";
                         }
                         catch (Exception)
                         {
-                            TempData["Success"] = $"Solicitação aprovada! Porém não foi possível enviar o email. Senha gerada: {senha}";
+                            TempData["Success"] = $"SolicitaÃ§Ã£o aprovada! PorÃ©m nÃ£o foi possÃ­vel enviar o email. Senha gerada: {senha}";
                         }
                     }
                     else
                     {
                         var erros = string.Join(", ", createResult.Errors.Select(e => e.Description));
-                        TempData["Error"] = $"Erro ao criar usuário: {erros}";
+                        TempData["Error"] = $"Erro ao criar usuÃ¡rio: {erros}";
                         return RedirectToAction(nameof(DetailsSolicitacao), new { id });
                     }
                 }
@@ -387,12 +374,12 @@ namespace DeliFitWeb.Controllers
                 {
                     restaurante.Validado = true;
                     _restauranteService.Edit(restaurante);
-                    TempData["Success"] = "Solicitação aprovada! (Email não configurado)";
+                    TempData["Success"] = "SolicitaÃ§Ã£o aprovada! (Email nÃ£o configurado)";
                 }
             }
             catch (Exception ex)
             {
-                TempData["Error"] = $"Erro ao aprovar solicitação: {ex.Message}";
+                TempData["Error"] = $"Erro ao aprovar solicitaÃ§Ã£o: {ex.Message}";
             }
 
             return RedirectToAction(nameof(ListarSolicitacoes));
@@ -416,11 +403,11 @@ namespace DeliFitWeb.Controllers
                 }
 
                 _restauranteService.Delete(id);
-                TempData["Success"] = "Solicitação negada e removida com sucesso.";
+                TempData["Success"] = "SolicitaÃ§Ã£o negada e removida com sucesso.";
             }
             catch (Exception ex)
             {
-                TempData["Error"] = $"Erro ao negar solicitação: {ex.Message}";
+                TempData["Error"] = $"Erro ao negar solicitaÃ§Ã£o: {ex.Message}";
             }
 
             return RedirectToAction(nameof(ListarSolicitacoes));
@@ -434,14 +421,14 @@ namespace DeliFitWeb.Controllers
             if (restauranteId.HasValue)
                 return RedirectToAction(nameof(Details), new { id = restauranteId.Value });
 
-            return NotFound("O restaurante associado a este utilizador não foi encontrado.");
+            return NotFound("O restaurante associado a este utilizador nÃ£o foi encontrado.");
         }
 
         [HttpGet]
         public async Task<IActionResult> ConsultarCnpj(string cnpj)
         {
             if (string.IsNullOrEmpty(cnpj))
-                return Json(new { sucesso = false, mensagem = "CNPJ inválido." });
+                return Json(new { sucesso = false, mensagem = "CNPJ invÃ¡lido." });
 
             cnpj = new string(cnpj.Where(char.IsDigit).ToArray());
 
@@ -465,7 +452,7 @@ namespace DeliFitWeb.Controllers
                 });
             }
 
-            return Json(new { sucesso = false, mensagem = "CNPJ não encontrado." });
+            return Json(new { sucesso = false, mensagem = "CNPJ nÃ£o encontrado." });
         }
 
         [Authorize(Roles = "GerenteRestaurante")]
@@ -480,6 +467,11 @@ namespace DeliFitWeb.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Retorna os pedidos ativos do restaurante (status P, E, S) para o kanban.
+        /// Pedidos finalizados (F) sÃ£o excluÃ­dos â€” continuam no banco para consulta do cliente.
+        /// Mapeamento: P=0 (RECEBIDO), E=1 (EM PREPARO), S=2 (EM ENTREGA)
+        /// </summary>
         [Authorize(Roles = "GerenteRestaurante")]
         [HttpGet]
         public IActionResult GetPedidosRestaurante()
@@ -488,46 +480,39 @@ namespace DeliFitWeb.Controllers
             {
                 var restauranteId = GetRestauranteIdLogado();
                 if (!restauranteId.HasValue)
-                {
-                    return Json(new { erro = "Restaurante não identificado" });
-                }
+                    return Json(new { erro = "Restaurante nÃ£o identificado" });
 
-                // Obtém todos os pedidos do restaurante
-                var pedidos = _pedidoService.GetAll()
-                    .Where(p => p.IdRestaurante == restauranteId.Value)
-                    .OrderByDescending(p => p.Data)
-                    .ToList();
-
-                // Mapeia status de char para int (P=0, E=1, S=2, F=3)
-                var statusCharToInt = new Dictionary<char?, int>
+                var statusCharToInt = new Dictionary<char, int>
                 {
                     { 'P', 0 },
                     { 'E', 1 },
-                    { 'S', 2 },
-                    { 'F', 3 }
+                    { 'S', 2 }
+                    // 'F' Ã© intencionalmente omitido: pedidos finalizados nÃ£o aparecem no kanban
                 };
+
+                var pedidos = _pedidoService.GetAll()
+                    .Where(p => p.IdRestaurante == restauranteId.Value
+                                && p.Status.HasValue
+                                && statusCharToInt.ContainsKey(p.Status.Value))
+                    .OrderByDescending(p => p.Data)
+                    .ToList();
 
                 var resultado = pedidos.Select(p =>
                 {
-                    // Obtém dados do cliente através do carrinho
                     var carrinho = _carrinhoService.Get(p.IdCarrinho);
                     var cliente = carrinho != null ? _clienteService.Get(carrinho.IdCliente) : null;
                     var endereco = cliente?.Enderecos?.FirstOrDefault();
-
-                    int status = statusCharToInt.ContainsKey(p.Status) 
-                        ? statusCharToInt[p.Status] 
-                        : 0;
 
                     return new
                     {
                         id = p.Id,
                         data = p.Data,
                         preco = p.Preco,
-                        status = status,
+                        status = statusCharToInt[p.Status!.Value],
                         nomeCliente = cliente?.Nome ?? "Cliente",
-                        enderecoCliente = endereco != null ? 
-                            $"{endereco.Rua}, {endereco.Numero}, {endereco.Bairro}" : 
-                            "Endereço não informado"
+                        enderecoCliente = endereco != null
+                            ? $"{endereco.Rua}, {endereco.Numero}, {endereco.Bairro}"
+                            : "EndereÃ§o nÃ£o informado"
                     };
                 }).ToList();
 
@@ -535,10 +520,15 @@ namespace DeliFitWeb.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, Json(new { erro = ex.Message }));
+                return StatusCode(500, new { erro = ex.Message });
             }
         }
 
+        /// <summary>
+        /// Atualiza o status de um pedido pelo restaurante.
+        /// Mapeamento: 0=P (Recebido), 1=E (Em Preparo), 2=S (Em Entrega), 3=F (Finalizado)
+        /// Ao finalizar (3â†’F) o pedido some do kanban mas permanece no banco para o cliente.
+        /// </summary>
         [Authorize(Roles = "GerenteRestaurante")]
         [HttpPost]
         public IActionResult AtualizarStatusPedido([FromBody] AtualizarStatusPedidoRequest request)
@@ -546,29 +536,20 @@ namespace DeliFitWeb.Controllers
             try
             {
                 if (request == null || request.PedidoId == 0)
-                {
-                    return BadRequest("Dados inválidos");
-                }
+                    return BadRequest("Dados invÃ¡lidos");
 
                 var pedido = _pedidoService.Get(request.PedidoId);
                 if (pedido == null)
-                {
-                    return NotFound("Pedido não encontrado");
-                }
+                    return NotFound("Pedido nÃ£o encontrado");
 
-                // Verifica se o gerente é do restaurante correto
                 var restauranteId = GetRestauranteIdLogado();
                 if (pedido.IdRestaurante != restauranteId)
-                {
                     return Forbid();
-                }
 
-                // Mapeia o novo status (0=P, 1=E, 2=S, 3=F)
+                // 0=P, 1=E, 2=S, 3=F
                 char[] statusMap = { 'P', 'E', 'S', 'F' };
-                if (request.NovoStatus < 0 || request.NovoStatus > 3)
-                {
-                    return BadRequest("Status inválido");
-                }
+                if (request.NovoStatus < 0 || request.NovoStatus >= statusMap.Length)
+                    return BadRequest("Status invÃ¡lido");
 
                 pedido.Status = statusMap[request.NovoStatus];
                 _pedidoService.Edit(pedido);
@@ -589,17 +570,12 @@ namespace DeliFitWeb.Controllers
             {
                 var restauranteId = GetRestauranteIdLogado();
                 if (!restauranteId.HasValue)
-                {
-                    return BadRequest("Restaurante não identificado");
-                }
+                    return BadRequest("Restaurante nÃ£o identificado");
 
                 var restaurante = _restauranteService.Get(restauranteId.Value);
                 if (restaurante == null)
-                {
-                    return NotFound("Restaurante não encontrado");
-                }
+                    return NotFound("Restaurante nÃ£o encontrado");
 
-                // Alterna o status validado (usamos como proxy para loja aberta/fechada)
                 restaurante.Validado = !restaurante.Validado;
                 _restauranteService.Edit(restaurante);
 
