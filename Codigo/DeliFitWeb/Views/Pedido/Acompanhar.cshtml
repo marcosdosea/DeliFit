@@ -4,6 +4,7 @@
     ViewData["Title"] = "Status do Pedido";
     string nomeRestaurante = ViewBag.NomeRestaurante ?? "";
     string formaPagamento = ViewBag.FormaPagamento ?? "";
+    char statusInicial = ViewBag.StatusPedido ?? 'P';
 }
 
 <style>
@@ -48,7 +49,6 @@
         color: #1a1a1a;
     }
 
-    /* ── Timeline de status ── */
     .status-section {
         background: white;
         margin: 16px 16px 0;
@@ -92,7 +92,7 @@
         background: #ff6600;
         z-index: 1;
         transition: width 0.5s ease;
-        width: 25%; /* Em análise = primeiro passo */
+        width: 0%;
     }
 
     .step {
@@ -147,7 +147,6 @@
         color: #22c55e;
     }
 
-    /* ── Restaurante ── */
     .rest-section {
         background: white;
         margin: 12px 16px 0;
@@ -189,7 +188,6 @@
         margin-top: 2px;
     }
 
-    /* ── Resumo ── */
     .section-card {
         background: white;
         margin: 12px 16px 0;
@@ -224,7 +222,6 @@
             padding-top: 10px;
         }
 
-    /* ── Botões ── */
     .btns-section {
         padding: 16px;
         display: flex;
@@ -271,6 +268,19 @@
             color: #e53e3e;
             text-decoration: none;
         }
+
+    .entregue-banner {
+        background: #dcfce7;
+        color: #166534;
+        border-radius: 12px;
+        padding: 14px 16px;
+        margin: 12px 16px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        font-size: 0.95rem;
+    }
 </style>
 
 <div class="top-bar">
@@ -293,27 +303,29 @@
     <div class="timeline">
         <div class="timeline-progress" id="progressBar"></div>
 
-        <div class="step active" id="step1">
+        <div class="step" id="step1">
             <div class="step-circle"><i class="bi bi-file-text"></i></div>
-            <span class="step-label">Em<br>análise</span>
+            <span class="step-label">Pendente</span>
         </div>
         <div class="step" id="step2">
-            <div class="step-circle"><i class="bi bi-check-lg"></i></div>
-            <span class="step-label">Aprovado</span>
+            <div class="step-circle"><i class="bi bi-fire"></i></div>
+            <span class="step-label">Em<br>preparo</span>
         </div>
         <div class="step" id="step3">
-            <div class="step-circle"><i class="bi bi-bag-check"></i></div>
-            <span class="step-label">Em<br>produção</span>
+            <div class="step-circle"><i class="bi bi-truck"></i></div>
+            <span class="step-label">Em<br>entrega</span>
         </div>
         <div class="step" id="step4">
-            <div class="step-circle"><i class="bi bi-box-seam"></i></div>
-            <span class="step-label">Enviado</span>
-        </div>
-        <div class="step" id="step5">
             <div class="step-circle"><i class="bi bi-house-check"></i></div>
             <span class="step-label">Entregue</span>
         </div>
     </div>
+</div>
+
+@* ── Banner entregue (oculto até status F) ── *@
+<div class="entregue-banner" id="entregue-banner" style="display:none;">
+    <i class="bi bi-check-circle-fill" style="font-size:1.4rem;"></i>
+    Pedido entregue! Bom apetite 🎉
 </div>
 
 @* ── Restaurante ── *@
@@ -367,11 +379,77 @@
 
 @section Scripts {
     <script>
-        // Simula animação da barra de progresso (Em análise = passo 1)
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                document.getElementById('progressBar').style.width = '0%';
-            }, 100);
-        });
+        // Mapeamento: char do banco → índice do step ativo e largura da barra
+        const STATUS_MAP = {
+            'P': { stepAtivo: 1, progresso: '0%'   },
+            'E': { stepAtivo: 2, progresso: '33%'  },
+            'S': { stepAtivo: 3, progresso: '66%'  },
+            'F': { stepAtivo: 4, progresso: '100%' }
+        };
+
+        const TOTAL_STEPS  = 4;
+        const URL_STATUS   = '@Url.Action("GetStatus", "Pedido", new { id = Model.Id })';
+        const INTERVALO_MS = 10000; // polling a cada 10 segundos
+
+        let ultimoStatus = '@statusInicial';
+        let pollingTimer = null;
+
+        function aplicarStatus(statusChar) {
+            const cfg = STATUS_MAP[statusChar] ?? STATUS_MAP['P'];
+
+            document.getElementById('progressBar').style.width = cfg.progresso;
+
+            for (let i = 1; i <= TOTAL_STEPS; i++) {
+                const el = document.getElementById('step' + i);
+                el.classList.remove('active', 'done');
+
+                if (i < cfg.stepAtivo) {
+                    el.classList.add('done');
+                } else if (i === cfg.stepAtivo) {
+                    el.classList.add('active');
+                }
+            }
+
+            const banner = document.getElementById('entregue-banner');
+            if (statusChar === 'F') {
+                banner.style.display = 'flex';
+                pararPolling(); // finalizado, sem mais consultas
+            } else {
+                banner.style.display = 'none';
+            }
+        }
+
+        async function consultarStatus() {
+            try {
+                const resp = await fetch(URL_STATUS, { headers: { 'Accept': 'application/json' } });
+                if (!resp.ok) return;
+
+                const dados = await resp.json();
+                const novoStatus = (dados.status ?? 'P').toUpperCase();
+
+                if (novoStatus !== ultimoStatus) {
+                    ultimoStatus = novoStatus;
+                    aplicarStatus(novoStatus);
+                }
+            } catch (_) {
+                // falha silenciosa; tenta no próximo intervalo
+            }
+        }
+
+        function iniciarPolling() {
+            aplicarStatus(ultimoStatus); // renderiza estado inicial já do servidor
+            consultarStatus();           // consulta imediata para sincronia
+            pollingTimer = setInterval(consultarStatus, INTERVALO_MS);
+        }
+
+        function pararPolling() {
+            if (pollingTimer) {
+                clearInterval(pollingTimer);
+                pollingTimer = null;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', iniciarPolling);
+        window.addEventListener('beforeunload', pararPolling);
     </script>
 }
