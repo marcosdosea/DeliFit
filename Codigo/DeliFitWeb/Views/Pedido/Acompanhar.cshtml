@@ -5,6 +5,7 @@
     string nomeRestaurante = ViewBag.NomeRestaurante ?? "";
     string formaPagamento = ViewBag.FormaPagamento ?? "";
     char statusInicial = ViewBag.StatusPedido ?? 'P';
+    var avaliacaoExistente = ViewBag.AvaliacaoExistente as Core.Avaliacao;
 }
 
 <style>
@@ -49,11 +50,12 @@
         color: #1a1a1a;
     }
 
+    /* ── Timeline (5 steps — M16) ── */
     .status-section {
         background: white;
         margin: 16px 16px 0;
         border-radius: 20px;
-        padding: 24px 20px;
+        padding: 24px 16px;
         box-shadow: 0 3px 14px rgba(0,0,0,0.07);
     }
 
@@ -99,7 +101,7 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
         z-index: 2;
         flex: 1;
     }
@@ -113,7 +115,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.1rem;
+        font-size: 1rem;
         color: #ccc;
         transition: all 0.3s;
     }
@@ -132,7 +134,7 @@
     }
 
     .step-label {
-        font-size: 0.62rem;
+        font-size: 0.58rem;
         font-weight: 600;
         color: #bbb;
         text-align: center;
@@ -147,6 +149,7 @@
         color: #22c55e;
     }
 
+    /* ── Restaurante ── */
     .rest-section {
         background: white;
         margin: 12px 16px 0;
@@ -188,6 +191,7 @@
         margin-top: 2px;
     }
 
+    /* ── Resumo ── */
     .section-card {
         background: white;
         margin: 12px 16px 0;
@@ -222,53 +226,7 @@
             padding-top: 10px;
         }
 
-    .btns-section {
-        padding: 16px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .btn-primary-orange {
-        background: #ff6600;
-        color: white;
-        border: none;
-        border-radius: 50px;
-        padding: 14px;
-        font-size: 0.95rem;
-        font-weight: 700;
-        cursor: pointer;
-        text-align: center;
-        text-decoration: none;
-        display: block;
-    }
-
-        .btn-primary-orange:hover {
-            background: #e55a00;
-            color: white;
-            text-decoration: none;
-        }
-
-    .btn-outline-red {
-        background: white;
-        color: #e53e3e;
-        border: 1.5px solid #e53e3e;
-        border-radius: 50px;
-        padding: 13px;
-        font-size: 0.88rem;
-        font-weight: 600;
-        cursor: pointer;
-        text-align: center;
-        text-decoration: none;
-        display: block;
-    }
-
-        .btn-outline-red:hover {
-            background: #fff5f5;
-            color: #e53e3e;
-            text-decoration: none;
-        }
-
+    /* ── Banner entregue ── */
     .entregue-banner {
         background: #dcfce7;
         color: #166534;
@@ -281,6 +239,227 @@
         font-weight: 700;
         font-size: 0.95rem;
     }
+
+    /* ── Ações do cliente (M16: botão "Recebi pedido" e link "Não recebi") ── */
+    .acoes-cliente {
+        background: white;
+        margin: 12px 16px 0;
+        border-radius: 16px;
+        padding: 16px 16px 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    }
+
+    .acoes-title {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #aaa;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 12px;
+    }
+
+    .btn-orange {
+        background: #ff6600;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 14px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+        .btn-orange:hover {
+            background: #e55a00;
+            color: white;
+            text-decoration: none;
+        }
+
+    .btn-green {
+        background: #22c55e;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 14px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+        .btn-green:hover {
+            background: #16a34a;
+            color: white;
+            text-decoration: none;
+        }
+
+    /* Link "Não recebi o pedido" — texto sublinhado conforme wireframe */
+    .link-nao-recebi {
+        display: block;
+        text-align: center;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: #e53e3e;
+        text-decoration: underline;
+        padding: 8px 0;
+        cursor: pointer;
+    }
+
+        .link-nao-recebi:hover {
+            color: #c53030;
+        }
+
+    /* ── Botões de navegação ── */
+    .btns-section {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-ghost {
+        background: white;
+        color: #888;
+        border: 1.5px solid #e8e8e8;
+        border-radius: 50px;
+        padding: 13px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+        .btn-ghost:hover {
+            background: #f4f4f4;
+            color: #555;
+            text-decoration: none;
+        }
+
+    /* ── Card de avaliação já enviada ── */
+    .avaliacao-card {
+        background: white;
+        margin: 12px 16px 0;
+        border-radius: 16px;
+        padding: 16px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        border-left: 4px solid #22c55e;
+    }
+
+    .avaliacao-card-title {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #16a34a;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .avaliacao-stars {
+        display: flex;
+        gap: 4px;
+        margin-bottom: 8px;
+    }
+
+    .avaliacao-star {
+        font-size: 1.4rem;
+        color: #ddd;
+    }
+
+        .avaliacao-star.preenchida {
+            color: #ff6600;
+        }
+
+    .avaliacao-comentario {
+        font-size: 0.85rem;
+        color: #555;
+        font-style: italic;
+        line-height: 1.5;
+    }
+
+    .avaliacao-sem-comentario {
+        font-size: 0.82rem;
+        color: #bbb;
+    }
+
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+    .modal-box {
+        background: white;
+        border-radius: 20px;
+        padding: 28px 24px;
+        max-width: 320px;
+        width: 90%;
+        text-align: center;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+    }
+
+    .modal-icon {
+        font-size: 2.5rem;
+        margin-bottom: 12px;
+    }
+
+    .modal-title {
+        font-weight: 700;
+        font-size: 1.05rem;
+        color: #1a1a1a;
+        margin-bottom: 8px;
+    }
+
+    .modal-msg {
+        font-size: 0.88rem;
+        color: #666;
+        margin-bottom: 20px;
+    }
+
+    .modal-close {
+        background: #ff6600;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 12px 32px;
+        font-weight: 700;
+        cursor: pointer;
+        font-size: 0.9rem;
+    }
+
+        .modal-close:hover {
+            background: #e55a00;
+        }
 </style>
 
 <div class="top-bar">
@@ -296,8 +475,14 @@
         <i class="bi bi-check-circle-fill me-2"></i>@TempData["Success"]
     </div>
 }
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger mx-3 mt-3 mb-0 rounded-3" role="alert">
+        <i class="bi bi-exclamation-circle-fill me-2"></i>@TempData["Error"]
+    </div>
+}
 
-@* ── Timeline M16 ── *@
+@* ── Timeline 5 steps (M16) ── *@
 <div class="status-section">
     <div class="status-title"><i class="bi bi-clock me-1"></i>Acompanhe seu pedido</div>
     <div class="timeline">
@@ -305,24 +490,28 @@
 
         <div class="step" id="step1">
             <div class="step-circle"><i class="bi bi-file-text"></i></div>
-            <span class="step-label">Pendente</span>
+            <span class="step-label">Em<br>análise</span>
         </div>
         <div class="step" id="step2">
+            <div class="step-circle"><i class="bi bi-check-circle"></i></div>
+            <span class="step-label">Aprovado</span>
+        </div>
+        <div class="step" id="step3">
             <div class="step-circle"><i class="bi bi-fire"></i></div>
             <span class="step-label">Em<br>preparo</span>
         </div>
-        <div class="step" id="step3">
-            <div class="step-circle"><i class="bi bi-truck"></i></div>
-            <span class="step-label">Em<br>entrega</span>
-        </div>
         <div class="step" id="step4">
+            <div class="step-circle"><i class="bi bi-truck"></i></div>
+            <span class="step-label">Enviado</span>
+        </div>
+        <div class="step" id="step5">
             <div class="step-circle"><i class="bi bi-house-check"></i></div>
             <span class="step-label">Entregue</span>
         </div>
     </div>
 </div>
 
-@* ── Banner entregue (oculto até status F) ── *@
+@* ── Banner entregue ── *@
 <div class="entregue-banner" id="entregue-banner" style="display:none;">
     <i class="bi bi-check-circle-fill" style="font-size:1.4rem;"></i>
     Pedido entregue! Bom apetite 🎉
@@ -344,7 +533,7 @@
     </div>
 </div>
 
-@* ── Resumo do pedido ── *@
+@* ── Resumo ── *@
 <div class="section-card">
     <div class="section-label"><i class="bi bi-receipt me-1"></i>Resumo do pedido</div>
     <div class="resumo-row">
@@ -367,87 +556,169 @@
     </div>
 </div>
 
-@* ── Botões ── *@
+@* ── Chat com Estabelecimento (visível sempre) ── *@
+<div class="section-card" style="margin-top:12px;">
+    <button class="btn-orange" onclick="abrirChat()">
+        <i class="bi bi-chat-dots-fill"></i>
+        Chat com Estabelecimento
+    </button>
+</div>
+
+@* ── Ações do cliente (M16: aparecem em Enviado=S ou Entregue=F) ── *@
+<div class="acoes-cliente" id="acoes-cliente" style="display:none;">
+    <div class="acoes-title"><i class="bi bi-hand-index me-1"></i>O que deseja fazer?</div>
+
+    @if (avaliacaoExistente == null)
+    {
+        @* Pedido ainda não avaliado: exibe botões *@
+        <a asp-controller="Avaliacao" asp-action="Avaliar"
+           asp-route-idPedido="@Model.Id"
+           class="btn-green" id="btn-recebi">
+            <i class="bi bi-check-circle-fill"></i>
+            Recebi pedido
+        </a>
+
+        <a asp-controller="Avaliacao" asp-action="Reclamacao"
+           asp-route-idPedido="@Model.Id"
+           class="link-nao-recebi" id="btn-nao-recebi">
+            Não recebi o pedido
+        </a>
+    }
+</div>
+
+@* ── Avaliação já enviada (substitui os botões após avaliar) ── *@
+@if (avaliacaoExistente != null && !avaliacaoExistente.Descricao.StartsWith("[RECLAMAÇÃO]"))
+{
+    <div class="avaliacao-card">
+        <div class="avaliacao-card-title">
+            <i class="bi bi-check-circle-fill"></i>
+            Sua avaliação
+        </div>
+        <div class="avaliacao-stars">
+            @for (int i = 1; i <= 5; i++)
+            {
+                <span class="avaliacao-star @(i <= (int)avaliacaoExistente.Nota ? "preenchida" : "")">★</span>
+            }
+        </div>
+        @if (!string.IsNullOrWhiteSpace(avaliacaoExistente.Descricao))
+        {
+            <div class="avaliacao-comentario">"@avaliacaoExistente.Descricao"</div>
+        }
+        else
+        {
+            <div class="avaliacao-sem-comentario">Sem comentário.</div>
+        }
+    </div>
+}
+else if (avaliacaoExistente != null && avaliacaoExistente.Descricao.StartsWith("[RECLAMAÇÃO]"))
+{
+    <div class="avaliacao-card" style="border-left-color:#e53e3e;">
+        <div class="avaliacao-card-title" style="color:#e53e3e;">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            Reclamação enviada
+        </div>
+        <div class="avaliacao-comentario">
+            "@avaliacaoExistente.Descricao.Replace("[RECLAMAÇÃO] ", "")"
+        </div>
+    </div>
+}
+
+@* ── Botões de navegação ── *@
 <div class="btns-section">
-    <a asp-controller="Pedido" asp-action="Index" class="btn-primary-orange">
+    <a asp-controller="Pedido" asp-action="Index" class="btn-ghost">
+        <i class="bi bi-bag-fill"></i>
         Ver todos os pedidos
     </a>
-    <a asp-controller="Cliente" asp-action="HomeCliente" class="btn-outline-red">
+    <a asp-controller="Cliente" asp-action="HomeCliente" class="btn-ghost">
+        <i class="bi bi-house-fill"></i>
         Voltar para o início
     </a>
 </div>
 
+@* ── Modal: chat indisponível (M20 não implementado) ── *@
+<div class="modal-overlay" id="modalChat">
+    <div class="modal-box">
+        <div class="modal-icon">💬</div>
+        <div class="modal-title">Chat Indisponível</div>
+        <div class="modal-msg">Não foi possível estabelecer a conexão com o restaurante.<br>Tente novamente mais tarde.</div>
+        <button class="modal-close" onclick="fecharChat()">Entendido</button>
+    </div>
+</div>
+
 @section Scripts {
     <script>
-        // Mapeamento: char do banco → índice do step ativo e largura da barra
-        const STATUS_MAP = {
+        /*
+         * Mapeamento dos 4 status do banco (P/E/S/F) para os 5 steps visuais do wireframe M16:
+         *   P (Pendente)   → step 1 "Em análise"
+         *   E (EmPreparo)  → step 3 "Em preparo"  (step 2 "Aprovado" marcado como done)
+         *   S (EmEntrega)  → step 4 "Enviado"
+         *   F (Finalizado) → step 5 "Entregue"
+         *
+         * O step 2 "Aprovado" não possui status próprio no banco — é exibido como
+         * done assim que o pedido avança para EmPreparo ou além.
+         */
+        const STATUS_CFG = {
             'P': { stepAtivo: 1, progresso: '0%'   },
-            'E': { stepAtivo: 2, progresso: '33%'  },
-            'S': { stepAtivo: 3, progresso: '66%'  },
-            'F': { stepAtivo: 4, progresso: '100%' }
+            'E': { stepAtivo: 3, progresso: '50%'  },
+            'S': { stepAtivo: 4, progresso: '75%'  },
+            'F': { stepAtivo: 5, progresso: '100%' }
         };
 
-        const TOTAL_STEPS  = 4;
+        const TOTAL_STEPS  = 5;
         const URL_STATUS   = '@Url.Action("GetStatus", "Pedido", new { id = Model.Id })';
-        const INTERVALO_MS = 10000; // polling a cada 10 segundos
+        const INTERVALO_MS = 10000;
 
         let ultimoStatus = '@statusInicial';
         let pollingTimer = null;
 
         function aplicarStatus(statusChar) {
-            const cfg = STATUS_MAP[statusChar] ?? STATUS_MAP['P'];
+            const cfg = STATUS_CFG[statusChar] ?? STATUS_CFG['P'];
 
             document.getElementById('progressBar').style.width = cfg.progresso;
 
             for (let i = 1; i <= TOTAL_STEPS; i++) {
                 const el = document.getElementById('step' + i);
                 el.classList.remove('active', 'done');
-
-                if (i < cfg.stepAtivo) {
-                    el.classList.add('done');
-                } else if (i === cfg.stepAtivo) {
-                    el.classList.add('active');
-                }
+                if      (i < cfg.stepAtivo) el.classList.add('done');
+                else if (i === cfg.stepAtivo) el.classList.add('active');
             }
 
-            const banner = document.getElementById('entregue-banner');
-            if (statusChar === 'F') {
-                banner.style.display = 'flex';
-                pararPolling(); // finalizado, sem mais consultas
-            } else {
-                banner.style.display = 'none';
-            }
+            // Banner "entregue"
+            document.getElementById('entregue-banner').style.display =
+                (statusChar === 'F') ? 'flex' : 'none';
+
+            // Ações: visíveis em Enviado (S) ou Entregue (F)
+            document.getElementById('acoes-cliente').style.display =
+                (statusChar === 'S' || statusChar === 'F') ? 'block' : 'none';
+
+            if (statusChar === 'F') pararPolling();
         }
 
         async function consultarStatus() {
             try {
                 const resp = await fetch(URL_STATUS, { headers: { 'Accept': 'application/json' } });
                 if (!resp.ok) return;
-
                 const dados = await resp.json();
                 const novoStatus = (dados.status ?? 'P').toUpperCase();
-
                 if (novoStatus !== ultimoStatus) {
                     ultimoStatus = novoStatus;
                     aplicarStatus(novoStatus);
                 }
-            } catch (_) {
-                // falha silenciosa; tenta no próximo intervalo
-            }
+            } catch (_) { /* falha silenciosa */ }
         }
 
         function iniciarPolling() {
-            aplicarStatus(ultimoStatus); // renderiza estado inicial já do servidor
-            consultarStatus();           // consulta imediata para sincronia
+            aplicarStatus(ultimoStatus);
+            consultarStatus();
             pollingTimer = setInterval(consultarStatus, INTERVALO_MS);
         }
 
         function pararPolling() {
-            if (pollingTimer) {
-                clearInterval(pollingTimer);
-                pollingTimer = null;
-            }
+            if (pollingTimer) { clearInterval(pollingTimer); pollingTimer = null; }
         }
+
+        function abrirChat()  { document.getElementById('modalChat').classList.add('open'); }
+        function fecharChat() { document.getElementById('modalChat').classList.remove('open'); }
 
         document.addEventListener('DOMContentLoaded', iniciarPolling);
         window.addEventListener('beforeunload', pararPolling);

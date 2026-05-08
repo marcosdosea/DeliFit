@@ -1,0 +1,433 @@
+﻿@* Arquivo: Avaliar.cshtml (renomeado de Avaliacao.cshtml) *@
+@model DeliFitWeb.Models.AvaliacaoViewModel
+
+@{
+    ViewData["Title"] = "Avaliar Pedido";
+    string nomeRestaurante = ViewBag.NomeRestaurante ?? "";
+    var itens = ViewBag.Itens as List<Core.Pedidoitem> ?? new List<Core.Pedidoitem>();
+}
+
+<style>
+    body {
+        background: #f8f9fa;
+        padding-bottom: 40px;
+    }
+
+    .top-bar {
+        background: white;
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        position: sticky;
+        top: 0;
+        z-index: 200;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+
+    .back-btn {
+        width: 38px;
+        height: 38px;
+        background: #f4f4f4;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #333;
+        font-size: 1rem;
+        text-decoration: none;
+    }
+
+        .back-btn:hover {
+            background: #ffe8d6;
+            color: #ff6600;
+        }
+
+    .page-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: #1a1a1a;
+    }
+
+    .section-card {
+        background: white;
+        margin: 16px;
+        border-radius: 18px;
+        padding: 22px 20px;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.07);
+    }
+
+    /* ── Cabeçalho restaurante (foto + nome + data/hora) ── */
+    .rest-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+        padding-bottom: 18px;
+        border-bottom: 1px solid #f4f4f4;
+    }
+
+    .rest-avatar {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: #f4f4f4;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .rest-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .rest-nome {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        text-align: center;
+    }
+
+    .rest-sub {
+        font-size: 0.78rem;
+        color: #aaa;
+        text-align: center;
+    }
+
+    /* ── Resumo do Pedido ── */
+    .resumo-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1.5px solid #f0f0f0;
+    }
+
+    .item-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 0;
+        border-bottom: 1px solid #f9f9f9;
+    }
+
+        .item-row:last-child {
+            border-bottom: none;
+        }
+
+    .item-thumb {
+        width: 38px;
+        height: 38px;
+        border-radius: 8px;
+        background: #f4f4f4;
+        overflow: hidden;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .item-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .item-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .item-nome {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #333;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .item-qtd {
+        font-size: 0.75rem;
+        color: #aaa;
+    }
+
+    .item-preco {
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: #ff6600;
+        flex-shrink: 0;
+    }
+
+    /* ── Estrelas ── */
+    .section-label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #555;
+        margin-bottom: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+    .stars-row {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 6px;
+    }
+
+    .star-btn {
+        background: none;
+        border: none;
+        font-size: 2.6rem;
+        color: #ddd;
+        cursor: pointer;
+        padding: 0;
+        line-height: 1;
+        transition: color 0.15s, transform 0.1s;
+    }
+
+        .star-btn.selected,
+        .star-btn:hover {
+            color: #ff6600;
+        }
+
+        .star-btn:active {
+            transform: scale(0.9);
+        }
+
+    .stars-hint-row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.75rem;
+        color: #bbb;
+        padding: 0 4px;
+        margin-bottom: 4px;
+    }
+
+    .stars-hint-center {
+        text-align: center;
+        font-size: 0.82rem;
+        color: #aaa;
+        min-height: 20px;
+        margin-bottom: 4px;
+    }
+
+    .validation-msg {
+        color: #e53e3e;
+        font-size: 0.8rem;
+        margin-top: 4px;
+    }
+
+    /* ── Comentário ── */
+    .form-label-custom {
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: #555;
+        margin-bottom: 6px;
+        display: block;
+    }
+
+    .form-textarea {
+        width: 100%;
+        border: 1.5px solid #e8e8e8;
+        border-radius: 12px;
+        padding: 12px 14px;
+        font-size: 0.88rem;
+        color: #333;
+        resize: none;
+        outline: none;
+        transition: border-color 0.2s;
+        font-family: inherit;
+        background: #fafafa;
+    }
+
+        .form-textarea:focus {
+            border-color: #ff6600;
+            background: white;
+        }
+
+    .char-count {
+        text-align: right;
+        font-size: 0.75rem;
+        color: #bbb;
+        margin-top: 4px;
+    }
+
+    /* ── Botão enviar ── */
+    .btn-enviar {
+        width: 100%;
+        background: #ff6600;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 15px;
+        font-size: 0.95rem;
+        font-weight: 700;
+        cursor: pointer;
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: background 0.2s;
+    }
+
+        .btn-enviar:hover {
+            background: #e55a00;
+        }
+
+        .btn-enviar:disabled {
+            background: #ffb380;
+            cursor: not-allowed;
+        }
+</style>
+
+<div class="top-bar">
+    <a asp-controller="Pedido" asp-action="Acompanhar" asp-route-id="@Model.IdPedido" class="back-btn">
+        <i class="bi bi-chevron-left"></i>
+    </a>
+    <span class="page-title">Avaliar Pedido</span>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger mx-3 mt-3 mb-0 rounded-3">
+        <i class="bi bi-exclamation-circle-fill me-2"></i>@TempData["Error"]
+    </div>
+}
+
+<form asp-action="Avaliar" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="IdPedido" />
+    <input type="hidden" asp-for="IdCliente" />
+    <input type="hidden" asp-for="Nota" id="notaHidden" />
+
+    @* ── Cabeçalho: foto + nome estabelecimento + data ── *@
+    <div class="section-card">
+        <div class="rest-header">
+            <div class="rest-avatar">
+                <img src="@Url.Action("Foto", "Restaurante", new { id = ViewBag.IdRestaurante })"
+                     alt="@nomeRestaurante"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+                <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;">
+                    <i class="bi bi-shop" style="color:#ccc;font-size:2rem;"></i>
+                </div>
+            </div>
+            <div class="rest-nome">@nomeRestaurante</div>
+            <div class="rest-sub">Pedido #@Model.IdPedido</div>
+        </div>
+
+        @* ── Resumo do Pedido (itens) ── *@
+        @if (itens.Any())
+        {
+            <div class="resumo-title">Resumo Pedido</div>
+            @foreach (var item in itens)
+            {
+                <div class="item-row">
+                    <div class="item-thumb">
+                        <img src="@Url.Action("Foto", "Item", new { id = item.IdItem })"
+                             alt=""
+                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+                        <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;">
+                            <i class="bi bi-egg-fried" style="color:#ddd;font-size:0.9rem;"></i>
+                        </div>
+                    </div>
+                    <div class="item-info">
+                        <div class="item-nome">@(item.IdItemNavigation?.Nome ?? "Item")</div>
+                        <div class="item-qtd">Qtd. @item.Quantidade</div>
+                    </div>
+                    <span class="item-preco">R$ @item.Preco.ToString("N2")</span>
+                </div>
+            }
+        }
+    </div>
+
+    @* ── Avaliação com estrelas ── *@
+    <div class="section-card">
+        <div class="section-label">Avalie o pedido</div>
+
+        <div class="stars-row" id="starsRow">
+            @for (int i = 1; i <= 5; i++)
+            {
+                <button type="button" class="star-btn" data-valor="@i" aria-label="@i estrela(s)">★</button>
+            }
+        </div>
+
+        <div class="stars-hint-row">
+            <span>Ruim</span>
+            <span>Excelente</span>
+        </div>
+        <div class="stars-hint-center" id="starsHint"></div>
+        <span asp-validation-for="Nota" class="validation-msg"></span>
+    </div>
+
+    @* ── Comentário ── *@
+    <div class="section-card">
+        <label class="form-label-custom" for="descricaoInput">
+            Comentário <span style="color:#bbb;font-weight:400;">(opcional)</span>
+        </label>
+        <textarea id="descricaoInput"
+                  asp-for="Descricao"
+                  class="form-textarea"
+                  rows="4"
+                  maxlength="500"
+                  placeholder="Conte como foi sua experiência..."></textarea>
+        <div class="char-count"><span id="charCount">0</span>/500</div>
+        <span asp-validation-for="Descricao" class="validation-msg"></span>
+
+        <button type="submit" class="btn-enviar" id="btnEnviar" disabled>
+            <i class="bi bi-send-fill"></i>
+            Enviar avaliação
+        </button>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        const HINTS = ['', 'Muito ruim', 'Ruim', 'Regular', 'Bom', 'Excelente'];
+        let notaSelecionada = 0;
+
+        const stars     = document.querySelectorAll('.star-btn');
+        const notaInput = document.getElementById('notaHidden');
+        const hint      = document.getElementById('starsHint');
+        const btnEnviar = document.getElementById('btnEnviar');
+
+        function aplicarEstrelas(valor) {
+            stars.forEach(s => s.classList.toggle('selected', parseInt(s.dataset.valor) <= valor));
+            hint.textContent = HINTS[valor] ?? '';
+        }
+
+        stars.forEach(star => {
+            star.addEventListener('click', () => {
+                notaSelecionada    = parseInt(star.dataset.valor);
+                notaInput.value    = notaSelecionada;
+                aplicarEstrelas(notaSelecionada);
+                btnEnviar.disabled = false;
+            });
+            star.addEventListener('mouseenter', () => aplicarEstrelas(parseInt(star.dataset.valor)));
+            star.addEventListener('mouseleave', () => aplicarEstrelas(notaSelecionada));
+        });
+
+        // Contador de caracteres
+        const textarea  = document.getElementById('descricaoInput');
+        const charCount = document.getElementById('charCount');
+        textarea.addEventListener('input', () => { charCount.textContent = textarea.value.length; });
+
+        // Restaurar estado em caso de erro de validação
+        const notaAtual = parseInt(notaInput.value);
+        if (notaAtual >= 1 && notaAtual <= 5) {
+            notaSelecionada    = notaAtual;
+            aplicarEstrelas(notaSelecionada);
+            btnEnviar.disabled = false;
+        }
+    </script>
+}
