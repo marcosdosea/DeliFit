@@ -55,6 +55,9 @@ namespace DeliFitWeb.Controllers
             ViewBag.NomeRestaurante = restaurante?.NomeRestaurante ?? "";
             ViewBag.IdRestaurante = pedido.IdRestaurante;
 
+            // Passa os itens do pedido para o resumo na M17
+            ViewBag.Itens = pedido.Pedidoitems?.ToList() ?? new List<Pedidoitem>();
+
             var model = new AvaliacaoViewModel
             {
                 IdPedido = idPedido,
@@ -75,6 +78,7 @@ namespace DeliFitWeb.Controllers
                 var restaurante = pedido != null ? _restauranteService.Get(pedido.IdRestaurante) : null;
                 ViewBag.NomeRestaurante = restaurante?.NomeRestaurante ?? "";
                 ViewBag.IdRestaurante = pedido?.IdRestaurante ?? 0;
+                ViewBag.Itens = pedido?.Pedidoitems?.ToList() ?? new List<Pedidoitem>();
                 TempData["Error"] = "Falha no envio da avaliação!";
                 return View(model);
             }
@@ -86,7 +90,7 @@ namespace DeliFitWeb.Controllers
                     IdPedido = model.IdPedido,
                     IdCliente = model.IdCliente,
                     Nota = model.Nota,
-                    Descricao = model.Descricao
+                    Descricao = model.Descricao ?? string.Empty
                 };
 
                 _avaliacaoService.Create(avaliacao);
@@ -95,11 +99,12 @@ namespace DeliFitWeb.Controllers
             }
             catch
             {
-                TempData["Error"] = "Falha no envio da avaliação!";
                 var pedido = _pedidoService.Get(model.IdPedido);
                 var restaurante = pedido != null ? _restauranteService.Get(pedido.IdRestaurante) : null;
                 ViewBag.NomeRestaurante = restaurante?.NomeRestaurante ?? "";
                 ViewBag.IdRestaurante = pedido?.IdRestaurante ?? 0;
+                ViewBag.Itens = pedido?.Pedidoitems?.ToList() ?? new List<Pedidoitem>();
+                TempData["Error"] = "Falha no envio da avaliação!";
                 return View(model);
             }
         }
@@ -139,12 +144,18 @@ namespace DeliFitWeb.Controllers
                 if (!clienteId.HasValue)
                     return RedirectToAction("Index", "Home");
 
+                // A descrição já vem prefixada pelo JS com o motivo selecionado,
+                // mas garantimos o prefixo [RECLAMAÇÃO] para rastreabilidade no banco.
+                var descricaoFinal = model.Descricao.StartsWith("[RECLAMAÇÃO]")
+                    ? model.Descricao
+                    : $"[RECLAMAÇÃO] {model.Descricao}";
+
                 var avaliacao = new Avaliacao
                 {
                     IdPedido = model.IdPedido,
                     IdCliente = clienteId.Value,
                     Nota = 1,
-                    Descricao = $"[RECLAMAÇÃO] {model.Descricao}"
+                    Descricao = descricaoFinal
                 };
 
                 _avaliacaoService.Create(avaliacao);
