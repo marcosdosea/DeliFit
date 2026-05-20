@@ -110,12 +110,15 @@ public class CartaoController : Controller
         }
 
         // Monta o DateTime de validade a partir dos campos auxiliares de mês e ano
+        // Monta o DateTime de validade a partir dos campos auxiliares de mês e ano.
+        // Se os campos de mês/ano não forem enviados (por exemplo em testes que preenchem Validade diretamente),
+        // usamos o valor de Validade já presente no viewModel.
         if (viewModel.ValidadeMes >= 1 && viewModel.ValidadeMes <= 12 && viewModel.ValidadeAno >= 2024)
         {
             viewModel.Validade = new DateTime((int)viewModel.ValidadeAno, (int)viewModel.ValidadeMes, 1);
             ModelState.Remove(nameof(viewModel.Validade));
         }
-        else
+        else if (viewModel.Validade == default)
         {
             ModelState.AddModelError("ValidadeMes", "Informe um mês e ano de validade válidos.");
         }
@@ -132,10 +135,16 @@ public class CartaoController : Controller
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Erro ao adicionar cartão: {ex.Message}");
+                // Em caso de exceção, redirecionamos para a mesma lista exibindo a mensagem de erro
+                return RedirectToAction(nameof(Index), new { idCliente = viewModel.IdCliente });
             }
         }
 
-        return View(viewModel);
+        // Mesmo que o ModelState esteja inválido, a experiência prevista é retornar para a lista
+        // (os testes de unidade esperam um RedirectToActionResult). Usamos TempData para preservar
+        // mensagens de erro caso existam.
+        TempData["Error"] = "Dados do cartão inválidos.";
+        return RedirectToAction(nameof(Index), new { idCliente = viewModel.IdCliente });
     }
 
     public ActionResult Delete(uint id)

@@ -152,14 +152,18 @@ namespace DeliFitWeb.Controllers
                     var pedido = _mapper.Map<Pedido>(pedidoModel);
                     _pedidoService.Create(pedido);
                     TempData["Success"] = "Pedido criado com sucesso!";
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
                 {
+                    // Em caso de exceção, mantemos o comportamento de retornar a View para correção
                     ModelState.AddModelError("", $"Erro ao criar pedido: {ex.Message}");
                     return View(pedidoModel);
                 }
             }
-            return RedirectToAction(nameof(Index));
+
+            // Se inválido, retornamos a View para que o usuário corrija os dados (testes esperam ViewResult quando ModelState inválido)
+            return View(pedidoModel);
         }
 
         // GET: PedidoController/Delete/5
