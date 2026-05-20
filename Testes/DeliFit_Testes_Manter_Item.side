@@ -1,0 +1,1045 @@
+{
+  "id": "b17a05ab-d66b-46ef-b736-acfc69c5c69b",
+  "version": "2.0",
+  "name": "DeliFit",
+  "url": "https://localhost:44309/",
+  "tests": [{
+    "id": "8fd550aa-c010-4f6d-b8a4-11e3578d536c",
+    "name": "Adicionar Item Válido",
+    "commands": [{
+      "id": "9ea68f62-79c1-4ed2-bbcb-131f4a255323",
+      "comment": "",
+      "command": "open",
+      "target": "https://localhost:44309/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "6f25faab-d27c-4e5e-a2bd-8039c003eac4",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1936x1048",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "d63e3bd0-c137-400e-b103-142cd8325991",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Entrar no Sistema",
+      "targets": [
+        ["linkText=Entrar no Sistema", "linkText"],
+        ["css=.btn-primary", "css:finder"],
+        ["xpath=//a[contains(@href, '/Identity/Account/Login')]", "xpath:href"],
+        ["xpath=//div[3]/a", "xpath:position"],
+        ["xpath=//a[contains(.,' Entrar no Sistema')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "30267efc-ca51-41c8-a734-6d52386bafe8",
+      "comment": "",
+      "command": "click",
+      "target": "id=emailOrPhoneInput",
+      "targets": [
+        ["id=emailOrPhoneInput", "id"],
+        ["name=Input.EmailOrPhone", "name"],
+        ["css=#emailOrPhoneInput", "css:finder"],
+        ["xpath=//input[@id='emailOrPhoneInput']", "xpath:attributes"],
+        ["xpath=//form[@id='account']/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "74045146-c811-4eb5-8a79-9c0b5e8ae82c",
+      "comment": "",
+      "command": "type",
+      "target": "id=emailOrPhoneInput",
+      "targets": [
+        ["id=emailOrPhoneInput", "id"],
+        ["name=Input.EmailOrPhone", "name"],
+        ["css=#emailOrPhoneInput", "css:finder"],
+        ["xpath=//input[@id='emailOrPhoneInput']", "xpath:attributes"],
+        ["xpath=//form[@id='account']/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "ph30459@gmail.com"
+    }, {
+      "id": "0207c56c-0e25-4e37-a128-df499c1bf4f9",
+      "comment": "",
+      "command": "click",
+      "target": "id=Input_Password",
+      "targets": [
+        ["id=Input_Password", "id"],
+        ["name=Input.Password", "name"],
+        ["css=#Input_Password", "css:finder"],
+        ["xpath=//input[@id='Input_Password']", "xpath:attributes"],
+        ["xpath=//form[@id='account']/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "1734cb8e-75b9-46c6-9eed-a416aa8e4ad0",
+      "comment": "",
+      "command": "type",
+      "target": "id=Input_Password",
+      "targets": [
+        ["id=Input_Password", "id"],
+        ["name=Input.Password", "name"],
+        ["css=#Input_Password", "css:finder"],
+        ["xpath=//input[@id='Input_Password']", "xpath:attributes"],
+        ["xpath=//form[@id='account']/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "4okXodIm00Yw"
+    }, {
+      "id": "6ddeef2e-6e51-4b83-b922-db68b4d7f891",
+      "comment": "",
+      "command": "click",
+      "target": "css=.bi-box-arrow-in-right",
+      "targets": [
+        ["css=.bi-box-arrow-in-right", "css:finder"],
+        ["xpath=//button[@id='login-submit']/i", "xpath:idRelative"],
+        ["xpath=//button/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "61e27232-234f-4f57-8502-fcad8e06ccf7",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Card�pio",
+      "targets": [
+        ["linkText=Card�pio", "linkText"],
+        ["css=.nav-item:nth-child(2) > .nav-link", "css:finder"],
+        ["xpath=//a[contains(@href, '/Item')]", "xpath:href"],
+        ["xpath=//li[2]/a", "xpath:position"],
+        ["xpath=//a[contains(.,' Card�pio')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "2c5686f2-1ce9-489e-8d44-2b4bad342a61",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Novo Item",
+      "targets": [
+        ["linkText=Novo Item", "linkText"],
+        ["css=.text-white", "css:finder"],
+        ["xpath=//a[contains(@href, '/Item/Create')]", "xpath:href"],
+        ["xpath=//main/div/a", "xpath:position"],
+        ["xpath=//a[contains(.,'Novo Item')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "8c96cb74-8a60-4dce-ab91-ba3c003ba3c6",
+      "comment": "",
+      "command": "click",
+      "target": "id=Nome",
+      "targets": [
+        ["id=Nome", "id"],
+        ["name=Nome", "name"],
+        ["css=#Nome", "css:finder"],
+        ["xpath=//input[@id='Nome']", "xpath:attributes"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "62d8bc6c-aa02-457b-9465-2e7e9ab278e4",
+      "comment": "",
+      "command": "type",
+      "target": "id=Nome",
+      "targets": [
+        ["id=Nome", "id"],
+        ["name=Nome", "name"],
+        ["css=#Nome", "css:finder"],
+        ["xpath=//input[@id='Nome']", "xpath:attributes"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": "Mármita Fitness de Frango e Feijão"
+    }, {
+      "id": "d2a10060-b7ef-4f4a-9536-3c2c92def87f",
+      "comment": "",
+      "command": "type",
+      "target": "id=Proteina",
+      "targets": [
+        ["id=Proteina", "id"],
+        ["name=Proteina", "name"],
+        ["css=#Proteina", "css:finder"],
+        ["xpath=//input[@id='Proteina']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div[2]/div/input", "xpath:position"]
+      ],
+      "value": "38"
+    }, {
+      "id": "24207a1e-8c6c-4f18-8f43-3a05bbd4bf03",
+      "comment": "",
+      "command": "type",
+      "target": "id=Carboidratos",
+      "targets": [
+        ["id=Carboidratos", "id"],
+        ["name=Carboidratos", "name"],
+        ["css=#Carboidratos", "css:finder"],
+        ["xpath=//input[@id='Carboidratos']", "xpath:attributes"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "35"
+    }, {
+      "id": "c8ce60b1-636d-4baf-a751-11a2aeb9aa79",
+      "comment": "",
+      "command": "type",
+      "target": "id=Gordura",
+      "targets": [
+        ["id=Gordura", "id"],
+        ["name=Gordura", "name"],
+        ["css=#Gordura", "css:finder"],
+        ["xpath=//input[@id='Gordura']", "xpath:attributes"],
+        ["xpath=//div[3]/input", "xpath:position"]
+      ],
+      "value": "12"
+    }, {
+      "id": "5425db65-a42e-467f-8fc4-1fa567ceda7b",
+      "comment": "",
+      "command": "type",
+      "target": "id=Volume",
+      "targets": [
+        ["id=Volume", "id"],
+        ["name=Volume", "name"],
+        ["css=#Volume", "css:finder"],
+        ["xpath=//input[@id='Volume']", "xpath:attributes"],
+        ["xpath=//div[5]/input", "xpath:position"]
+      ],
+      "value": "500"
+    }, {
+      "id": "680a5c17-b9b9-4138-baac-71b6b5d69c72",
+      "comment": "",
+      "command": "mouseDownAt",
+      "target": "id=Calorias",
+      "targets": [
+        ["id=Calorias", "id"],
+        ["name=Calorias", "name"],
+        ["css=#Calorias", "css:finder"],
+        ["xpath=//input[@id='Calorias']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div/input", "xpath:position"]
+      ],
+      "value": "9.15625,34.609375"
+    }, {
+      "id": "c02fc096-3561-4f04-a524-b3c0c106f860",
+      "comment": "",
+      "command": "mouseMoveAt",
+      "target": "id=Calorias",
+      "targets": [
+        ["id=Calorias", "id"],
+        ["name=Calorias", "name"],
+        ["css=#Calorias", "css:finder"],
+        ["xpath=//input[@id='Calorias']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div/input", "xpath:position"]
+      ],
+      "value": "9.15625,34.609375"
+    }, {
+      "id": "c763df2f-5dad-4075-8962-9d5f139324cd",
+      "comment": "",
+      "command": "mouseUpAt",
+      "target": "id=Calorias",
+      "targets": [
+        ["id=Calorias", "id"],
+        ["name=Calorias", "name"],
+        ["css=#Calorias", "css:finder"],
+        ["xpath=//input[@id='Calorias']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div/input", "xpath:position"]
+      ],
+      "value": "9.15625,34.609375"
+    }, {
+      "id": "844ee848-6b87-462f-a7dd-49f85e0eac60",
+      "comment": "",
+      "command": "click",
+      "target": "id=Calorias",
+      "targets": [
+        ["id=Calorias", "id"],
+        ["name=Calorias", "name"],
+        ["css=#Calorias", "css:finder"],
+        ["xpath=//input[@id='Calorias']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "67f0d8ae-5191-499e-acf6-34ff16bba62c",
+      "comment": "",
+      "command": "type",
+      "target": "id=Calorias",
+      "targets": [
+        ["id=Calorias", "id"],
+        ["name=Calorias", "name"],
+        ["css=#Calorias", "css:finder"],
+        ["xpath=//input[@id='Calorias']", "xpath:attributes"],
+        ["xpath=//div[2]/div/div/input", "xpath:position"]
+      ],
+      "value": "420"
+    }, {
+      "id": "545d80f6-4b99-455c-b718-b6ed859d2292",
+      "comment": "",
+      "command": "click",
+      "target": "id=Descricao",
+      "targets": [
+        ["id=Descricao", "id"],
+        ["name=Descricao", "name"],
+        ["css=#Descricao", "css:finder"],
+        ["xpath=//textarea[@id='Descricao']", "xpath:attributes"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "f7cc84d7-7542-4e37-b4f6-b13787ebbe95",
+      "comment": "",
+      "command": "type",
+      "target": "id=Descricao",
+      "targets": [
+        ["id=Descricao", "id"],
+        ["name=Descricao", "name"],
+        ["css=#Descricao", "css:finder"],
+        ["xpath=//textarea[@id='Descricao']", "xpath:attributes"],
+        ["xpath=//textarea", "xpath:position"]
+      ],
+      "value": "Refeição balanceada com frango grelhado, feijão carioca, arroz integral e legumes no vapor."
+    }, {
+      "id": "767a08b9-a7df-4b14-b287-913d919f8172",
+      "comment": "",
+      "command": "mouseDownAt",
+      "target": "id=Preco",
+      "targets": [
+        ["id=Preco", "id"],
+        ["name=Preco", "name"],
+        ["css=#Preco", "css:finder"],
+        ["xpath=//input[@id='Preco']", "xpath:attributes"],
+        ["xpath=//div[3]/div/div/input", "xpath:position"]
+      ],
+      "value": "12.59375,30.609375"
+    }, {
+      "id": "90318a8d-c7b7-4bff-8d68-7a39f1909533",
+      "comment": "",
+      "command": "mouseMoveAt",
+      "target": "id=Preco",
+      "targets": [
+        ["id=Preco", "id"],
+        ["name=Preco", "name"],
+        ["css=#Preco", "css:finder"],
+        ["xpath=//input[@id='Preco']", "xpath:attributes"],
+        ["xpath=//div[3]/div/div/input", "xpath:position"]
+      ],
+      "value": "12.59375,30.609375"
+    }, {
+      "id": "0e395c37-4318-4844-ad51-2d37215166ec",
+      "comment": "",
+      "command": "mouseUpAt",
+      "target": "id=Preco",
+      "targets": [
+        ["id=Preco", "id"],
+        ["name=Preco", "name"],
+        ["css=#Preco", "css:finder"],
+        ["xpath=//input[@id='Preco']", "xpath:attributes"],
+        ["xpath=//div[3]/div/div/input", "xpath:position"]
+      ],
+      "value": "12.59375,30.609375"
+    }, {
+      "id": "ee5fe7eb-07c8-4c18-81f3-6d86c64bde0b",
+      "comment": "",
+      "command": "click",
+      "target": "id=Preco",
+      "targets": [
+        ["id=Preco", "id"],
+        ["name=Preco", "name"],
+        ["css=#Preco", "css:finder"],
+        ["xpath=//input[@id='Preco']", "xpath:attributes"],
+        ["xpath=//div[3]/div/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "13a187fe-7b62-48d5-9cc8-5ff25d961fa3",
+      "comment": "",
+      "command": "type",
+      "target": "id=Preco",
+      "targets": [
+        ["id=Preco", "id"],
+        ["name=Preco", "name"],
+        ["css=#Preco", "css:finder"],
+        ["xpath=//input[@id='Preco']", "xpath:attributes"],
+        ["xpath=//div[3]/div/div/input", "xpath:position"]
+      ],
+      "value": "29.00"
+    }, {
+      "id": "71543691-e9ee-482c-b89d-572b92a96c9e",
+      "comment": "",
+      "command": "click",
+      "target": "id=Tamanho",
+      "targets": [
+        ["id=Tamanho", "id"],
+        ["name=Tamanho", "name"],
+        ["css=#Tamanho", "css:finder"],
+        ["xpath=//select[@id='Tamanho']", "xpath:attributes"],
+        ["xpath=//div[4]/select", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "92ae492d-a5f9-424b-86a5-c870937e0371",
+      "comment": "",
+      "command": "select",
+      "target": "id=Tamanho",
+      "targets": [],
+      "value": "label=M - Médio"
+    }, {
+      "id": "8a84e1ef-da28-45ca-9e96-f96d38227962",
+      "comment": "",
+      "command": "click",
+      "target": "css=.text-white",
+      "targets": [
+        ["css=.text-white", "css:finder"],
+        ["xpath=(//button[@type='submit'])[2]", "xpath:attributes"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Criar Item')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "5bb0963d-bdee-4406-944d-3c4ca6d49474",
+      "comment": "",
+      "command": "click",
+      "target": "css=.list-group-item:nth-child(4) .col-md-5 > .fw-bold",
+      "targets": [
+        ["css=.list-group-item:nth-child(4) .col-md-5 > .fw-bold", "css:finder"],
+        ["xpath=//div[4]/div/div/h5", "xpath:position"],
+        ["xpath=//h5[contains(.,'Mármita Fitness de Frango e Feijão')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "ff12c3d8-bd28-4a25-9a58-7882137a9d1b",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.list-group-item:nth-child(4) .col-md-5 > .fw-bold",
+      "targets": [
+        ["css=.list-group-item:nth-child(4) .col-md-5 > .fw-bold", "css:finder"],
+        ["xpath=//div[4]/div/div/h5", "xpath:position"],
+        ["xpath=//h5[contains(.,'Mármita Fitness de Frango e Feijão')]", "xpath:innerText"]
+      ],
+      "value": "Mármita Fitness de Frango e Feijão"
+    }, {
+      "id": "55f7e99b-2561-4edc-9097-83f64fe2bc48",
+      "comment": "",
+      "command": "click",
+      "target": "css=.list-group-item:nth-child(4) .text-muted",
+      "targets": [
+        ["css=.list-group-item:nth-child(4) .text-muted", "css:finder"],
+        ["xpath=//div[4]/div/div/p", "xpath:position"],
+        ["xpath=//p[contains(.,'Refeição balanceada com frango grelhado, feijão carioca, arroz integral e legumes no vapor.')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "003a9286-1b9d-48f5-be41-4056ccd7f5ab",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.list-group-item:nth-child(4) .text-muted",
+      "targets": [
+        ["css=.list-group-item:nth-child(4) .text-muted", "css:finder"],
+        ["xpath=//div[4]/div/div/p", "xpath:position"],
+        ["xpath=//p[contains(.,'Refeição balanceada com frango grelhado, feijão carioca, arroz integral e legumes no vapor.')]", "xpath:innerText"]
+      ],
+      "value": "Refeição balanceada com frango grelhado, feijão carioca, arroz integral e legumes no vapor."
+    }, {
+      "id": "81edebc4-f82f-4a99-9d62-adbddd00a9d5",
+      "comment": "",
+      "command": "click",
+      "target": "css=.list-group-item:nth-child(4) .col-md-2 > .fw-bold",
+      "targets": [
+        ["css=.list-group-item:nth-child(4) .col-md-2 > .fw-bold", "css:finder"],
+        ["xpath=//div[4]/div/div[3]/span", "xpath:position"],
+        ["xpath=//span[contains(.,'R$ 29')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "5c820f8b-5680-465f-8400-212f8e7da005",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.list-group-item:nth-child(4) .col-md-2 > .fw-bold",
+      "targets": [
+        ["css=.list-group-item:nth-child(4) .col-md-2 > .fw-bold", "css:finder"],
+        ["xpath=//div[4]/div/div[3]/span", "xpath:position"],
+        ["xpath=//span[contains(.,'R$ 29')]", "xpath:innerText"]
+      ],
+      "value": "R$ 29"
+    }, {
+      "id": "477c7b18-4a85-4b06-a0bf-9b32511f45f9",
+      "comment": "",
+      "command": "click",
+      "target": "css=.list-group-item:nth-child(4) .badge:nth-child(1)",
+      "targets": [
+        ["css=.list-group-item:nth-child(4) .badge:nth-child(1)", "css:finder"],
+        ["xpath=//div[4]/div/div[2]/div/span", "xpath:position"],
+        ["xpath=//span[contains(.,'420 kcal')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "37256feb-1588-4875-b7be-21cc02bf7a99",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.list-group-item:nth-child(4) .badge:nth-child(1)",
+      "targets": [
+        ["css=.list-group-item:nth-child(4) .badge:nth-child(1)", "css:finder"],
+        ["xpath=//div[4]/div/div[2]/div/span", "xpath:position"],
+        ["xpath=//span[contains(.,'420 kcal')]", "xpath:innerText"]
+      ],
+      "value": "420 kcal"
+    }, {
+      "id": "4f3ccc8a-f365-4c8a-b965-26e3555b254d",
+      "comment": "",
+      "command": "click",
+      "target": "css=.list-group-item:nth-child(4) .badge:nth-child(2)",
+      "targets": [
+        ["css=.list-group-item:nth-child(4) .badge:nth-child(2)", "css:finder"],
+        ["xpath=//div[4]/div/div[2]/div/span[2]", "xpath:position"],
+        ["xpath=//span[contains(.,'38 g Prot.')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "125d5885-0053-4c3a-ab06-fdadb00e21e6",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.list-group-item:nth-child(4) .badge:nth-child(2)",
+      "targets": [
+        ["css=.list-group-item:nth-child(4) .badge:nth-child(2)", "css:finder"],
+        ["xpath=//div[4]/div/div[2]/div/span[2]", "xpath:position"],
+        ["xpath=//span[contains(.,'38 g Prot.')]", "xpath:innerText"]
+      ],
+      "value": "38 g Prot."
+    }]
+  }, {
+    "id": "d3e48fd5-1d1d-40ce-8178-c996a37d3b58",
+    "name": "Editar Item",
+    "commands": [{
+      "id": "4338b8ed-a7ce-4cda-9467-1e6270974244",
+      "comment": "",
+      "command": "open",
+      "target": "https://localhost:44309/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "be8232ea-d612-427a-a9bd-a0ada07ce439",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1936x1048",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "ee75f696-dd04-42a3-bc6b-cf67c71903ca",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Entrar no Sistema",
+      "targets": [
+        ["linkText=Entrar no Sistema", "linkText"],
+        ["css=.btn-primary", "css:finder"],
+        ["xpath=//a[contains(@href, '/Identity/Account/Login')]", "xpath:href"],
+        ["xpath=//div[2]/a", "xpath:position"],
+        ["xpath=//a[contains(.,' Entrar no Sistema')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "109ed923-8183-41d4-a5ca-377ec8941d01",
+      "comment": "",
+      "command": "click",
+      "target": "id=emailOrPhoneInput",
+      "targets": [
+        ["id=emailOrPhoneInput", "id"],
+        ["name=Input.EmailOrPhone", "name"],
+        ["css=#emailOrPhoneInput", "css:finder"],
+        ["xpath=//input[@id='emailOrPhoneInput']", "xpath:attributes"],
+        ["xpath=//form[@id='account']/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ca9a5cdc-dd64-483a-98d4-8ae329cd2b9b",
+      "comment": "",
+      "command": "type",
+      "target": "id=emailOrPhoneInput",
+      "targets": [
+        ["id=emailOrPhoneInput", "id"],
+        ["name=Input.EmailOrPhone", "name"],
+        ["css=#emailOrPhoneInput", "css:finder"],
+        ["xpath=//input[@id='emailOrPhoneInput']", "xpath:attributes"],
+        ["xpath=//form[@id='account']/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "ph30459@gmail.com"
+    }, {
+      "id": "d758573c-7493-45c7-af2a-11aaf5a27506",
+      "comment": "",
+      "command": "click",
+      "target": "id=Input_Password",
+      "targets": [
+        ["id=Input_Password", "id"],
+        ["name=Input.Password", "name"],
+        ["css=#Input_Password", "css:finder"],
+        ["xpath=//input[@id='Input_Password']", "xpath:attributes"],
+        ["xpath=//form[@id='account']/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "ad3b4daa-7736-4d8f-9b80-d1753792866b",
+      "comment": "",
+      "command": "type",
+      "target": "id=Input_Password",
+      "targets": [
+        ["id=Input_Password", "id"],
+        ["name=Input.Password", "name"],
+        ["css=#Input_Password", "css:finder"],
+        ["xpath=//input[@id='Input_Password']", "xpath:attributes"],
+        ["xpath=//form[@id='account']/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "4okXodIm00Yw"
+    }, {
+      "id": "61921978-4f78-4a33-858b-fddc51f80c42",
+      "comment": "",
+      "command": "click",
+      "target": "id=login-submit",
+      "targets": [
+        ["id=login-submit", "id"],
+        ["css=#login-submit", "css:finder"],
+        ["xpath=//button[@id='login-submit']", "xpath:attributes"],
+        ["xpath=//form[@id='account']/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,' Entrar')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "966749b6-8a5d-42c4-9b0f-f8f3c72269e3",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Card�pio",
+      "targets": [
+        ["linkText=Card�pio", "linkText"],
+        ["css=.nav-item:nth-child(2) > .nav-link", "css:finder"],
+        ["xpath=//a[contains(@href, '/Item')]", "xpath:href"],
+        ["xpath=//li[2]/a", "xpath:position"],
+        ["xpath=//a[contains(.,' Card�pio')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "2d7f45ef-5aa4-4d92-9a84-df856fd1223c",
+      "comment": "",
+      "command": "click",
+      "target": "css=.list-group-item:nth-child(3) .col-md-2 > .fw-bold",
+      "targets": [
+        ["css=.list-group-item:nth-child(3) .col-md-2 > .fw-bold", "css:finder"],
+        ["xpath=//div[3]/div/div[3]/span", "xpath:position"],
+        ["xpath=//span[contains(.,'R$ 30')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "a311a870-1f68-4ea2-bade-8b5b1d4460c7",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.list-group-item:nth-child(3) .col-md-2 > .fw-bold",
+      "targets": [
+        ["css=.list-group-item:nth-child(3) .col-md-2 > .fw-bold", "css:finder"],
+        ["xpath=//div[3]/div/div[3]/span", "xpath:position"],
+        ["xpath=//span[contains(.,'R$ 30')]", "xpath:innerText"]
+      ],
+      "value": "R$ 30"
+    }, {
+      "id": "85f350cc-1883-4643-8ac9-927cb4e851cf",
+      "comment": "",
+      "command": "click",
+      "target": "css=.list-group-item:nth-child(3) .col-md-5 > .fw-bold",
+      "targets": [
+        ["css=.list-group-item:nth-child(3) .col-md-5 > .fw-bold", "css:finder"],
+        ["xpath=//div[3]/div/div/h5", "xpath:position"],
+        ["xpath=//h5[contains(.,'Frango Fit Executivo')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "10137266-72c3-4770-a823-2bf749f7b46a",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.list-group-item:nth-child(3) .col-md-5 > .fw-bold",
+      "targets": [
+        ["css=.list-group-item:nth-child(3) .col-md-5 > .fw-bold", "css:finder"],
+        ["xpath=//div[3]/div/div/h5", "xpath:position"],
+        ["xpath=//h5[contains(.,'Frango Fit Executivo')]", "xpath:innerText"]
+      ],
+      "value": "Frango Fit Executivo"
+    }, {
+      "id": "61dd577f-a02e-4cab-81b8-0cecd6c3c4a6",
+      "comment": "",
+      "command": "click",
+      "target": "css=.list-group-item:nth-child(3) .btn:nth-child(1) > .bi",
+      "targets": [
+        ["css=.list-group-item:nth-child(3) .btn:nth-child(1) > .bi", "css:finder"],
+        ["xpath=//div[3]/div/div[4]/div/a/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "fb66d346-9c59-4c6b-bf0d-b1170eb2d75b",
+      "comment": "",
+      "command": "mouseDownAt",
+      "target": "id=Preco",
+      "targets": [
+        ["id=Preco", "id"],
+        ["name=Preco", "name"],
+        ["css=#Preco", "css:finder"],
+        ["xpath=//input[@id='Preco']", "xpath:attributes"],
+        ["xpath=//div[3]/div/div/input", "xpath:position"]
+      ],
+      "value": "12.59375,25.609375"
+    }, {
+      "id": "fe6d4240-b932-449c-a61d-b78798cfef30",
+      "comment": "",
+      "command": "mouseMoveAt",
+      "target": "id=Preco",
+      "targets": [
+        ["id=Preco", "id"],
+        ["name=Preco", "name"],
+        ["css=#Preco", "css:finder"],
+        ["xpath=//input[@id='Preco']", "xpath:attributes"],
+        ["xpath=//div[3]/div/div/input", "xpath:position"]
+      ],
+      "value": "12.59375,25.609375"
+    }, {
+      "id": "4ef31d8b-a019-4d89-babb-af3d2457b048",
+      "comment": "",
+      "command": "mouseUpAt",
+      "target": "id=Preco",
+      "targets": [
+        ["id=Preco", "id"],
+        ["name=Preco", "name"],
+        ["css=#Preco", "css:finder"],
+        ["xpath=//input[@id='Preco']", "xpath:attributes"],
+        ["xpath=//div[3]/div/div/input", "xpath:position"]
+      ],
+      "value": "12.59375,25.609375"
+    }, {
+      "id": "0733f643-797f-42ff-97f9-f5208504a392",
+      "comment": "",
+      "command": "click",
+      "target": "id=Preco",
+      "targets": [
+        ["id=Preco", "id"],
+        ["name=Preco", "name"],
+        ["css=#Preco", "css:finder"],
+        ["xpath=//input[@id='Preco']", "xpath:attributes"],
+        ["xpath=//div[3]/div/div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "133b46af-3238-4478-9894-eef5a66b7a97",
+      "comment": "",
+      "command": "type",
+      "target": "id=Preco",
+      "targets": [
+        ["id=Preco", "id"],
+        ["name=Preco", "name"],
+        ["css=#Preco", "css:finder"],
+        ["xpath=//input[@id='Preco']", "xpath:attributes"],
+        ["xpath=//div[3]/div/div/input", "xpath:position"]
+      ],
+      "value": "40"
+    }, {
+      "id": "c3cca912-6b7b-4aef-8061-7a7b20435e34",
+      "comment": "",
+      "command": "click",
+      "target": "css=.col-md-8",
+      "targets": [
+        ["css=.col-md-8", "css:finder"],
+        ["xpath=//form/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "cf3a6f4d-3f69-4e52-bc82-a773ac9fb7c7",
+      "comment": "",
+      "command": "click",
+      "target": "css=.text-white",
+      "targets": [
+        ["css=.text-white", "css:finder"],
+        ["xpath=(//button[@type='submit'])[2]", "xpath:attributes"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Salvar Alterações')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "bc4a6404-b188-4618-a5f5-0380d4a2542c",
+      "comment": "",
+      "command": "click",
+      "target": "css=.list-group-item:nth-child(3) .col-md-5 > .fw-bold",
+      "targets": [
+        ["css=.list-group-item:nth-child(3) .col-md-5 > .fw-bold", "css:finder"],
+        ["xpath=//div[3]/div/div/h5", "xpath:position"],
+        ["xpath=//h5[contains(.,'Frango Fit Executivo')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "e43ce88e-6803-4e73-bacd-45ac02f48c1b",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.list-group-item:nth-child(3) .col-md-5 > .fw-bold",
+      "targets": [
+        ["css=.list-group-item:nth-child(3) .col-md-5 > .fw-bold", "css:finder"],
+        ["xpath=//div[3]/div/div/h5", "xpath:position"],
+        ["xpath=//h5[contains(.,'Frango Fit Executivo')]", "xpath:innerText"]
+      ],
+      "value": "Frango Fit Executivo"
+    }, {
+      "id": "a5816d2b-5743-442c-843c-ad53d8809104",
+      "comment": "",
+      "command": "click",
+      "target": "css=.list-group-item:nth-child(3) .text-center",
+      "targets": [
+        ["css=.list-group-item:nth-child(3) .text-center", "css:finder"],
+        ["xpath=//div[3]/div/div[3]", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "d94215d5-224e-47b0-8cd4-a35dfd6be82d",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.list-group-item:nth-child(3) .col-md-2 > .fw-bold",
+      "targets": [
+        ["css=.list-group-item:nth-child(3) .col-md-2 > .fw-bold", "css:finder"],
+        ["xpath=//div[3]/div/div[3]/span", "xpath:position"],
+        ["xpath=//span[contains(.,'R$ 40')]", "xpath:innerText"]
+      ],
+      "value": "R$ 40"
+    }]
+  }, {
+    "id": "2ad121f9-daa9-414d-b15d-adac2b39c807",
+    "name": "Remover Item",
+    "commands": [{
+      "id": "5ef0014c-6d04-4986-b8e6-50319a83c742",
+      "comment": "",
+      "command": "open",
+      "target": "https://localhost:44309/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "809648fa-f2c2-4a5a-8acf-3ce8461670da",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1936x1048",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "950dae89-bcb7-4dea-b1e9-742e09f5709a",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Entrar no Sistema",
+      "targets": [
+        ["linkText=Entrar no Sistema", "linkText"],
+        ["css=.btn-primary", "css:finder"],
+        ["xpath=//a[contains(@href, '/Identity/Account/Login')]", "xpath:href"],
+        ["xpath=//div[2]/a", "xpath:position"],
+        ["xpath=//a[contains(.,' Entrar no Sistema')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "c356cf30-86dc-4910-b710-121dba18809e",
+      "comment": "",
+      "command": "click",
+      "target": "id=emailOrPhoneInput",
+      "targets": [
+        ["id=emailOrPhoneInput", "id"],
+        ["name=Input.EmailOrPhone", "name"],
+        ["css=#emailOrPhoneInput", "css:finder"],
+        ["xpath=//input[@id='emailOrPhoneInput']", "xpath:attributes"],
+        ["xpath=//form[@id='account']/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "c192cc4b-cc97-48cc-842b-77b7d8b9ce6d",
+      "comment": "",
+      "command": "type",
+      "target": "id=emailOrPhoneInput",
+      "targets": [
+        ["id=emailOrPhoneInput", "id"],
+        ["name=Input.EmailOrPhone", "name"],
+        ["css=#emailOrPhoneInput", "css:finder"],
+        ["xpath=//input[@id='emailOrPhoneInput']", "xpath:attributes"],
+        ["xpath=//form[@id='account']/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "ph30459@gmail.com"
+    }, {
+      "id": "0797124f-d8f8-42c2-b11c-7aa2c976fe00",
+      "comment": "",
+      "command": "click",
+      "target": "id=Input_Password",
+      "targets": [
+        ["id=Input_Password", "id"],
+        ["name=Input.Password", "name"],
+        ["css=#Input_Password", "css:finder"],
+        ["xpath=//input[@id='Input_Password']", "xpath:attributes"],
+        ["xpath=//form[@id='account']/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "aecfb022-195e-4a3e-a2dd-42900dcb1142",
+      "comment": "",
+      "command": "type",
+      "target": "id=Input_Password",
+      "targets": [
+        ["id=Input_Password", "id"],
+        ["name=Input.Password", "name"],
+        ["css=#Input_Password", "css:finder"],
+        ["xpath=//input[@id='Input_Password']", "xpath:attributes"],
+        ["xpath=//form[@id='account']/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "4okXodIm00Yw"
+    }, {
+      "id": "8a037ce1-da92-4162-85a5-88d1f035dea7",
+      "comment": "",
+      "command": "click",
+      "target": "id=login-submit",
+      "targets": [
+        ["id=login-submit", "id"],
+        ["css=#login-submit", "css:finder"],
+        ["xpath=//button[@id='login-submit']", "xpath:attributes"],
+        ["xpath=//form[@id='account']/button", "xpath:idRelative"],
+        ["xpath=//button", "xpath:position"],
+        ["xpath=//button[contains(.,' Entrar')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "5108fee2-8d91-4eb3-ab76-d1c35620ad20",
+      "comment": "",
+      "command": "click",
+      "target": "linkText=Card�pio",
+      "targets": [
+        ["linkText=Card�pio", "linkText"],
+        ["css=.nav-item:nth-child(2) > .nav-link", "css:finder"],
+        ["xpath=//a[contains(@href, '/Item')]", "xpath:href"],
+        ["xpath=//li[2]/a", "xpath:position"],
+        ["xpath=//a[contains(.,' Card�pio')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "c622276d-6ef9-45b3-aa5c-2c0095c23e50",
+      "comment": "",
+      "command": "click",
+      "target": "css=.list-group-item:nth-child(3) .col-md-5 > .fw-bold",
+      "targets": [
+        ["css=.list-group-item:nth-child(3) .col-md-5 > .fw-bold", "css:finder"],
+        ["xpath=//div[3]/div/div/h5", "xpath:position"],
+        ["xpath=//h5[contains(.,'Frango Fit Executivo')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "59e53733-ff19-401d-8ea1-073b4647845c",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.list-group-item:nth-child(3) .col-md-5 > .fw-bold",
+      "targets": [
+        ["css=.list-group-item:nth-child(3) .col-md-5 > .fw-bold", "css:finder"],
+        ["xpath=//div[3]/div/div/h5", "xpath:position"],
+        ["xpath=//h5[contains(.,'Frango Fit Executivo')]", "xpath:innerText"]
+      ],
+      "value": "Frango Fit Executivo"
+    }, {
+      "id": "94f7824f-6d96-4b1a-bf73-fae565493192",
+      "comment": "",
+      "command": "click",
+      "target": "css=.list-group-item:nth-child(3) .text-muted",
+      "targets": [
+        ["css=.list-group-item:nth-child(3) .text-muted", "css:finder"],
+        ["xpath=//div[3]/div/div/p", "xpath:position"],
+        ["xpath=//p[contains(.,'Peito de frango grelhado, arroz integral, batata-doce e legumes salteados.')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "b5dcd2a8-b5e9-4a2f-b9f0-fa2e7daf345e",
+      "comment": "",
+      "command": "click",
+      "target": "css=.list-group-item:nth-child(3) .btn:nth-child(3) > .bi",
+      "targets": [
+        ["css=.list-group-item:nth-child(3) .btn:nth-child(3) > .bi", "css:finder"],
+        ["xpath=//div[3]/div/div[4]/div/a[3]/i", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "a64104bb-636e-41be-b829-e5d968ae9756",
+      "comment": "",
+      "command": "click",
+      "target": "css=.mb-2",
+      "targets": [
+        ["css=.mb-2", "css:finder"],
+        ["xpath=//h3", "xpath:position"],
+        ["xpath=//h3[contains(.,'Frango Fit Executivo')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "68c468ed-7bc0-4cb3-a660-6a3da3226636",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.mb-2",
+      "targets": [
+        ["css=.mb-2", "css:finder"],
+        ["xpath=//h3", "xpath:position"],
+        ["xpath=//h3[contains(.,'Frango Fit Executivo')]", "xpath:innerText"]
+      ],
+      "value": "Frango Fit Executivo"
+    }, {
+      "id": "6932bd4e-1285-48ec-8a8c-7b8012d5fbdb",
+      "comment": "",
+      "command": "click",
+      "target": "id=confirmDelete",
+      "targets": [
+        ["id=confirmDelete", "id"],
+        ["css=#confirmDelete", "css:finder"],
+        ["xpath=//input[@id='confirmDelete']", "xpath:attributes"],
+        ["xpath=//form[@id='deleteForm']/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "91324502-df35-4d20-9e81-d1f4491a423f",
+      "comment": "",
+      "command": "chooseOkOnNextConfirmation",
+      "target": "",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "7cb29d2b-b51e-4171-9d4c-8071628d7e4f",
+      "comment": "",
+      "command": "click",
+      "target": "id=deleteButton",
+      "targets": [
+        ["id=deleteButton", "id"],
+        ["css=#deleteButton", "css:finder"],
+        ["xpath=//button[@id='deleteButton']", "xpath:attributes"],
+        ["xpath=//form[@id='deleteForm']/div[2]/button", "xpath:idRelative"],
+        ["xpath=//div[2]/button", "xpath:position"],
+        ["xpath=//button[contains(.,'Confirmar Exclusão')]", "xpath:innerText"]
+      ],
+      "value": ""
+    }, {
+      "id": "a0490560-64ed-4f61-8769-08def8bdc7d1",
+      "comment": "",
+      "command": "webdriverChooseOkOnVisibleConfirmation",
+      "target": "",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "99f9e616-fd6e-44f0-867f-1f7691d0deb3",
+      "comment": "",
+      "command": "assertNotText",
+      "target": "css=.main-content > .pb-3",
+      "targets": [
+        ["css=.main-content > .pb-3", "css:finder"],
+        ["xpath=//main", "xpath:position"]
+      ],
+      "value": "Frango Fit Executivo"
+    }]
+  }],
+  "suites": [{
+    "id": "8d67bfa3-316f-4ec0-987f-d7a43429ae16",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["8fd550aa-c010-4f6d-b8a4-11e3578d536c"]
+  }],
+  "urls": ["https://localhost:44309/"],
+  "plugins": []
+}
