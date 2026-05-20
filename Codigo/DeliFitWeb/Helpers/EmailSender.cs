@@ -1,75 +1,64 @@
+using MailKit.Net.Smtp;
+using MailKit.Security;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using System.Net;
-using System.Net.Mail;
-using System.Net.Mime;
+using MimeKit;
 
 namespace BibliotecaWeb.Helpers
 {
     public class EmailSender : IEmailSender
     {
-        private readonly SmtpClient _client;
-        private readonly string _from;
-        private readonly string _webRootPath;
+        private readonly IConfiguration _configuration;
 
-        public EmailSender(IConfiguration configuration, IWebHostEnvironment environment)
+        public EmailSender(IConfiguration configuration)
         {
-            _from = configuration["Smtp:From"];
-            _webRootPath = environment.WebRootPath; // Obtém o caminho físico do wwwroot
-            _client = new SmtpClient
-            {
-                Host = configuration["Smtp:Host"],
-                Port = int.Parse(configuration["Smtp:Port"]),
-                Credentials = new NetworkCredential(configuration["Smtp:Username"], configuration["Smtp:Password"]),
-                EnableSsl = true
-            };
+            _configuration = configuration;
         }
 
-        public Task SendEmailAsync(string email, string subject, string htmlMessage)
+        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            // Caminho físico para a imagem no servidor, dentro do wwwroot
-            var imagePath = Path.Combine(_webRootPath, "img", "logo.png");
-
-            var mailMessage = new MailMessage
+            try
             {
-                From = new MailAddress(_from),
-                Subject = subject,
-                Body = htmlMessage,
-                IsBodyHtml = true
-            };
-            mailMessage.To.Add(email);
+                var message = new MimeMessage();
 
-            // Cria o conteúdo HTML com a imagem embutida
-            var htmlWithHeaderAndFooter = $@"
-            <html>
-                <body>
-                    <div style='text-align: center; margin-bottom: 20px;'>
-                        <img src='cid:HeaderImage' alt='Biblioteca' style='max-width: 30%; height: auto;'/>
-                    </div>
+                message.From.Add(
+                    MailboxAddress.Parse(_configuration["Smtp:From"])
+                );
 
-                    <div style='margin-bottom: 20px; font-size: 14px'>
-                        {htmlMessage}
-                    </div>
+                message.To.Add(
+                    MailboxAddress.Parse(email)
+                );
 
-                    <div style='text-align: center; font-size: 14px; color: #888888; margin-top: 20px; width: 100%; padding: 20px 0; background-color: #f1f1f1;'>
-                        <p>&copy; 2024 - Biblioteca - Todos os direitos reservados.</p>
-                    </div>
-                </body>
-            </html>";
+                message.Subject = subject;
 
-            // Cria a visualização alternativa com o HTML e a imagem inline
-            var altView = AlternateView.CreateAlternateViewFromString(htmlWithHeaderAndFooter, null, MediaTypeNames.Text.Html);
+                message.Body = new TextPart("html")
+                {
+                    Text = htmlMessage
+                };
 
-            // Adiciona a imagem como um recurso inline
-            var inlineLogo = new LinkedResource(imagePath, MediaTypeNames.Image.Jpeg)
+                using var smtp = new MailKit.Net.Smtp.SmtpClient();
+
+                await smtp.ConnectAsync(
+                    _configuration["Smtp:Host"],
+                    int.Parse(_configuration["Smtp:Port"]),
+                    SecureSocketOptions.StartTls
+                );
+
+                await smtp.AuthenticateAsync(
+                    _configuration["Smtp:Username"],
+                    _configuration["Smtp:Password"]
+                );
+
+                await smtp.SendAsync(message);
+
+                await smtp.DisconnectAsync(true);
+
+                Console.WriteLine("Email enviado com sucesso!");
+            }
+            catch (Exception ex)
             {
-                ContentId = "HeaderImage"
-            };
-            altView.LinkedResources.Add(inlineLogo);
-
-            // Adiciona a visualização alternativa (HTML com a imagem inline) ao email
-            mailMessage.AlternateViews.Add(altView);
-
-            return _client.SendMailAsync(mailMessage);
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
         }
     }
 }

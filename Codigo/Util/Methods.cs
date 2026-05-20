@@ -91,6 +91,10 @@ namespace Util
 
         public static bool ValidarCnpj(string cnpj)
         {
+            // DESATIVAÇÃO DA VALIDAÇÃO DE CNPJ A PEDIDO
+            return true;
+            
+            /*
             int[] multiplicador1 = new int[12] { 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
             int[] multiplicador2 = new int[13] { 6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
             int soma;
@@ -122,6 +126,7 @@ namespace Util
                 resto = 11 - resto;
             digito = digito + resto.ToString();
             return cnpj.EndsWith(digito);
+            */
         }
 
         public static bool SoContemNumeros(string texto)

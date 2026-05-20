@@ -315,6 +315,7 @@ namespace DeliFitWeb.Controllers
         }
 
         // POST: RestauranteController/AprovarSolicitacao/5
+
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -323,6 +324,7 @@ namespace DeliFitWeb.Controllers
             try
             {
                 var restaurante = _restauranteService.Get(id);
+
                 if (restaurante == null)
                 {
                     TempData["Error"] = "Restaurante não encontrado.";
@@ -331,59 +333,108 @@ namespace DeliFitWeb.Controllers
 
                 var email = restaurante.Email;
 
-                if (!string.IsNullOrWhiteSpace(email) && _userManager != null && _roleManager != null && _emailSender != null)
+                if (string.IsNullOrWhiteSpace(email))
                 {
-                    var existingUser = await _userManager.FindByEmailAsync(email);
-                    if (existingUser != null)
-                    {
-                        TempData["Error"] = $"Já existe um usuário cadastrado com o email {email}.";
-                        return RedirectToAction(nameof(DetailsSolicitacao), new { id });
-                    }
-
-                    var user = new UsuarioIdentity { UserName = email, Email = email };
-                    var senha = GenerateSecurePassword(12);
-                    var createResult = await _userManager.CreateAsync(user, senha);
-
-                    if (createResult.Succeeded)
-                    {
-                        await _userManager.AddToRoleAsync(user, "GerenteRestaurante");
-
-                        restaurante.Validado = true;
-                        _restauranteService.Edit(restaurante);
-
-                        try
-                        {
-                            var assunto = "Solicitação aprovada - DeliFit";
-                            var mensagem = $"Sua solicitação foi aprovada.\nUsuário: {email}\nSenha: {senha}\nAcesse: {Request.Scheme}://{Request.Host}/Identity/Account/Login";
-                            await _emailSender.SendEmailAsync(email, assunto, mensagem);
-                            TempData["Success"] = $"Solicitação aprovada! Email com credenciais enviado para {email}.";
-                        }
-                        catch (Exception)
-                        {
-                            TempData["Success"] = $"Solicitação aprovada! Porém não foi possível enviar o email. Senha gerada: {senha}";
-                        }
-                    }
-                    else
-                    {
-                        var erros = string.Join(", ", createResult.Errors.Select(e => e.Description));
-                        TempData["Error"] = $"Erro ao criar usuário: {erros}";
-                        return RedirectToAction(nameof(DetailsSolicitacao), new { id });
-                    }
+                    TempData["Error"] = "O restaurante não possui email cadastrado.";
+                    return RedirectToAction(nameof(DetailsSolicitacao), new { id });
                 }
-                else
+
+                if (_userManager == null || _roleManager == null || _emailSender == null)
                 {
+                    TempData["Error"] = "Serviços de autenticação/email não configurados.";
+                    return RedirectToAction(nameof(DetailsSolicitacao), new { id });
+                }
+
+                var existingUser = await _userManager.FindByEmailAsync(email);
+
+                if (existingUser != null)
+                {
+                    TempData["Error"] =
+                        $"Já existe um usuário cadastrado com o email {email}.";
+
+                    return RedirectToAction(nameof(DetailsSolicitacao), new { id });
+                }
+
+                var user = new UsuarioIdentity
+                {
+                    UserName = email,
+                    Email = email,
+                    EmailConfirmed = true
+                };
+
+                var senha = GenerateSecurePassword(12);
+
+                var createResult = await _userManager.CreateAsync(user, senha);
+
+                if (!createResult.Succeeded)
+                {
+                    var erros = string.Join(", ",
+                        createResult.Errors.Select(e => e.Description));
+
+                    TempData["Error"] = $"Erro ao criar usuário: {erros}";
+
+                    return RedirectToAction(nameof(DetailsSolicitacao), new { id });
+                }
+
+                await _userManager.AddToRoleAsync(user, "GerenteRestaurante");
+
+                var mensagem = $@"
+                    <h2>Sua solicitação foi aprovada!</h2>
+
+                    <p>Seu restaurante agora faz parte da plataforma DeliFit.</p>
+
+                    <hr>
+
+                    <p>
+                        <strong>Usuário:</strong> {email}
+                    </p>
+
+                    <p>
+                         <strong>Senha:</strong> {senha}
+                    </p>
+
+                    <p>
+                        Clique no link abaixo para acessar o sistema:
+                    </p>
+        
+                    <p>
+                        <a href='{Request.Scheme}://{Request.Host}/Identity/Account/Login'>
+                        Acessar DeliFit
+                    </a>
+                    </p>";
+
+                try
+                {
+                    await _emailSender.SendEmailAsync(
+                        email,
+                        "Solicitação aprovada - DeliFit",
+                        mensagem
+                    );
+
                     restaurante.Validado = true;
+
                     _restauranteService.Edit(restaurante);
-                    TempData["Success"] = "Solicitação aprovada! (Email não configurado)";
+
+                    TempData["Success"] =
+                        $"Solicitação aprovada! Email enviado para {email}.";
+                }
+                catch (Exception ex)
+                {
+                    await _userManager.DeleteAsync(user);
+
+                    TempData["Error"] =
+                        $"Erro ao enviar email para o restaurante: {ex.Message}";
                 }
             }
             catch (Exception ex)
             {
-                TempData["Error"] = $"Erro ao aprovar solicitação: {ex.Message}";
+                TempData["Error"] =
+                    $"Erro ao aprovar solicitação: {ex.Message}";
             }
 
             return RedirectToAction(nameof(ListarSolicitacoes));
         }
+
 
         // POST: RestauranteController/NegarSolicitacao/5
         [Authorize(Roles = "Admin")]
@@ -454,6 +505,8 @@ namespace DeliFitWeb.Controllers
 
             return Json(new { sucesso = false, mensagem = "CNPJ não encontrado." });
         }
+
+       
 
         [Authorize(Roles = "GerenteRestaurante")]
         public IActionResult Home()

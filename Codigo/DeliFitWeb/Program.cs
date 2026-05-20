@@ -56,6 +56,7 @@ public class Program
           .AddEntityFrameworkStores<IdentityContext>();
 
         builder.Services.AddTransient<IEmailSender, EmailSender>();
+        //builder.Services.AddTransient<IEmailSender, FakeEmailSender>();
 
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -127,6 +128,7 @@ public class Program
 
         using (var scope = app.Services.CreateScope())
         {
+            
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<UsuarioIdentity>>();
 
@@ -145,5 +147,14 @@ public class Program
 
         app.Run();
     }
-    
+
+    public class FakeEmailSender : IEmailSender
+    {
+        public Task SendEmailAsync(string email, string subject, string htmlMessage)
+        {
+            // Retorna logo, sem tentar acessar nenhum servidor SMTP de fato.
+            return Task.CompletedTask;
+        }
+    }
+
 }
