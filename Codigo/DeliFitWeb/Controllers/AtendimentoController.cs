@@ -1,7 +1,9 @@
 using AutoMapper;
 using Core;
 using Core.Service;
+using DeliFitWeb.Helpers;
 using DeliFitWeb.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DeliFitWeb.Controllers
@@ -18,12 +20,21 @@ namespace DeliFitWeb.Controllers
         }
 
         // GET: AtendimentoController
-        public ActionResult Index(uint idRestaurante)
+        [Authorize(Roles = "GerenteRestaurante,Admin")]
+        public ActionResult Index(uint? idRestaurante = null)
         {
-            var listaAtendimentos = _atendimentoService.GetAll(idRestaurante);
+            var restauranteId = idRestaurante ?? HttpContext.Session.GetRestauranteId();
+
+            if (!restauranteId.HasValue)
+            {
+                TempData["Error"] = "Não foi possível identificar o restaurante.";
+                return RedirectToAction("Home", "Restaurante");
+            }
+
+            var listaAtendimentos = _atendimentoService.GetAll(restauranteId.Value);
             var listaAtendimentosViewModel = _mapper.Map<IEnumerable<Core.Atendimento>, IEnumerable<DeliFitWeb.Models.AtendimentoViewModel>>(listaAtendimentos);
-            
-            ViewBag.IdRestaurante = idRestaurante;
+
+            ViewBag.IdRestaurante = restauranteId.Value;
 
             return View(listaAtendimentosViewModel);
         }
@@ -75,6 +86,103 @@ namespace DeliFitWeb.Controllers
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: AtendimentoController/Configurar
+        [Authorize(Roles = "GerenteRestaurante,Admin")]
+        public ActionResult Configurar(uint? idRestaurante = null)
+        {
+            var restauranteId = idRestaurante ?? HttpContext.Session.GetRestauranteId();
+
+            if (!restauranteId.HasValue)
+            {
+                TempData["Error"] = "Não foi possível identificar o restaurante.";
+                return RedirectToAction("Home", "Restaurante");
+            }
+
+            var existentes = _atendimentoService.GetAll(restauranteId.Value)
+                .ToDictionary(a => a.DiaSemana, a => a);
+
+            var diasSemana = new[]
+            {
+                ("1", "Domingo"),
+                ("2", "Segunda-feira"),
+                ("3", "Terça-feira"),
+                ("4", "Quarta-feira"),
+                ("5", "Quinta-feira"),
+                ("6", "Sexta-feira"),
+                ("7", "Sábado"),
+            };
+
+            var model = new ConfigurarAtendimentoViewModel
+            {
+                IdRestaurante = restauranteId.Value,
+                Dias = diasSemana.Select(d =>
+                {
+                    existentes.TryGetValue(d.Item1, out var existing);
+                    return new DiaAtendimentoViewModel
+                    {
+                        Id = existing?.Id ?? 0,
+                        DiaSemana = d.Item1,
+                        NomeDia = d.Item2,
+                        Ativo = existing != null,
+                        HorarioInicio = existing?.HorarioInicio?.ToString("HH:mm") ?? "08:00",
+                        HorarioFim = existing?.HorarioFim?.ToString("HH:mm") ?? "18:00",
+                    };
+                }).ToList()
+            };
+
+            return View(model);
+        }
+
+        // POST: AtendimentoController/Configurar
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "GerenteRestaurante,Admin")]
+        public ActionResult Configurar(ConfigurarAtendimentoViewModel model)
+        {
+            foreach (var dia in model.Dias)
+            {
+                if (!TimeSpan.TryParse(dia.HorarioInicio, out var tsInicio))
+                    tsInicio = TimeSpan.FromHours(8);
+                if (!TimeSpan.TryParse(dia.HorarioFim, out var tsFim))
+                    tsFim = TimeSpan.FromHours(18);
+
+                var horarioInicio = DateTime.Today.Add(tsInicio);
+                var horarioFim = DateTime.Today.Add(tsFim);
+
+                if (dia.Ativo)
+                {
+                    if (dia.Id == 0)
+                    {
+                        _atendimentoService.Create(new Atendimento
+                        {
+                            DiaSemana = dia.DiaSemana,
+                            HorarioInicio = horarioInicio,
+                            HorarioFim = horarioFim,
+                            IdRestaurante = model.IdRestaurante
+                        });
+                    }
+                    else
+                    {
+                        _atendimentoService.Edit(new Atendimento
+                        {
+                            Id = dia.Id,
+                            DiaSemana = dia.DiaSemana,
+                            HorarioInicio = horarioInicio,
+                            HorarioFim = horarioFim,
+                            IdRestaurante = model.IdRestaurante
+                        });
+                    }
+                }
+                else if (dia.Id > 0)
+                {
+                    _atendimentoService.Delete(dia.Id);
+                }
+            }
+
+            TempData["Success"] = "Horários configurados com sucesso!";
+            return RedirectToAction(nameof(Configurar));
         }
 
         // GET: AtendimentoController/Delete/5

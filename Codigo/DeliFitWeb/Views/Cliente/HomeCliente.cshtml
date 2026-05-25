@@ -558,7 +558,7 @@
                 <div class="rest-body-h">
                     <p class="rest-name-h">@r.NomeRestaurante</p>
                     <div class="rest-meta-h">
-                        <span><i class="bi bi-star-fill" style="color:#ff6600;"></i> 4.5</span>
+                        <span><i class="bi bi-star-fill" style="color:#ff6600;"></i> @(r.MediaAvaliacao > 0 ? r.MediaAvaliacao.ToString("0.0") : "—")</span>
                         <span><i class="bi bi-geo-alt"></i> @r.Cidade</span>
                     </div>
                 </div>
@@ -667,7 +667,7 @@
         // ── Serializa dados para filtro JS das categorias no dishesGrid ──
         const todosRestaurantes = @Html.Raw(Json.Serialize(
                     (Model ?? Enumerable.Empty<DeliFitWeb.Models.RestauranteViewModel>())
-                    .Select(r => new { id = r.Id, nome = r.NomeRestaurante, cidade = r.Cidade, validado = r.Validado }).ToList()
+                    .Select(r => new { id = r.Id, nome = r.NomeRestaurante, cidade = r.Cidade, validado = r.Validado, mediaAvaliacao = r.MediaAvaliacao }).ToList()
             ));
 
         const todosItens = @Html.Raw(Json.Serialize(
@@ -700,7 +700,7 @@
                     <div class="rest-body-h">
                         <p class="rest-name-h">${escapeHtml(r.nome)}</p>
                         <div class="rest-meta-h">
-                            <span><i class="bi bi-star-fill" style="color:#ff6600;"></i> 4.5</span>
+                            <span><i class="bi bi-star-fill" style="color:#ff6600;"></i> ${r.mediaAvaliacao > 0 ? r.mediaAvaliacao.toFixed(1) : '—'}</span>
                             <span><i class="bi bi-geo-alt"></i> ${escapeHtml(r.cidade || '')}</span>
                         </div>
                     </div>

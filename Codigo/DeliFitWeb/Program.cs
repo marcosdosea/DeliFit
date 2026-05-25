@@ -113,13 +113,13 @@ public class Program
 
         app.UseRouting();
 
+        app.UseSession();
+
         app.UseAuthentication();
         app.UseAuthorization();
 
 
         app.MapRazorPages();
-
-        app.UseSession();
 
         app.MapControllerRoute(
             name: "default",

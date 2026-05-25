@@ -235,20 +235,30 @@
 						</li>
 
 						<li class="nav-item">
-							<a class="nav-link" href="#">
+							<a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Atendimento" ? "active" : "")"
+							   asp-controller="Atendimento" asp-action="Configurar">
 								<i class="bi bi-headset"></i> Atendimento
 							</a>
 						</li>
 
 						<li class="nav-item">
-							<a class="nav-link" href="#">
-								<i class="bi bi-credit-card"></i> Pagamentos
+							<a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Restaurante" && ViewContext.RouteData.Values["action"]?.ToString() == "Faturamentos" ? "active" : "")"
+							   asp-controller="Restaurante" asp-action="Faturamentos">
+								<i class="bi bi-graph-up-arrow"></i> Faturamentos
 							</a>
 						</li>
 
 						<li class="nav-item">
-							<a class="nav-link" href="#">
+							<a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Restaurante" && ViewContext.RouteData.Values["action"]?.ToString() == "GestorAvaliacoes" ? "active" : "")"
+							   asp-controller="Restaurante" asp-action="GestorAvaliacoes">
 								<i class="bi bi-star"></i> Avalia��es
+							</a>
+						</li>
+
+						<li class="nav-item">
+							<a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Pagamento" ? "active" : "")"
+							   asp-controller="Pagamento" asp-action="Index">
+								<i class="bi bi-credit-card"></i> Mensalidades
 							</a>
 						</li>
 					}
@@ -316,8 +326,8 @@
 					<i class="bi bi-bag-fill"></i>
 					<span>Pedidos</span>
 				</a>
-				<a class="cliente-nav-item"
-				   href="#" onclick="event.preventDefault(); alert('Em breve: tela de Consumo!');">
+				<a class="cliente-nav-item @(ViewContext.RouteData.Values["controller"]?.ToString() == "Cliente" && ViewContext.RouteData.Values["action"]?.ToString() == "Consumo" ? "active" : "")"
+				   asp-controller="Cliente" asp-action="Consumo">
 					<i class="bi bi-graph-up"></i>
 					<span>Consumo</span>
 				</a>

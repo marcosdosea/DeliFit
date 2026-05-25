@@ -44,7 +44,10 @@ namespace Service
         /// <returns>dados do pedido</returns>
         public Pedido? Get(uint id)
         {
-            return _context.Pedidos.FirstOrDefault(a => a.Id == id);
+            return _context.Pedidos
+                .Include(p => p.Pedidoitems)
+                .ThenInclude(pi => pi.IdItemNavigation)
+                .FirstOrDefault(a => a.Id == id);
         }
 
         /// <summary>

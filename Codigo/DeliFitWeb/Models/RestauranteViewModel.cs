@@ -13,90 +13,93 @@ namespace DeliFitWeb.Models
         public bool Validado { get; set; }
 
         /// <summary>
-        /// Bytes da foto armazenada no banco (usado para exibição nas views).
+        /// Bytes da foto armazenada no banco (usado para exibiï¿½ï¿½o nas views).
         /// </summary>
         public byte[]? Foto { get; set; } = null;
 
         /// <summary>
-        /// Arquivo enviado pelo formulário. Não é mapeado pelo AutoMapper.
+        /// Arquivo enviado pelo formulï¿½rio. Nï¿½o ï¿½ mapeado pelo AutoMapper.
         /// </summary>
         [NotMapped]
         [Display(Name = "Foto do Restaurante")]
         public IFormFile? FotoFile { get; set; }
 
         [Display(Name = "Nome do Restaurante")]
-        [Required(ErrorMessage = "Preenchimento do campo Nome do Restaurante é obrigatório.")]
-        [StringLength(50, ErrorMessage = "O nome deve ter no máximo 50 caracteres.")]
+        [Required(ErrorMessage = "Preenchimento do campo Nome do Restaurante ï¿½ obrigatï¿½rio.")]
+        [StringLength(50, ErrorMessage = "O nome deve ter no mï¿½ximo 50 caracteres.")]
         public string NomeRestaurante { get; set; } = string.Empty;
 
-        [Display(Name = "Nome do(a) Proprietário(a)")]
-        [Required(ErrorMessage = "Preenchimento do campo Nome do Proprietário é obrigatório.")]
-        [StringLength(50, ErrorMessage = "O nome deve ter no máximo 50 caracteres.")]
+        [Display(Name = "Nome do(a) Proprietï¿½rio(a)")]
+        [Required(ErrorMessage = "Preenchimento do campo Nome do Proprietï¿½rio ï¿½ obrigatï¿½rio.")]
+        [StringLength(50, ErrorMessage = "O nome deve ter no mï¿½ximo 50 caracteres.")]
         public string NomeProprietario { get; set; } = string.Empty;
 
-        [Display(Name = "CPF do(a) Proprietário(a)")]
-        [Required(ErrorMessage = "O campo CPF do(a) Proprietário(a) é obrigatório.")]
+        [Display(Name = "CPF do(a) Proprietï¿½rio(a)")]
+        [Required(ErrorMessage = "O campo CPF do(a) Proprietï¿½rio(a) ï¿½ obrigatï¿½rio.")]
         [StringLength(11, MinimumLength = 11, ErrorMessage = "O CPF deve conter 11 caracteres.")]
-        [CPF(ErrorMessage = "CPF inválido")]
+        [CPF(ErrorMessage = "CPF invï¿½lido")]
         public string CpfProprietario { get; set; } = string.Empty;
 
         [Display(Name = "CNPJ")]
-        [Required(ErrorMessage = "O campo CNPJ é obrigatório.")]
-        [StringLength(14, ErrorMessage = "O CNPJ deve ter no máximo 14 caracteres.")]
-        [CNPJ(ErrorMessage = "CNPJ inválido")]
+        [Required(ErrorMessage = "O campo CNPJ ï¿½ obrigatï¿½rio.")]
+        [StringLength(14, ErrorMessage = "O CNPJ deve ter no mï¿½ximo 14 caracteres.")]
+        [CNPJ(ErrorMessage = "CNPJ invï¿½lido")]
         public string Cnpj { get; set; } = string.Empty;
 
-        [Display(Name = "Descrição do Restaurante")]
-        [StringLength(200, ErrorMessage = "A descrição deve ter no máximo 200 caracteres.")]
+        [Display(Name = "Descriï¿½ï¿½o do Restaurante")]
+        [StringLength(200, ErrorMessage = "A descriï¿½ï¿½o deve ter no mï¿½ximo 200 caracteres.")]
         public string? Descricao { get; set; } = null;
 
-        [Display(Name = "Telefone do(a) Proprietário(a)")]
-        [Required(ErrorMessage = "O campo Telefone do(a) Proprietário(a) é obrigatório.")]
+        [Display(Name = "Telefone do(a) Proprietï¿½rio(a)")]
+        [Required(ErrorMessage = "O campo Telefone do(a) Proprietï¿½rio(a) ï¿½ obrigatï¿½rio.")]
         [StringLength(11, MinimumLength = 11, ErrorMessage = "O telefone deve conter 11 caracteres.")]
-        [TelefoneCelular(ErrorMessage = "Telefone inválido")]
+        [TelefoneCelular(ErrorMessage = "Telefone invï¿½lido")]
         public string TelefoneProprietario { get; set; } = string.Empty;
 
         [Display(Name = "Telefone do Restaurante")]
-        [Required(ErrorMessage = "O campo Telefone do Restaurante é obrigatório.")]
+        [Required(ErrorMessage = "O campo Telefone do Restaurante ï¿½ obrigatï¿½rio.")]
         [StringLength(11, MinimumLength = 11, ErrorMessage = "O telefone deve conter 11 caracteres.")]
-        [TelefoneCelular(ErrorMessage = "Telefone inválido")]
+        [TelefoneCelular(ErrorMessage = "Telefone invï¿½lido")]
         public string TelefoneRestaurante { get; set; } = string.Empty;
 
         [Display(Name = "Email")]
-        [Required(ErrorMessage = "O campo Email é obrigatório.")]
-        [StringLength(50, ErrorMessage = "O email deve ter no máximo 50 caracteres.")]
-        [EmailAddress(ErrorMessage = "O email informado não é válido.")]
+        [Required(ErrorMessage = "O campo Email ï¿½ obrigatï¿½rio.")]
+        [StringLength(50, ErrorMessage = "O email deve ter no mï¿½ximo 50 caracteres.")]
+        [EmailAddress(ErrorMessage = "O email informado nï¿½o ï¿½ vï¿½lido.")]
         public string Email { get; set; } = string.Empty;
 
         [Display(Name = "Rua")]
-        [Required(ErrorMessage = "O campo Rua é obrigatório.")]
-        [StringLength(50, ErrorMessage = "A rua deve ter no máximo 50 caracteres.")]
+        [Required(ErrorMessage = "O campo Rua ï¿½ obrigatï¿½rio.")]
+        [StringLength(50, ErrorMessage = "A rua deve ter no mï¿½ximo 50 caracteres.")]
         public string Rua { get; set; } = string.Empty;
 
-        [Display(Name = "Número")]
-        [Required(ErrorMessage = "O campo Número é obrigatório.")]
-        [StringLength(10, ErrorMessage = "O número deve ter no máximo 10 caracteres.")]
+        [Display(Name = "Nï¿½mero")]
+        [Required(ErrorMessage = "O campo Nï¿½mero ï¿½ obrigatï¿½rio.")]
+        [StringLength(10, ErrorMessage = "O nï¿½mero deve ter no mï¿½ximo 10 caracteres.")]
         public string Numero { get; set; } = string.Empty;
 
         [Display(Name = "Bairro")]
-        [Required(ErrorMessage = "O campo Bairro é obrigatório.")]
-        [StringLength(50, ErrorMessage = "O Bairro deve ter no máximo 50 caracteres.")]
+        [Required(ErrorMessage = "O campo Bairro ï¿½ obrigatï¿½rio.")]
+        [StringLength(50, ErrorMessage = "O Bairro deve ter no mï¿½ximo 50 caracteres.")]
         public string Bairro { get; set; } = string.Empty;
 
         [Display(Name = "CEP")]
-        [Required(ErrorMessage = "O campo CEP é obrigatório.")]
+        [Required(ErrorMessage = "O campo CEP ï¿½ obrigatï¿½rio.")]
         [StringLength(8, MinimumLength = 8, ErrorMessage = "O CEP deve conter 8 caracteres.")]
-        [Cep(ErrorMessage = "CEP inválido")]
+        [Cep(ErrorMessage = "CEP invï¿½lido")]
         public string Cep { get; set; } = string.Empty;
 
         [Display(Name = "Cidade")]
-        [Required(ErrorMessage = "O campo Cidade é obrigatório.")]
-        [StringLength(50, ErrorMessage = "A cidade deve ter no máximo 50 caracteres.")]
+        [Required(ErrorMessage = "O campo Cidade ï¿½ obrigatï¿½rio.")]
+        [StringLength(50, ErrorMessage = "A cidade deve ter no mï¿½ximo 50 caracteres.")]
         public string Cidade { get; set; } = string.Empty;
 
         [Display(Name = "Estado")]
-        [Required(ErrorMessage = "O campo Estado é obrigatório.")]
-        [StringLength(15, ErrorMessage = "O estado deve ter no máximo 15 caracteres.")]
+        [Required(ErrorMessage = "O campo Estado ï¿½ obrigatï¿½rio.")]
+        [StringLength(15, ErrorMessage = "O estado deve ter no mï¿½ximo 15 caracteres.")]
         public string Estado { get; set; } = string.Empty;
+
+        [NotMapped]
+        public double MediaAvaliacao { get; set; } = 0.0;
     }
 }
