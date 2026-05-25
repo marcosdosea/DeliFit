@@ -405,6 +405,17 @@
         // Mapeamento: índice numérico → label e cor da coluna do kanban
         // 0=RECEBIDO (P), 1=EM PREPARO (E), 2=EM ENTREGA (S)
         // Pedidos finalizados (F) não chegam mais via GetPedidosRestaurante
+        // ── Utilitário: escapa caracteres HTML especiais para uso em innerHTML ──
+        function escapeHtml(str) {
+            if (str == null) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
         const statusMap = {
             0: 'RECEBIDO',
             1: 'EM PREPARO',
@@ -527,8 +538,8 @@
                     <div class="order-time">${getTimeAgo(order.data)}</div>
                 </div>
                 <div class="order-body">
-                    <div class="order-client">${order.nomeCliente || 'Cliente'}</div>
-                    <div class="order-address">${order.enderecoCliente || 'Endereço não informado'}</div>
+                    <div class="order-client">${escapeHtml(order.nomeCliente || 'Cliente')}</div>
+                    <div class="order-address">${escapeHtml(order.enderecoCliente || 'Endereço não informado')}</div>
                     <div class="order-price">
                         <span style="color:#888;">Valor</span>
                         <strong>${formatPrice(order.preco)}</strong>
