@@ -1,4 +1,4 @@
-﻿using Core;
+using Core;
 using Core.Service;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,7 +26,7 @@ namespace Service.Tests
                 new Atendimento
                 {
                     Id = 1,
-                    DiaSemana = "Domingo",
+                    DiaSemana = "1",
                     HorarioInicio = new DateTime(2024, 6, 10, 8, 0, 0),
                     HorarioFim = new DateTime(2024, 6, 10, 18, 0, 0),
                     IdRestaurante = 1
@@ -34,17 +34,17 @@ namespace Service.Tests
                 new Atendimento
                 {
                     Id = 2,
-                    DiaSemana = "Segunda-feira",
+                    DiaSemana = "2",
                     HorarioInicio = new DateTime(2024, 6, 11, 8, 0, 0),
-                    HorarioFim = new DateTime(2024, 6, 10, 18, 0, 0),
+                    HorarioFim = new DateTime(2024, 6, 11, 18, 0, 0),
                     IdRestaurante = 1
                 },
                 new Atendimento
                 {
                     Id = 3,
-                    DiaSemana = "Terça-feira",
+                    DiaSemana = "3",
                     HorarioInicio = new DateTime(2024, 6, 12, 8, 0, 0),
-                    HorarioFim = new DateTime(2024, 6, 10, 18, 0, 0),
+                    HorarioFim = new DateTime(2024, 6, 12, 18, 0, 0),
                     IdRestaurante = 1
                 }
             );
@@ -60,9 +60,9 @@ namespace Service.Tests
             atendimentoService.Create(new Atendimento
             {
                 Id = 4,
-                DiaSemana = "Terça-feira",
-                HorarioInicio = new DateTime(2024, 6, 12, 8, 0, 0),
-                HorarioFim = new DateTime(2024, 6, 12, 18, 0, 0),
+                DiaSemana = "4",
+                HorarioInicio = new DateTime(2024, 6, 13, 8, 0, 0),
+                HorarioFim = new DateTime(2024, 6, 13, 18, 0, 0),
                 IdRestaurante = 1
             });
 
@@ -70,7 +70,49 @@ namespace Service.Tests
 
             var atendimento = atendimentoService.Get(4);
             Assert.IsNotNull(atendimento);
-            Assert.AreEqual("Terça-feira", atendimento.DiaSemana);
+            Assert.AreEqual("4", atendimento.DiaSemana);
+        }
+
+        [TestMethod]
+        public void CreateTest_DiaDuplicado_LancaServiceException()
+        {
+            var duplicado = new Atendimento
+            {
+                DiaSemana = "1",
+                HorarioInicio = new DateTime(2024, 6, 10, 9, 0, 0),
+                HorarioFim = new DateTime(2024, 6, 10, 17, 0, 0),
+                IdRestaurante = 1
+            };
+
+            Assert.ThrowsException<ServiceException>(() => atendimentoService.Create(duplicado));
+        }
+
+        [TestMethod]
+        public void CreateTest_HorarioInicioMaiorQueFim_LancaServiceException()
+        {
+            var invalido = new Atendimento
+            {
+                DiaSemana = "5",
+                HorarioInicio = new DateTime(2024, 6, 14, 18, 0, 0),
+                HorarioFim = new DateTime(2024, 6, 14, 8, 0, 0),
+                IdRestaurante = 1
+            };
+
+            Assert.ThrowsException<ServiceException>(() => atendimentoService.Create(invalido));
+        }
+
+        [TestMethod]
+        public void CreateTest_HorarioInicioIgualFim_LancaServiceException()
+        {
+            var invalido = new Atendimento
+            {
+                DiaSemana = "5",
+                HorarioInicio = new DateTime(2024, 6, 14, 12, 0, 0),
+                HorarioFim = new DateTime(2024, 6, 14, 12, 0, 0),
+                IdRestaurante = 1
+            };
+
+            Assert.ThrowsException<ServiceException>(() => atendimentoService.Create(invalido));
         }
 
         [TestMethod]
@@ -87,14 +129,33 @@ namespace Service.Tests
         {
             var atendimento = atendimentoService.Get(3);
 
-            atendimento.DiaSemana = "Quarta-feira";
+            atendimento.DiaSemana = "4";
 
             atendimentoService.Edit(atendimento);
 
             atendimento = atendimentoService.Get(3);
 
             Assert.IsNotNull(atendimento);
-            Assert.AreEqual("Quarta-feira", atendimento.DiaSemana);
+            Assert.AreEqual("4", atendimento.DiaSemana);
+        }
+
+        [TestMethod]
+        public void EditTest_DiaDuplicado_LancaServiceException()
+        {
+            var atendimento = atendimentoService.Get(3);
+            atendimento.DiaSemana = "1";
+
+            Assert.ThrowsException<ServiceException>(() => atendimentoService.Edit(atendimento));
+        }
+
+        [TestMethod]
+        public void EditTest_HorarioInicioMaiorQueFim_LancaServiceException()
+        {
+            var atendimento = atendimentoService.Get(1);
+            atendimento.HorarioInicio = new DateTime(2024, 6, 10, 20, 0, 0);
+            atendimento.HorarioFim = new DateTime(2024, 6, 10, 8, 0, 0);
+
+            Assert.ThrowsException<ServiceException>(() => atendimentoService.Edit(atendimento));
         }
 
         [TestMethod]
@@ -103,7 +164,7 @@ namespace Service.Tests
             var atendimento = atendimentoService.Get(1);
 
             Assert.IsNotNull(atendimento);
-            Assert.AreEqual("Domingo", atendimento.DiaSemana);
+            Assert.AreEqual("1", atendimento.DiaSemana);
             Assert.AreEqual((uint)1, atendimento.IdRestaurante);
         }
 
@@ -117,7 +178,7 @@ namespace Service.Tests
 
             var primeiro = lista.First();
             Assert.AreEqual((uint)1, primeiro.Id);
-            Assert.AreEqual("Domingo", primeiro.DiaSemana);
+            Assert.AreEqual("1", primeiro.DiaSemana);
         }
     }
 }
