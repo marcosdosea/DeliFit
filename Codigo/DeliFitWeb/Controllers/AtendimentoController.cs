@@ -40,6 +40,7 @@ namespace DeliFitWeb.Controllers
         }
 
         // GET: AtendimentoController/Create
+        [Authorize(Roles = "GerenteRestaurante,Admin")]
         public ActionResult Create(uint? idRestaurante)
         {
             var model = new AtendimentoViewModel();
@@ -53,6 +54,7 @@ namespace DeliFitWeb.Controllers
         // POST: AtendimentoController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "GerenteRestaurante,Admin")]
         public ActionResult Create(AtendimentoViewModel atendimentoModel)
         {
             if (ModelState.IsValid)
@@ -73,6 +75,7 @@ namespace DeliFitWeb.Controllers
         }
 
         // GET: AtendimentoController/Edit/5
+        [Authorize(Roles = "GerenteRestaurante,Admin")]
         public ActionResult Edit(uint id)
         {
             Atendimento? atendimento = _atendimentoService.Get(id);
@@ -84,6 +87,7 @@ namespace DeliFitWeb.Controllers
         // POST: AtendimentoController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "GerenteRestaurante,Admin")]
         public ActionResult Edit(AtendimentoViewModel atendimentoModel)
         {
             if (ModelState.IsValid)
@@ -216,6 +220,7 @@ namespace DeliFitWeb.Controllers
         }
 
         // GET: AtendimentoController/Delete/5
+        [Authorize(Roles = "GerenteRestaurante,Admin")]
         public ActionResult Delete(uint id)
         {
             Atendimento? atendimento = _atendimentoService.Get(id);
@@ -227,6 +232,7 @@ namespace DeliFitWeb.Controllers
         // POST: AtendimentoController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "GerenteRestaurante,Admin")]
         public ActionResult Delete(uint id, AtendimentoViewModel atendimentoModel)
         {
             _atendimentoService.Delete(id);

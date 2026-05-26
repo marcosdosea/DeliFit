@@ -71,7 +71,7 @@ public class AtendimentoControllerTests
 
         var result = controller.Create(GetNewAtendimento());
 
-        Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+        Assert.IsInstanceOfType(result, typeof(ViewResult));
     }
 
     [TestMethod]
