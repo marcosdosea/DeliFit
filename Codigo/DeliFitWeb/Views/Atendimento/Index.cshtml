@@ -1,8 +1,8 @@
 @model IEnumerable<DeliFitWeb.Models.AtendimentoViewModel>
 
 @{
-    ViewData["Title"] = "Horários de Atendimento";
-    // Captura o ID do restaurante para manter a navegação consistente
+    ViewData["Title"] = "Horï¿½rios de Atendimento";
+    // Captura o ID do restaurante para manter a navegaï¿½ï¿½o consistente
     var idRestaurante = Context.Request.Query["idRestaurante"];
 }
 
@@ -14,13 +14,13 @@
 
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
-                        <h2 class="fw-bold m-0">Horários Configurados</h2>
+                        <h2 class="fw-bold m-0">Horï¿½rios Configurados</h2>
                     </div>
 
                     <a asp-action="Create"
                        asp-route-idRestaurante="@idRestaurante"
                        class="btn btn-orange text-white px-4 py-2 shadow-sm fw-bold">
-                        <i class="bi bi-plus-lg me-2"></i>Novo Horário
+                        <i class="bi bi-plus-lg me-2"></i>Novo Horï¿½rio
                     </a>
                 </div>
 
@@ -41,7 +41,7 @@
                                         <th class="ps-4 py-3 text-muted small fw-bold text-uppercase">Dia da Semana</th>
                                         <th class="py-3 text-muted small fw-bold text-uppercase">Abertura</th>
                                         <th class="py-3 text-muted small fw-bold text-uppercase">Fechamento</th>
-                                        <th class="text-center py-3 text-muted small fw-bold text-uppercase">Ações</th>
+                                        <th class="text-center py-3 text-muted small fw-bold text-uppercase">Aï¿½ï¿½es</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -55,7 +55,7 @@
                                                         <div class="avatar-sm bg-orange-subtle rounded-circle me-2 d-flex align-items-center justify-content-center">
                                                             <i class="bi bi-calendar-check text-orange small"></i>
                                                         </div>
-                                                        <span class="fw-bold text-dark">@item.DiaSemana</span>
+                                                        <span class="fw-bold text-dark">@item.NomeDiaSemana</span>
                                                     </div>
                                                 </td>
                                                 <td class="text-muted">
@@ -80,7 +80,7 @@
                                         <tr>
                                             <td colspan="4" class="text-center py-5">
                                                 <i class="bi bi-clock-history text-muted opacity-25" style="font-size: 3rem;"></i><br />
-                                                <span class="text-muted mt-2 d-block">Nenhum horário cadastrado.</span>
+                                                <span class="text-muted mt-2 d-block">Nenhum horï¿½rio cadastrado.</span>
                                             </td>
                                         </tr>
                                     }
@@ -97,7 +97,7 @@
 
 @section Scripts {
     <style>
-        /* Estilos Institucionais (Copiados do Index de Endereços) */
+        /* Estilos Institucionais (Copiados do Index de Endereï¿½os) */
         .text-orange {
             color: #ff6600 !important;
         }
@@ -106,7 +106,7 @@
             background-color: #fff3e6;
         }
 
-        /* Botão Sólido */
+        /* Botï¿½o Sï¿½lido */
         .btn-orange {
             background-color: #ff6600;
             border: none;
@@ -118,7 +118,7 @@
                 transform: translateY(-1px);
             }
 
-        /* Botão Outline */
+        /* Botï¿½o Outline */
         .btn-orange-outline {
             border: 1px solid #ff6600;
             color: #ff6600;
@@ -145,7 +145,7 @@
                 color: white;
             }
 
-        /* Ícone Avatar */
+        /* ï¿½cone Avatar */
         .avatar-sm {
             width: 32px;
             height: 32px;
