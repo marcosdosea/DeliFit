@@ -22,6 +22,7 @@ namespace Service
         /// <returns>id gerado</returns>
         public uint Create(Atendimento atendimento)
         {
+            ValidarAtendimento(atendimento);
             _context.Atendimentos.Add(atendimento);
             _context.SaveChanges();
             return atendimento.Id;
@@ -51,6 +52,7 @@ namespace Service
         /// <param name="atendimento">novos dados do horário de atendimento</param>
         public void Edit(Atendimento atendimento)
         {
+            ValidarAtendimento(atendimento, atendimento.Id);
             _context.Atendimentos.Update(atendimento);
             _context.SaveChanges();
         }
@@ -71,38 +73,22 @@ namespace Service
         /// <returns>lista de horários de atendimento</returns>
         public IEnumerable<Atendimento> GetAll(uint idRestaurante)
         {
-            IEnumerable<Atendimento> listaAtendimentos = _context.Atendimentos.Where(a => a.IdRestaurante == idRestaurante);
-
-            foreach (Atendimento atendimento in listaAtendimentos)
-            {
-                switch(atendimento.DiaSemana)
-                {
-                    case "1":
-                        atendimento.DiaSemana = "Domingo";
-                        break;
-                    case "2":
-                        atendimento.DiaSemana = "Segunda-feira";
-                        break;
-                    case "3":
-                        atendimento.DiaSemana = "Terça-feira";
-                        break;
-                    case "4":
-                        atendimento.DiaSemana = "Quarta-feira";
-                        break;
-                    case "5":
-                        atendimento.DiaSemana = "Quinta-feira";
-                        break;
-                    case "6":
-                        atendimento.DiaSemana = "Sexta-feira";
-                        break;
-                    case "7":
-                        atendimento.DiaSemana = "Sábado";
-                        break;
-                }
-            }
-
-            return listaAtendimentos;
+            return _context.Atendimentos.Where(a => a.IdRestaurante == idRestaurante);
         }
 
+        private void ValidarAtendimento(Atendimento atendimento, uint idExcluido = 0)
+        {
+            if (atendimento.HorarioInicio.HasValue && atendimento.HorarioFim.HasValue
+                && atendimento.HorarioInicio >= atendimento.HorarioFim)
+                throw new ServiceException("O horário de início deve ser anterior ao horário de fim.");
+
+            var existeDiaDuplicado = _context.Atendimentos.Any(a =>
+                a.IdRestaurante == atendimento.IdRestaurante
+                && a.DiaSemana == atendimento.DiaSemana
+                && a.Id != idExcluido);
+
+            if (existeDiaDuplicado)
+                throw new ServiceException("Já existe um horário configurado para este dia da semana neste restaurante.");
+        }
     }
 }
