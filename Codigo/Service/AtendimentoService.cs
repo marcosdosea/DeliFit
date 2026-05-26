@@ -73,7 +73,7 @@ namespace Service
         /// <returns>lista de horários de atendimento</returns>
         public IEnumerable<Atendimento> GetAll(uint idRestaurante)
         {
-            return _context.Atendimentos.Where(a => a.IdRestaurante == idRestaurante);
+            return _context.Atendimentos.Where(a => a.IdRestaurante == idRestaurante).ToList();
         }
 
         private void ValidarAtendimento(Atendimento atendimento, uint idExcluido = 0)
