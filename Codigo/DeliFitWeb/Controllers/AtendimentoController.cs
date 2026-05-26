@@ -57,11 +57,19 @@ namespace DeliFitWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                var atendimento = _mapper.Map<Atendimento>(atendimentoModel);
-                _atendimentoService.Create(atendimento);
+                try
+                {
+                    var atendimento = _mapper.Map<Atendimento>(atendimentoModel);
+                    _atendimentoService.Create(atendimento);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (ServiceException ex)
+                {
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                }
             }
 
-            return RedirectToAction(nameof(Index));
+            return View(atendimentoModel);
         }
 
         // GET: AtendimentoController/Edit/5
@@ -78,14 +86,21 @@ namespace DeliFitWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(AtendimentoViewModel atendimentoModel)
         {
-
             if (ModelState.IsValid)
             {
-                var atendimento = _mapper.Map<Atendimento>(atendimentoModel);
-                _atendimentoService.Edit(atendimento);
+                try
+                {
+                    var atendimento = _mapper.Map<Atendimento>(atendimentoModel);
+                    _atendimentoService.Edit(atendimento);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (ServiceException ex)
+                {
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                }
             }
 
-            return RedirectToAction(nameof(Index));
+            return View(atendimentoModel);
         }
 
         // GET: AtendimentoController/Configurar
@@ -141,6 +156,8 @@ namespace DeliFitWeb.Controllers
         [Authorize(Roles = "GerenteRestaurante,Admin")]
         public ActionResult Configurar(ConfigurarAtendimentoViewModel model)
         {
+            var erros = new List<string>();
+
             foreach (var dia in model.Dias)
             {
                 if (!TimeSpan.TryParse(dia.HorarioInicio, out var tsInicio))
@@ -153,32 +170,45 @@ namespace DeliFitWeb.Controllers
 
                 if (dia.Ativo)
                 {
-                    if (dia.Id == 0)
+                    try
                     {
-                        _atendimentoService.Create(new Atendimento
+                        if (dia.Id == 0)
                         {
-                            DiaSemana = dia.DiaSemana,
-                            HorarioInicio = horarioInicio,
-                            HorarioFim = horarioFim,
-                            IdRestaurante = model.IdRestaurante
-                        });
+                            _atendimentoService.Create(new Atendimento
+                            {
+                                DiaSemana = dia.DiaSemana,
+                                HorarioInicio = horarioInicio,
+                                HorarioFim = horarioFim,
+                                IdRestaurante = model.IdRestaurante
+                            });
+                        }
+                        else
+                        {
+                            _atendimentoService.Edit(new Atendimento
+                            {
+                                Id = dia.Id,
+                                DiaSemana = dia.DiaSemana,
+                                HorarioInicio = horarioInicio,
+                                HorarioFim = horarioFim,
+                                IdRestaurante = model.IdRestaurante
+                            });
+                        }
                     }
-                    else
+                    catch (ServiceException ex)
                     {
-                        _atendimentoService.Edit(new Atendimento
-                        {
-                            Id = dia.Id,
-                            DiaSemana = dia.DiaSemana,
-                            HorarioInicio = horarioInicio,
-                            HorarioFim = horarioFim,
-                            IdRestaurante = model.IdRestaurante
-                        });
+                        erros.Add($"{dia.NomeDia}: {ex.Message}");
                     }
                 }
                 else if (dia.Id > 0)
                 {
                     _atendimentoService.Delete(dia.Id);
                 }
+            }
+
+            if (erros.Count > 0)
+            {
+                TempData["Error"] = string.Join(Environment.NewLine, erros);
+                return RedirectToAction(nameof(Configurar));
             }
 
             TempData["Success"] = "Horários configurados com sucesso!";
