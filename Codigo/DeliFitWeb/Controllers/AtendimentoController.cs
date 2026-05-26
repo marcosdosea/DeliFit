@@ -79,9 +79,10 @@ namespace DeliFitWeb.Controllers
         public ActionResult Edit(uint id)
         {
             Atendimento? atendimento = _atendimentoService.Get(id);
-            AtendimentoViewModel atendimentoModel = _mapper.Map<AtendimentoViewModel>(atendimento);
+            if (atendimento == null)
+                return NotFound();
 
-            return View(atendimentoModel);
+            return View(_mapper.Map<AtendimentoViewModel>(atendimento));
         }
 
         // POST: AtendimentoController/Edit/5
@@ -120,7 +121,8 @@ namespace DeliFitWeb.Controllers
             }
 
             var existentes = _atendimentoService.GetAll(restauranteId.Value)
-                .ToDictionary(a => a.DiaSemana, a => a);
+                .GroupBy(a => a.DiaSemana)
+                .ToDictionary(g => g.Key, g => g.First());
 
             var diasSemana = new[]
             {
@@ -224,9 +226,10 @@ namespace DeliFitWeb.Controllers
         public ActionResult Delete(uint id)
         {
             Atendimento? atendimento = _atendimentoService.Get(id);
-            AtendimentoViewModel atendimentoModel = _mapper.Map<AtendimentoViewModel>(atendimento);
-            
-            return View(atendimentoModel);
+            if (atendimento == null)
+                return NotFound();
+
+            return View(_mapper.Map<AtendimentoViewModel>(atendimento));
         }
 
         // POST: AtendimentoController/Delete/5
@@ -235,7 +238,14 @@ namespace DeliFitWeb.Controllers
         [Authorize(Roles = "GerenteRestaurante,Admin")]
         public ActionResult Delete(uint id, AtendimentoViewModel atendimentoModel)
         {
-            _atendimentoService.Delete(id);
+            try
+            {
+                _atendimentoService.Delete(id);
+            }
+            catch (ServiceException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
 
             return RedirectToAction(nameof(Index));
         }
