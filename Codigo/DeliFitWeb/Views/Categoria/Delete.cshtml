@@ -1,0 +1,61 @@
+@model DeliFitWeb.Models.CategoriaViewModel
+
+@{
+    ViewData["Title"] = "Remover Categoria";
+}
+
+<div class="container-fluid p-0 bg-white">
+    <div class="row g-0">
+        <main class="col-12 p-5 bg-light">
+            <div class="container" style="max-width: 600px;">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2 class="fw-bold m-0">Remover Categoria</h2>
+                        <p class="text-muted small mb-0">Esta ação não pode ser desfeita.</p>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col">
+                        <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary px-3">
+                            <i class="bi bi-chevron-left"></i> Voltar
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-0 pt-4 ps-4">
+                        <h5 class="fw-bold mb-0 text-danger">
+                            <i class="bi bi-exclamation-triangle me-2"></i>Confirmar Remoção
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <p class="mb-1">Deseja remover a categoria abaixo?</p>
+                        <p class="fw-bold fs-5">@Model.Nome</p>
+                        @if (Model.QuantidadeItens > 0)
+                        {
+                            <div class="alert alert-warning small mb-0">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Esta categoria possui <strong>@Model.QuantidadeItens item(s)</strong> vinculado(s).
+                                Os itens não serão excluídos, apenas a categoria deixará de existir.
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <form asp-action="Delete">
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="Nome" />
+                    <div class="d-flex justify-content-end gap-2">
+                        <a asp-action="Index" class="btn btn-light px-4 border text-muted fw-bold shadow-sm">Cancelar</a>
+                        <button type="submit" class="btn btn-danger px-5 py-2 fw-bold shadow-sm">
+                            <i class="bi bi-trash me-2"></i>Remover
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </main>
+    </div>
+</div>

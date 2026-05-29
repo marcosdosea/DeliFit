@@ -37,8 +37,19 @@ public partial class DeliFitContext : DbContext
 
     public virtual DbSet<Restaurante> Restaurantes { get; set; }
 
+    public virtual DbSet<Categoria> Categorias { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Categoria>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+            entity.ToTable("categoria");
+            entity.HasIndex(e => e.Nome, "nome_UNIQUE").IsUnique();
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.Nome).HasMaxLength(100).HasColumnName("nome");
+        });
+
         modelBuilder.Entity<Atendimento>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
