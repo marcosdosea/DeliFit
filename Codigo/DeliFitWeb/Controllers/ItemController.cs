@@ -145,7 +145,7 @@ namespace DeliFitWeb.Controllers
 
                     var itemId = _itemService.Create(item);
                     TempData["Success"] = $"Item '{item.Nome}' criado com sucesso!";
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index), new { idRestaurante = itemModel.IdRestaurante });
                 }
                 catch (ServiceException ex)
                 {
@@ -164,6 +164,9 @@ namespace DeliFitWeb.Controllers
         public ActionResult Edit(uint id)
         {
             Item? item = _itemService.Get(id);
+            if (item == null)
+                return NotFound();
+
             ItemViewModel itemModel = _mapper.Map<ItemViewModel>(item);
             return View(itemModel);
         }
@@ -193,7 +196,7 @@ namespace DeliFitWeb.Controllers
                 }
 
                 _itemService.Edit(item);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index), new { idRestaurante = itemModel.IdRestaurante });
             }
             return View(itemModel);
         }
@@ -201,7 +204,10 @@ namespace DeliFitWeb.Controllers
         // GET: ItemController/Delete/5
         public ActionResult Delete(uint id)
         {
-            Item item = _itemService.Get(id);
+            Item? item = _itemService.Get(id);
+            if (item == null)
+                return NotFound();
+
             ItemViewModel itemModel = _mapper.Map<ItemViewModel>(item);
             return View(itemModel);
         }
@@ -212,7 +218,7 @@ namespace DeliFitWeb.Controllers
         public ActionResult Delete(uint id, ItemViewModel itemModel)
         {
             _itemService.Delete(id);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { idRestaurante = itemModel.IdRestaurante });
         }
 
         // Método auxiliar para obter o ID do restaurante logado
