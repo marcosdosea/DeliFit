@@ -78,6 +78,9 @@ namespace Service
 
         private void ValidarAtendimento(Atendimento atendimento, uint idExcluido = 0)
         {
+            if (atendimento.IdRestaurante == 0)
+                throw new ServiceException("Restaurante inválido.");
+
             if (atendimento.HorarioInicio.HasValue && atendimento.HorarioFim.HasValue
                 && atendimento.HorarioInicio >= atendimento.HorarioFim)
                 throw new ServiceException("O horário de início deve ser anterior ao horário de fim.");
