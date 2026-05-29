@@ -107,10 +107,18 @@ namespace Service
                 .ToList();
         }
 
-        public IEnumerable<FaturamentoDTO> GetAllFaturamentos(uint idRestaurante)
+        public IEnumerable<FaturamentoDTO> GetAllFaturamentos(uint idRestaurante, DateTime? dataInicio = null, DateTime? dataFim = null)
         {
-            return _context.Pedidos
-                .Where(p => p.IdRestaurante == idRestaurante && p.Data.HasValue)
+            var query = _context.Pedidos
+                .Where(p => p.IdRestaurante == idRestaurante && p.Data.HasValue);
+
+            if (dataInicio.HasValue)
+                query = query.Where(p => p.Data.Value.Date >= dataInicio.Value.Date);
+
+            if (dataFim.HasValue)
+                query = query.Where(p => p.Data.Value.Date <= dataFim.Value.Date);
+
+            return query
                 .GroupBy(p => p.Data.Value.Date)
                 .Select(g => new FaturamentoDTO
                 {

@@ -5,6 +5,9 @@
     string nomeRestaurante = ViewBag.NomeRestaurante ?? "";
     decimal totalFaturado = ViewBag.TotalFaturado ?? 0m;
     int totalPedidos = ViewBag.TotalPedidos ?? 0;
+    string dataInicio = ViewBag.DataInicio ?? "";
+    string dataFim = ViewBag.DataFim ?? "";
+    bool filtroAtivo = ViewBag.FiltroAtivo ?? false;
 }
 
 <style>
@@ -124,6 +127,43 @@
 <div class="page-header">
     <h2><i class="bi bi-graph-up-arrow me-2" style="color:#ff6600;"></i>Faturamento</h2>
     <p>@nomeRestaurante &mdash; Histórico de receitas por dia</p>
+</div>
+
+<div class="content-area pb-0">
+    <form method="get" asp-action="Faturamentos" class="card border-0 shadow-sm p-3 mb-4">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label small fw-semibold text-muted mb-1">Data Início</label>
+                <input type="date" name="dataInicio" value="@dataInicio" class="form-control form-control-sm" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label small fw-semibold text-muted mb-1">Data Fim</label>
+                <input type="date" name="dataFim" value="@dataFim" class="form-control form-control-sm" />
+            </div>
+            <div class="col-md-4 d-flex gap-2">
+                <button type="submit" class="btn btn-sm fw-bold text-white flex-grow-1" style="background:#ff6600;border:none;">
+                    <i class="bi bi-funnel me-1"></i>Filtrar
+                </button>
+                @if (filtroAtivo)
+                {
+                    <a asp-action="Faturamentos" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-x-lg"></i> Limpar
+                    </a>
+                }
+            </div>
+        </div>
+        @if (filtroAtivo)
+        {
+            <div class="mt-2">
+                <span class="badge" style="background:#fff3e6;color:#ff6600;font-weight:600;">
+                    <i class="bi bi-funnel-fill me-1"></i>
+                    Filtro ativo:
+                    @if (!string.IsNullOrEmpty(dataInicio)) { <text>de @DateTime.Parse(dataInicio).ToString("dd/MM/yyyy") </text> }
+                    @if (!string.IsNullOrEmpty(dataFim)) { <text>até @DateTime.Parse(dataFim).ToString("dd/MM/yyyy")</text> }
+                </span>
+            </div>
+        }
+    </form>
 </div>
 
 @if (TempData["Success"] != null)

@@ -518,7 +518,7 @@ namespace DeliFitWeb.Controllers
         }
 
         [Authorize(Roles = "GerenteRestaurante")]
-        public IActionResult Faturamentos()
+        public IActionResult Faturamentos(DateTime? dataInicio, DateTime? dataFim)
         {
             var restauranteId = GetRestauranteIdLogado();
             if (!restauranteId.HasValue)
@@ -527,13 +527,19 @@ namespace DeliFitWeb.Controllers
                 return RedirectToAction(nameof(Home));
             }
 
-            var faturamentos = _restauranteService.GetAllFaturamentos(restauranteId.Value).ToList();
+            var faturamentos = _restauranteService
+                .GetAllFaturamentos(restauranteId.Value, dataInicio, dataFim)
+                .ToList();
+
             var viewModel = _mapper.Map<List<FaturamentoViewModel>>(faturamentos);
 
             var restaurante = _restauranteService.Get(restauranteId.Value);
             ViewBag.NomeRestaurante = restaurante?.NomeRestaurante ?? "";
             ViewBag.TotalFaturado = viewModel.Sum(f => f.TotalFaturamento);
             ViewBag.TotalPedidos = viewModel.Sum(f => f.TotalPedidos);
+            ViewBag.DataInicio = dataInicio?.ToString("yyyy-MM-dd") ?? "";
+            ViewBag.DataFim = dataFim?.ToString("yyyy-MM-dd") ?? "";
+            ViewBag.FiltroAtivo = dataInicio.HasValue || dataFim.HasValue;
 
             return View(viewModel);
         }
