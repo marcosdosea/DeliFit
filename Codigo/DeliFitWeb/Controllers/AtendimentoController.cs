@@ -25,7 +25,7 @@ namespace DeliFitWeb.Controllers
         {
             var restauranteId = idRestaurante ?? HttpContext.Session.GetRestauranteId();
 
-            if (!restauranteId.HasValue)
+            if (!restauranteId.HasValue || restauranteId.Value == 0)
             {
                 TempData["Error"] = "Não foi possível identificar o restaurante.";
                 return RedirectToAction("Home", "Restaurante");
@@ -43,11 +43,15 @@ namespace DeliFitWeb.Controllers
         [Authorize(Roles = "GerenteRestaurante,Admin")]
         public ActionResult Create(uint? idRestaurante)
         {
-            var model = new AtendimentoViewModel();
-            if (idRestaurante.HasValue)
+            var restauranteId = idRestaurante ?? HttpContext.Session.GetRestauranteId();
+
+            if (!restauranteId.HasValue || restauranteId.Value == 0)
             {
-                model.IdRestaurante = idRestaurante.Value;
+                TempData["Error"] = "Não foi possível identificar o restaurante.";
+                return RedirectToAction("Home", "Restaurante");
             }
+
+            var model = new AtendimentoViewModel { IdRestaurante = restauranteId.Value };
             return View(model);
         }
 
@@ -63,7 +67,7 @@ namespace DeliFitWeb.Controllers
                 {
                     var atendimento = _mapper.Map<Atendimento>(atendimentoModel);
                     _atendimentoService.Create(atendimento);
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index), new { idRestaurante = atendimentoModel.IdRestaurante });
                 }
                 catch (ServiceException ex)
                 {
@@ -97,7 +101,7 @@ namespace DeliFitWeb.Controllers
                 {
                     var atendimento = _mapper.Map<Atendimento>(atendimentoModel);
                     _atendimentoService.Edit(atendimento);
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Index), new { idRestaurante = atendimentoModel.IdRestaurante });
                 }
                 catch (ServiceException ex)
                 {
@@ -114,7 +118,7 @@ namespace DeliFitWeb.Controllers
         {
             var restauranteId = idRestaurante ?? HttpContext.Session.GetRestauranteId();
 
-            if (!restauranteId.HasValue)
+            if (!restauranteId.HasValue || restauranteId.Value == 0)
             {
                 TempData["Error"] = "Não foi possível identificar o restaurante.";
                 return RedirectToAction("Home", "Restaurante");
@@ -162,6 +166,12 @@ namespace DeliFitWeb.Controllers
         [Authorize(Roles = "GerenteRestaurante,Admin")]
         public ActionResult Configurar(ConfigurarAtendimentoViewModel model)
         {
+            if (model.IdRestaurante == 0)
+            {
+                TempData["Error"] = "Não foi possível identificar o restaurante.";
+                return RedirectToAction("Home", "Restaurante");
+            }
+
             var erros = new List<string>();
 
             foreach (var dia in model.Dias)
@@ -212,13 +222,11 @@ namespace DeliFitWeb.Controllers
             }
 
             if (erros.Count > 0)
-            {
                 TempData["Error"] = string.Join(Environment.NewLine, erros);
-                return RedirectToAction(nameof(Configurar));
-            }
+            else
+                TempData["Success"] = "Horários configurados com sucesso!";
 
-            TempData["Success"] = "Horários configurados com sucesso!";
-            return RedirectToAction(nameof(Configurar));
+            return RedirectToAction(nameof(Configurar), new { idRestaurante = model.IdRestaurante });
         }
 
         // GET: AtendimentoController/Delete/5
@@ -247,7 +255,7 @@ namespace DeliFitWeb.Controllers
                 TempData["Error"] = ex.Message;
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { idRestaurante = atendimentoModel.IdRestaurante });
         }
     }
 }
