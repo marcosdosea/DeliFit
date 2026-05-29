@@ -2,8 +2,7 @@
 
 @{
     ViewData["Title"] = "Hor�rios de Atendimento";
-    // Captura o ID do restaurante para manter a navega��o consistente
-    var idRestaurante = Context.Request.Query["idRestaurante"];
+    uint idRestaurante = ViewBag.IdRestaurante != null ? (uint)ViewBag.IdRestaurante : 0u;
 }
 
 <div class="container-fluid p-0 bg-white">
