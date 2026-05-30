@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Core;
 
@@ -48,6 +46,17 @@ public partial class DeliFitContext : DbContext
             entity.HasIndex(e => e.Nome, "nome_UNIQUE").IsUnique();
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.Nome).HasMaxLength(100).HasColumnName("nome");
+            // Seeding de dados padrão do sistema
+            entity.HasData(
+                new Categoria { Id = 1, Nome = "Vegetariano" },
+                new Categoria { Id = 2, Nome = "Vegano" },
+                new Categoria { Id = 3, Nome = "Sem Glúten" },
+                new Categoria { Id = 4, Nome = "Sem Lactose" },
+                new Categoria { Id = 5, Nome = "Fitness" },
+                new Categoria { Id = 6, Nome = "Low Carb" },
+                new Categoria { Id = 7, Nome = "Zero Lactose" },
+                new Categoria { Id = 8, Nome = "Proteico" }
+            );
         });
 
         modelBuilder.Entity<Atendimento>(entity =>
@@ -274,6 +283,18 @@ public partial class DeliFitContext : DbContext
             entity.Property(e => e.Volume)
                 .HasMaxLength(10)
                 .HasColumnName("volume");
+
+            entity.HasMany(d => d.Categorias)
+          .WithMany(p => p.Items)
+          .UsingEntity<Dictionary<string, object>>(
+              "categoria_item", // Nome da tabela pivô no banco
+              j => j.HasOne<Categoria>().WithMany().HasForeignKey("idCategoria").HasConstraintName("fk_categoria_has_item_categoria"),
+              j => j.HasOne<Item>().WithMany().HasForeignKey("idItem").HasConstraintName("fk_categoria_has_item_item"),
+              j =>
+              {
+                  j.HasKey("idCategoria", "idItem").HasName("PRIMARY"); // Chave composta
+                  j.ToTable("categoria_item");
+              });
 
             entity.HasOne(d => d.IdRestauranteNavigation).WithMany(p => p.Items)
                 .HasForeignKey(d => d.IdRestaurante)

@@ -28,10 +28,14 @@ public partial class Item
     public string? Volume { get; set; }
 
     public uint IdRestaurante { get; set; }
+    public uint IdCategoria { get; set; }
 
     public byte[]? Foto { get; set; }
 
+    public virtual Categoria IdCategoriaNavigation { get; set; } = null!;
+
     public virtual Restaurante IdRestauranteNavigation { get; set; } = null!;
+    public virtual ICollection<Categoria> Categorias { get; set; }
 
     public virtual ICollection<Pedidoitem> Pedidoitems { get; set; } = new List<Pedidoitem>();
 }
