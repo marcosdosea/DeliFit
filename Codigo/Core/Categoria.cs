@@ -4,8 +4,6 @@ public class Categoria
 {
     public uint Id { get; set; }
     public string Nome { get; set; } = null!;
-    public uint IdItem { get; set; }
-    public virtual Item IdItemNavigation { get; set; } = null!;
 
-    public virtual ICollection<Item> Items { get; set; }
+    public virtual ICollection<Item> Items { get; set; } = new List<Item>();
 }
