@@ -4,10 +4,7 @@
     ViewData["Title"] = Model.NomeRestaurante;
     var itens = ViewBag.Itens as List<DeliFitWeb.Models.ItemViewModel> ?? new List<DeliFitWeb.Models.ItemViewModel>();
     var categorias = itens
-        .SelectMany(i => i.CategoriaNomes.Any()
-            ? i.CategoriaNomes.Select(c => (Categoria: c, Item: i))
-            : new[] { (Categoria: "Pratos", Item: i) })
-        .GroupBy(x => x.Categoria, x => x.Item)
+        .GroupBy(i => string.IsNullOrEmpty(i.Restricao) ? "Pratos" : i.Restricao)
         .OrderBy(g => g.Key)
         .ToList();
     bool isCliente = User.IsInRole("Cliente");
@@ -757,7 +754,7 @@ else
                          data-prot="@(item.Proteina.HasValue ? item.Proteina.Value.ToString("0") : "")"
                          data-carb="@(item.Carboidratos.HasValue ? item.Carboidratos.Value.ToString("0") : "")"
                          data-gord="@(item.Gordura.HasValue ? item.Gordura.Value.ToString("0") : "")"
-                         data-restricao="@string.Join(", ", item.CategoriaNomes)">
+                         data-restricao="@(item.Restricao ?? "")">
                         <div class="item-img">
                             <img src="@Url.Action("Foto", "Item", new { id = item.Id })"
                                  alt="@item.Nome"
@@ -791,9 +788,9 @@ else
                             </div>
                             <div class="item-footer">
                                 <span class="item-price">R$ @item.Preco.ToString("N2")</span>
-                                @if (item.CategoriaNomes.Any())
+                                @if (!string.IsNullOrEmpty(item.Restricao))
                                 {
-                                    <span class="item-restricao">@string.Join(", ", item.CategoriaNomes)</span>
+                                    <span class="item-restricao">@item.Restricao</span>
                                 }
                             </div>
                         </div>

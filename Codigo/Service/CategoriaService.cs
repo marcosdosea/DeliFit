@@ -1,6 +1,7 @@
-using Core;
+﻿using Core;
 using Core.DTO;
 using Core.Service;
+using Microsoft.EntityFrameworkCore;
 
 namespace Service;
 
@@ -16,20 +17,35 @@ public class CategoriaService : ICategoriaService
         _context = context;
     }
 
+
     /// <summary>
-    /// Obter a lista das categorias disponiveis no sistema, com a quantidade de itens em cada uma
+    /// Obter a lista das categorias disponiveis no sistema
     /// </summary>
     /// <returns>retorna todas as categorias registradas</returns>
+    // Categorias fixas do sistema DeliFit
+    private static readonly List<string> _categoriasPadrao = new()
+    {
+        "Vegetariano", "Vegano", "Sem Glúten", "Sem Lactose",
+        "Fitness", "Low Carb", "Zero Lactose", "Proteico"
+    };
+
     public IEnumerable<CategoriaDTO> ListarCategorias()
     {
-        return _context.Categorias
-            .Select(c => new CategoriaDTO
-            {
-                Nome = c.Nome,
-                QuantidadeItens = c.Items.Count
-            })
+        // Conta quantos itens existem para cada categoria fixa
+        var contagemPorCategoria = _context.Items
+            .Where(i => i.Restricao != null && i.Restricao != "")
+            .GroupBy(i => i.Restricao)
+            .Select(g => new { Nome = g.Key, Qtd = g.Count() })
             .ToList();
+
+        return _categoriasPadrao.Select(cat => new CategoriaDTO
+        {
+            Nome = cat,
+            QuantidadeItens = contagemPorCategoria
+                .FirstOrDefault(c => c.Nome == cat)?.Qtd ?? 0
+        }).ToList();
     }
+
 
     /// <summary>
     /// Obter a lista de itens por categoria
@@ -38,18 +54,11 @@ public class CategoriaService : ICategoriaService
     /// <returns>retorna todos os itens da categoria especificada</returns>
     public IEnumerable<Item> ListarItensPorCategoria(string categoria)
     {
+
         return _context.Items
-            .Where(i => i.Categorias.Any(c => c.Nome == categoria))
+            .Where(i => i.Restricao == categoria)
             .ToList();
     }
 
-    /// <summary>
-    /// Obter todas as categorias cadastradas (id + nome), usadas para montar a seleção de categorias de um item
-    /// </summary>
-    public IEnumerable<Categoria> ListarTodas()
-    {
-        return _context.Categorias
-            .OrderBy(c => c.Nome)
-            .ToList();
-    }
+
 }

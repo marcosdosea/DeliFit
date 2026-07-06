@@ -11,19 +11,19 @@ public class ItemViewModel
     public uint Id { get; set; }
 
     /// <summary>
-    /// Bytes da foto armazenada (usada para exibiï¿½ï¿½o nas views).
+    /// Bytes da foto armazenada (usada para exibição nas views).
     /// </summary>
     public byte[]? Foto { get; set; } = null;
 
     /// <summary>
-    /// Arquivo enviado pelo formulï¿½rio. Nï¿½o ï¿½ mapeado pelo AutoMapper.
+    /// Arquivo enviado pelo formulário. Não é mapeado pelo AutoMapper.
     /// </summary>
     [NotMapped]
     [Display(Name = "Foto do Item")]
     public IFormFile? FotoFile { get; set; }
 
     [Display(Name = "Quantidade de Calorias")]
-    [Required(ErrorMessage = "Preenchimento do campo Quantidade de Calorias ï¿½ obrigatï¿½rio.")]
+    [Required(ErrorMessage = "Preenchimento do campo Quantidade de Calorias é obrigatório.")]
     public float Calorias { get; set; }
 
     [Display(Name = "Quantidade de Carboidratos")]
@@ -35,33 +35,28 @@ public class ItemViewModel
     [Display(Name = "Quantidade de Proteina")]
     public float? Proteina { get; set; }
 
-    [Display(Name = "Categorias")]
-    public List<uint> CategoriaIds { get; set; } = new();
-
-    /// <summary>
-    /// Nomes das categorias do item, usados apenas para exibiï¿½ï¿½o (Details/Delete/listagens).
-    /// </summary>
-    [NotMapped]
-    public List<string> CategoriaNomes { get; set; } = new();
+    [Display(Name = "Restricao Alimentar")]
+    [StringLength(50, ErrorMessage = "A restricao deve ter no máximo 50 caracteres.")]
+    public string? Restricao { get; set; }
 
     [Display(Name = "Nome do Item")]
-    [Required(ErrorMessage = "Preenchimento do campo Nome do Item ï¿½ obrigatï¿½rio.")]
-    [StringLength(50, ErrorMessage = "O nome deve ter no mï¿½ximo 50 caracteres.")]
+    [Required(ErrorMessage = "Preenchimento do campo Nome do Item é obrigatório.")]
+    [StringLength(50, ErrorMessage = "O nome deve ter no máximo 50 caracteres.")]
     public string Nome { get; set; } = null!;
 
     [Display(Name = "Descricao")]
-    [StringLength(200, ErrorMessage = "A descricao deve ter no mï¿½ximo 200 caracteres.")]
+    [StringLength(200, ErrorMessage = "A descricao deve ter no máximo 200 caracteres.")]
     public string? Descricao { get; set; }
 
     [Display(Name = "Valor")]
-    [Required(ErrorMessage = "Preenchimento do campo Valor ï¿½ obrigatï¿½rio.")]
+    [Required(ErrorMessage = "Preenchimento do campo Valor é obrigatório.")]
     public decimal Preco { get; set; }
 
     [Display(Name = "Tamanho do Item")]
     public string? Tamanho { get; set; }
 
     [Display(Name = "Volume do Item")]
-    [StringLength(10, ErrorMessage = "O volume deve ter no mï¿½ximo 10 caracteres.")]
+    [StringLength(10, ErrorMessage = "O volume deve ter no máximo 10 caracteres.")]
     public string? Volume { get; set; }
 
     [HiddenInput(DisplayValue = false)]

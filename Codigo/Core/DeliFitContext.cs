@@ -23,8 +23,6 @@ public partial class DeliFitContext : DbContext
 
     public virtual DbSet<Cartao> Cartaos { get; set; }
 
-    public virtual DbSet<Categoria> Categorias { get; set; }
-
     public virtual DbSet<Cliente> Clientes { get; set; }
 
     public virtual DbSet<Endereco> Enderecos { get; set; }
@@ -194,20 +192,6 @@ public partial class DeliFitContext : DbContext
                 .HasColumnName("telefone");
         });
 
-        modelBuilder.Entity<Categoria>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("categoria");
-
-            entity.HasIndex(e => e.Nome, "nome_UNIQUE").IsUnique();
-
-            entity.Property(e => e.Id).HasColumnName("id");
-            entity.Property(e => e.Nome)
-                .HasMaxLength(50)
-                .HasColumnName("nome");
-        });
-
         modelBuilder.Entity<Endereco>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -270,6 +254,9 @@ public partial class DeliFitContext : DbContext
                 .HasPrecision(10)
                 .HasColumnName("preco");
             entity.Property(e => e.Proteina).HasColumnName("proteina");
+            entity.Property(e => e.Restricao)
+                .HasMaxLength(50)
+                .HasColumnName("restricao");
             entity.Property(e => e.Tamanho)
                 .HasColumnType("enum('P','M','G')")
                 .HasColumnName("tamanho");
@@ -281,26 +268,6 @@ public partial class DeliFitContext : DbContext
                 .HasForeignKey(d => d.IdRestaurante)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("fk_Item_Restaurante1");
-
-            entity.HasMany(d => d.Categorias).WithMany(p => p.Items)
-                .UsingEntity<Dictionary<string, object>>(
-                    "ItemCategoria",
-                    r => r.HasOne<Categoria>().WithMany()
-                        .HasForeignKey("IdCategoria")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("fk_ItemCategoria_Categoria1"),
-                    l => l.HasOne<Item>().WithMany()
-                        .HasForeignKey("IdItem")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("fk_ItemCategoria_Item1"),
-                    j =>
-                    {
-                        j.HasKey("IdItem", "IdCategoria").HasName("PRIMARY");
-                        j.ToTable("item_categoria");
-                        j.HasIndex("IdCategoria", "fk_ItemCategoria_Categoria1_idx");
-                        j.Property("IdItem").HasColumnName("idItem");
-                        j.Property("IdCategoria").HasColumnName("idCategoria");
-                    });
         });
 
         modelBuilder.Entity<Pagamento>(entity =>

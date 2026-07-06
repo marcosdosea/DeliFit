@@ -15,7 +15,7 @@
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div>
                             <h2 class="fw-bold m-0">Editar Item</h2>
-                            <p class="text-muted">Ajuste os detalhes e informaï¿½ï¿½es nutricionais do prato.</p>
+                            <p class="text-muted">Ajuste os detalhes e informações nutricionais do prato.</p>
                         </div>
                         <span class="badge bg-white text-dark border p-2 px-3 shadow-sm">ID do Item: #@Model.Id</span>
                     </div>
@@ -31,7 +31,7 @@
                             <div class="col-md-8">
 
                                 <div class="card border-0 shadow-sm p-4 mb-4">
-                                    <h5 class="fw-bold mb-4" style="color: #ff6600;"><i class="bi bi-info-circle me-2"></i>Informaï¿½ï¿½es Bï¿½sicas</h5>
+                                    <h5 class="fw-bold mb-4" style="color: #ff6600;"><i class="bi bi-info-circle me-2"></i>Informações Básicas</h5>
 
                                     <div class="mb-3">
                                         <label asp-for="Nome" class="form-label small fw-bold text-muted">NOME DO ITEM</label>
@@ -40,14 +40,14 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label asp-for="Descricao" class="form-label small fw-bold text-muted">DESCRIï¿½ï¿½O DETALHADA</label>
+                                        <label asp-for="Descricao" class="form-label small fw-bold text-muted">DESCRIÇÃO DETALHADA</label>
                                         <textarea asp-for="Descricao" class="form-control border-0 bg-light p-3" rows="4"></textarea>
                                         <span asp-validation-for="Descricao" class="text-danger small"></span>
                                     </div>
 
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <label asp-for="Preco" class="form-label small fw-bold text-muted">PREï¿½O DE VENDA (R$)</label>
+                                            <label asp-for="Preco" class="form-label small fw-bold text-muted">PREÇO DE VENDA (R$)</label>
                                             <div class="input-group">
                                                 <span class="input-group-text border-0 bg-orange-subtle fw-bold" style="color: #ff6600;">R$</span>
                                                 <input asp-for="Preco" type="number" step="0.01" class="form-control border-0 bg-light p-3" required />
@@ -55,22 +55,14 @@
                                             <span asp-validation-for="Preco" class="text-danger small"></span>
                                         </div>
                                         <div class="col-md-6">
-                                            <label class="form-label small fw-bold text-muted">CATEGORIAS</label>
-                                            <div class="d-flex flex-wrap gap-3 p-3 bg-light rounded">
-                                                @{
-                                                    var categoriasDisponiveis = ViewBag.CategoriasDisponiveis as IEnumerable<Core.Categoria> ?? new List<Core.Categoria>();
-                                                }
-                                                @foreach (var categoria in categoriasDisponiveis)
-                                                {
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox"
-                                                               name="CategoriaIds" value="@categoria.Id"
-                                                               id="categoria_@categoria.Id"
-                                                               @(Model.CategoriaIds.Contains(categoria.Id) ? "checked" : "") />
-                                                        <label class="form-check-label" for="categoria_@categoria.Id">@categoria.Nome</label>
-                                                    </div>
-                                                }
-                                            </div>
+                                            <label asp-for="Restricao" class="form-label small fw-bold text-muted">RESTRIÇÃO ALIMENTAR</label>
+                                            <select asp-for="Restricao" class="form-select border-0 bg-light p-3">
+                                                <option value="">Nenhuma</option>
+                                                <option value="Vegetariano">Vegetariano</option>
+                                                <option value="Vegano">Vegano</option>
+                                                <option value="Sem Glúten">Sem Glúten</option>
+                                                <option value="Sem Lactose">Sem Lactose</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -92,7 +84,7 @@
                                     <div class="mb-3">
                                         <label asp-for="FotoFile" class="form-label small fw-bold text-muted">
                                             @(Model.Foto != null && Model.Foto.Length > 0 ? "SUBSTITUIR FOTO" : "ADICIONAR FOTO")
-                                            <span class="fw-normal text-muted">(opcional &middot; JPEG ou PNG &middot; mï¿½x. 2 MB)</span>
+                                            <span class="fw-normal text-muted">(opcional &middot; JPEG ou PNG &middot; máx. 2 MB)</span>
                                         </label>
                                         <input asp-for="FotoFile"
                                                type="file"
@@ -113,7 +105,7 @@
                                         <p class="small fw-bold text-muted text-uppercase mb-2">Nova Foto</p>
                                         <img id="fotoPreview"
                                              src="#"
-                                             alt="Prï¿½-visualizaï¿½ï¿½o"
+                                             alt="Pré-visualização"
                                              class="rounded"
                                              style="max-height: 200px; max-width: 100%; object-fit: contain; border: 2px dashed #ff6600;" />
                                     </div>
@@ -123,7 +115,7 @@
 
                             <div class="col-md-4">
                                 <div class="card border-0 shadow-sm p-4 mb-4 h-100">
-                                    <h5 class="fw-bold mb-4" style="color: #ff6600;"><i class="bi bi-heart-pulse me-2"></i>Nutriï¿½ï¿½o e Medidas</h5>
+                                    <h5 class="fw-bold mb-4" style="color: #ff6600;"><i class="bi bi-heart-pulse me-2"></i>Nutrição e Medidas</h5>
 
                                     <div class="mb-3">
                                         <label asp-for="Calorias" class="form-label small fw-bold text-muted">CALORIAS (KCAL)</label>
@@ -151,7 +143,7 @@
                                         <select asp-for="Tamanho" class="form-select border-0 bg-light p-3">
                                             <option value="">Nenhum (Vazio)</option>
                                             <option value="P">P - Pequeno</option>
-                                            <option value="M">M - Mï¿½dio</option>
+                                            <option value="M">M - Médio</option>
                                             <option value="G">G - Grande</option>
                                         </select>
                                         <span asp-validation-for="Tamanho" class="text-danger small"></span>
@@ -171,7 +163,7 @@
                                 <i class="bi bi-x-lg me-2"></i>Descartar
                             </a>
                             <button type="submit" class="btn text-white px-5 fw-bold shadow-sm" style="background-color: #ff6600;">
-                                <i class="bi bi-check2-all me-2"></i>Salvar Alteraï¿½ï¿½es
+                                <i class="bi bi-check2-all me-2"></i>Salvar Alterações
                             </button>
                         </div>
                     </form>

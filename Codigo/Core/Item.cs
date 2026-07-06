@@ -17,6 +17,8 @@ public partial class Item
 
     public float? Proteina { get; set; }
 
+    public string? Restricao { get; set; }
+
     public string? Descricao { get; set; }
 
     public decimal Preco { get; set; }
@@ -32,6 +34,4 @@ public partial class Item
     public virtual Restaurante IdRestauranteNavigation { get; set; } = null!;
 
     public virtual ICollection<Pedidoitem> Pedidoitems { get; set; } = new List<Pedidoitem>();
-
-    public virtual ICollection<Categoria> Categorias { get; set; } = new List<Categoria>();
 }

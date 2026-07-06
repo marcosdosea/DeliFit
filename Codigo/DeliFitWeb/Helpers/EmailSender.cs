@@ -20,14 +20,13 @@ namespace BibliotecaWeb.Helpers
             {
                 var message = new MimeMessage();
 
-                if (!MailboxAddress.TryParse(_configuration["Smtp:From"]?.Trim(), out var from))
-                    throw new InvalidOperationException("O endereço de email remetente (Smtp:From) configurado no sistema é inválido.");
+                message.From.Add(
+                    MailboxAddress.Parse(_configuration["Smtp:From"])
+                );
 
-                if (!MailboxAddress.TryParse(email?.Trim(), out var to))
-                    throw new InvalidOperationException($"O email do destinatário '{email}' é inválido.");
-
-                message.From.Add(from);
-                message.To.Add(to);
+                message.To.Add(
+                    MailboxAddress.Parse(email)
+                );
 
                 message.Subject = subject;
 
@@ -44,19 +43,10 @@ namespace BibliotecaWeb.Helpers
                     SecureSocketOptions.StartTls
                 );
 
-                try
-                {
-                    await smtp.AuthenticateAsync(
-                        _configuration["Smtp:Username"],
-                        _configuration["Smtp:Password"]
-                    );
-                }
-                catch (AuthenticationException authEx)
-                {
-                    throw new InvalidOperationException(
-                        "Falha ao autenticar no servidor de email (SMTP). A senha de app configurada pode ter sido revogada ou expirado; gere uma nova senha de app do Gmail e atualize a configuração Smtp:Password.",
-                        authEx);
-                }
+                await smtp.AuthenticateAsync(
+                    _configuration["Smtp:Username"],
+                    _configuration["Smtp:Password"]
+                );
 
                 await smtp.SendAsync(message);
 

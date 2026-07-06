@@ -14,14 +14,12 @@ namespace DeliFitWeb.Controllers
         private readonly IItemService _itemService;
         private readonly IMapper _mapper;
         private readonly IRestauranteService _restauranteService;
-        private readonly ICategoriaService _categoriaService;
 
-        public ItemController(IItemService itemService, IMapper mapper, IRestauranteService restauranteService, ICategoriaService categoriaService)
+        public ItemController(IItemService itemService, IMapper mapper, IRestauranteService restauranteService)
         {
             _itemService = itemService;
             _mapper = mapper;
             _restauranteService = restauranteService;
-            _categoriaService = categoriaService;
         }
 
         // GET: ItemController
@@ -67,12 +65,6 @@ namespace DeliFitWeb.Controllers
             return View(itemModel);
         }
 
-        // Método auxiliar para popular a lista de categorias disponíveis nas views de Create/Edit
-        private void CarregarCategoriasDisponiveis()
-        {
-            ViewBag.CategoriasDisponiveis = _categoriaService.ListarTodas();
-        }
-
         /// <summary>
         /// Serve a foto de um item diretamente do banco para uso nas views via <img src="...">.
         /// </summary>
@@ -113,7 +105,6 @@ namespace DeliFitWeb.Controllers
                 }
             }
 
-            CarregarCategoriasDisponiveis();
             return View(model);
         }
 
@@ -134,7 +125,6 @@ namespace DeliFitWeb.Controllers
                 else
                 {
                     ModelState.AddModelError("", "Não foi possível identificar o restaurante. Faça login novamente.");
-                    CarregarCategoriasDisponiveis();
                     return View(itemModel);
                 }
             }
@@ -153,7 +143,7 @@ namespace DeliFitWeb.Controllers
                         item.Foto = ms.ToArray();
                     }
 
-                    var itemId = _itemService.Create(item, itemModel.CategoriaIds);
+                    var itemId = _itemService.Create(item);
                     TempData["Success"] = $"Item '{item.Nome}' criado com sucesso!";
                     return RedirectToAction(nameof(Index));
                 }
@@ -167,7 +157,6 @@ namespace DeliFitWeb.Controllers
                 }
             }
 
-            CarregarCategoriasDisponiveis();
             return View(itemModel);
         }
 
@@ -176,7 +165,6 @@ namespace DeliFitWeb.Controllers
         {
             Item? item = _itemService.Get(id);
             ItemViewModel itemModel = _mapper.Map<ItemViewModel>(item);
-            CarregarCategoriasDisponiveis();
             return View(itemModel);
         }
 
@@ -204,11 +192,9 @@ namespace DeliFitWeb.Controllers
                     item.Foto = itemExistente?.Foto;
                 }
 
-                _itemService.Edit(item, itemModel.CategoriaIds);
+                _itemService.Edit(item);
                 return RedirectToAction(nameof(Index));
             }
-
-            CarregarCategoriasDisponiveis();
             return View(itemModel);
         }
 

@@ -157,7 +157,7 @@ namespace Service
         public IEnumerable<RestauranteDTO> GetByRestricao(string restricao)
         {
             var idsComRestricao = _context.Items
-                .Where(i => i.Categorias.Any(c => c.Nome == restricao))
+                .Where(i => i.Restricao == restricao)
                 .Select(i => i.IdRestaurante)
                 .Distinct();
 
