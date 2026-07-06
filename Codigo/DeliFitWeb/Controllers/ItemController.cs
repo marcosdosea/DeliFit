@@ -14,12 +14,20 @@ namespace DeliFitWeb.Controllers
         private readonly IItemService _itemService;
         private readonly IMapper _mapper;
         private readonly IRestauranteService _restauranteService;
+        private readonly ICategoriaService _categoriaService;
 
-        public ItemController(IItemService itemService, IMapper mapper, IRestauranteService restauranteService)
+        public ItemController(IItemService itemService, IMapper mapper, IRestauranteService restauranteService, ICategoriaService categoriaService)
         {
             _itemService = itemService;
             _mapper = mapper;
             _restauranteService = restauranteService;
+            _categoriaService = categoriaService;
+        }
+
+        // Método auxiliar para popular a lista de categorias disponíveis nas views de Create/Edit
+        private void CarregarCategoriasDisponiveis()
+        {
+            ViewBag.CategoriasDisponiveis = _categoriaService.ListarCategorias();
         }
 
         // GET: ItemController
@@ -105,6 +113,7 @@ namespace DeliFitWeb.Controllers
                 }
             }
 
+            CarregarCategoriasDisponiveis();
             return View(model);
         }
 
@@ -125,6 +134,7 @@ namespace DeliFitWeb.Controllers
                 else
                 {
                     ModelState.AddModelError("", "Não foi possível identificar o restaurante. Faça login novamente.");
+                    CarregarCategoriasDisponiveis();
                     return View(itemModel);
                 }
             }
@@ -133,6 +143,7 @@ namespace DeliFitWeb.Controllers
             {
                 try
                 {
+                    itemModel.Restricao = CombinarRestricoes(itemModel.RestricoesSelecionadas);
                     var item = _mapper.Map<Item>(itemModel);
 
                     // Trata a foto manualmente após o mapeamento
@@ -143,7 +154,7 @@ namespace DeliFitWeb.Controllers
                         item.Foto = ms.ToArray();
                     }
 
-                    var itemId = _itemService.Create(item);
+                    var itemId = _itemService.Create(item, itemModel.CategoriaIds);
                     TempData["Success"] = $"Item '{item.Nome}' criado com sucesso!";
                     return RedirectToAction(nameof(Index), new { idRestaurante = itemModel.IdRestaurante });
                 }
@@ -157,7 +168,22 @@ namespace DeliFitWeb.Controllers
                 }
             }
 
+            CarregarCategoriasDisponiveis();
             return View(itemModel);
+        }
+
+        private static string? CombinarRestricoes(List<string> restricoesSelecionadas)
+        {
+            return restricoesSelecionadas != null && restricoesSelecionadas.Any()
+                ? string.Join(", ", restricoesSelecionadas)
+                : null;
+        }
+
+        private static List<string> SepararRestricoes(string? restricao)
+        {
+            return string.IsNullOrWhiteSpace(restricao)
+                ? new List<string>()
+                : restricao.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList();
         }
 
         // GET: ItemController/Edit/5
@@ -168,6 +194,8 @@ namespace DeliFitWeb.Controllers
                 return NotFound();
 
             ItemViewModel itemModel = _mapper.Map<ItemViewModel>(item);
+            itemModel.RestricoesSelecionadas = SepararRestricoes(itemModel.Restricao);
+            CarregarCategoriasDisponiveis();
             return View(itemModel);
         }
 
@@ -178,6 +206,7 @@ namespace DeliFitWeb.Controllers
         {
             if (ModelState.IsValid)
             {
+                itemModel.Restricao = CombinarRestricoes(itemModel.RestricoesSelecionadas);
                 var item = _mapper.Map<Item>(itemModel);
 
                 // Trata a foto manualmente após o mapeamento
@@ -195,9 +224,11 @@ namespace DeliFitWeb.Controllers
                     item.Foto = itemExistente?.Foto;
                 }
 
-                _itemService.Edit(item);
+                _itemService.Edit(item, itemModel.CategoriaIds);
                 return RedirectToAction(nameof(Index), new { idRestaurante = itemModel.IdRestaurante });
             }
+
+            CarregarCategoriasDisponiveis();
             return View(itemModel);
         }
 

@@ -40,6 +40,12 @@ public class ItemServiceTests
             NomeProprietario = "NomeTeste"
         });
 
+        _context.Categorias.AddRange(
+            new Categoria { Id = 100, Nome = "Categoria Teste 1" },
+            new Categoria { Id = 101, Nome = "Categoria Teste 2" },
+            new Categoria { Id = 102, Nome = "Categoria Teste 3" }
+        );
+
         _context.Items.AddRange(
             new Item
             {
@@ -120,6 +126,54 @@ public class ItemServiceTests
         Assert.AreEqual(280f, item.Calorias);
         Assert.AreEqual(42.50m, item.Preco);
         Assert.AreEqual("Sem Glúten", item.Restricao);
+    }
+
+    [TestMethod()]
+    public void CreateTest_ComMultiplasCategorias()
+    {
+        _itemService.Create(new Item
+        {
+            Id = 4,
+            Nome = "Salmão Grelhado",
+            Calorias = 280,
+            Carboidratos = 5,
+            Gordura = 12,
+            Proteina = 35,
+            Descricao = "Salmão grelhado com ervas finas",
+            Preco = 42.50m,
+            Tamanho = "Grande",
+            Volume = null,
+            IdRestaurante = 1
+        }, new uint[] { 100, 101 });
+
+        var item = _itemService.Get(4);
+        Assert.IsNotNull(item);
+        Assert.AreEqual(2, item.Categorias.Count);
+        CollectionAssert.AreEquivalent(new[] { "Categoria Teste 1", "Categoria Teste 2" }, item.Categorias.Select(c => c.Nome).ToList());
+    }
+
+    [TestMethod()]
+    public void EditTest_AtualizaCategorias()
+    {
+        _itemService.Edit(new Item
+        {
+            Id = 3,
+            Nome = "Suco de Laranja Natural",
+            Calorias = 120,
+            Carboidratos = 28,
+            Gordura = 0,
+            Proteina = 2,
+            Restricao = "Vegano",
+            Descricao = "Suco de laranja natural 500ml",
+            Preco = 8.50m,
+            Tamanho = null,
+            Volume = "500ml",
+            IdRestaurante = 1
+        }, new uint[] { 100, 101, 102 });
+
+        var item = _itemService.Get(3);
+        Assert.IsNotNull(item);
+        Assert.AreEqual(3, item.Categorias.Count);
     }
 
     [TestMethod()]

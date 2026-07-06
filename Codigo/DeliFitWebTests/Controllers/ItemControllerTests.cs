@@ -22,6 +22,8 @@ namespace DeliFitWeb.Controllers.Tests
         {
             mockService = new Mock<IItemService>();
             var mockRestauranteService = new Mock<IRestauranteService>();
+            var mockCategoriaService = new Mock<ICategoriaService>();
+            mockCategoriaService.Setup(s => s.ListarCategorias()).Returns(new List<Core.DTO.CategoriaDTO>());
 
             IMapper mapper = new MapperConfiguration(cfg =>
                 cfg.AddProfile(new ItemProfile())).CreateMapper();
@@ -42,7 +44,7 @@ namespace DeliFitWeb.Controllers.Tests
             mockService.Setup(s => s.Edit(It.IsAny<Item>()));
             mockService.Setup(s => s.Delete(It.IsAny<uint>()));
 
-            controller = new ItemController(mockService.Object, mapper, mockRestauranteService.Object);
+            controller = new ItemController(mockService.Object, mapper, mockRestauranteService.Object, mockCategoriaService.Object);
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
