@@ -22,6 +22,8 @@ namespace DeliFitWeb.Controllers.Tests
         {
             mockService = new Mock<IItemService>();
             var mockRestauranteService = new Mock<IRestauranteService>();
+            var mockCategoriaService = new Mock<ICategoriaService>();
+            mockCategoriaService.Setup(s => s.ListarTodas()).Returns(new List<Categoria>());
 
             IMapper mapper = new MapperConfiguration(cfg =>
                 cfg.AddProfile(new ItemProfile())).CreateMapper();
@@ -42,7 +44,7 @@ namespace DeliFitWeb.Controllers.Tests
             mockService.Setup(s => s.Edit(It.IsAny<Item>()));
             mockService.Setup(s => s.Delete(It.IsAny<uint>()));
 
-            controller = new ItemController(mockService.Object, mapper, mockRestauranteService.Object);
+            controller = new ItemController(mockService.Object, mapper, mockRestauranteService.Object, mockCategoriaService.Object);
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
@@ -83,7 +85,6 @@ namespace DeliFitWeb.Controllers.Tests
             Assert.AreEqual("Bife à Parmegiana", model.Nome);
             Assert.AreEqual(350f, model.Calorias);
             Assert.AreEqual(29.99m, model.Preco);
-            Assert.AreEqual("Contém Glúten", model.Restricao);
         }
 
         [TestMethod()]
@@ -158,7 +159,6 @@ namespace DeliFitWeb.Controllers.Tests
                 Carboidratos = 5,
                 Gordura = 12,
                 Proteina = 35,
-                Restricao = "Sem Glúten",
                 Descricao = "Salmão grelhado com ervas finas",
                 Preco = 42.50m,
                 Tamanho = "Grande",
@@ -177,7 +177,6 @@ namespace DeliFitWeb.Controllers.Tests
                 Carboidratos = 25,
                 Gordura = 15,
                 Proteina = 30,
-                Restricao = "Contém Glúten",
                 Descricao = "Bife à parmegiana com arroz e fritas",
                 Preco = 29.99m,
                 Tamanho = "Médio",
@@ -196,7 +195,6 @@ namespace DeliFitWeb.Controllers.Tests
                 Carboidratos = 25,
                 Gordura = 15,
                 Proteina = 30,
-                Restricao = "Contém Glúten",
                 Descricao = "Bife à parmegiana com arroz e fritas",
                 Preco = 29.99m,
                 Tamanho = "Médio",
@@ -217,8 +215,7 @@ namespace DeliFitWeb.Controllers.Tests
                     Carboidratos = 25,
                     Gordura = 15,
                     Proteina = 30,
-                    Restricao = "Contém Glúten",
-                    Descricao = "Bife à parmegiana com arroz e fritas",
+                        Descricao = "Bife à parmegiana com arroz e fritas",
                     Preco = 29.99m,
                     Tamanho = "Médio",
                     Volume = null,
@@ -232,7 +229,6 @@ namespace DeliFitWeb.Controllers.Tests
                     Carboidratos = 15,
                     Gordura = 8,
                     Proteina = 12,
-                    Restricao = "Sem Lactose",
                     Descricao = "Salada Caesar com frango grelhado",
                     Preco = 24.90m,
                     Tamanho = "Grande",
@@ -247,7 +243,6 @@ namespace DeliFitWeb.Controllers.Tests
                     Carboidratos = 28,
                     Gordura = 0,
                     Proteina = 2,
-                    Restricao = "Vegano",
                     Descricao = "Suco de laranja natural 500ml",
                     Preco = 8.50m,
                     Tamanho = null,

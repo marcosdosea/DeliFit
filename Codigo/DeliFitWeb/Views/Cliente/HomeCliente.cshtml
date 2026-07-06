@@ -588,7 +588,7 @@
             var nomeRest = restDict.TryGetValue(item.IdRestaurante, out var n) ? n : "";
             <a asp-controller="Restaurante" asp-action="VerEstabelecimento"
                asp-route-id="@item.IdRestaurante"
-               class="dish-card" data-restricao="@item.Restricao">
+               class="dish-card" data-restricao="@string.Join(", ", item.CategoriaNomes)">
                 <div class="dish-img">
                     <img src="@Url.Action("Foto", "Item", new { id = item.Id })"
                          alt="@item.Nome"
@@ -667,7 +667,7 @@
                             preco = i.Preco,
                             calorias = i.Calorias,
                             proteina = i.Proteina,
-                            restricao = i.Restricao ?? "",
+                            restricao = string.Join(", ", i.CategoriaNomes),
                             idRestaurante = i.IdRestaurante
                     }).ToList()
             ));

@@ -40,6 +40,12 @@ public class ItemServiceTests
             NomeProprietario = "NomeTeste"
         });
 
+        _context.Categorias.AddRange(
+            new Categoria { Id = 1, Nome = "Vegano" },
+            new Categoria { Id = 2, Nome = "Sem Lactose" },
+            new Categoria { Id = 3, Nome = "Sem Glúten" }
+        );
+
         _context.Items.AddRange(
             new Item
             {
@@ -49,7 +55,6 @@ public class ItemServiceTests
                 Carboidratos = 25,
                 Gordura = 15,
                 Proteina = 30,
-                Restricao = "Contém Glúten",
                 Descricao = "Bife à parmegiana com arroz e fritas",
                 Preco = 29.99m,
                 Tamanho = "Médio",
@@ -64,7 +69,6 @@ public class ItemServiceTests
                 Carboidratos = 15,
                 Gordura = 8,
                 Proteina = 12,
-                Restricao = "Sem Lactose",
                 Descricao = "Salada Caesar com frango grelhado",
                 Preco = 24.90m,
                 Tamanho = "Grande",
@@ -79,7 +83,6 @@ public class ItemServiceTests
                 Carboidratos = 28,
                 Gordura = 0,
                 Proteina = 2,
-                Restricao = "Vegano",
                 Descricao = "Suco de laranja natural 500ml",
                 Preco = 8.50m,
                 Tamanho = null,
@@ -104,7 +107,6 @@ public class ItemServiceTests
             Carboidratos = 5,
             Gordura = 12,
             Proteina = 35,
-            Restricao = "Sem Glúten",
             Descricao = "Salmão grelhado com ervas finas",
             Preco = 42.50m,
             Tamanho = "Grande",
@@ -119,7 +121,53 @@ public class ItemServiceTests
         Assert.AreEqual("Salmão Grelhado", item.Nome);
         Assert.AreEqual(280f, item.Calorias);
         Assert.AreEqual(42.50m, item.Preco);
-        Assert.AreEqual("Sem Glúten", item.Restricao);
+    }
+
+    [TestMethod()]
+    public void CreateTest_ComMultiplasCategorias()
+    {
+        _itemService.Create(new Item
+        {
+            Id = 4,
+            Nome = "Salmão Grelhado",
+            Calorias = 280,
+            Carboidratos = 5,
+            Gordura = 12,
+            Proteina = 35,
+            Descricao = "Salmão grelhado com ervas finas",
+            Preco = 42.50m,
+            Tamanho = "Grande",
+            Volume = null,
+            IdRestaurante = 1
+        }, new uint[] { 2, 3 });
+
+        var item = _itemService.Get(4);
+        Assert.IsNotNull(item);
+        Assert.AreEqual(2, item.Categorias.Count);
+        CollectionAssert.AreEquivalent(new[] { "Sem Lactose", "Sem Glúten" }, item.Categorias.Select(c => c.Nome).ToList());
+    }
+
+    [TestMethod()]
+    public void EditTest_AtualizaCategorias()
+    {
+        _itemService.Edit(new Item
+        {
+            Id = 3,
+            Nome = "Suco de Laranja Natural",
+            Calorias = 120,
+            Carboidratos = 28,
+            Gordura = 0,
+            Proteina = 2,
+            Descricao = "Suco de laranja natural 500ml",
+            Preco = 8.50m,
+            Tamanho = null,
+            Volume = "500ml",
+            IdRestaurante = 1
+        }, new uint[] { 1, 2, 3 });
+
+        var item = _itemService.Get(3);
+        Assert.IsNotNull(item);
+        Assert.AreEqual(3, item.Categorias.Count);
     }
 
     [TestMethod()]
@@ -161,7 +209,6 @@ public class ItemServiceTests
         Assert.AreEqual("Bife à Parmegiana", item.Nome);
         Assert.AreEqual(350f, item.Calorias);
         Assert.AreEqual(29.99m, item.Preco);
-        Assert.AreEqual("Contém Glúten", item.Restricao);
         Assert.AreEqual(25f, item.Carboidratos);
         Assert.AreEqual(15f, item.Gordura);
         Assert.AreEqual(30f, item.Proteina);

@@ -21,13 +21,19 @@ public class ItemService : IItemService
     /// </summary>
     /// <param name="item">dados do item</param>
     /// <returns>id do novo item</returns>
-    public uint Create(Item item)
+    public uint Create(Item item, IEnumerable<uint>? categoriaIds = null)
     {
         if (item == null) throw new ArgumentNullException(nameof(item));
 
         var restauranteExists = _context.Restaurantes.Any(r => r.Id == item.IdRestaurante);
         if (!restauranteExists)
             throw new ServiceException($"Restaurante com ID {item.IdRestaurante} não encontrado.");
+
+        if (categoriaIds != null)
+        {
+            var ids = categoriaIds.ToList();
+            item.Categorias = _context.Categorias.Where(c => ids.Contains(c.Id)).ToList();
+        }
 
         _context.Add(item);
         _context.SaveChanges();
@@ -56,10 +62,11 @@ public class ItemService : IItemService
     /// Atualizar dados de um item da base de dados
     /// </summary>
     /// <param name="item">novos dados do item</param>
-    public void Edit(Item item)
+    public void Edit(Item item, IEnumerable<uint>? categoriaIds = null)
     {
         var existingItem = _context.Items
             .Include(i => i.IdRestauranteNavigation)
+            .Include(i => i.Categorias)
             .FirstOrDefault(i => i.Id == item.Id);
 
         if (existingItem == null)
@@ -68,6 +75,17 @@ public class ItemService : IItemService
         }
 
         _context.Entry(existingItem).CurrentValues.SetValues(item);
+
+        if (categoriaIds != null)
+        {
+            var ids = categoriaIds.ToList();
+            var novasCategorias = _context.Categorias.Where(c => ids.Contains(c.Id)).ToList();
+
+            existingItem.Categorias.Clear();
+            foreach (var categoria in novasCategorias)
+                existingItem.Categorias.Add(categoria);
+        }
+
         _context.SaveChanges();
     }
 
@@ -78,7 +96,10 @@ public class ItemService : IItemService
     /// <returns>dados do item</returns>
     public Item? Get(uint id)
     {
-        return _context.Items.Find(id);
+        return _context.Items
+            .Include(i => i.Categorias)
+            .AsSplitQuery()
+            .FirstOrDefault(i => i.Id == id);
     }
 
     /// <summary>
@@ -87,7 +108,10 @@ public class ItemService : IItemService
     /// <returns>dados dos itens</returns>
     public IEnumerable<Item> GetAll()
     {
-        return _context.Items.AsNoTracking();
+        return _context.Items
+            .Include(i => i.Categorias)
+            .AsSplitQuery()
+            .AsNoTracking();
     }
 
 
@@ -99,6 +123,8 @@ public class ItemService : IItemService
     public IEnumerable<Item> GetByName(string nome)
     {
         return _context.Items
+            .Include(i => i.Categorias)
+            .AsSplitQuery()
             .AsNoTracking()
             .Where(i => EF.Functions.Like(i.Nome, $"%{nome}%"));//ignora maiuscula e minuscula
     }
@@ -111,6 +137,8 @@ public class ItemService : IItemService
     public IEnumerable<Item> GetByRestaurante(uint idRestaurante)
     {
         return _context.Items
+            .Include(i => i.Categorias)
+            .AsSplitQuery()
             .AsNoTracking()
             .Where(i => i.IdRestaurante == idRestaurante)
             .OrderBy(i => i.Nome);

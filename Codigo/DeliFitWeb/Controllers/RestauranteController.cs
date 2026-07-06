@@ -128,6 +128,7 @@ namespace DeliFitWeb.Controllers
         }
 
         // GET: RestauranteController/Create
+        [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
             return View();
@@ -136,10 +137,12 @@ namespace DeliFitWeb.Controllers
         // POST: RestauranteController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult Create(RestauranteViewModel restauranteModel)
         {
             if (ModelState.IsValid)
             {
+                restauranteModel.Email = restauranteModel.Email.Trim();
                 var restaurante = _mapper.Map<Restaurante>(restauranteModel);
 
                 if (restauranteModel.FotoFile != null && restauranteModel.FotoFile.Length > 0)
@@ -294,6 +297,7 @@ namespace DeliFitWeb.Controllers
         {
             if (ModelState.IsValid)
             {
+                restauranteModel.Email = restauranteModel.Email.Trim();
                 var restaurante = _mapper.Map<Restaurante>(restauranteModel);
 
                 if (restauranteModel.FotoFile != null && restauranteModel.FotoFile.Length > 0)
@@ -331,7 +335,7 @@ namespace DeliFitWeb.Controllers
                     return RedirectToAction(nameof(ListarSolicitacoes));
                 }
 
-                var email = restaurante.Email;
+                var email = restaurante.Email?.Trim();
 
                 if (string.IsNullOrWhiteSpace(email))
                 {

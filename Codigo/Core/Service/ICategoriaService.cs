@@ -1,4 +1,4 @@
-﻿using Core.DTO;
+using Core.DTO;
 
 namespace Core.Service
 {
@@ -7,5 +7,7 @@ namespace Core.Service
         IEnumerable<CategoriaDTO> ListarCategorias();
 
         IEnumerable<Item> ListarItensPorCategoria(string categoria);
+
+        IEnumerable<Categoria> ListarTodas();
     }
 }

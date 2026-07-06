@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Novo Item";
-    // Captura o ID do restaurante da URL para manter o vínculo na criação
+    // Captura o ID do restaurante da URL para manter o vï¿½nculo na criaï¿½ï¿½o
     var idRestauranteContexto = Context.Request.Query["idRestaurante"];
 }
 
@@ -16,7 +16,7 @@
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div>
                             <h2 class="fw-bold m-0">Novo Item</h2>
-                            <p class="text-muted">Adicione um novo prato ou bebida ao seu cardápio.</p>
+                            <p class="text-muted">Adicione um novo prato ou bebida ao seu cardï¿½pio.</p>
                         </div>
                     </div>
 
@@ -47,7 +47,7 @@
                             <div class="col-md-8">
 
                                 <div class="card border-0 shadow-sm p-4 mb-4">
-                                    <h5 class="fw-bold mb-4" style="color: #ff6600;"><i class="bi bi-info-circle me-2"></i>Informações Básicas</h5>
+                                    <h5 class="fw-bold mb-4" style="color: #ff6600;"><i class="bi bi-info-circle me-2"></i>Informaï¿½ï¿½es Bï¿½sicas</h5>
 
                                     <div class="mb-3">
                                         <label asp-for="Nome" class="form-label small fw-bold text-muted">NOME DO ITEM</label>
@@ -56,14 +56,14 @@
                                     </div>
 
                                     <div class="mb-3">
-                                        <label asp-for="Descricao" class="form-label small fw-bold text-muted">DESCRIÇÃO DETALHADA</label>
+                                        <label asp-for="Descricao" class="form-label small fw-bold text-muted">DESCRIï¿½ï¿½O DETALHADA</label>
                                         <textarea asp-for="Descricao" class="form-control border-0 bg-light p-3" rows="4" placeholder="Descreva os ingredientes e o preparo..."></textarea>
                                         <span asp-validation-for="Descricao" class="text-danger small"></span>
                                     </div>
 
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <label asp-for="Preco" class="form-label small fw-bold text-muted">PREÇO DE VENDA (R$)</label>
+                                            <label asp-for="Preco" class="form-label small fw-bold text-muted">PREï¿½O DE VENDA (R$)</label>
                                             <div class="input-group">
                                                 <span class="input-group-text border-0 bg-orange-subtle fw-bold" style="color: #ff6600;">R$</span>
                                                 <input asp-for="Preco" type="number" step="0.01" class="form-control border-0 bg-light p-3" placeholder="0,00" required />
@@ -71,14 +71,22 @@
                                             <span asp-validation-for="Preco" class="text-danger small"></span>
                                         </div>
                                         <div class="col-md-6">
-                                            <label asp-for="Restricao" class="form-label small fw-bold text-muted">RESTRIÇÃO ALIMENTAR</label>
-                                            <select asp-for="Restricao" class="form-select border-0 bg-light p-3">
-                                                <option value="">Nenhuma</option>
-                                                <option value="Vegetariano">Vegetariano</option>
-                                                <option value="Vegano">Vegano</option>
-                                                <option value="Sem Glúten">Sem Glúten</option>
-                                                <option value="Sem Lactose">Sem Lactose</option>
-                                            </select>
+                                            <label class="form-label small fw-bold text-muted">CATEGORIAS</label>
+                                            <div class="d-flex flex-wrap gap-3 p-3 bg-light rounded">
+                                                @{
+                                                    var categoriasDisponiveis = ViewBag.CategoriasDisponiveis as IEnumerable<Core.Categoria> ?? new List<Core.Categoria>();
+                                                }
+                                                @foreach (var categoria in categoriasDisponiveis)
+                                                {
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox"
+                                                               name="CategoriaIds" value="@categoria.Id"
+                                                               id="categoria_@categoria.Id"
+                                                               @(Model.CategoriaIds.Contains(categoria.Id) ? "checked" : "") />
+                                                        <label class="form-check-label" for="categoria_@categoria.Id">@categoria.Nome</label>
+                                                    </div>
+                                                }
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -89,7 +97,7 @@
                                     <div class="mb-3">
                                         <label asp-for="FotoFile" class="form-label small fw-bold text-muted">
                                             SELECIONE UMA IMAGEM
-                                            <span class="fw-normal text-muted">(opcional &middot; JPEG ou PNG &middot; máx. 2 MB)</span>
+                                            <span class="fw-normal text-muted">(opcional &middot; JPEG ou PNG &middot; mï¿½x. 2 MB)</span>
                                         </label>
                                         <input asp-for="FotoFile"
                                                type="file"
@@ -102,7 +110,7 @@
                                     <div id="previewContainer" class="d-none text-center mt-2">
                                         <img id="fotoPreview"
                                              src="#"
-                                             alt="Pré-visualização"
+                                             alt="Prï¿½-visualizaï¿½ï¿½o"
                                              class="rounded"
                                              style="max-height: 200px; max-width: 100%; object-fit: contain; border: 2px dashed #ff6600;" />
                                     </div>
@@ -112,7 +120,7 @@
 
                             <div class="col-md-4">
                                 <div class="card border-0 shadow-sm p-4 mb-4 h-100">
-                                    <h5 class="fw-bold mb-4" style="color: #ff6600;"><i class="bi bi-heart-pulse me-2"></i>Nutrição e Medidas</h5>
+                                    <h5 class="fw-bold mb-4" style="color: #ff6600;"><i class="bi bi-heart-pulse me-2"></i>Nutriï¿½ï¿½o e Medidas</h5>
 
                                     <div class="mb-3">
                                         <label asp-for="Calorias" class="form-label small fw-bold text-muted">CALORIAS (KCAL)</label>
@@ -140,7 +148,7 @@
                                         <select asp-for="Tamanho" class="form-select border-0 bg-light p-3">
                                             <option value="">Nenhum (Vazio)</option>
                                             <option value="P">P - Pequeno</option>
-                                            <option value="M">M - Médio</option>
+                                            <option value="M">M - Mï¿½dio</option>
                                             <option value="G">G - Grande</option>
                                         </select>
                                     </div>

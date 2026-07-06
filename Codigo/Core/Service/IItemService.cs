@@ -2,9 +2,9 @@
 
 public interface IItemService
 {
-    uint Create(Item item);
+    uint Create(Item item, IEnumerable<uint>? categoriaIds = null);
 
-    void Edit(Item item);
+    void Edit(Item item, IEnumerable<uint>? categoriaIds = null);
 
     void Delete(uint id);
 
