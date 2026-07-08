@@ -1,3 +1,220 @@
 @{
     ViewData["Title"] = "Dashboard Admin";
+    int totalRestaurantes = ViewBag.TotalRestaurantes ?? 0;
+    int totalPendentes = ViewBag.TotalPendentes ?? 0;
+    int totalClientes = ViewBag.TotalClientes ?? 0;
 }
+
+<style>
+    body { background: #f8f9fa; }
+
+    .page-header {
+        background: white;
+        border-bottom: 1px solid #e9ecef;
+        padding: 24px 32px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        margin-bottom: 24px;
+    }
+
+    .page-header h2 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 1.3rem;
+        color: #1a1a1a;
+    }
+
+    .page-header p {
+        margin: 4px 0 0;
+        font-size: 0.9rem;
+        color: #888;
+    }
+
+    .content-area { padding: 0 32px 32px; }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 28px;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        flex-shrink: 0;
+    }
+
+    .stat-icon.orange { background: #fff3e6; color: #ff6600; }
+    .stat-icon.yellow { background: #fff8e1; color: #f59e0b; }
+    .stat-icon.blue   { background: #e8f4fd; color: #2196f3; }
+
+    .stat-label {
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+    }
+
+    .stat-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        line-height: 1;
+    }
+
+    .section-title {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #1a1a1a;
+        margin-bottom: 16px;
+    }
+
+    .actions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+    }
+
+    .action-card {
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0;
+        text-decoration: none;
+        color: #1a1a1a;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        transition: box-shadow 0.2s, transform 0.15s;
+    }
+
+    .action-card:hover {
+        box-shadow: 0 4px 16px rgba(255,102,0,0.15);
+        transform: translateY(-2px);
+        color: #1a1a1a;
+        text-decoration: none;
+    }
+
+    .action-card i {
+        font-size: 1.6rem;
+        color: #ff6600;
+    }
+
+    .action-card strong {
+        font-size: 0.95rem;
+        font-weight: 700;
+    }
+
+    .action-card small {
+        font-size: 0.8rem;
+        color: #888;
+    }
+
+    @if (totalPendentes > 0)
+    {
+        <text>
+        .badge-pending {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: #fff3cd;
+            color: #856404;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-top: 4px;
+        }
+        </text>
+    }
+</style>
+
+<div class="page-header">
+    <h2><i class="bi bi-speedometer2 me-2" style="color:#ff6600;"></i>Dashboard</h2>
+    <p>Visão geral da plataforma DeliFit</p>
+</div>
+
+<div class="content-area">
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon orange"><i class="bi bi-shop"></i></div>
+            <div>
+                <div class="stat-label">Restaurantes Ativos</div>
+                <div class="stat-value">@totalRestaurantes</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon yellow"><i class="bi bi-clock-history"></i></div>
+            <div>
+                <div class="stat-label">Aguardando Aprovação</div>
+                <div class="stat-value">@totalPendentes</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon blue"><i class="bi bi-people"></i></div>
+            <div>
+                <div class="stat-label">Clientes Cadastrados</div>
+                <div class="stat-value">@totalClientes</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-title">Ações Rápidas</div>
+
+    <div class="actions-grid">
+        <a class="action-card" asp-controller="Restaurante" asp-action="Index">
+            <i class="bi bi-shop"></i>
+            <strong>Listar Restaurantes</strong>
+            <small>Visualize e gerencie os restaurantes cadastrados</small>
+        </a>
+
+        <a class="action-card" asp-controller="Restaurante" asp-action="ListarSolicitacoes">
+            <i class="bi bi-clock-history"></i>
+            <strong>Listar Solicitações</strong>
+            <small>Aprove ou recuse novos pedidos de cadastro</small>
+            @if (totalPendentes > 0)
+            {
+                <span class="badge-pending"><i class="bi bi-exclamation-circle"></i> @totalPendentes pendente@(totalPendentes != 1 ? "s" : "")</span>
+            }
+        </a>
+
+        <a class="action-card" asp-controller="Cliente" asp-action="Index">
+            <i class="bi bi-people"></i>
+            <strong>Listar Clientes</strong>
+            <small>Visualize e gerencie os clientes cadastrados</small>
+        </a>
+
+        <a class="action-card" asp-controller="Restaurante" asp-action="Create">
+            <i class="bi bi-plus-circle"></i>
+            <strong>Adicionar Restaurante</strong>
+            <small>Cadastre um novo restaurante na plataforma</small>
+        </a>
+
+        <a class="action-card" asp-controller="Cliente" asp-action="Create">
+            <i class="bi bi-person-plus"></i>
+            <strong>Adicionar Cliente</strong>
+            <small>Cadastre um novo cliente manualmente</small>
+        </a>
+    </div>
+
+</div>

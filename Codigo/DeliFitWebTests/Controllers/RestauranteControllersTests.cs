@@ -37,6 +37,7 @@ namespace DeliFitWeb.Controllers.Tests
             var mockPedidoService = new Mock<IPedidoService>();
             var mockClienteService = new Mock<IClienteService>();
             var mockCarrinhoService = new Mock<ICarrinhoService>();
+            var mockAvaliacaoService = new Mock<IAvaliacaoService>();
 
             mockUserManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
                 .ReturnsAsync((UsuarioIdentity?)null);
@@ -67,6 +68,7 @@ namespace DeliFitWeb.Controllers.Tests
                 mockPedidoService.Object,
                 mockClienteService.Object,
                 mockCarrinhoService.Object,
+                mockAvaliacaoService.Object,
                 mapper,
                 mockUserManager.Object,
                 mockRoleManager.Object,

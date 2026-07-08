@@ -33,5 +33,7 @@ public partial class Item
 
     public virtual Restaurante IdRestauranteNavigation { get; set; } = null!;
 
+    public virtual ICollection<Categoria> Categorias { get; set; } = new List<Categoria>();
+
     public virtual ICollection<Pedidoitem> Pedidoitems { get; set; } = new List<Pedidoitem>();
 }

@@ -2,52 +2,261 @@
 
 @{
     ViewData["Title"] = "Faturamento";
+    string nomeRestaurante = ViewBag.NomeRestaurante ?? "";
+    decimal totalFaturado = ViewBag.TotalFaturado ?? 0m;
+    int totalPedidos = ViewBag.TotalPedidos ?? 0;
+    string dataInicio = ViewBag.DataInicio ?? "";
+    string dataFim = ViewBag.DataFim ?? "";
+    bool filtroAtivo = ViewBag.FiltroAtivo ?? false;
 }
 
-<h1>Faturamento</h1>
+<style>
+    body { background: #f8f9fa; }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.IdRestaurante)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Data)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalFaturamento)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalPedidos)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdRestaurante)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Data)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalFaturamento)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalPedidos)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
+    .page-header {
+        background: white;
+        border-bottom: 1px solid #e9ecef;
+        padding: 24px 32px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        margin-bottom: 24px;
+    }
+
+    .page-header h2 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 1.3rem;
+        color: #1a1a1a;
+    }
+
+    .page-header p {
+        margin: 4px 0 0;
+        font-size: 0.9rem;
+        color: #888;
+    }
+
+    .content-area { padding: 0 32px 32px; }
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 16px;
+        margin-bottom: 28px;
+    }
+
+    .summary-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0;
+    }
+
+    .summary-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #888;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+    }
+
+    .summary-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #ff6600;
+    }
+
+    .table-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0;
+        overflow: hidden;
+    }
+
+    .table-card-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid #f0f0f0;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #1a1a1a;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .table thead th {
+        background: #f9f9f9;
+        color: #666;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        padding: 12px 16px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .table td {
+        padding: 12px 16px;
+        font-size: 0.9rem;
+        color: #333;
+        vertical-align: middle;
+        border-bottom: 1px solid #f5f5f5;
+    }
+
+    .table tr:last-child td { border-bottom: none; }
+
+    .badge-total {
+        background: #fff3e6;
+        color: #ff6600;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 48px 16px;
+        color: #aaa;
+    }
+
+    .empty-state i { font-size: 2.5rem; margin-bottom: 12px; display: block; }
+</style>
+
+<div class="page-header">
+    <h2><i class="bi bi-graph-up-arrow me-2" style="color:#ff6600;"></i>Faturamento</h2>
+    <p>@nomeRestaurante &mdash; Histórico de receitas por dia</p>
+</div>
+
+<div class="content-area pb-0">
+    <form method="get" asp-action="Faturamentos" class="card border-0 shadow-sm p-3 mb-4">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label small fw-semibold text-muted mb-1">Data Início</label>
+                <input type="date" name="dataInicio" value="@dataInicio" class="form-control form-control-sm" />
+            </div>
+            <div class="col-md-4">
+                <label class="form-label small fw-semibold text-muted mb-1">Data Fim</label>
+                <input type="date" name="dataFim" value="@dataFim" class="form-control form-control-sm" />
+            </div>
+            <div class="col-md-4 d-flex gap-2">
+                <button type="submit" class="btn btn-sm fw-bold text-white flex-grow-1" style="background:#ff6600;border:none;">
+                    <i class="bi bi-funnel me-1"></i>Filtrar
+                </button>
+                @if (filtroAtivo)
+                {
+                    <a asp-action="Faturamentos" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-x-lg"></i> Limpar
+                    </a>
+                }
+            </div>
+        </div>
+        @if (filtroAtivo)
+        {
+            <div class="mt-2">
+                <span class="badge" style="background:#fff3e6;color:#ff6600;font-weight:600;">
+                    <i class="bi bi-funnel-fill me-1"></i>
+                    Filtro ativo:
+                    @if (!string.IsNullOrEmpty(dataInicio)) { <text>de @DateTime.Parse(dataInicio).ToString("dd/MM/yyyy") </text> }
+                    @if (!string.IsNullOrEmpty(dataFim)) { <text>até @DateTime.Parse(dataFim).ToString("dd/MM/yyyy")</text> }
+                </span>
+            </div>
+        }
+    </form>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success mx-4 mb-0 rounded-3">
+        <i class="bi bi-check-circle-fill me-2"></i>@TempData["Success"]
+    </div>
 }
-    </tbody>
-</table>
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger mx-4 mb-0 rounded-3">
+        <i class="bi bi-exclamation-circle-fill me-2"></i>@TempData["Error"]
+    </div>
+}
+
+<div class="content-area">
+
+    <div class="summary-grid">
+        <div class="summary-card">
+            <div class="summary-label"><i class="bi bi-currency-dollar me-1"></i>Total Faturado</div>
+            <div class="summary-value">R$ @totalFaturado.ToString("N2")</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-label"><i class="bi bi-bag-check me-1"></i>Total de Pedidos</div>
+            <div class="summary-value">@totalPedidos</div>
+        </div>
+        <div class="summary-card">
+            <div class="summary-label"><i class="bi bi-calendar3 me-1"></i>Dias com Pedidos</div>
+            <div class="summary-value">@Model.Count()</div>
+        </div>
+        @if (Model.Any())
+        {
+            <div class="summary-card">
+                <div class="summary-label"><i class="bi bi-bar-chart me-1"></i>Ticket Médio</div>
+                <div class="summary-value">R$ @((totalPedidos > 0 ? totalFaturado / totalPedidos : 0).ToString("N2"))</div>
+            </div>
+        }
+    </div>
+
+    <div class="table-card">
+        <div class="table-card-header">
+            <i class="bi bi-table" style="color:#ff6600;"></i>
+            Receita por Dia
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="empty-state">
+                <i class="bi bi-inbox"></i>
+                <p>Nenhum pedido finalizado ainda.</p>
+                <small>Os faturamentos aparecerão aqui conforme os pedidos forem concluídos.</small>
+            </div>
+        }
+        else
+        {
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Pedidos</th>
+                        <th class="text-end">Faturamento</th>
+                        <th class="text-end">Ticket Médio</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.OrderByDescending(f => f.Data))
+                    {
+                        <tr>
+                            <td>
+                                <strong>@item.Data.ToString("dd/MM/yyyy")</strong>
+                                <br><small class="text-muted">@item.Data.ToString("dddd", new System.Globalization.CultureInfo("pt-BR"))</small>
+                            </td>
+                            <td>
+                                <span class="badge-total">@item.TotalPedidos pedido@(item.TotalPedidos != 1 ? "s" : "")</span>
+                            </td>
+                            <td class="text-end fw-bold" style="color:#ff6600;">
+                                R$ @item.TotalFaturamento.ToString("N2")
+                            </td>
+                            <td class="text-end text-muted">
+                                R$ @((item.TotalPedidos > 0 ? item.TotalFaturamento / item.TotalPedidos : 0).ToString("N2"))
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr style="background:#f9f9f9;">
+                        <td><strong>Total</strong></td>
+                        <td><span class="badge-total">@totalPedidos pedido@(totalPedidos != 1 ? "s" : "")</span></td>
+                        <td class="text-end fw-bold" style="color:#ff6600; font-size:1.05rem;">R$ @totalFaturado.ToString("N2")</td>
+                        <td class="text-end text-muted">—</td>
+                    </tr>
+                </tfoot>
+            </table>
+        }
+    </div>
+</div>

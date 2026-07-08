@@ -140,7 +140,28 @@
         <i class="bi bi-chevron-left"></i>
     </a>
     <span class="page-title">Categorias</span>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Create" class="btn btn-sm ms-auto fw-bold text-white" style="background:#ff6600;border:none;">
+            <i class="bi bi-plus-lg me-1"></i>Adicionar
+        </a>
+    }
 </div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show mx-3 mt-3" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>@TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mx-3 mt-3" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
 
 @if (!Model.Any())
 {
@@ -166,6 +187,14 @@ else
                 </div>
                 <div class="cat-nome">@cat.Nome</div>
                 <div class="cat-qtd">@cat.QuantidadeItens item(s)</div>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-action="Delete" asp-route-id="@cat.Id"
+                       class="btn btn-sm btn-outline-danger mt-1 px-2 py-0"
+                       onclick="event.preventDefault(); event.stopPropagation(); window.location.href=this.href;">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                }
             </a>
         }
     </div>

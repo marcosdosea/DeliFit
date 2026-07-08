@@ -22,6 +22,7 @@ namespace DeliFitWeb.Controllers
         private readonly IPedidoService _pedidoService;
         private readonly IClienteService _clienteService;
         private readonly ICarrinhoService _carrinhoService;
+        private readonly IAvaliacaoService _avaliacaoService;
         private readonly IMapper _mapper;
         private readonly UserManager<UsuarioIdentity>? _userManager;
         private readonly RoleManager<IdentityRole>? _roleManager;
@@ -32,6 +33,7 @@ namespace DeliFitWeb.Controllers
                                      IPedidoService pedidoService,
                                      IClienteService clienteService,
                                      ICarrinhoService carrinhoService,
+                                     IAvaliacaoService avaliacaoService,
                                      IMapper mapper,
                                      UserManager<UsuarioIdentity> userManager,
                                      RoleManager<IdentityRole> roleManager,
@@ -42,6 +44,7 @@ namespace DeliFitWeb.Controllers
             _pedidoService = pedidoService;
             _clienteService = clienteService;
             _carrinhoService = carrinhoService;
+            _avaliacaoService = avaliacaoService;
             _mapper = mapper;
             _userManager = userManager;
             _roleManager = roleManager;
@@ -128,6 +131,7 @@ namespace DeliFitWeb.Controllers
         }
 
         // GET: RestauranteController/Create
+        [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
             return View();
@@ -136,10 +140,12 @@ namespace DeliFitWeb.Controllers
         // POST: RestauranteController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult Create(RestauranteViewModel restauranteModel)
         {
             if (ModelState.IsValid)
             {
+                restauranteModel.Email = restauranteModel.Email.Trim();
                 var restaurante = _mapper.Map<Restaurante>(restauranteModel);
 
                 if (restauranteModel.FotoFile != null && restauranteModel.FotoFile.Length > 0)
@@ -294,6 +300,7 @@ namespace DeliFitWeb.Controllers
         {
             if (ModelState.IsValid)
             {
+                restauranteModel.Email = restauranteModel.Email.Trim();
                 var restaurante = _mapper.Map<Restaurante>(restauranteModel);
 
                 if (restauranteModel.FotoFile != null && restauranteModel.FotoFile.Length > 0)
@@ -331,7 +338,7 @@ namespace DeliFitWeb.Controllers
                     return RedirectToAction(nameof(ListarSolicitacoes));
                 }
 
-                var email = restaurante.Email;
+                var email = restaurante.Email?.Trim();
 
                 if (string.IsNullOrWhiteSpace(email))
                 {
@@ -514,9 +521,39 @@ namespace DeliFitWeb.Controllers
             return View();
         }
 
+        [Authorize(Roles = "GerenteRestaurante")]
+        public IActionResult Faturamentos(DateTime? dataInicio, DateTime? dataFim)
+        {
+            var restauranteId = GetRestauranteIdLogado();
+            if (!restauranteId.HasValue)
+            {
+                TempData["Error"] = "Não foi possível identificar o restaurante.";
+                return RedirectToAction(nameof(Home));
+            }
+
+            var faturamentos = _restauranteService
+                .GetAllFaturamentos(restauranteId.Value, dataInicio, dataFim)
+                .ToList();
+
+            var viewModel = _mapper.Map<List<FaturamentoViewModel>>(faturamentos);
+
+            var restaurante = _restauranteService.Get(restauranteId.Value);
+            ViewBag.NomeRestaurante = restaurante?.NomeRestaurante ?? "";
+            ViewBag.TotalFaturado = viewModel.Sum(f => f.TotalFaturamento);
+            ViewBag.TotalPedidos = viewModel.Sum(f => f.TotalPedidos);
+            ViewBag.DataInicio = dataInicio?.ToString("yyyy-MM-dd") ?? "";
+            ViewBag.DataFim = dataFim?.ToString("yyyy-MM-dd") ?? "";
+            ViewBag.FiltroAtivo = dataInicio.HasValue || dataFim.HasValue;
+
+            return View(viewModel);
+        }
+
         [Authorize(Roles = "Admin")]
         public IActionResult HomeAdmin()
         {
+            ViewBag.TotalRestaurantes = _restauranteService.GetRestaurantesAtivos().Count();
+            ViewBag.TotalPendentes = _restauranteService.GetRestaurantesPendentes().Count();
+            ViewBag.TotalClientes = _clienteService.GetAll().Count();
             return View();
         }
 
@@ -638,6 +675,46 @@ namespace DeliFitWeb.Controllers
             {
                 return StatusCode(500, new { erro = ex.Message });
             }
+        }
+
+        // GET: Restaurante/GestorAvaliacoes — CSU12
+        [Authorize(Roles = "GerenteRestaurante")]
+        public IActionResult GestorAvaliacoes()
+        {
+            var restauranteId = GetRestauranteIdLogado();
+            if (!restauranteId.HasValue)
+            {
+                TempData["Error"] = "Não foi possível identificar o restaurante.";
+                return RedirectToAction(nameof(Home));
+            }
+
+            var pedidoIds = _pedidoService.GetAll()
+                .Where(p => p.IdRestaurante == restauranteId.Value)
+                .Select(p => p.Id)
+                .ToHashSet();
+
+            var avaliacoes = _avaliacaoService.GetAll()
+                .Where(a => pedidoIds.Contains(a.IdPedido))
+                .ToList();
+
+            var viewModel = avaliacoes.Select(a =>
+            {
+                var cliente = _clienteService.Get(a.IdCliente);
+                return new GestorAvaliacaoViewModel
+                {
+                    Id = a.Id,
+                    NomeCliente = cliente?.Nome ?? "Anônimo",
+                    TelefoneCliente = cliente?.Telefone ?? "",
+                    Nota = a.Nota,
+                    Descricao = a.Descricao ?? ""
+                };
+            }).ToList();
+
+            var restaurante = _restauranteService.Get(restauranteId.Value);
+            ViewBag.NomeRestaurante = restaurante?.NomeRestaurante ?? "";
+            ViewBag.MediaNota = viewModel.Any() ? viewModel.Average(v => (double)v.Nota) : 0.0;
+
+            return View(viewModel);
         }
 
         private uint? GetRestauranteIdLogado()

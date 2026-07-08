@@ -1,65 +1,180 @@
 @model IEnumerable<DeliFitWeb.Models.PagamentoViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Mensalidades";
+    string titulo = ViewBag.Titulo ?? "Mensalidades";
+    string nomeRestaurante = ViewBag.NomeRestaurante ?? "";
 }
 
-<h1>Index</h1>
+<style>
+    body { background: #f8f9fa; }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.idRestaurante)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ValorMensalidade)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DataPagamento)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DataVencimento)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StatusMensalidade)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.idRestaurante)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ValorMensalidade)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataPagamento)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataVencimento)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StatusMensalidade)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new {  id=item.Id  }) |
-                @Html.ActionLink("Details", "Details", new {  id=item.Id  }) |
-                @Html.ActionLink("Delete", "Delete", new {  id=item.Id  })
-            </td>
-        </tr>
+    .page-header {
+        background: white;
+        border-bottom: 1px solid #e9ecef;
+        padding: 24px 32px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        margin-bottom: 24px;
     }
-    </tbody>
-</table>
+
+    .page-header h2 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 1.3rem;
+        color: #1a1a1a;
+    }
+
+    .page-header p {
+        margin: 4px 0 0;
+        font-size: 0.9rem;
+        color: #888;
+    }
+
+    .content-area { padding: 0 32px 32px; }
+
+    .mensalidade-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0;
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    .mensalidade-info { flex: 1; }
+
+    .mensalidade-periodo {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #1a1a1a;
+        margin-bottom: 6px;
+    }
+
+    .mensalidade-detalhe {
+        font-size: 0.85rem;
+        color: #666;
+        margin-bottom: 3px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .mensalidade-detalhe i { color: #aaa; width: 14px; }
+
+    .mensalidade-valor {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #ff6600;
+        white-space: nowrap;
+    }
+
+    .status-badge {
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 0.82rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .status-pago    { background: #dcfce7; color: #16a34a; }
+    .status-pendente { background: #fff3e6; color: #ff6600; }
+    .status-atraso  { background: #fee2e2; color: #dc2626; }
+
+    .empty-state {
+        text-align: center;
+        padding: 48px 16px;
+        color: #aaa;
+    }
+
+    .empty-state i { font-size: 2.5rem; margin-bottom: 12px; display: block; }
+</style>
+
+<div class="page-header">
+    <h2><i class="bi bi-credit-card me-2" style="color:#ff6600;"></i>@titulo</h2>
+    @if (!string.IsNullOrEmpty(nomeRestaurante))
+    {
+        <p>@nomeRestaurante</p>
+    }
+</div>
+
+<div class="content-area">
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success rounded-3 mb-3">
+            <i class="bi bi-check-circle-fill me-2"></i>@TempData["Success"]
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger rounded-3 mb-3">
+            <i class="bi bi-exclamation-circle-fill me-2"></i>@TempData["Error"]
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <i class="bi bi-inbox"></i>
+            <p>Nenhum pagamento de mensalidade encontrado.</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var item in Model.OrderByDescending(p => p.DataVencimento))
+        {
+            string statusClass = item.StatusMensalidade switch
+            {
+                "P" => "status-pago",
+                "A" => "status-atraso",
+                _   => "status-pendente"
+            };
+            string statusLabel = item.StatusMensalidade switch
+            {
+                "P" => "Pago",
+                "A" => "Em Atraso",
+                _   => "Em Aberto"
+            };
+
+            <div class="mensalidade-card">
+                <div class="mensalidade-info">
+                    <div class="mensalidade-periodo">
+                        <i class="bi bi-calendar3 me-1" style="color:#ff6600;"></i>
+                        @(item.DataPagamento.HasValue
+                            ? $"Período: {item.DataPagamento.Value:dd/MM/yyyy} até {item.DataVencimento?.ToString("dd/MM/yyyy") ?? "—"}"
+                            : $"Vencimento: {item.DataVencimento?.ToString("dd/MM/yyyy") ?? "—"}")
+                    </div>
+                    <div class="mensalidade-detalhe">
+                        <i class="bi bi-calendar-x"></i>
+                        Vencimento: <strong>@(item.DataVencimento?.ToString("dd/MM/yyyy") ?? "—")</strong>
+                    </div>
+                    @if (item.DataPagamento.HasValue)
+                    {
+                        <div class="mensalidade-detalhe">
+                            <i class="bi bi-check2-circle"></i>
+                            Pago em: <strong>@item.DataPagamento.Value.ToString("dd/MM/yyyy")</strong>
+                        </div>
+                    }
+                </div>
+
+                <div style="display:flex; align-items:center; gap:16px;">
+                    <div class="mensalidade-valor">R$ @item.ValorMensalidade.ToString("N2")</div>
+                    <span class="status-badge @statusClass">@statusLabel</span>
+                </div>
+            </div>
+        }
+    }
+
+    @if (User.IsInRole("Admin"))
+    {
+        <div class="mt-3">
+            <a asp-action="Create" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-circle me-1"></i>Novo Pagamento
+            </a>
+        </div>
+    }
+</div>

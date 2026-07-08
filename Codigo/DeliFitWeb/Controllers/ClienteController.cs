@@ -18,13 +18,19 @@ public class ClienteController : Controller
     private readonly IRestauranteService _restauranteService;
     private readonly IItemService _itemService;
     private readonly ICategoriaService _categoriaService;
+    private readonly ICarrinhoService _carrinhoService;
+    private readonly IPedidoService _pedidoService;
+    private readonly IAvaliacaoService _avaliacaoService;
 
     public ClienteController(IClienteService clienteService,
                              IMapper mapper,
                              UserManager<UsuarioIdentity> userManager,
                              IRestauranteService restauranteService,
                              IItemService itemService,
-                             ICategoriaService categoriaService)
+                             ICategoriaService categoriaService,
+                             ICarrinhoService carrinhoService,
+                             IPedidoService pedidoService,
+                             IAvaliacaoService avaliacaoService)
     {
         _clienteService = clienteService;
         _mapper = mapper;
@@ -32,6 +38,9 @@ public class ClienteController : Controller
         _restauranteService = restauranteService;
         _itemService = itemService;
         _categoriaService = categoriaService;
+        _carrinhoService = carrinhoService;
+        _pedidoService = pedidoService;
+        _avaliacaoService = avaliacaoService;
     }
 
     // GET: ClienteController
@@ -166,6 +175,25 @@ public class ClienteController : Controller
         var restaurantesAtivos = _restauranteService.GetRestaurantesAtivos().ToList();
         var restaurantesViewModel = _mapper.Map<List<RestauranteViewModel>>(restaurantesAtivos);
 
+        // Média real de avaliações por restaurante
+        var todosPedidos = _pedidoService.GetAll().ToList();
+        var todasAvaliacoes = _avaliacaoService.GetAll().ToList();
+        var pedidosPorRestaurante = todosPedidos
+            .GroupBy(p => p.IdRestaurante)
+            .ToDictionary(g => g.Key, g => g.Select(p => p.Id).ToHashSet());
+
+        foreach (var vm in restaurantesViewModel)
+        {
+            if (pedidosPorRestaurante.TryGetValue(vm.Id, out var pedidoIds))
+            {
+                var notas = todasAvaliacoes
+                    .Where(a => pedidoIds.Contains(a.IdPedido))
+                    .Select(a => (double)a.Nota)
+                    .ToList();
+                vm.MediaAvaliacao = notas.Any() ? notas.Average() : 0.0;
+            }
+        }
+
         // Itens de todos os restaurantes ativos
         var restauranteIds = restaurantesAtivos.Select(r => r.Id).ToHashSet();
         var itensRestaurantesAtivos = _itemService
@@ -181,6 +209,58 @@ public class ClienteController : Controller
         ViewBag.ClienteId = clienteId.Value;
 
         return View(restaurantesViewModel);
+    }
+
+    // GET: ClienteController/Consumo — CSU20 Gerenciar Consumo Calórico
+    [Authorize(Roles = "Cliente")]
+    public ActionResult Consumo(string? data = null)
+    {
+        var clienteId = GetClienteIdLogado();
+        if (!clienteId.HasValue)
+        {
+            TempData["Error"] = "Não foi possível identificar o cliente. Faça login novamente.";
+            return RedirectToAction("Index", "Home");
+        }
+
+        var dataSelecionada = data != null && DateTime.TryParse(data, out var parsedDate)
+            ? parsedDate.Date
+            : DateTime.Today;
+
+        var carrinhoIds = _carrinhoService.GetAll()
+            .Where(c => c.IdCliente == clienteId.Value)
+            .Select(c => c.Id)
+            .ToHashSet();
+
+        var pedidosFinalizados = _pedidoService.GetAll()
+            .Where(p => carrinhoIds.Contains(p.IdCarrinho) && p.Status == 'F' && p.Data.HasValue)
+            .ToList();
+
+        var datasComPedidos = pedidosFinalizados
+            .Select(p => p.Data!.Value.Date)
+            .Distinct()
+            .OrderByDescending(d => d)
+            .ToList();
+
+        var pedidosDoDia = pedidosFinalizados
+            .Where(p => p.Data!.Value.Date == dataSelecionada)
+            .Select(p => _pedidoService.Get(p.Id))
+            .Where(p => p != null)
+            .ToList();
+
+        var itensDoDia = pedidosDoDia
+            .SelectMany(p => p!.Pedidoitems)
+            .Where(pi => pi.IdItemNavigation != null)
+            .Select(pi => pi.IdItemNavigation!)
+            .ToList();
+
+        ViewBag.DataSelecionada = dataSelecionada;
+        ViewBag.DatasComPedidos = datasComPedidos;
+        ViewBag.TotalKcal = itensDoDia.Sum(i => (double?)i.Calorias) ?? 0;
+        ViewBag.TotalProteina = itensDoDia.Sum(i => (double?)i.Proteina) ?? 0;
+        ViewBag.TotalCarboidratos = itensDoDia.Sum(i => (double?)i.Carboidratos) ?? 0;
+        ViewBag.TotalGordura = itensDoDia.Sum(i => (double?)i.Gordura) ?? 0;
+
+        return View(itensDoDia);
     }
 
     private uint? GetClienteIdLogado()

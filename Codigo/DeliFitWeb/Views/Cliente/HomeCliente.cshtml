@@ -558,7 +558,7 @@
                 <div class="rest-body-h">
                     <p class="rest-name-h">@r.NomeRestaurante</p>
                     <div class="rest-meta-h">
-                        <span><i class="bi bi-star-fill" style="color:#ff6600;"></i> 4.5</span>
+                        <span><i class="bi bi-star-fill" style="color:#ff6600;"></i> @(r.MediaAvaliacao > 0 ? r.MediaAvaliacao.ToString("0.0") : "—")</span>
                         <span><i class="bi bi-geo-alt"></i> @r.Cidade</span>
                     </div>
                 </div>
@@ -653,10 +653,21 @@
                 .catch(() => {});
         })();
 
+        // ── Utilitário: escapa caracteres HTML especiais para uso em innerHTML ──
+        function escapeHtml(str) {
+            if (str == null) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
         // ── Serializa dados para filtro JS das categorias no dishesGrid ──
         const todosRestaurantes = @Html.Raw(Json.Serialize(
                     (Model ?? Enumerable.Empty<DeliFitWeb.Models.RestauranteViewModel>())
-                    .Select(r => new { id = r.Id, nome = r.NomeRestaurante, cidade = r.Cidade, validado = r.Validado }).ToList()
+                    .Select(r => new { id = r.Id, nome = r.NomeRestaurante, cidade = r.Cidade, validado = r.Validado, mediaAvaliacao = r.MediaAvaliacao }).ToList()
             ));
 
         const todosItens = @Html.Raw(Json.Serialize(
@@ -681,16 +692,16 @@
             el.innerHTML = lista.length ? lista.map(r => `
                 <a href="/Restaurante/VerEstabelecimento/${r.id}" class="rest-card-h">
                     <div class="rest-img-h">
-                        <img src="/Restaurante/Foto/${r.id}" alt="${r.nome}"
+                        <img src="/Restaurante/Foto/${r.id}" alt="${escapeHtml(r.nome)}"
                              onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
                         <div class="rest-fallback" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;"><i class="bi bi-shop"></i></div>
                         <span class="rest-badge-h ${r.validado ? 'open' : 'close'}">${r.validado ? 'ABERTO' : 'FECHADO'}</span>
                     </div>
                     <div class="rest-body-h">
-                        <p class="rest-name-h">${r.nome}</p>
+                        <p class="rest-name-h">${escapeHtml(r.nome)}</p>
                         <div class="rest-meta-h">
-                            <span><i class="bi bi-star-fill" style="color:#ff6600;"></i> 4.5</span>
-                            <span><i class="bi bi-geo-alt"></i> ${r.cidade || ''}</span>
+                            <span><i class="bi bi-star-fill" style="color:#ff6600;"></i> ${r.mediaAvaliacao > 0 ? r.mediaAvaliacao.toFixed(1) : '—'}</span>
+                            <span><i class="bi bi-geo-alt"></i> ${escapeHtml(r.cidade || '')}</span>
                         </div>
                     </div>
                 </a>`).join('')
@@ -702,19 +713,19 @@
             el.innerHTML = lista.length ? lista.map(i => `
                 <a href="/Restaurante/VerEstabelecimento/${i.idRestaurante}" class="dish-card">
                     <div class="dish-img">
-                        <img src="/Item/Foto/${i.id}" alt="${i.nome}"
+                        <img src="/Item/Foto/${i.id}" alt="${escapeHtml(i.nome)}"
                              onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
                         <div class="dish-no-img" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;"><i class="bi bi-egg-fried"></i></div>
                     </div>
                     <div class="dish-body">
-                        <p class="dish-name">${i.nome}</p>
+                        <p class="dish-name">${escapeHtml(i.nome)}</p>
                         <div class="dish-macros">
                             <span class="macro cal">${Math.round(i.calorias)} kcal</span>
                             ${i.proteina !== null && i.proteina !== undefined ? `<span class="macro prot">${Math.round(i.proteina)}g P</span>` : ''}
                         </div>
                         <div class="dish-footer">
                             <span class="dish-price">R$ ${parseFloat(i.preco).toFixed(2).replace('.', ',')}</span>
-                            <span class="dish-rest">${rDict[i.idRestaurante] || ''}</span>
+                            <span class="dish-rest">${escapeHtml(rDict[i.idRestaurante] || '')}</span>
                         </div>
                     </div>
                 </a>`).join('')

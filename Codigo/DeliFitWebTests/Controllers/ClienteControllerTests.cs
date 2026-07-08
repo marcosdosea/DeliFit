@@ -27,6 +27,9 @@ namespace DeliFitWeb.Controllers.Tests
                 var mockRestauranteService = new Mock<IRestauranteService>();
                 var mockItemService = new Mock<IItemService>();
                 var mockCategoriaService = new Mock<ICategoriaService>();
+                var mockCarrinhoService = new Mock<ICarrinhoService>();
+                var mockPedidoService = new Mock<IPedidoService>();
+                var mockAvaliacaoService = new Mock<IAvaliacaoService>();
 
                 IMapper mapper = new MapperConfiguration(cfg =>
                     cfg.AddProfile(new ClienteProfile())).CreateMapper();
@@ -47,7 +50,7 @@ namespace DeliFitWeb.Controllers.Tests
                 mockService
                     .Setup(service => service.GetByEmail(It.IsAny<string>()))
                     .Returns((string email) => {
-                        // tenta encontrar um ClienteDTO com email correspondente (não existe em dados de teste)
+                        // tenta encontrar um ClienteDTO com email correspondente (nï¿½o existe em dados de teste)
                         return null;
                     });
 
@@ -57,7 +60,10 @@ namespace DeliFitWeb.Controllers.Tests
                     mockUserManager.Object,
                     mockRestauranteService.Object,
                     mockItemService.Object,
-                    mockCategoriaService.Object
+                    mockCategoriaService.Object,
+                    mockCarrinhoService.Object,
+                    mockPedidoService.Object,
+                    mockAvaliacaoService.Object
                 );
             }
 
@@ -102,7 +108,7 @@ namespace DeliFitWeb.Controllers.Tests
             Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
 
-        // [TestMethod()] - CreateAsync não existe mais no controller
+        // [TestMethod()] - CreateAsync nï¿½o existe mais no controller
         // public void CreateTest_Valid()
         // {
         //     // Act
@@ -116,11 +122,11 @@ namespace DeliFitWeb.Controllers.Tests
         //     Assert.AreEqual("Index", redirectToActionResult.ActionName);
         // }
 
-        // [TestMethod()] - CreateAsync não existe mais no controller
+        // [TestMethod()] - CreateAsync nï¿½o existe mais no controller
         // public void CreateTest_Post_Invalid()
         // {
         //     // Arrange
-        //     controller?.ModelState.AddModelError("Nome", "Nome é obrigatório.");
+        //     controller?.ModelState.AddModelError("Nome", "Nome ï¿½ obrigatï¿½rio.");
         //
         //     // Act
         //     var result = Unwrap(controller?.CreateAsync(GetNewCliente()));
@@ -240,7 +246,7 @@ namespace DeliFitWeb.Controllers.Tests
                 new ClienteDTO
                 {
                     Id = 3,
-                    Nome = "Marcos Dósea",
+                    Nome = "Marcos Dï¿½sea",
                     Telefone = "79977777777"
                 },
             };
@@ -252,13 +258,13 @@ namespace DeliFitWeb.Controllers.Tests
             if (maybeTask is null) return null;
             if (maybeTask is Task task)
             {
-                // Aguarda término
+                // Aguarda tï¿½rmino
                 task.GetAwaiter().GetResult();
 
                 var taskType = task.GetType();
                 if (taskType.IsGenericType)
                 {
-                    // Obtém propriedade Result via reflexão para Task<T>
+                    // Obtï¿½m propriedade Result via reflexï¿½o para Task<T>
                     var prop = taskType.GetProperty("Result");
                     return prop?.GetValue(task);
                 }

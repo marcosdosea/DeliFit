@@ -914,6 +914,17 @@ else
                 .catch(() => {});
         })();
 
+        // ── Utilitário: escapa caracteres HTML especiais para uso em innerHTML ──
+        function escapeHtml(str) {
+            if (str == null) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
         // ─────────── Modal M09 ───────────
         let _qtd = 1;
         let _preco = 0;
@@ -947,16 +958,16 @@ else
             // Restrição
             const tagsEl = document.getElementById('modalRestrTags');
             tagsEl.innerHTML = restricao
-                ? `<span class="restricao-tag"><i class="bi bi-shield-check me-1"></i>${restricao}</span>`
+                ? `<span class="restricao-tag"><i class="bi bi-shield-check me-1"></i>${escapeHtml(restricao)}</span>`
                 : '';
 
             // Macros
             const macrosEl = document.getElementById('modalMacros');
             macrosEl.innerHTML = '';
-            if (cal)  macrosEl.innerHTML += `<div class="modal-macro"><span class="val">${cal}</span><span class="lbl">kcal</span></div>`;
-            if (prot) macrosEl.innerHTML += `<div class="modal-macro"><span class="val">${prot}g</span><span class="lbl">Prot</span></div>`;
-            if (carb) macrosEl.innerHTML += `<div class="modal-macro"><span class="val">${carb}g</span><span class="lbl">Carb</span></div>`;
-            if (gord) macrosEl.innerHTML += `<div class="modal-macro"><span class="val">${gord}g</span><span class="lbl">Gord</span></div>`;
+            if (cal)  macrosEl.innerHTML += `<div class="modal-macro"><span class="val">${escapeHtml(cal)}</span><span class="lbl">kcal</span></div>`;
+            if (prot) macrosEl.innerHTML += `<div class="modal-macro"><span class="val">${escapeHtml(prot)}g</span><span class="lbl">Prot</span></div>`;
+            if (carb) macrosEl.innerHTML += `<div class="modal-macro"><span class="val">${escapeHtml(carb)}g</span><span class="lbl">Carb</span></div>`;
+            if (gord) macrosEl.innerHTML += `<div class="modal-macro"><span class="val">${escapeHtml(gord)}g</span><span class="lbl">Gord</span></div>`;
 
             // Tamanho
             const secTam = document.getElementById('modalTamanhoSection');

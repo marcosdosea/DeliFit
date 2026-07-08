@@ -71,7 +71,7 @@ public class AtendimentoControllerTests
 
         var result = controller.Create(GetNewAtendimento());
 
-        Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+        Assert.IsInstanceOfType(result, typeof(ViewResult));
     }
 
     [TestMethod]
@@ -106,6 +106,30 @@ public class AtendimentoControllerTests
         var result = controller.Delete(model.Id, model);
 
         Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+    }
+
+    [TestMethod]
+    public void CreateTest_Post_ServiceException_RetornaView()
+    {
+        mockService.Setup(s => s.Create(It.IsAny<Atendimento>()))
+            .Throws(new ServiceException("Já existe um horário configurado para este dia da semana neste restaurante."));
+
+        var result = controller.Create(GetNewAtendimento());
+
+        Assert.IsInstanceOfType(result, typeof(ViewResult));
+        Assert.IsFalse(controller.ModelState.IsValid);
+    }
+
+    [TestMethod]
+    public void EditTest_Post_ServiceException_RetornaView()
+    {
+        mockService.Setup(s => s.Edit(It.IsAny<Atendimento>()))
+            .Throws(new ServiceException("O horário de início deve ser anterior ao horário de fim."));
+
+        var result = controller.Edit(GetTargetAtendimentoViewModel());
+
+        Assert.IsInstanceOfType(result, typeof(ViewResult));
+        Assert.IsFalse(controller.ModelState.IsValid);
     }
 
     private AtendimentoViewModel GetNewAtendimento()

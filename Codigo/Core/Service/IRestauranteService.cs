@@ -14,7 +14,7 @@ public interface IRestauranteService
 
     IEnumerable<RestauranteDTO> GetAll();
 
-    IEnumerable<FaturamentoDTO> GetAllFaturamentos(uint idRestaurante);
+    IEnumerable<FaturamentoDTO> GetAllFaturamentos(uint idRestaurante, DateTime? dataInicio = null, DateTime? dataFim = null);
     IEnumerable<RestauranteDTO> GetRestaurantesAtivos();
     IEnumerable<RestauranteDTO> GetRestaurantesPendentes();
     Restaurante? GetByEmail(string email);

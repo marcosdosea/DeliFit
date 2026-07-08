@@ -14,12 +14,23 @@ namespace DeliFitWeb.Models
         public string DiaSemana { get; set; } = null!;
 
         [Required]
-        [Display(Name = "Horário Início")]
+        [Display(Name = "Horï¿½rio Inï¿½cio")]
         public DateTime? HorarioInicio { get; set; }
 
         [Required]
-        [Display(Name = "Horário Fim")]
+        [Display(Name = "Horï¿½rio Fim")]
         public DateTime? HorarioFim { get; set; }
 
+        public string NomeDiaSemana => DiaSemana switch
+        {
+            "1" => "Domingo",
+            "2" => "Segunda-feira",
+            "3" => "TerÃ§a-feira",
+            "4" => "Quarta-feira",
+            "5" => "Quinta-feira",
+            "6" => "Sexta-feira",
+            "7" => "SÃ¡bado",
+            _ => DiaSemana
+        };
     }
 }

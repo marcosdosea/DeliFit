@@ -1,0 +1,258 @@
+@model IEnumerable<DeliFitWeb.Models.GestorAvaliacaoViewModel>
+
+@{
+    ViewData["Title"] = "Avaliações";
+    string nomeRestaurante = ViewBag.NomeRestaurante ?? "";
+    double mediaNota = ViewBag.MediaNota ?? 0.0;
+}
+
+<style>
+    body { background: #f8f9fa; }
+
+    .page-header {
+        background: white;
+        border-bottom: 1px solid #e9ecef;
+        padding: 24px 32px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    .page-header h2 {
+        margin: 0;
+        font-weight: 700;
+        font-size: 1.3rem;
+        color: #1a1a1a;
+    }
+
+    .page-header p {
+        margin: 4px 0 0;
+        font-size: 0.9rem;
+        color: #888;
+    }
+
+    .media-badge {
+        background: #fff3e6;
+        color: #ff6600;
+        font-weight: 700;
+        font-size: 1.1rem;
+        padding: 8px 18px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+    }
+
+    .content-area { padding: 0 32px 32px; }
+
+    .search-bar {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0;
+        padding: 14px 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .search-bar input {
+        border: none;
+        outline: none;
+        flex: 1;
+        font-size: 0.9rem;
+        background: transparent;
+        color: #333;
+    }
+
+    .search-bar i { color: #aaa; font-size: 1.1rem; }
+
+    .table-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        border: 1px solid #f0f0f0;
+        overflow: hidden;
+    }
+
+    .table-card-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid #f0f0f0;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: #1a1a1a;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .table thead th {
+        background: #f9f9f9;
+        color: #666;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        padding: 12px 16px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .table td {
+        padding: 12px 16px;
+        font-size: 0.9rem;
+        color: #333;
+        vertical-align: middle;
+        border-bottom: 1px solid #f5f5f5;
+    }
+
+    .table tr:last-child td { border-bottom: none; }
+
+    .stars {
+        color: #f59e0b;
+        letter-spacing: 1px;
+    }
+
+    .nota-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        background: #fff8e1;
+        color: #d97706;
+        font-weight: 700;
+        font-size: 0.85rem;
+        padding: 3px 10px;
+        border-radius: 20px;
+    }
+
+    .nota-badge.alta { background: #dcfce7; color: #16a34a; }
+    .nota-badge.media { background: #fff8e1; color: #d97706; }
+    .nota-badge.baixa { background: #fee2e2; color: #dc2626; }
+
+    .reclamacao-flag {
+        font-size: 0.75rem;
+        color: #dc2626;
+        font-weight: 600;
+    }
+
+    .descricao-cell {
+        max-width: 300px;
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-size: 0.85rem;
+        color: #555;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 48px 16px;
+        color: #aaa;
+    }
+
+    .empty-state i { font-size: 2.5rem; margin-bottom: 12px; display: block; }
+</style>
+
+<div class="page-header">
+    <div>
+        <h2><i class="bi bi-star-fill me-2" style="color:#ff6600;"></i>Avaliações</h2>
+        <p>@nomeRestaurante — feedback dos clientes</p>
+    </div>
+    @if (Model.Any())
+    {
+        <div class="media-badge">
+            <i class="bi bi-star-fill"></i>
+            @mediaNota.ToString("0.0") <span style="font-size:0.8rem; font-weight:400; color:#cc5200;">/ 5.0</span>
+        </div>
+    }
+</div>
+
+<div class="content-area">
+
+    <div class="search-bar">
+        <i class="bi bi-search"></i>
+        <input type="text" id="searchInput" placeholder="Pesquisar avaliações..." />
+    </div>
+
+    <div class="table-card">
+        <div class="table-card-header">
+            <i class="bi bi-chat-left-text" style="color:#ff6600;"></i>
+            Avaliações (@Model.Count())
+        </div>
+
+        @if (!Model.Any())
+        {
+            <div class="empty-state">
+                <i class="bi bi-star"></i>
+                <p>Nenhuma avaliação recebida ainda.</p>
+                <small>As avaliações dos clientes aparecerão aqui após os pedidos finalizados.</small>
+            </div>
+        }
+        else
+        {
+            <table class="table table-hover mb-0" id="avaliacoesTable">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Telefone</th>
+                        <th>Nota</th>
+                        <th>Descrição</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.OrderByDescending(a => a.Nota))
+                    {
+                        bool isReclamacao = item.Descricao.StartsWith("[RECLAMAÇÃO]");
+                        string descricaoExibida = isReclamacao
+                            ? item.Descricao.Replace("[RECLAMAÇÃO]", "").Trim()
+                            : item.Descricao;
+
+                        string notaClass = item.Nota >= 4 ? "alta" : item.Nota >= 3 ? "media" : "baixa";
+
+                        <tr class="avaliacao-row">
+                            <td><strong>@item.NomeCliente</strong></td>
+                            <td class="text-muted">
+                                @if (!string.IsNullOrEmpty(item.TelefoneCliente) && item.TelefoneCliente.Length == 11)
+                                {
+                                    @($"({item.TelefoneCliente[..2]}) {item.TelefoneCliente[2..7]}-{item.TelefoneCliente[7..]}")
+                                }
+                                else
+                                {
+                                    @item.TelefoneCliente
+                                }
+                            </td>
+                            <td>
+                                <span class="nota-badge @notaClass">
+                                    <i class="bi bi-star-fill"></i>
+                                    @item.Nota.ToString("0.0")
+                                </span>
+                            </td>
+                            <td class="descricao-cell">
+                                @if (isReclamacao)
+                                {
+                                    <span class="reclamacao-flag"><i class="bi bi-exclamation-triangle-fill me-1"></i>Reclamação</span><br />
+                                }
+                                @descricaoExibida
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('searchInput')?.addEventListener('input', function () {
+            var q = this.value.toLowerCase();
+            document.querySelectorAll('.avaliacao-row').forEach(function (row) {
+                var text = row.textContent.toLowerCase();
+                row.style.display = text.includes(q) ? '' : 'none';
+            });
+        });
+    </script>
+}

@@ -1,9 +1,8 @@
 @model DeliFitWeb.Models.AtendimentoViewModel
 
 @{
-    ViewData["Title"] = "Novo Horário";
-    // Captura o ID do restaurante da URL para manter a consistência
-    var idRestauranteContexto = uint.Parse(Context.Request.Query["idRestaurante"]);
+    ViewData["Title"] = "Novo Horï¿½rio";
+    uint.TryParse(Context.Request.Query["idRestaurante"], out var idRestauranteContexto);
 }
 
 <div class="container-fluid p-0 bg-white">
@@ -13,7 +12,7 @@
 
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
-                        <h2 class="fw-bold m-0">Novo Horário</h2>
+                        <h2 class="fw-bold m-0">Novo Horï¿½rio</h2>
                         <p class="text-muted">Defina um dia da semana e o turno de funcionamento.</p>
                     </div>
                 </div>
@@ -34,7 +33,7 @@
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-header bg-white border-0 pt-4 ps-4">
                             <h5 class="fw-bold mb-0 text-orange">
-                                <i class="bi bi-clock-history me-2"></i>Configuração de Turno
+                                <i class="bi bi-clock-history me-2"></i>Configuraï¿½ï¿½o de Turno
                             </h5>
                         </div>
 
@@ -47,11 +46,11 @@
                                         <option value="">Selecione o dia...</option>
                                         <option value="1">Domingo</option>
                                         <option value="2">Segunda-feira</option>
-                                        <option value="3">Terça-feira</option>
+                                        <option value="3">Terï¿½a-feira</option>
                                         <option value="4">Quarta-feira</option>
                                         <option value="5">Quinta-feira</option>
                                         <option value="6">Sexta-feira</option>
-                                        <option value="7">Sábado</option>
+                                        <option value="7">Sï¿½bado</option>
                                     </select>
                                     <span asp-validation-for="DiaSemana" class="text-danger small"></span>
                                 </div>
@@ -89,7 +88,7 @@
                             Cancelar
                         </a>
                         <button type="submit" class="btn btn-orange px-5 py-2 fw-bold shadow-sm">
-                            <i class="bi bi-check-circle me-2"></i>Salvar Horário
+                            <i class="bi bi-check-circle me-2"></i>Salvar Horï¿½rio
                         </button>
                     </div>
                 </form>
@@ -101,7 +100,7 @@
 
 @section Scripts {
     <style>
-        /* Estilos Padronizados DeliFit (Copiados do Endereço) */
+        /* Estilos Padronizados DeliFit (Copiados do Endereï¿½o) */
         .text-orange {
             color: #ff6600 !important;
         }
@@ -117,11 +116,11 @@
             transition: border-color 0.2s, box-shadow 0.2s;
         }
 
-        /* Ajuste específico para quando usamos input-group com ícone */
+        /* Ajuste especï¿½fico para quando usamos input-group com ï¿½cone */
         .input-group .form-control:focus {
             border-color: #ff6600;
-            box-shadow: none; /* Remove shadow padrão para evitar conflito visual no group */
-            border-left: 1px solid #dee2e6; /* Restaura borda se necessário */
+            box-shadow: none; /* Remove shadow padrï¿½o para evitar conflito visual no group */
+            border-left: 1px solid #dee2e6; /* Restaura borda se necessï¿½rio */
         }
 
         .input-group:focus-within {
