@@ -345,6 +345,13 @@
     }
 </style>
 
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger mx-4 mt-3 rounded-3">
+        <i class="bi bi-exclamation-circle-fill me-2"></i>@TempData["Error"]
+    </div>
+}
+
 <div class="header-gestor">
     <div class="header-title">
         <div class="header-icon">
