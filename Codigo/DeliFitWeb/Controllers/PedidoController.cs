@@ -100,6 +100,7 @@ namespace DeliFitWeb.Controllers
         }
 
         // GET: PedidoController/Acompanhar/5 — Tela M16
+        [Authorize(Roles = "Cliente")]
         public ActionResult Acompanhar(uint id)
         {
             Pedido? pedido = _pedidoService.Get(id);
@@ -124,6 +125,7 @@ namespace DeliFitWeb.Controllers
 
         // GET: PedidoController/GetStatus/5
         [HttpGet]
+        [Authorize(Roles = "Cliente")]
         public IActionResult GetStatus(uint id)
         {
             Pedido? pedido = _pedidoService.Get(id);

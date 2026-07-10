@@ -51,6 +51,12 @@ namespace DeliFitWeb.Controllers
             if (!clienteId.HasValue)
                 return RedirectToAction("Index", "Home");
 
+            if (!PedidoPertenceAoCliente(pedido, clienteId.Value))
+            {
+                TempData["Error"] = "Este pedido não pertence à sua conta.";
+                return RedirectToAction("Index", "Pedido");
+            }
+
             var restaurante = _restauranteService.Get(pedido.IdRestaurante);
             ViewBag.NomeRestaurante = restaurante?.NomeRestaurante ?? "";
             ViewBag.IdRestaurante = pedido.IdRestaurante;
@@ -83,12 +89,22 @@ namespace DeliFitWeb.Controllers
                 return View(model);
             }
 
+            var pedidoParaAvaliar = _pedidoService.Get(model.IdPedido);
+            var clienteIdLogado = GetClienteIdLogado();
+
+            if (pedidoParaAvaliar == null || !clienteIdLogado.HasValue ||
+                !PedidoPertenceAoCliente(pedidoParaAvaliar, clienteIdLogado.Value))
+            {
+                TempData["Error"] = "Este pedido não pertence à sua conta.";
+                return RedirectToAction("Index", "Pedido");
+            }
+
             try
             {
                 var avaliacao = new Avaliacao
                 {
                     IdPedido = model.IdPedido,
-                    IdCliente = model.IdCliente,
+                    IdCliente = clienteIdLogado.Value,
                     Nota = model.Nota,
                     Descricao = model.Descricao ?? string.Empty
                 };
@@ -99,11 +115,10 @@ namespace DeliFitWeb.Controllers
             }
             catch
             {
-                var pedido = _pedidoService.Get(model.IdPedido);
-                var restaurante = pedido != null ? _restauranteService.Get(pedido.IdRestaurante) : null;
+                var restaurante = _restauranteService.Get(pedidoParaAvaliar.IdRestaurante);
                 ViewBag.NomeRestaurante = restaurante?.NomeRestaurante ?? "";
-                ViewBag.IdRestaurante = pedido?.IdRestaurante ?? 0;
-                ViewBag.Itens = pedido?.Pedidoitems?.ToList() ?? new List<Pedidoitem>();
+                ViewBag.IdRestaurante = pedidoParaAvaliar.IdRestaurante;
+                ViewBag.Itens = pedidoParaAvaliar.Pedidoitems?.ToList() ?? new List<Pedidoitem>();
                 TempData["Error"] = "Falha no envio da avaliação!";
                 return View(model);
             }
@@ -116,6 +131,16 @@ namespace DeliFitWeb.Controllers
             var pedido = _pedidoService.Get(idPedido);
             if (pedido == null)
                 return RedirectToAction("Index", "Pedido");
+
+            var clienteId = GetClienteIdLogado();
+            if (!clienteId.HasValue)
+                return RedirectToAction("Index", "Home");
+
+            if (!PedidoPertenceAoCliente(pedido, clienteId.Value))
+            {
+                TempData["Error"] = "Este pedido não pertence à sua conta.";
+                return RedirectToAction("Index", "Pedido");
+            }
 
             var restaurante = _restauranteService.Get(pedido.IdRestaurante);
             ViewBag.NomeRestaurante = restaurante?.NomeRestaurante ?? "";
@@ -140,9 +165,15 @@ namespace DeliFitWeb.Controllers
 
             try
             {
+                var pedidoParaReclamar = _pedidoService.Get(model.IdPedido);
                 var clienteId = GetClienteIdLogado();
-                if (!clienteId.HasValue)
-                    return RedirectToAction("Index", "Home");
+
+                if (pedidoParaReclamar == null || !clienteId.HasValue ||
+                    !PedidoPertenceAoCliente(pedidoParaReclamar, clienteId.Value))
+                {
+                    TempData["Error"] = "Este pedido não pertence à sua conta.";
+                    return RedirectToAction("Index", "Pedido");
+                }
 
                 // A descrição já vem prefixada pelo JS com o motivo selecionado,
                 // mas garantimos o prefixo [RECLAMAÇÃO] para rastreabilidade no banco.
@@ -170,6 +201,12 @@ namespace DeliFitWeb.Controllers
                 TempData["Error"] = "Ocorreu uma falha durante o envio da reclamação!";
                 return View(model);
             }
+        }
+
+        private bool PedidoPertenceAoCliente(Pedido pedido, uint clienteId)
+        {
+            var carrinho = _carrinhoService.Get(pedido.IdCarrinho);
+            return carrinho != null && carrinho.IdCliente == clienteId;
         }
 
         private uint? GetClienteIdLogado()
