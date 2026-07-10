@@ -188,8 +188,18 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    try
+                    {
+                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    }
+                    catch (Exception emailEx)
+                    {
+                        // A conta já foi criada nesse ponto; uma falha no envio do e-mail (ex.: credencial
+                        // SMTP inválida ou limite do provedor) não deve impedir o cadastro. A página de
+                        // confirmação exibe um link alternativo para confirmar a conta manualmente.
+                        _logger.LogError(emailEx, "Falha ao enviar email de confirmação para {Email}.", Input.Email);
+                    }
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
