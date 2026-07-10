@@ -165,6 +165,10 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
                     {
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
 
+                        // Sem esta chamada o usuário fica sem nenhuma role e todo endpoint
+                        // [Authorize(Roles = "Cliente")] retorna acesso negado.
+                        await _userManager.AddToRoleAsync(user, "Cliente");
+
                         var userId = await _userManager.GetUserIdAsync(user);
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));

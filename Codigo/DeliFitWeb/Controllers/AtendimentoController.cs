@@ -11,19 +11,44 @@ namespace DeliFitWeb.Controllers
     public class AtendimentoController : Controller
     {
         private readonly IAtendimentoService _atendimentoService;
+        private readonly IRestauranteService _restauranteService;
         private readonly IMapper _mapper;
 
-        public AtendimentoController(IAtendimentoService atendimentoService, IMapper mapper)
+        public AtendimentoController(IAtendimentoService atendimentoService, IRestauranteService restauranteService, IMapper mapper)
         {
             _atendimentoService = atendimentoService;
+            _restauranteService = restauranteService;
             _mapper = mapper;
+        }
+
+        // Mesmo padrão usado em RestauranteController/ItemController/PagamentoController:
+        // tenta a sessão primeiro e, se ausente, resolve pelo email do usuário logado.
+        private uint? GetRestauranteIdLogado()
+        {
+            var restauranteId = HttpContext.Session.GetRestauranteId();
+
+            if (!restauranteId.HasValue)
+            {
+                var userEmail = User.Identity?.Name;
+                if (!string.IsNullOrEmpty(userEmail))
+                {
+                    var restaurante = _restauranteService.GetByEmail(userEmail);
+                    if (restaurante != null)
+                    {
+                        HttpContext.Session.SetRestauranteId(restaurante.Id);
+                        restauranteId = restaurante.Id;
+                    }
+                }
+            }
+
+            return restauranteId;
         }
 
         // GET: AtendimentoController
         [Authorize(Roles = "GerenteRestaurante,Admin")]
         public ActionResult Index(uint? idRestaurante = null)
         {
-            var restauranteId = idRestaurante ?? HttpContext.Session.GetRestauranteId();
+            var restauranteId = idRestaurante ?? GetRestauranteIdLogado();
 
             if (!restauranteId.HasValue || restauranteId.Value == 0)
             {
@@ -43,7 +68,7 @@ namespace DeliFitWeb.Controllers
         [Authorize(Roles = "GerenteRestaurante,Admin")]
         public ActionResult Create(uint? idRestaurante)
         {
-            var restauranteId = idRestaurante ?? HttpContext.Session.GetRestauranteId();
+            var restauranteId = idRestaurante ?? GetRestauranteIdLogado();
 
             if (!restauranteId.HasValue || restauranteId.Value == 0)
             {
@@ -116,7 +141,7 @@ namespace DeliFitWeb.Controllers
         [Authorize(Roles = "GerenteRestaurante,Admin")]
         public ActionResult Configurar(uint? idRestaurante = null)
         {
-            var restauranteId = idRestaurante ?? HttpContext.Session.GetRestauranteId();
+            var restauranteId = idRestaurante ?? GetRestauranteIdLogado();
 
             if (!restauranteId.HasValue || restauranteId.Value == 0)
             {

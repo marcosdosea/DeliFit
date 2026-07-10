@@ -606,7 +606,14 @@ namespace DeliFitWeb.Controllers
                     };
                 }).ToList();
 
-                return Json(resultado);
+                var hoje = DateTime.Today;
+                var finalizadosHoje = _pedidoService.GetAll()
+                    .Count(p => p.IdRestaurante == restauranteId.Value
+                                && p.Status == 'F'
+                                && p.Data.HasValue
+                                && p.Data.Value.Date == hoje);
+
+                return Json(new { pedidos = resultado, finalizadosHoje });
             }
             catch (Exception ex)
             {

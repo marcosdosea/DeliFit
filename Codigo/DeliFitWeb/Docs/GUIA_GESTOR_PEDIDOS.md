@@ -49,7 +49,7 @@ POST /Restaurante/AlternarStatusLoja
 ```
 
 #### Backend (C# Controller)
-- **GetPedidosRestaurante()**: Retorna JSON com array de pedidos
+- **GetPedidosRestaurante()**: Retorna JSON `{ pedidos, finalizadosHoje }` — `pedidos` é o array de pedidos ativos (status P/E/S) e `finalizadosHoje` é a contagem de pedidos com status F e `Data` de hoje, calculada no banco
 - **AtualizarStatusPedido()**: Processa mudança de status (pode ser estendido para persistir)
 - **AlternarStatusLoja()**: Inverte status validado do restaurante
 
