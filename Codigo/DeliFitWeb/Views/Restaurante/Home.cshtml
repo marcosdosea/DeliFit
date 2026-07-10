@@ -450,7 +450,9 @@
 
                 if (!response.ok) throw new Error('Erro ao carregar pedidos');
 
-                allOrders = await response.json();
+                const data = await response.json();
+                allOrders = data.pedidos ?? [];
+                finalizadosHoje = data.finalizadosHoje ?? 0;
                 renderKanban();
                 updateMetrics();
 
@@ -591,10 +593,7 @@
         // O pedido some do kanban mas permanece no banco para o cliente consultar
         function finalizeOrder(orderId) {
             if (!confirm('Confirmar finalização deste pedido?')) return;
-            chamarAtualizarStatus(orderId, 3, () => {
-                finalizadosHoje++;
-                loadOrders();
-            });
+            chamarAtualizarStatus(orderId, 3, () => loadOrders());
         }
 
         function chamarAtualizarStatus(orderId, novoStatus, onSuccess) {
