@@ -106,16 +106,28 @@ public class MercadoPagoService : IMercadoPagoService
             });
             customerId = customer.Id;
         }
-        catch (MercadoPagoApiException)
+        catch (MercadoPagoApiException createEx)
         {
-            // E-mail já cadastrado como Customer em uma execução/teste anterior: reaproveita o existente.
-            var busca = await client.SearchAsync(new SearchRequest
+            _logger.LogWarning(createEx, "Falha ao criar Customer no Mercado Pago para {Email}: {Cause}", cliente.Email, createEx.ApiError?.Message);
+
+            // E-mail já cadastrado como Customer em uma execução/teste anterior: tenta reaproveitar o existente.
+            try
             {
-                Filters = new Dictionary<string, object> { ["email"] = cliente.Email }
-            });
-            var existente = busca.Results?.FirstOrDefault()
-                ?? throw new InvalidOperationException("Não foi possível criar nem localizar o Customer no Mercado Pago.");
-            customerId = existente.Id;
+                var busca = await client.SearchAsync(new SearchRequest
+                {
+                    Filters = new Dictionary<string, object> { ["email"] = cliente.Email }
+                });
+                var existente = busca.Results?.FirstOrDefault();
+                if (existente == null)
+                    throw new InvalidOperationException(
+                        $"Mercado Pago recusou a criação do cliente: {createEx.ApiError?.Message ?? createEx.Message}");
+                customerId = existente.Id;
+            }
+            catch (MercadoPagoApiException searchEx)
+            {
+                throw new InvalidOperationException(
+                    $"Mercado Pago recusou a criação ({createEx.ApiError?.Message ?? createEx.Message}) e a busca ({searchEx.ApiError?.Message ?? searchEx.Message}) do cliente.");
+            }
         }
 
         cliente.MercadoPagoCustomerId = customerId;
