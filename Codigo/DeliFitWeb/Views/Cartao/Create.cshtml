@@ -153,4 +153,14 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        // Remove espaços/traços digitados (comum ao copiar números de cartão/CPF formatados)
+        // antes de validar, já que os campos exigem uma quantidade exata de dígitos.
+        document.querySelectorAll('#Numero, #Cpf, #Cvv').forEach(function (input) {
+            input.addEventListener('input', function () {
+                this.value = this.value.replace(/\D/g, '');
+            });
+        });
+    </script>
 }

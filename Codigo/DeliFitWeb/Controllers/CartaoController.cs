@@ -134,8 +134,8 @@ public class CartaoController : Controller
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", $"Erro ao adicionar cartão: {ex.Message}");
-                // Em caso de exceção, redirecionamos para a mesma lista exibindo a mensagem de erro
+                // ModelState não sobrevive a um redirect — usamos TempData para a mensagem chegar até a view.
+                TempData["Error"] = $"Erro ao adicionar cartão: {ex.Message}";
                 return RedirectToAction(nameof(Index), new { idCliente = viewModel.IdCliente });
             }
         }
@@ -143,7 +143,14 @@ public class CartaoController : Controller
         // Mesmo que o ModelState esteja inválido, a experiência prevista é retornar para a lista
         // (os testes de unidade esperam um RedirectToActionResult). Usamos TempData para preservar
         // mensagens de erro caso existam.
-        TempData["Error"] = "Dados do cartão inválidos.";
+        var erros = ModelState.Values
+            .SelectMany(v => v.Errors)
+            .Select(e => e.ErrorMessage)
+            .Where(m => !string.IsNullOrWhiteSpace(m))
+            .Distinct();
+        TempData["Error"] = erros.Any()
+            ? string.Join(" ", erros)
+            : "Dados do cartão inválidos.";
         return RedirectToAction(nameof(Index), new { idCliente = viewModel.IdCliente });
     }
 
