@@ -140,18 +140,9 @@ public class CartaoController : Controller
             }
         }
 
-        // Mesmo que o ModelState esteja inválido, a experiência prevista é retornar para a lista
-        // (os testes de unidade esperam um RedirectToActionResult). Usamos TempData para preservar
-        // mensagens de erro caso existam.
-        var erros = ModelState.Values
-            .SelectMany(v => v.Errors)
-            .Select(e => e.ErrorMessage)
-            .Where(m => !string.IsNullOrWhiteSpace(m))
-            .Distinct();
-        TempData["Error"] = erros.Any()
-            ? string.Join(" ", erros)
-            : "Dados do cartão inválidos.";
-        return RedirectToAction(nameof(Index), new { idCliente = viewModel.IdCliente });
+        // ModelState inválido: reexibe o próprio formulário de cadastro com os erros
+        // ao lado dos campos (asp-validation-for), em vez de redirecionar para a lista.
+        return View(viewModel);
     }
 
     public ActionResult Delete(uint id)

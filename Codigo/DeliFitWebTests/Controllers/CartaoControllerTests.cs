@@ -100,7 +100,9 @@ namespace DeliFitWeb.Controllers.Tests
 
             var result = controller.Create(GetNewCartao());
 
-            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+            // Formulário inválido reexibe a própria tela de cadastro com os erros
+            // ao lado dos campos, em vez de redirecionar para a lista sem explicação.
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
 
         [TestMethod]

@@ -338,7 +338,24 @@
                 return;
             }
 
+            if (typeof MercadoPago !== 'function') {
+                document.getElementById('mpStatusMsg').textContent =
+                    'Não foi possível carregar o SDK do Mercado Pago. Desative bloqueadores de anúncio/extensões de privacidade para este site e recarregue a página.';
+                document.getElementById('mpStatusMsg').style.color = '#dc2626';
+                cardBrickRendered = false;
+                return;
+            }
+
             mp = new MercadoPago(mpPublicKey);
+
+            if (typeof mp.bricksBuilder !== 'function') {
+                document.getElementById('mpStatusMsg').textContent =
+                    'Falha ao inicializar o formulário de pagamento do Mercado Pago. Tente recarregar a página em uma aba anônima (sem extensões).';
+                document.getElementById('mpStatusMsg').style.color = '#dc2626';
+                cardBrickRendered = false;
+                return;
+            }
+
             const bricksBuilder = mp.bricksBuilder();
 
             await bricksBuilder.create('cardPayment', 'cardPaymentBrick_container', {
