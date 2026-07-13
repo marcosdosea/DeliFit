@@ -12,6 +12,16 @@ namespace DeliFitAPI
     {
         public static void Main(string[] args)
         {
+            var envDir = new DirectoryInfo(Directory.GetCurrentDirectory());
+            while (envDir != null && !File.Exists(Path.Combine(envDir.FullName, ".env")))
+            {
+                envDir = envDir.Parent;
+            }
+            if (envDir != null)
+            {
+                DotNetEnv.Env.Load(Path.Combine(envDir.FullName, ".env"));
+            }
+
             var builder = WebApplication.CreateBuilder(args);
 
 
