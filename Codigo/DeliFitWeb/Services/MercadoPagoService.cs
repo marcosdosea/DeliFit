@@ -1,8 +1,8 @@
+using MercadoPago.Client;
 using MercadoPago.Client.Common;
 using MercadoPago.Client.Payment;
 using MercadoPago.Config;
 using MercadoPago.Error;
-using MercadoPago.Http;
 
 namespace DeliFitWeb.Services;
 
