@@ -6,9 +6,11 @@
     int? idCartaoSelecionado = ViewBag.IdCartaoSelecionado != null ? (int?)ViewBag.IdCartaoSelecionado : null;
     string mercadoPagoPublicKey = ViewBag.MercadoPagoPublicKey as string ?? "";
     string? pagamentoCartaoStatus = ViewBag.PagamentoCartaoStatus as string;
-    string? paymentMethodIdSelecionadoInicial = idCartaoSelecionado.HasValue
-        ? cartoes.FirstOrDefault(c => c.Id == (uint)idCartaoSelecionado.Value)?.MercadoPagoPaymentMethodId
+    var cartaoSelecionadoInicial = idCartaoSelecionado.HasValue
+        ? cartoes.FirstOrDefault(c => c.Id == (uint)idCartaoSelecionado.Value)
         : null;
+    string? paymentMethodIdSelecionadoInicial = cartaoSelecionadoInicial?.MercadoPagoPaymentMethodId;
+    string? mercadoPagoCardIdSelecionadoInicial = cartaoSelecionadoInicial?.MercadoPagoCardId;
 }
 
 <style>
@@ -280,7 +282,7 @@
                 var isSelected = formaSelecionada == "C" && idCartaoSelecionado.HasValue
                                  && idCartaoSelecionado.Value == (int)c.Id;
                 <div class="cartao-card-item @(isSelected ? "selected" : "")"
-                     onclick="selecionarForma('C', @c.Id, '@c.MercadoPagoPaymentMethodId')" style="cursor:pointer;">
+                     onclick="selecionarForma('C', @c.Id, '@c.MercadoPagoPaymentMethodId', '@c.MercadoPagoCardId')" style="cursor:pointer;">
                     <div class="cartao-avatar"><i class="bi bi-credit-card-2-front"></i></div>
                     <div class="opcao-label">
                         <div class="nome">@c.Bandeira – final @c.UltimosQuatroDigitos</div>
@@ -325,6 +327,7 @@
         let mp = null;
         let cvvField = null;
         let paymentMethodIdSelecionado = null;
+        let mercadoPagoCardIdSelecionado = null;
 
         function atualizarBotaoConfirmar(forma) {
             const btn = document.getElementById('btnConfirmar');
@@ -361,8 +364,7 @@
         }
 
         document.getElementById('btnCobrarCartao').addEventListener('click', async function () {
-            const idCartao = document.getElementById('inputCartao').value;
-            if (!idCartao || !paymentMethodIdSelecionado) {
+            if (!mercadoPagoCardIdSelecionado || !paymentMethodIdSelecionado) {
                 mostrarStatus('Selecione um cartão salvo antes de cobrar.', '#dc2626');
                 return;
             }
@@ -371,7 +373,7 @@
             mostrarStatus('Processando pagamento...', '#555');
 
             try {
-                const token = await mp.fields.createCardToken({ cardId: idCartao });
+                const token = await mp.fields.createCardToken({ cardId: mercadoPagoCardIdSelecionado });
                 const antiForgeryToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
 
                 const response = await fetch('@Url.Action("ProcessarPagamentoCartao", "Carrinho")', {
@@ -405,11 +407,12 @@
             }
         });
 
-        function selecionarForma(forma, idCartao, paymentMethodId) {
+        function selecionarForma(forma, idCartao, paymentMethodId, mercadoPagoCardId) {
             // Atualiza inputs ocultos
             document.getElementById('inputForma').value = forma;
             document.getElementById('inputCartao').value = idCartao ?? '';
             paymentMethodIdSelecionado = paymentMethodId;
+            mercadoPagoCardIdSelecionado = mercadoPagoCardId;
 
             // Remove todas as marcações visuais
             document.querySelectorAll('.opcao-item, .cartao-card-item').forEach(el => {
@@ -448,9 +451,11 @@
             const formaInicial = document.getElementById('inputForma').value;
             const idCartaoInicial = document.getElementById('inputCartao').value;
             const paymentMethodIdInicial = @Html.Raw(Json.Serialize(paymentMethodIdSelecionadoInicial));
+            const mercadoPagoCardIdInicial = @Html.Raw(Json.Serialize(mercadoPagoCardIdSelecionadoInicial));
 
-            if (formaInicial === 'C' && idCartaoInicial && paymentMethodIdInicial) {
+            if (formaInicial === 'C' && idCartaoInicial && paymentMethodIdInicial && mercadoPagoCardIdInicial) {
                 paymentMethodIdSelecionado = paymentMethodIdInicial;
+                mercadoPagoCardIdSelecionado = mercadoPagoCardIdInicial;
                 document.getElementById('mpCvvWrapper').style.display = 'block';
                 renderCvvField();
             }
