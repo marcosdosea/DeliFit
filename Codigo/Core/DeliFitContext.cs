@@ -140,6 +140,12 @@ public partial class DeliFitContext : DbContext
             entity.Property(e => e.ValorFrete)
                 .HasPrecision(10)
                 .HasColumnName("valorFrete");
+            entity.Property(e => e.MercadoPagoPaymentId)
+                .HasMaxLength(50)
+                .HasColumnName("mercadoPagoPaymentId");
+            entity.Property(e => e.StatusPagamentoCartao)
+                .HasMaxLength(20)
+                .HasColumnName("statusPagamentoCartao");
 
             entity.HasOne(d => d.IdCartaoNavigation).WithMany(p => p.Carrinhos)
                 .HasForeignKey(d => d.IdCartao)

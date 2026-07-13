@@ -5,6 +5,7 @@ using DeliFitWeb.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using DeliFitWeb.Helpers;
+using DeliFitWeb.Services;
 
 namespace DeliFitWeb.Controllers;
 
@@ -18,12 +19,16 @@ public class CarrinhoController : Controller
     private readonly IPedidoService _pedidoService;
     private readonly IEnderecoService _enderecoService;
     private readonly IRestauranteService _restauranteService;
+    private readonly IMercadoPagoService _mercadoPagoService;
+    private readonly IConfiguration _configuration;
     private readonly IMapper _mapper;
 
     private const string SessaoCarrinho = "CarrinhoSessao";
     private const string SessaoFormaPagamento = "FormaPagamento";
     private const string SessaoIdCartao = "CarrinhoIdCartao";
     private const string SessaoIdEndereco = "CarrinhoIdEndereco";
+    private const string SessaoMercadoPagoPaymentId = "MercadoPagoPaymentId";
+    private const string SessaoMercadoPagoStatus = "MercadoPagoStatus";
 
     public CarrinhoController(
         ICarrinhoService carrinhoService,
@@ -33,6 +38,8 @@ public class CarrinhoController : Controller
         IPedidoService pedidoService,
         IEnderecoService enderecoService,
         IRestauranteService restauranteService,
+        IMercadoPagoService mercadoPagoService,
+        IConfiguration configuration,
         IMapper mapper)
     {
         _carrinhoService = carrinhoService;
@@ -42,6 +49,8 @@ public class CarrinhoController : Controller
         _pedidoService = pedidoService;
         _enderecoService = enderecoService;
         _restauranteService = restauranteService;
+        _mercadoPagoService = mercadoPagoService;
+        _configuration = configuration;
         _mapper = mapper;
     }
 
@@ -186,6 +195,8 @@ public class CarrinhoController : Controller
         HttpContext.Session.Remove(SessaoFormaPagamento);
         HttpContext.Session.Remove(SessaoIdCartao);
         HttpContext.Session.Remove(SessaoIdEndereco);
+        HttpContext.Session.Remove(SessaoMercadoPagoPaymentId);
+        HttpContext.Session.Remove(SessaoMercadoPagoStatus);
         return RedirectToAction(nameof(Index));
     }
 
@@ -212,7 +223,63 @@ public class CarrinhoController : Controller
         ViewBag.FormaSelecionada = formaSelecionada;
         ViewBag.IdCartaoSelecionado = idCartaoSelecionado;
 
+        ViewBag.MercadoPagoPublicKey = _configuration["MercadoPago:PublicKey"];
+        ViewBag.ValorTotal = ObterItensDaSessao().Sum(i => i.Subtotal);
+        ViewBag.PagamentoCartaoStatus = HttpContext.Session.GetString(SessaoMercadoPagoStatus);
+
         return View();
+    }
+
+    // ─── Processar pagamento com cartão via Mercado Pago ──────────────────────
+
+    /// <summary>
+    /// POST: Chamado via AJAX pelo Card Payment Brick após o tokenizador gerar o cardToken.
+    /// Cobra o valor total do carrinho no Mercado Pago e guarda o resultado na sessão.
+    /// </summary>
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<JsonResult> ProcessarPagamentoCartao(
+        string token,
+        string paymentMethodId,
+        string? issuerId,
+        int installments)
+    {
+        var clienteId = GetClienteIdLogado();
+        if (!clienteId.HasValue)
+            return Json(new { sucesso = false, mensagem = "Faça login para continuar." });
+
+        var cliente = _clienteService.Get(clienteId.Value);
+        if (cliente == null)
+            return Json(new { sucesso = false, mensagem = "Cliente não encontrado." });
+
+        var valorTotal = ObterItensDaSessao().Sum(i => i.Subtotal);
+        if (valorTotal <= 0)
+        {
+            return Json(new { sucesso = false, mensagem = "Carrinho vazio." });
+        }
+
+        var resultado = await _mercadoPagoService.ProcessarPagamentoCartaoAsync(
+            token,
+            valorTotal,
+            paymentMethodId,
+            installments,
+            issuerId,
+            cliente.Email,
+            cliente.Cpf,
+            "Pedido DeliFit");
+
+        HttpContext.Session.SetString(SessaoMercadoPagoStatus, resultado.Status);
+        if (!string.IsNullOrEmpty(resultado.MercadoPagoPaymentId))
+            HttpContext.Session.SetString(SessaoMercadoPagoPaymentId, resultado.MercadoPagoPaymentId);
+
+        return Json(new
+        {
+            sucesso = resultado.Sucesso,
+            status = resultado.Status,
+            mensagem = resultado.Sucesso
+                ? "Pagamento aprovado!"
+                : (resultado.MensagemErro ?? "Pagamento não aprovado. Tente outro cartão.")
+        });
     }
 
     /// <summary>
@@ -297,6 +364,8 @@ public class CarrinhoController : Controller
         }
 
         uint? idCartao = null;
+        string? mercadoPagoPaymentId = null;
+        string? mercadoPagoStatus = null;
         if (formaPagamento == "C")
         {
             var idCartaoSessao = HttpContext.Session.GetInt32(SessaoIdCartao);
@@ -306,6 +375,14 @@ public class CarrinhoController : Controller
                 return RedirectToAction(nameof(Index));
             }
             idCartao = (uint)idCartaoSessao.Value;
+
+            mercadoPagoStatus = HttpContext.Session.GetString(SessaoMercadoPagoStatus);
+            mercadoPagoPaymentId = HttpContext.Session.GetString(SessaoMercadoPagoPaymentId);
+            if (mercadoPagoStatus != "approved")
+            {
+                TempData["Error"] = "Conclua o pagamento com cartão antes de finalizar o pedido.";
+                return RedirectToAction(nameof(SelecionarPagamento));
+            }
         }
 
         try
@@ -322,7 +399,9 @@ public class CarrinhoController : Controller
                     FormaDePagamento = formaPagamento,
                     ValorFrete = 0,
                     IdCartao = idCartao,
-                    Observacao = null
+                    Observacao = null,
+                    MercadoPagoPaymentId = mercadoPagoPaymentId,
+                    StatusPagamentoCartao = mercadoPagoStatus
                 };
                 idCarrinho = _carrinhoService.Create(carrinhoEntidade);
             }
@@ -375,6 +454,8 @@ public class CarrinhoController : Controller
             HttpContext.Session.Remove(SessaoFormaPagamento);
             HttpContext.Session.Remove(SessaoIdCartao);
             HttpContext.Session.Remove(SessaoIdEndereco);
+            HttpContext.Session.Remove(SessaoMercadoPagoPaymentId);
+            HttpContext.Session.Remove(SessaoMercadoPagoStatus);
 
             TempData["Success"] = "Pedido realizado com sucesso! 🎉";
             return RedirectToAction("Acompanhar", "Pedido", new { id = idPedidoCriado });

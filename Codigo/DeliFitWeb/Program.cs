@@ -2,6 +2,7 @@
 using Core;
 using Core.Service;
 using Core.Identity.Data;
+using DeliFitWeb.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -67,6 +68,8 @@ public class Program
 
         builder.Services.AddTransient<IEmailSender, EmailSender>();
         //builder.Services.AddTransient<IEmailSender, FakeEmailSender>();
+
+        builder.Services.AddScoped<IMercadoPagoService, MercadoPagoService>();
 
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

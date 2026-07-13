@@ -16,6 +16,9 @@
     var cartoes = ViewBag.Cartoes as List<Core.Cartao> ?? new List<Core.Cartao>();
     var formaSelecionada = ViewBag.FormaSelecionada as string;
     int? idCartaoSelecionado = ViewBag.IdCartaoSelecionado != null ? (int?)ViewBag.IdCartaoSelecionado : null;
+    string mercadoPagoPublicKey = ViewBag.MercadoPagoPublicKey as string ?? "";
+    decimal valorTotal = ViewBag.ValorTotal != null ? (decimal)ViewBag.ValorTotal : 0m;
+    string? pagamentoCartaoStatus = ViewBag.PagamentoCartaoStatus as string;
 }
 
 <style>
@@ -291,6 +294,13 @@
         <i class="bi bi-plus-circle"></i> Adicionar novo cartão
     </a>
 
+    @* ── Mercado Pago Card Payment Brick: cobra o cartão informado agora ── *@
+    <div id="mpCartaoWrapper" class="opcao-card" style="display:none; padding:16px;">
+        <div class="section-title" style="padding:0 0 10px;">Dados do cartão (cobrança via Mercado Pago)</div>
+        <div id="cardPaymentBrick_container"></div>
+        <div id="mpStatusMsg" style="margin-top:10px; font-size:0.85rem; font-weight:600;"></div>
+    </div>
+
     @* ── Confirmar ── *@
     <button type="submit" class="btn-confirmar" id="btnConfirmar">
         Confirmar pagamento
@@ -298,7 +308,93 @@
 </form>
 
 @section Scripts {
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
     <script>
+        const mpPublicKey = @Html.Raw(Json.Serialize(mercadoPagoPublicKey));
+        const valorTotal = @Html.Raw(Json.Serialize(valorTotal));
+        let pagamentoAprovado = @Html.Raw(Json.Serialize(pagamentoCartaoStatus == "approved"));
+        let cardBrickRendered = false;
+        let mp = null;
+
+        function atualizarBotaoConfirmar(forma) {
+            const btn = document.getElementById('btnConfirmar');
+            if (forma === 'C') {
+                btn.disabled = !pagamentoAprovado;
+                btn.textContent = pagamentoAprovado ? 'Confirmar pagamento' : 'Informe os dados do cartão abaixo';
+            } else {
+                btn.disabled = false;
+                btn.textContent = 'Confirmar pagamento';
+            }
+        }
+
+        async function renderCardBrick() {
+            if (cardBrickRendered) return;
+            cardBrickRendered = true;
+
+            if (!mpPublicKey) {
+                document.getElementById('mpStatusMsg').textContent =
+                    'Mercado Pago não configurado (MercadoPago:PublicKey ausente).';
+                document.getElementById('mpStatusMsg').style.color = '#dc2626';
+                return;
+            }
+
+            mp = new MercadoPago(mpPublicKey);
+            const bricksBuilder = mp.bricksBuilder();
+
+            await bricksBuilder.create('cardPayment', 'cardPaymentBrick_container', {
+                initialization: {
+                    amount: valorTotal
+                },
+                callbacks: {
+                    onReady: () => { },
+                    onSubmit: (cardFormData) => {
+                        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+                        const statusEl = document.getElementById('mpStatusMsg');
+                        statusEl.style.color = '#555';
+                        statusEl.textContent = 'Processando pagamento...';
+
+                        return fetch('@Url.Action("ProcessarPagamentoCartao", "Carrinho")', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                                'RequestVerificationToken': token
+                            },
+                            body: new URLSearchParams({
+                                token: cardFormData.token,
+                                paymentMethodId: cardFormData.payment_method_id,
+                                issuerId: cardFormData.issuer_id ?? '',
+                                installments: cardFormData.installments
+                            })
+                        })
+                        .then(r => r.json())
+                        .then(resultado => {
+                            pagamentoAprovado = resultado.sucesso === true;
+                            statusEl.textContent = resultado.sucesso
+                                ? '✅ ' + resultado.mensagem
+                                : '❌ ' + resultado.mensagem;
+                            statusEl.style.color = resultado.sucesso ? '#16a34a' : '#dc2626';
+                            atualizarBotaoConfirmar('C');
+                            if (!resultado.sucesso) {
+                                return Promise.reject(new Error(resultado.mensagem));
+                            }
+                        })
+                        .catch(err => {
+                            statusEl.textContent = '❌ Falha ao processar pagamento. Tente novamente.';
+                            statusEl.style.color = '#dc2626';
+                            pagamentoAprovado = false;
+                            atualizarBotaoConfirmar('C');
+                            return Promise.reject(err);
+                        });
+                    },
+                    onError: (error) => {
+                        console.error(error);
+                        document.getElementById('mpStatusMsg').textContent = '❌ Erro ao carregar formulário de cartão.';
+                        document.getElementById('mpStatusMsg').style.color = '#dc2626';
+                    }
+                }
+            });
+        }
+
         function selecionarForma(forma, idCartao) {
             // Atualiza inputs ocultos
             document.getElementById('inputForma').value = forma;
@@ -326,6 +422,24 @@
                     checkEl.closest('.opcao-item')?.classList.add('selected');
                 }
             }
+
+            const mpWrapper = document.getElementById('mpCartaoWrapper');
+            if (forma === 'C') {
+                mpWrapper.style.display = 'block';
+                renderCardBrick();
+            } else {
+                mpWrapper.style.display = 'none';
+            }
+            atualizarBotaoConfirmar(forma);
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const formaInicial = document.getElementById('inputForma').value;
+            if (formaInicial === 'C') {
+                document.getElementById('mpCartaoWrapper').style.display = 'block';
+                renderCardBrick();
+            }
+            atualizarBotaoConfirmar(formaInicial);
+        });
     </script>
 }
