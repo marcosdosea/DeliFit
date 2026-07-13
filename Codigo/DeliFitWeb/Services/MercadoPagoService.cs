@@ -34,7 +34,8 @@ public class MercadoPagoService : IMercadoPagoService
         string? issuerId,
         string emailPagador,
         string cpfPagador,
-        string descricao)
+        string descricao,
+        string? customerId = null)
     {
         var request = new PaymentCreateRequest
         {
@@ -46,6 +47,10 @@ public class MercadoPagoService : IMercadoPagoService
             IssuerId = issuerId,
             Payer = new PaymentPayerRequest
             {
+                // Token gerado a partir de um cartão salvo no cofre (Customer Cards): o Mercado Pago
+                // exige o payer.id do Customer dono do cartão, senão recusa com "Customer not found".
+                Type = customerId != null ? "customer" : null,
+                Id = customerId,
                 Email = emailPagador,
                 Identification = new IdentificationRequest
                 {

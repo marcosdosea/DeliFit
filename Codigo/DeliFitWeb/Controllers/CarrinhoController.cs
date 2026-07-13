@@ -266,7 +266,8 @@ public class CarrinhoController : Controller
             issuerId,
             cliente.Email,
             cliente.Cpf,
-            "Pedido DeliFit");
+            "Pedido DeliFit",
+            cliente.MercadoPagoCustomerId);
 
         HttpContext.Session.SetString(SessaoMercadoPagoStatus, resultado.Status);
         if (!string.IsNullOrEmpty(resultado.MercadoPagoPaymentId))

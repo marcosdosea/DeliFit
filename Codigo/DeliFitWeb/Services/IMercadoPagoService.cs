@@ -33,7 +33,8 @@ public interface IMercadoPagoService
         string? issuerId,
         string emailPagador,
         string cpfPagador,
-        string descricao);
+        string descricao,
+        string? customerId = null);
 
     /// <summary>
     /// Retorna o Customer do Mercado Pago já associado ao cliente ou cria um novo
