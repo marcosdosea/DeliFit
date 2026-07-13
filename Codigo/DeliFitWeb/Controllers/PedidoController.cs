@@ -3,6 +3,7 @@ using Core;
 using Core.Service;
 using DeliFitWeb.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Service;
 using DeliFitWeb.Helpers;
 using Microsoft.AspNetCore.Authorization;
@@ -172,6 +173,12 @@ namespace DeliFitWeb.Controllers
         public ActionResult Delete(uint id)
         {
             Pedido? pedido = _pedidoService.Get(id);
+            if (pedido == null)
+            {
+                TempData["Error"] = "Pedido não encontrado.";
+                return RedirectToAction(nameof(Index));
+            }
+
             PedidoViewModel pedidoModel = _mapper.Map<PedidoViewModel>(pedido);
             return View(pedidoModel);
         }
@@ -181,7 +188,19 @@ namespace DeliFitWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(PedidoViewModel pedidoModel)
         {
-            _pedidoService.Delete(pedidoModel.Id);
+            try
+            {
+                _pedidoService.Delete(pedidoModel.Id);
+            }
+            catch (ServiceException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            catch (DbUpdateException)
+            {
+                TempData["Error"] = "Não é possível excluir este pedido pois existem avaliações vinculadas a ele.";
+            }
+
             return RedirectToAction(nameof(Index));
         }
 

@@ -14,6 +14,19 @@
             </a>
         </div>
 
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success rounded-3">
+                <i class="bi bi-check-circle-fill me-2"></i>@TempData["Success"]
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger rounded-3">
+                @TempData["Error"]
+            </div>
+        }
+
         <div class="card border-0 shadow-sm mb-5">
             <div class="card-body p-4">
                 <div class="d-flex align-items-center">
@@ -61,7 +74,7 @@
                             <div class="icon-circle mb-3 bg-orange-subtle">
                                 <i class="bi bi-geo-alt-fill text-orange fs-3"></i>
                             </div>
-                            <h5 class="fw-bold text-dark">Endereços</h5>
+                            <h5 class="fw-bold text-dark">Endereï¿½os</h5>
                             <p class="text-muted small mb-0">Gerencie seus locais de entrega</p>
                         </div>
                     </div>
@@ -79,7 +92,7 @@
                                 <i class="bi bi-credit-card-2-front-fill text-orange fs-3"></i>
                             </div>
                             <h5 class="fw-bold text-dark">Pagamentos</h5>
-                            <p class="text-muted small mb-0">Cartões e métodos salvos</p>
+                            <p class="text-muted small mb-0">Cartï¿½es e mï¿½todos salvos</p>
                         </div>
                     </div>
                 </a>
@@ -88,7 +101,7 @@
         </div>
 
         <div class="text-center mt-5 pt-4 border-top">
-            <p class="text-muted small mb-2">Deseja encerrar seu vínculo conosco?</p>
+            <p class="text-muted small mb-2">Deseja encerrar seu vï¿½nculo conosco?</p>
             <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger btn-sm px-4 fw-bold">
                 <i class="bi bi-trash3 me-2"></i>Excluir minha conta
             </a>
@@ -108,7 +121,7 @@
             background-color: #fff3e6;
         }
 
-        /* Estilo do Círculo de Ícones */
+        /* Estilo do Cï¿½rculo de ï¿½cones */
         .icon-circle {
             width: 60px;
             height: 60px;

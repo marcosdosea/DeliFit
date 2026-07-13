@@ -3,6 +3,7 @@ using Core;
 using Core.Service;
 using DeliFitAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DeliFitAPI.Controllers
 {
@@ -75,7 +76,15 @@ namespace DeliFitAPI.Controllers
             if (cartao == null)
                 return NotFound();
 
-            _cartaoService.Delete(id);
+            try
+            {
+                _cartaoService.Delete(id);
+            }
+            catch (DbUpdateException)
+            {
+                return Conflict("Não é possível excluir este cartão pois ele está vinculado a um carrinho/pedido.");
+            }
+
             return Ok();
         }
     }

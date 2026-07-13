@@ -3,6 +3,7 @@ using Core;
 using Core.Service;
 using DeliFitWeb.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Service;
 using DeliFitWeb.Helpers;
 using Microsoft.AspNetCore.Authorization;
@@ -165,6 +166,12 @@ namespace DeliFitWeb.Controllers
         public ActionResult Delete(uint id)
         {
             Endereco? endereco = _enderecoService.Get(id);
+            if (endereco == null)
+            {
+                TempData["Error"] = "Endereço não encontrado.";
+                return RedirectToAction(nameof(Index));
+            }
+
             EnderecoViewModel enderecoModel = _mapper.Map<EnderecoViewModel>(endereco);
 
             return View(enderecoModel);
@@ -175,7 +182,18 @@ namespace DeliFitWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(uint id, EnderecoViewModel enderecoModel)
         {
-            _enderecoService.Delete(id);
+            try
+            {
+                _enderecoService.Delete(id);
+            }
+            catch (ServiceException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            catch (DbUpdateException)
+            {
+                TempData["Error"] = "Não é possível excluir este endereço pois ele está vinculado a um pedido.";
+            }
 
             return RedirectToAction(nameof(Index),
                 new { idCliente = enderecoModel.IdCliente });

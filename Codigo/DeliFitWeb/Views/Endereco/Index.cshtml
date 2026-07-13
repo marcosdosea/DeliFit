@@ -1,8 +1,8 @@
 @model IEnumerable<DeliFitWeb.Models.EnderecoViewModel>
 
 @{
-    ViewData["Title"] = "Endereços";
-    // Captura o ID do cliente da URL para manter a navegação consistente
+    ViewData["Title"] = "Endereï¿½os";
+    // Captura o ID do cliente da URL para manter a navegaï¿½ï¿½o consistente
     var idCliente = Context.Request.Query["idCliente"];
 }
 
@@ -12,13 +12,13 @@
             <div class="container-fluid">
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
-                        <h2 class="fw-bold m-0">Endereços Cadastrados</h2>
+                        <h2 class="fw-bold m-0">Endereï¿½os Cadastrados</h2>
                     </div>
 
                     <a asp-action="Create"
                        asp-route-idCliente="@idCliente"
                        class="btn btn-orange text-white px-4 py-2 shadow-sm fw-bold">
-                        <i class="bi bi-plus-lg me-2"></i>Novo Endereço
+                        <i class="bi bi-plus-lg me-2"></i>Novo Endereï¿½o
                     </a>
                 </div>
 
@@ -30,6 +30,19 @@
                     </div>
                 </div>
 
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success rounded-3">
+                        <i class="bi bi-check-circle-fill me-2"></i>@TempData["Success"]
+                    </div>
+                }
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger rounded-3">
+                        @TempData["Error"]
+                    </div>
+                }
+
                 <div class="card border-0 shadow-sm">
                     <div class="card-body p-0">
                         <div class="table-responsive">
@@ -37,12 +50,12 @@
                                 <thead class="bg-light">
                                     <tr>
                                         <th class="ps-4 py-3 text-muted small fw-bold text-uppercase">Logradouro</th>
-                                        <th class="py-3 text-muted small fw-bold text-uppercase">Número</th>
+                                        <th class="py-3 text-muted small fw-bold text-uppercase">Nï¿½mero</th>
                                         <th class="py-3 text-muted small fw-bold text-uppercase">Bairro</th>
                                         <th class="py-3 text-muted small fw-bold text-uppercase">CEP</th>
                                         <th class="py-3 text-muted small fw-bold text-uppercase">Cidade/UF</th>
                                         <th class="py-3 text-muted small fw-bold text-uppercase">Comp.</th>
-                                        <th class="text-center py-3 text-muted small fw-bold text-uppercase">Ações</th>
+                                        <th class="text-center py-3 text-muted small fw-bold text-uppercase">Aï¿½ï¿½es</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -80,7 +93,7 @@
                                         <tr>
                                             <td colspan="7" class="text-center py-5">
                                                 <i class="bi bi-map text-muted opacity-25" style="font-size: 3rem;"></i><br />
-                                                <span class="text-muted mt-2 d-block">Nenhum endereço cadastrado.</span>
+                                                <span class="text-muted mt-2 d-block">Nenhum endereï¿½o cadastrado.</span>
                                             </td>
                                         </tr>
                                     }
@@ -106,7 +119,7 @@
             background-color: #fff3e6;
         }
 
-        /* Botão Sólido */
+        /* Botï¿½o Sï¿½lido */
         .btn-orange {
             background-color: #ff6600;
             border: none;
@@ -118,7 +131,7 @@
                 transform: translateY(-1px);
             }
 
-        /* Botão Outline (Usado na Tabela) */
+        /* Botï¿½o Outline (Usado na Tabela) */
         .btn-orange-outline {
             border: 1px solid #ff6600;
             color: #ff6600;
@@ -145,7 +158,7 @@
                 color: white;
             }
 
-        /* Ícone Avatar */
+        /* ï¿½cone Avatar */
         .avatar-sm {
             width: 32px;
             height: 32px;
@@ -153,7 +166,7 @@
 
         /* Inputs e Tabela */
         .form-control:focus {
-            box-shadow: none; /* Remove shadow padrão azul */
+            box-shadow: none; /* Remove shadow padrï¿½o azul */
         }
 
         .table tbody tr:hover {

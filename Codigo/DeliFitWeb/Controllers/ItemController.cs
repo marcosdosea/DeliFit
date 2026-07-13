@@ -3,6 +3,7 @@ using Core;
 using Core.Service;
 using DeliFitWeb.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Service;
 using DeliFitWeb.Helpers;
 using Microsoft.AspNetCore.Authorization;
@@ -248,7 +249,19 @@ namespace DeliFitWeb.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Delete(uint id, ItemViewModel itemModel)
         {
-            _itemService.Delete(id);
+            try
+            {
+                _itemService.Delete(id);
+            }
+            catch (ServiceException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            catch (DbUpdateException)
+            {
+                TempData["Error"] = "Não é possível excluir este item pois ele já foi incluído em pedidos.";
+            }
+
             return RedirectToAction(nameof(Index), new { idRestaurante = itemModel.IdRestaurante });
         }
 

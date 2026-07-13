@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Net.Http;
 using System.Net.Http.Json;
 using Core.Identity.Data;
@@ -275,15 +276,36 @@ namespace DeliFitWeb.Controllers
         public async Task<ActionResult> Delete(uint id, RestauranteViewModel restauranteModel)
         {
             var restaurante = _restauranteService.Get(id);
+            if (restaurante == null)
+            {
+                TempData["Error"] = "Restaurante não encontrado.";
+                return RedirectToAction(nameof(Index));
+            }
 
-            if (restaurante != null && !string.IsNullOrEmpty(restaurante.Email) && _userManager != null)
+            try
+            {
+                _restauranteService.Delete(id);
+            }
+            catch (ServiceException ex)
+            {
+                TempData["Error"] = ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException)
+            {
+                TempData["Error"] = "Não é possível excluir este restaurante pois existem pedidos ou avaliações vinculados a ele.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Só remove o login (Identity) depois que o registro do restaurante foi
+            // excluído com sucesso, para não deixar a conta órfã se a exclusão falhar.
+            if (!string.IsNullOrEmpty(restaurante.Email) && _userManager != null)
             {
                 var user = await _userManager.FindByEmailAsync(restaurante.Email);
                 if (user != null)
                     await _userManager.DeleteAsync(user);
             }
 
-            _restauranteService.Delete(id);
             return RedirectToAction(nameof(Index));
         }
 

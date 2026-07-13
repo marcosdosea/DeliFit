@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Core.Identity.Data;
 using DeliFitWeb.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 namespace DeliFitWeb.Controllers;
 
@@ -165,15 +166,31 @@ public class ClienteController : Controller
     public async Task<ActionResult> Delete(ClienteViewModel clienteModel)
     {
         var cliente = _clienteService.Get(clienteModel.Id);
+        if (cliente == null)
+        {
+            TempData["Error"] = "Cliente não encontrado.";
+            return RedirectToAction(nameof(Index));
+        }
 
-        if (cliente != null && !string.IsNullOrEmpty(cliente.Email))
+        try
+        {
+            _clienteService.Delete(clienteModel.Id);
+        }
+        catch (DbUpdateException)
+        {
+            TempData["Error"] = "Não é possível excluir este cliente pois existem pedidos, avaliações ou carrinhos vinculados a ele.";
+            return RedirectToAction(nameof(Details), new { id = clienteModel.Id });
+        }
+
+        // Só remove o login (Identity) depois que o registro do cliente foi
+        // excluído com sucesso, para não deixar a conta órfã se a exclusão falhar.
+        if (!string.IsNullOrEmpty(cliente.Email))
         {
             var user = await _userManager.FindByEmailAsync(cliente.Email);
             if (user != null)
                 await _userManager.DeleteAsync(user);
         }
 
-        _clienteService.Delete(clienteModel.Id);
         return RedirectToAction(nameof(Index));
     }
 
