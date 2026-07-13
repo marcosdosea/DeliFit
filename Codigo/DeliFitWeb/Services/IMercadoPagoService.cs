@@ -16,6 +16,7 @@ public class CartaoSalvoResultado
     public bool Sucesso { get; set; }
     public string? MercadoPagoCardId { get; set; }
     public string? PaymentMethodId { get; set; }
+    public string? IssuerId { get; set; }
     public string? Bandeira { get; set; }
     public string? UltimosQuatroDigitos { get; set; }
     public int? ExpirationMonth { get; set; }

@@ -211,6 +211,7 @@ public class MercadoPagoService : IMercadoPagoService
                 Sucesso = true,
                 MercadoPagoCardId = card.Id,
                 PaymentMethodId = card.PaymentMethod?.Id,
+                IssuerId = card.Issuer?.Id?.ToString(),
                 Bandeira = card.PaymentMethod?.Name,
                 UltimosQuatroDigitos = card.LastFourDigits,
                 ExpirationMonth = card.ExpirationMonth,

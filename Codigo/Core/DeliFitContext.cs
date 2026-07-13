@@ -181,6 +181,9 @@ public partial class DeliFitContext : DbContext
             entity.Property(e => e.MercadoPagoPaymentMethodId)
                 .HasMaxLength(30)
                 .HasColumnName("mercadoPagoPaymentMethodId");
+            entity.Property(e => e.MercadoPagoIssuerId)
+                .HasMaxLength(30)
+                .HasColumnName("mercadoPagoIssuerId");
             entity.Property(e => e.UltimosQuatroDigitos)
                 .HasMaxLength(4)
                 .IsFixedLength()

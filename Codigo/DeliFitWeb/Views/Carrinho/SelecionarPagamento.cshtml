@@ -11,6 +11,7 @@
         : null;
     string? paymentMethodIdSelecionadoInicial = cartaoSelecionadoInicial?.MercadoPagoPaymentMethodId;
     string? mercadoPagoCardIdSelecionadoInicial = cartaoSelecionadoInicial?.MercadoPagoCardId;
+    string? issuerIdSelecionadoInicial = cartaoSelecionadoInicial?.MercadoPagoIssuerId;
 }
 
 <style>
@@ -282,7 +283,7 @@
                 var isSelected = formaSelecionada == "C" && idCartaoSelecionado.HasValue
                                  && idCartaoSelecionado.Value == (int)c.Id;
                 <div class="cartao-card-item @(isSelected ? "selected" : "")"
-                     onclick="selecionarForma('C', @c.Id, '@c.MercadoPagoPaymentMethodId', '@c.MercadoPagoCardId')" style="cursor:pointer;">
+                     onclick="selecionarForma('C', @c.Id, '@c.MercadoPagoPaymentMethodId', '@c.MercadoPagoCardId', '@c.MercadoPagoIssuerId')" style="cursor:pointer;">
                     <div class="cartao-avatar"><i class="bi bi-credit-card-2-front"></i></div>
                     <div class="opcao-label">
                         <div class="nome">@c.Bandeira – final @c.UltimosQuatroDigitos</div>
@@ -328,6 +329,7 @@
         let cvvField = null;
         let paymentMethodIdSelecionado = null;
         let mercadoPagoCardIdSelecionado = null;
+        let issuerIdSelecionado = null;
 
         function atualizarBotaoConfirmar(forma) {
             const btn = document.getElementById('btnConfirmar');
@@ -385,7 +387,7 @@
                     body: new URLSearchParams({
                         token: token.id,
                         paymentMethodId: paymentMethodIdSelecionado,
-                        issuerId: '',
+                        issuerId: issuerIdSelecionado || '',
                         installments: 1
                     })
                 });
@@ -407,12 +409,13 @@
             }
         });
 
-        function selecionarForma(forma, idCartao, paymentMethodId, mercadoPagoCardId) {
+        function selecionarForma(forma, idCartao, paymentMethodId, mercadoPagoCardId, issuerId) {
             // Atualiza inputs ocultos
             document.getElementById('inputForma').value = forma;
             document.getElementById('inputCartao').value = idCartao ?? '';
             paymentMethodIdSelecionado = paymentMethodId;
             mercadoPagoCardIdSelecionado = mercadoPagoCardId;
+            issuerIdSelecionado = issuerId || null;
 
             // Remove todas as marcações visuais
             document.querySelectorAll('.opcao-item, .cartao-card-item').forEach(el => {
@@ -452,10 +455,12 @@
             const idCartaoInicial = document.getElementById('inputCartao').value;
             const paymentMethodIdInicial = @Html.Raw(Json.Serialize(paymentMethodIdSelecionadoInicial));
             const mercadoPagoCardIdInicial = @Html.Raw(Json.Serialize(mercadoPagoCardIdSelecionadoInicial));
+            const issuerIdInicial = @Html.Raw(Json.Serialize(issuerIdSelecionadoInicial));
 
             if (formaInicial === 'C' && idCartaoInicial && paymentMethodIdInicial && mercadoPagoCardIdInicial) {
                 paymentMethodIdSelecionado = paymentMethodIdInicial;
                 mercadoPagoCardIdSelecionado = mercadoPagoCardIdInicial;
+                issuerIdSelecionado = issuerIdInicial || null;
                 document.getElementById('mpCvvWrapper').style.display = 'block';
                 renderCvvField();
             }

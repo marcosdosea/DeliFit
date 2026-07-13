@@ -162,6 +162,7 @@ public class CartaoController : Controller
             IdCliente = viewModel.IdCliente,
             MercadoPagoCardId = resultado.MercadoPagoCardId!,
             MercadoPagoPaymentMethodId = resultado.PaymentMethodId ?? "",
+            MercadoPagoIssuerId = resultado.IssuerId,
             Bandeira = resultado.Bandeira ?? "Cartão",
             UltimosQuatroDigitos = resultado.UltimosQuatroDigitos ?? "0000",
             Validade = resultado.ExpirationMonth.HasValue && resultado.ExpirationYear.HasValue

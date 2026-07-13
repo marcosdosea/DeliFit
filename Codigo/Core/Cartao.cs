@@ -20,6 +20,12 @@ public partial class Cartao
     /// </summary>
     public string MercadoPagoPaymentMethodId { get; set; } = null!;
 
+    /// <summary>
+    /// Id do emissor (banco) do cartão no Mercado Pago. Alguns cartões exigem esse valor na
+    /// cobrança, senão a API recusa com "No result found for the given parameters".
+    /// </summary>
+    public string? MercadoPagoIssuerId { get; set; }
+
     public string UltimosQuatroDigitos { get; set; } = null!;
 
     public string Bandeira { get; set; } = null!;
