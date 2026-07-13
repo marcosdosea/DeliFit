@@ -1,11 +1,13 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Core;
 using Core.Service;
 using DeliFitWeb.Mappers;
 using DeliFitWeb.Models;
+using DeliFitWeb.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using System.Security.Claims;
 
@@ -16,12 +18,15 @@ namespace DeliFitWeb.Controllers.Tests
     {
         private CartaoController controller = null!;
         private Mock<ICartaoService> mockService = null!;
+        private Mock<IMercadoPagoService> mockMercadoPagoService = null!;
 
         [TestInitialize]
         public void Initialize()
         {
             mockService = new Mock<ICartaoService>();
             var mockClienteService = new Mock<IClienteService>();
+            mockMercadoPagoService = new Mock<IMercadoPagoService>();
+            var mockConfiguration = new Mock<IConfiguration>();
 
             IMapper mapper = new MapperConfiguration(cfg =>
                 cfg.AddProfile(new CartaoProfile())).CreateMapper();
@@ -35,7 +40,29 @@ namespace DeliFitWeb.Controllers.Tests
             mockService.Setup(s => s.Create(It.IsAny<Cartao>()));
             mockService.Setup(s => s.Delete(It.IsAny<uint>()));
 
-            controller = new CartaoController(mockService.Object, mapper, mockClienteService.Object);
+            mockClienteService.Setup(s => s.Get(It.IsAny<uint>()))
+                .Returns(new Cliente { Id = 1, Nome = "Kauan Brilhante", Email = "teste@email.com", Cpf = "11111111111", Telefone = "11999999999" });
+
+            mockMercadoPagoService.Setup(s => s.ObterOuCriarCustomerIdAsync(It.IsAny<Cliente>()))
+                .ReturnsAsync("customer-1");
+            mockMercadoPagoService.Setup(s => s.SalvarCartaoAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(new CartaoSalvoResultado
+                {
+                    Sucesso = true,
+                    MercadoPagoCardId = "card-4",
+                    PaymentMethodId = "master",
+                    Bandeira = "Mastercard",
+                    UltimosQuatroDigitos = "1234",
+                    ExpirationMonth = 5,
+                    ExpirationYear = 2030
+                });
+
+            controller = new CartaoController(
+                mockService.Object,
+                mapper,
+                mockClienteService.Object,
+                mockMercadoPagoService.Object,
+                mockConfiguration.Object);
 
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
@@ -86,22 +113,35 @@ namespace DeliFitWeb.Controllers.Tests
         }
 
         [TestMethod]
-        public void CreateTest_Post_Valid()
+        public async Task CreateTest_Post_Valid()
         {
-            var result = controller.Create(GetNewCartao());
+            var result = await controller.Create(GetNewCartao());
 
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+            mockMercadoPagoService.Verify(s => s.ObterOuCriarCustomerIdAsync(It.IsAny<Cliente>()), Times.Once);
+            mockMercadoPagoService.Verify(s => s.SalvarCartaoAsync("customer-1", "token-teste"), Times.Once);
         }
 
         [TestMethod]
-        public void CreateTest_Post_Invalid()
+        public async Task CreateTest_Post_Invalid()
         {
-            controller.ModelState.AddModelError("Numero", "Campo requerido");
+            controller.ModelState.AddModelError("Nome", "Campo requerido");
 
-            var result = controller.Create(GetNewCartao());
+            var result = await controller.Create(GetNewCartao());
 
             // Formulário inválido reexibe a própria tela de cadastro com os erros
             // ao lado dos campos, em vez de redirecionar para a lista sem explicação.
+            Assert.IsInstanceOfType(result, typeof(ViewResult));
+        }
+
+        [TestMethod]
+        public async Task CreateTest_Post_SemToken_Invalido()
+        {
+            var model = GetNewCartao();
+            model.Token = null;
+
+            var result = await controller.Create(model);
+
             Assert.IsInstanceOfType(result, typeof(ViewResult));
         }
 
@@ -114,10 +154,10 @@ namespace DeliFitWeb.Controllers.Tests
         }
 
         [TestMethod]
-        public void DeleteTest_Post_Valid()
+        public async Task DeleteTest_Post_Valid()
         {
             var model = GetTargetCartaoViewModel();
-            var result = controller.Delete(model.Id, model);
+            var result = await controller.Delete(model.Id, model);
 
             Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
         }
@@ -130,9 +170,7 @@ namespace DeliFitWeb.Controllers.Tests
                 IdCliente = 1,
                 Nome = "Novo Cartao",
                 Cpf = "12312312312",
-                Numero = "1234123412341234",
-                Validade = new DateTime(2030, 5, 1),
-                Cvv = "321"
+                Token = "token-teste"
             };
         }
 
@@ -144,9 +182,9 @@ namespace DeliFitWeb.Controllers.Tests
                 IdCliente = 1,
                 Nome = "Kauan Brilhante",
                 Cpf = "11111111111",
-                Numero = "1111222233334444",
-                Validade = new DateTime(2027, 12, 1),
-                Cvv = "123"
+                Bandeira = "Mastercard",
+                UltimosQuatroDigitos = "4444",
+                Validade = new DateTime(2027, 12, 1)
             };
         }
 
@@ -158,9 +196,11 @@ namespace DeliFitWeb.Controllers.Tests
                 IdCliente = 1,
                 Nome = "Kauan Brilhante",
                 Cpf = "11111111111",
-                Numero = "1111222233334444",
-                Validade = new DateTime(2027, 12, 1),
-                Cvv = "123"
+                MercadoPagoCardId = "card-1",
+                MercadoPagoPaymentMethodId = "master",
+                Bandeira = "Mastercard",
+                UltimosQuatroDigitos = "4444",
+                Validade = new DateTime(2027, 12, 1)
             };
         }
 
@@ -174,9 +214,11 @@ namespace DeliFitWeb.Controllers.Tests
                     IdCliente = 1,
                     Nome = "Kauan Brilhante",
                     Cpf = "11111111111",
-                    Numero = "1111222233334444",
-                    Validade = new DateTime(2027, 12, 1),
-                    Cvv = "123"
+                    MercadoPagoCardId = "card-1",
+                    MercadoPagoPaymentMethodId = "master",
+                    Bandeira = "Mastercard",
+                    UltimosQuatroDigitos = "4444",
+                    Validade = new DateTime(2027, 12, 1)
                 },
                 new Cartao
                 {
@@ -184,9 +226,11 @@ namespace DeliFitWeb.Controllers.Tests
                     IdCliente = 1,
                     Nome = "Kauan Brilhante",
                     Cpf = "22222222222",
-                    Numero = "5555666677778888",
-                    Validade = new DateTime(2028, 6, 1),
-                    Cvv = "456"
+                    MercadoPagoCardId = "card-2",
+                    MercadoPagoPaymentMethodId = "visa",
+                    Bandeira = "Visa",
+                    UltimosQuatroDigitos = "8888",
+                    Validade = new DateTime(2028, 6, 1)
                 },
                 new Cartao
                 {
@@ -194,9 +238,11 @@ namespace DeliFitWeb.Controllers.Tests
                     IdCliente = 1,
                     Nome = "Outro Nome",
                     Cpf = "33333333333",
-                    Numero = "9999000011112222",
-                    Validade = new DateTime(2029, 1, 1),
-                    Cvv = "789"
+                    MercadoPagoCardId = "card-3",
+                    MercadoPagoPaymentMethodId = "visa",
+                    Bandeira = "Visa",
+                    UltimosQuatroDigitos = "2222",
+                    Validade = new DateTime(2029, 1, 1)
                 }
             };
         }

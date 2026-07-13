@@ -1,7 +1,4 @@
-﻿using AutoMapper;
-using Core;
 using Core.Service;
-using DeliFitAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,12 +9,10 @@ namespace DeliFitAPI.Controllers
     public class CartaoController : ControllerBase
     {
         private readonly ICartaoService _cartaoService;
-        private readonly IMapper _mapper;
 
-        public CartaoController(ICartaoService cartaoService, IMapper mapper)
+        public CartaoController(ICartaoService cartaoService)
         {
             _cartaoService = cartaoService;
-            _mapper = mapper;
         }
 
         // GET: api/Cartao
@@ -53,20 +48,9 @@ namespace DeliFitAPI.Controllers
             return Ok(cartoes);
         }
 
-        // POST api/Cartao
-        [HttpPost]
-        public ActionResult Post([FromBody] CartaoViewModel cartaoModel)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Dados inválidos");
-            }
-
-            var cartao = _mapper.Map<Cartao>(cartaoModel);
-            _cartaoService.Create(cartao);
-
-            return Ok(cartao);
-        }
+        // Não há mais um POST de criação de cartão aqui: número/CVV completos não são mais
+        // aceitos por este servidor (só um token gerado pelo SDK do Mercado Pago no cliente).
+        // O cadastro de cartão acontece hoje pelo DeliFitWeb (CartaoController + Secure Fields).
 
         // DELETE api/Cartao/5
         [HttpDelete("{id}")]

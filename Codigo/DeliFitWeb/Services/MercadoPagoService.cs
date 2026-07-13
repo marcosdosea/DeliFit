@@ -1,5 +1,8 @@
+using Core;
+using Core.Service;
 using MercadoPago.Client;
 using MercadoPago.Client.Common;
+using MercadoPago.Client.Customer;
 using MercadoPago.Client.Payment;
 using MercadoPago.Config;
 using MercadoPago.Error;
@@ -8,10 +11,12 @@ namespace DeliFitWeb.Services;
 
 public class MercadoPagoService : IMercadoPagoService
 {
+    private readonly IClienteService _clienteService;
     private readonly ILogger<MercadoPagoService> _logger;
 
-    public MercadoPagoService(IConfiguration configuration, ILogger<MercadoPagoService> logger)
+    public MercadoPagoService(IConfiguration configuration, IClienteService clienteService, ILogger<MercadoPagoService> logger)
     {
+        _clienteService = clienteService;
         _logger = logger;
 
         var accessToken = configuration["MercadoPago:AccessToken"];
@@ -78,6 +83,88 @@ public class MercadoPagoService : IMercadoPagoService
                 Status = "rejected",
                 MensagemErro = ex.ApiError?.Message ?? "Pagamento recusado pelo Mercado Pago."
             };
+        }
+    }
+
+    public async Task<string> ObterOuCriarCustomerIdAsync(Cliente cliente)
+    {
+        if (!string.IsNullOrEmpty(cliente.MercadoPagoCustomerId))
+            return cliente.MercadoPagoCustomerId;
+
+        var client = new CustomerClient();
+        var nomes = cliente.Nome.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+
+        string customerId;
+        try
+        {
+            var customer = await client.CreateAsync(new CustomerRequest
+            {
+                Email = cliente.Email,
+                FirstName = nomes.ElementAtOrDefault(0) ?? cliente.Nome,
+                LastName = nomes.ElementAtOrDefault(1) ?? "",
+                Identification = new IdentificationRequest { Type = "CPF", Number = cliente.Cpf }
+            });
+            customerId = customer.Id;
+        }
+        catch (MercadoPagoApiException)
+        {
+            // E-mail já cadastrado como Customer em uma execução/teste anterior: reaproveita o existente.
+            var busca = await client.SearchAsync(new SearchRequest
+            {
+                Filters = new Dictionary<string, object> { ["email"] = cliente.Email }
+            });
+            var existente = busca.Results?.FirstOrDefault()
+                ?? throw new InvalidOperationException("Não foi possível criar nem localizar o Customer no Mercado Pago.");
+            customerId = existente.Id;
+        }
+
+        cliente.MercadoPagoCustomerId = customerId;
+        _clienteService.Edit(cliente);
+        return customerId;
+    }
+
+    public async Task<CartaoSalvoResultado> SalvarCartaoAsync(string customerId, string token)
+    {
+        var client = new CustomerClient();
+
+        try
+        {
+            var card = await client.CreateCardAsync(customerId, new CustomerCardCreateRequest { Token = token });
+
+            return new CartaoSalvoResultado
+            {
+                Sucesso = true,
+                MercadoPagoCardId = card.Id,
+                PaymentMethodId = card.PaymentMethod?.Id,
+                Bandeira = card.PaymentMethod?.Name,
+                UltimosQuatroDigitos = card.LastFourDigits,
+                ExpirationMonth = card.ExpirationMonth,
+                ExpirationYear = card.ExpirationYear
+            };
+        }
+        catch (MercadoPagoApiException ex)
+        {
+            _logger.LogWarning(ex, "Falha ao salvar cartão no Mercado Pago. Cause: {Cause}", ex.ApiError?.Message);
+
+            return new CartaoSalvoResultado
+            {
+                Sucesso = false,
+                MensagemErro = ex.ApiError?.Message ?? "Não foi possível salvar o cartão."
+            };
+        }
+    }
+
+    public async Task RemoverCartaoAsync(string customerId, string cardId)
+    {
+        var client = new CustomerClient();
+        try
+        {
+            await client.DeleteCardAsync(customerId, cardId);
+        }
+        catch (MercadoPagoApiException ex)
+        {
+            // Cartão pode já ter sido removido do cofre; não bloqueia a exclusão local.
+            _logger.LogWarning(ex, "Falha ao remover cartão {CardId} do cofre do Mercado Pago.", cardId);
         }
     }
 }

@@ -1,4 +1,3 @@
-using DeliFitAPI.Filter;
 using Core;
 using Core.Identity.Data;
 using Core.Service;
@@ -29,7 +28,6 @@ namespace DeliFitAPI
             builder.Services.AddControllers(options =>
             {
                 options.Filters.Add(new HttpResponseExceptionFilter());
-                options.Filters.Add(new CartaoValidationFilter());
             });
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

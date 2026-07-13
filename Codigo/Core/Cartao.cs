@@ -9,9 +9,20 @@ public partial class Cartao
 
     public string Nome { get; set; } = null!;
 
-    public string Numero { get; set; } = null!;
+    /// <summary>
+    /// Id do cartão no cofre do Mercado Pago (Customer Cards API). O número e o CVV
+    /// completos nunca são armazenados aqui — apenas essa referência tokenizada.
+    /// </summary>
+    public string MercadoPagoCardId { get; set; } = null!;
 
-    public string Cvv { get; set; } = null!;
+    /// <summary>
+    /// Id do meio de pagamento no Mercado Pago (ex: "master", "visa"), necessário para cobrar.
+    /// </summary>
+    public string MercadoPagoPaymentMethodId { get; set; } = null!;
+
+    public string UltimosQuatroDigitos { get; set; } = null!;
+
+    public string Bandeira { get; set; } = null!;
 
     public DateTime Validade { get; set; }
 

@@ -171,18 +171,23 @@ public partial class DeliFitContext : DbContext
                 .HasMaxLength(11)
                 .IsFixedLength()
                 .HasColumnName("cpf");
-            entity.Property(e => e.Cvv)
-                .HasMaxLength(3)
-                .IsFixedLength()
-                .HasColumnName("cvv");
             entity.Property(e => e.IdCliente).HasColumnName("idCliente");
             entity.Property(e => e.Nome)
                 .HasMaxLength(50)
                 .HasColumnName("nome");
-            entity.Property(e => e.Numero)
-                .HasMaxLength(16)
+            entity.Property(e => e.MercadoPagoCardId)
+                .HasMaxLength(50)
+                .HasColumnName("mercadoPagoCardId");
+            entity.Property(e => e.MercadoPagoPaymentMethodId)
+                .HasMaxLength(30)
+                .HasColumnName("mercadoPagoPaymentMethodId");
+            entity.Property(e => e.UltimosQuatroDigitos)
+                .HasMaxLength(4)
                 .IsFixedLength()
-                .HasColumnName("numero");
+                .HasColumnName("ultimosQuatroDigitos");
+            entity.Property(e => e.Bandeira)
+                .HasMaxLength(30)
+                .HasColumnName("bandeira");
             entity.Property(e => e.Validade)
                 .HasColumnType("datetime")
                 .HasColumnName("validade");
@@ -216,6 +221,9 @@ public partial class DeliFitContext : DbContext
                 .HasMaxLength(11)
                 .IsFixedLength()
                 .HasColumnName("telefone");
+            entity.Property(e => e.MercadoPagoCustomerId)
+                .HasMaxLength(50)
+                .HasColumnName("mercadoPagoCustomerId");
         });
 
         modelBuilder.Entity<Endereco>(entity =>

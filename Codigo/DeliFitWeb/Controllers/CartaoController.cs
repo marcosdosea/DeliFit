@@ -1,7 +1,8 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Core;
 using Core.Service;
 using DeliFitWeb.Models;
+using DeliFitWeb.Services;
 using Microsoft.AspNetCore.Mvc;
 using Service;
 using DeliFitWeb.Helpers;
@@ -14,12 +15,21 @@ public class CartaoController : Controller
     private readonly ICartaoService _cartaoService;
     private readonly IMapper _mapper;
     private readonly IClienteService _clienteService;
+    private readonly IMercadoPagoService _mercadoPagoService;
+    private readonly IConfiguration _configuration;
 
-    public CartaoController(ICartaoService cartaoService, IMapper mapper, IClienteService clienteService)
+    public CartaoController(
+        ICartaoService cartaoService,
+        IMapper mapper,
+        IClienteService clienteService,
+        IMercadoPagoService mercadoPagoService,
+        IConfiguration configuration)
     {
         _cartaoService = cartaoService;
         _mapper = mapper;
         _clienteService = clienteService;
+        _mercadoPagoService = mercadoPagoService;
+        _configuration = configuration;
     }
 
     [Authorize(Roles = "Cliente,Admin")]
@@ -87,62 +97,90 @@ public class CartaoController : Controller
             }
         }
 
+        ViewBag.MercadoPagoPublicKey = _configuration["MercadoPago:PublicKey"];
         return View(model);
     }
 
+    /// <summary>
+    /// POST: Salva um cartão tokenizado pelos Secure Fields do Mercado Pago. Número, validade e CVV
+    /// completos nunca chegam a este servidor — só o token e os dados de exibição/cobrança.
+    /// </summary>
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "Cliente")]
-    public ActionResult Create(CartaoViewModel viewModel)
+    public async Task<ActionResult> Create(CartaoViewModel viewModel)
     {
         if (viewModel.IdCliente == 0)
         {
             var clienteId = GetClienteIdLogado();
             if (clienteId.HasValue)
-            {
                 viewModel.IdCliente = clienteId.Value;
-            }
-            else
-            {
-                ModelState.AddModelError("", "Não foi possível identificar o cliente.");
-                return View(viewModel);
-            }
         }
 
-        // Monta o DateTime de validade a partir dos campos auxiliares de mês e ano
-        // Monta o DateTime de validade a partir dos campos auxiliares de mês e ano.
-        // Se os campos de mês/ano não forem enviados (por exemplo em testes que preenchem Validade diretamente),
-        // usamos o valor de Validade já presente no viewModel.
-        if (viewModel.ValidadeMes >= 1 && viewModel.ValidadeMes <= 12 && viewModel.ValidadeAno >= 2024)
+        ModelState.Remove(nameof(viewModel.Bandeira));
+        ModelState.Remove(nameof(viewModel.UltimosQuatroDigitos));
+        ModelState.Remove(nameof(viewModel.Validade));
+
+        if (string.IsNullOrWhiteSpace(viewModel.Token))
+            ModelState.AddModelError("", "Não foi possível ler os dados do cartão. Confira os campos e tente novamente.");
+
+        if (!ModelState.IsValid)
         {
-            viewModel.Validade = new DateTime((int)viewModel.ValidadeAno, (int)viewModel.ValidadeMes, 1);
-            ModelState.Remove(nameof(viewModel.Validade));
-        }
-        else if (viewModel.Validade == default)
-        {
-            ModelState.AddModelError("ValidadeMes", "Informe um mês e ano de validade válidos.");
+            ViewBag.MercadoPagoPublicKey = _configuration["MercadoPago:PublicKey"];
+            return View(viewModel);
         }
 
-        if (ModelState.IsValid)
+        var cliente = _clienteService.Get(viewModel.IdCliente);
+        if (cliente == null)
         {
-            try
-            {
-                var cartao = _mapper.Map<Cartao>(viewModel);
-                _cartaoService.Create(cartao);
-                TempData["Success"] = "Cartão adicionado com sucesso!";
-                return RedirectToAction(nameof(Index), new { idCliente = viewModel.IdCliente });
-            }
-            catch (Exception ex)
-            {
-                // ModelState não sobrevive a um redirect — usamos TempData para a mensagem chegar até a view.
-                TempData["Error"] = $"Erro ao adicionar cartão: {ex.Message}";
-                return RedirectToAction(nameof(Index), new { idCliente = viewModel.IdCliente });
-            }
+            TempData["Error"] = "Cliente não encontrado.";
+            return RedirectToAction("Index", "Home");
         }
 
-        // ModelState inválido: reexibe o próprio formulário de cadastro com os erros
-        // ao lado dos campos (asp-validation-for), em vez de redirecionar para a lista.
-        return View(viewModel);
+        string customerId;
+        try
+        {
+            customerId = await _mercadoPagoService.ObterOuCriarCustomerIdAsync(cliente);
+        }
+        catch (Exception ex)
+        {
+            TempData["Error"] = $"Erro ao registrar cliente no Mercado Pago: {ex.Message}";
+            return RedirectToAction(nameof(Create), new { idCliente = viewModel.IdCliente });
+        }
+
+        var resultado = await _mercadoPagoService.SalvarCartaoAsync(customerId, viewModel.Token!);
+        if (!resultado.Sucesso)
+        {
+            TempData["Error"] = resultado.MensagemErro ?? "Não foi possível salvar o cartão.";
+            return RedirectToAction(nameof(Create), new { idCliente = viewModel.IdCliente });
+        }
+
+        var cartao = new Cartao
+        {
+            Nome = viewModel.Nome,
+            Cpf = viewModel.Cpf,
+            IdCliente = viewModel.IdCliente,
+            MercadoPagoCardId = resultado.MercadoPagoCardId!,
+            MercadoPagoPaymentMethodId = resultado.PaymentMethodId ?? "",
+            Bandeira = resultado.Bandeira ?? "Cartão",
+            UltimosQuatroDigitos = resultado.UltimosQuatroDigitos ?? "0000",
+            Validade = resultado.ExpirationMonth.HasValue && resultado.ExpirationYear.HasValue
+                ? new DateTime(resultado.ExpirationYear.Value, resultado.ExpirationMonth.Value, 1)
+                : DateTime.Today
+        };
+
+        try
+        {
+            _cartaoService.Create(cartao);
+        }
+        catch (Exception ex)
+        {
+            TempData["Error"] = $"Cartão salvo no Mercado Pago, mas houve erro ao registrar localmente: {ex.Message}";
+            return RedirectToAction(nameof(Create), new { idCliente = viewModel.IdCliente });
+        }
+
+        TempData["Success"] = "Cartão adicionado com sucesso!";
+        return RedirectToAction(nameof(Index), new { idCliente = viewModel.IdCliente });
     }
 
     public ActionResult Delete(uint id)
@@ -159,11 +197,20 @@ public class CartaoController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public ActionResult Delete(uint id, CartaoViewModel viewModel)
+    public async Task<ActionResult> Delete(uint id, CartaoViewModel viewModel)
     {
+        var cartao = _cartaoService.Get(id);
+
         try
         {
-            _cartaoService.Delete(viewModel.Id);
+            if (cartao != null)
+            {
+                var cliente = _clienteService.Get(cartao.IdCliente);
+                if (cliente?.MercadoPagoCustomerId != null)
+                    await _mercadoPagoService.RemoverCartaoAsync(cliente.MercadoPagoCustomerId, cartao.MercadoPagoCardId);
+            }
+
+            _cartaoService.Delete(id);
             TempData["Success"] = "Cartão excluído com sucesso!";
         }
         catch (Exception ex)

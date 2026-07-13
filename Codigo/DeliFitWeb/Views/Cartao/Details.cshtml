@@ -1,7 +1,7 @@
 @model DeliFitWeb.Models.CartaoViewModel
 
 @{
-    ViewData["Title"] = "Detalhes do Cartão";
+    ViewData["Title"] = "Detalhes do Cartï¿½o";
 }
 
 <div class="container-fluid p-0 bg-white">
@@ -11,8 +11,8 @@
 
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
-                        <h2 class="fw-bold m-0">Detalhes do Cartão</h2>
-                        <p class="text-muted small">Visualizando informações do método de pagamento.</p>
+                        <h2 class="fw-bold m-0">Detalhes do Cartï¿½o</h2>
+                        <p class="text-muted small">Visualizando informaï¿½ï¿½es do mï¿½todo de pagamento.</p>
                     </div>
                 </div>
 
@@ -27,7 +27,7 @@
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-header bg-white border-0 pt-4 ps-4">
                         <h5 class="fw-bold mb-0 text-orange">
-                            <i class="bi bi-credit-card-2-front me-2"></i>Dados do Cartão
+                            <i class="bi bi-credit-card-2-front me-2"></i>Dados do Cartï¿½o
                         </h5>
                     </div>
 
@@ -35,7 +35,7 @@
 
                         <div class="row g-3 mb-4">
                             <div class="col-md-6">
-                                <label class="form-label small fw-bold text-muted text-uppercase">Nome no Cartão</label>
+                                <label class="form-label small fw-bold text-muted text-uppercase">Nome no Cartï¿½o</label>
                                 <input class="form-control border-0 bg-white p-3 fw-bold"
                                        value="@Model.Nome"
                                        disabled />
@@ -51,12 +51,9 @@
 
                         <div class="row g-3 mb-4">
                             <div class="col-md-6">
-                                <label class="form-label small fw-bold text-muted text-uppercase">Número do Cartão</label>
-                                <input id="numeroCartao"
-                                       class="form-control border-0 bg-white p-3"
-                                       value="@Model.Numero"
-                                       data-real="@Model.Numero"
-                                       data-mask="**** **** **** ****"
+                                <label class="form-label small fw-bold text-muted text-uppercase">Bandeira / CartÃ£o</label>
+                                <input class="form-control border-0 bg-white p-3"
+                                       value="@Model.Bandeira â€“ final @Model.UltimosQuatroDigitos"
                                        disabled />
                             </div>
 
@@ -66,24 +63,12 @@
                                        value="@Model.Validade.ToString("MM/yy")"
                                        disabled />
                             </div>
-
-                            <div class="col-md-3">
-                                <label class="form-label small fw-bold text-muted text-uppercase">CVV</label>
-                                <input id="cvvCartao"
-                                       class="form-control border-0 bg-white p-3"
-                                       value="@Model.Cvv"
-                                       data-real="@Model.Cvv"
-                                       data-mask="***"
-                                       disabled />
-                            </div>
                         </div>
 
-                        <div class="d-flex justify-content-end">
-                            <button type="button"
-                                    id="toggleDados"
-                                    class="btn btn-sm btn-outline-secondary px-4">
-                                <i class="bi bi-eye"></i> Mostrar dados
-                            </button>
+                        <div class="alert alert-light border small mb-0">
+                            <i class="bi bi-shield-check me-1"></i>
+                            NÃºmero e CVV completos nÃ£o ficam salvos aqui â€” o cartÃ£o fica guardado com seguranÃ§a no
+                            cofre do Mercado Pago.
                         </div>
 
                     </div>
@@ -134,44 +119,4 @@
             border-radius: 12px;
         }
     </style>
-
-    <script>
-        let visivel = false;
-
-        document.addEventListener("DOMContentLoaded", () => {
-            ocultarDados();
-        });
-
-        document.getElementById("toggleDados").addEventListener("click", () => {
-            visivel = !visivel;
-
-            if (visivel) {
-                mostrarDados();
-            } else {
-                ocultarDados();
-            }
-        });
-
-        function ocultarDados() {
-            document.getElementById("numeroCartao").value =
-                document.getElementById("numeroCartao").dataset.mask;
-
-            document.getElementById("cvvCartao").value =
-                document.getElementById("cvvCartao").dataset.mask;
-
-            document.getElementById("toggleDados").innerHTML =
-                '<i class="bi bi-eye"></i> Mostrar dados';
-        }
-
-        function mostrarDados() {
-            document.getElementById("numeroCartao").value =
-                document.getElementById("numeroCartao").dataset.real;
-
-            document.getElementById("cvvCartao").value =
-                document.getElementById("cvvCartao").dataset.real;
-
-            document.getElementById("toggleDados").innerHTML =
-                '<i class="bi bi-eye-slash"></i> Ocultar dados';
-        }
-    </script>
 }

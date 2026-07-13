@@ -1,24 +1,14 @@
-﻿@{
+@{
     ViewData["Title"] = "Selecionar Forma de Pagamento";
 
-    string DetectarBandeira(string numero)
-    {
-        if (string.IsNullOrEmpty(numero)) return "Cartão";
-        return numero[0] switch
-        {
-            '4' => "Visa",
-            '5' => "Mastercard",
-            '3' => "Amex",
-            '6' => "Elo",
-            _ => "Cartão"
-        };
-    }
     var cartoes = ViewBag.Cartoes as List<Core.Cartao> ?? new List<Core.Cartao>();
     var formaSelecionada = ViewBag.FormaSelecionada as string;
     int? idCartaoSelecionado = ViewBag.IdCartaoSelecionado != null ? (int?)ViewBag.IdCartaoSelecionado : null;
     string mercadoPagoPublicKey = ViewBag.MercadoPagoPublicKey as string ?? "";
-    decimal valorTotal = ViewBag.ValorTotal != null ? (decimal)ViewBag.ValorTotal : 0m;
     string? pagamentoCartaoStatus = ViewBag.PagamentoCartaoStatus as string;
+    string? paymentMethodIdSelecionadoInicial = idCartaoSelecionado.HasValue
+        ? cartoes.FirstOrDefault(c => c.Id == (uint)idCartaoSelecionado.Value)?.MercadoPagoPaymentMethodId
+        : null;
 }
 
 <style>
@@ -205,6 +195,11 @@
             background: #e55a00;
         }
 
+        .btn-confirmar:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
     .add-cartao-link {
         display: flex;
         align-items: center;
@@ -220,6 +215,14 @@
         .add-cartao-link i {
             font-size: 1.1rem;
         }
+
+    .mp-cvv-field {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 0.6rem 0.75rem;
+        height: calc(1.5em + 1.2rem + 2px);
+        max-width: 160px;
+    }
 </style>
 
 <div class="top-bar">
@@ -239,7 +242,7 @@
 
     <div class="opcao-card">
         <button type="button" class="opcao-item @(formaSelecionada == "D" ? "selected" : "")"
-                onclick="selecionarForma('D', null)">
+                onclick="selecionarForma('D', null, null)">
             <div class="opcao-icon dinheiro"><i class="bi bi-cash-coin"></i></div>
             <div class="opcao-label">
                 <div class="nome">Dinheiro</div>
@@ -249,7 +252,7 @@
         </button>
 
         <button type="button" class="opcao-item @(formaSelecionada == "P" ? "selected" : "")"
-                onclick="selecionarForma('P', null)">
+                onclick="selecionarForma('P', null, null)">
             <div class="opcao-icon pix"><i class="bi bi-qr-code-scan"></i></div>
             <div class="opcao-label">
                 <div class="nome">Pix</div>
@@ -277,10 +280,10 @@
                 var isSelected = formaSelecionada == "C" && idCartaoSelecionado.HasValue
                                  && idCartaoSelecionado.Value == (int)c.Id;
                 <div class="cartao-card-item @(isSelected ? "selected" : "")"
-                     onclick="selecionarForma('C', @c.Id)" style="cursor:pointer;">
+                     onclick="selecionarForma('C', @c.Id, '@c.MercadoPagoPaymentMethodId')" style="cursor:pointer;">
                     <div class="cartao-avatar"><i class="bi bi-credit-card-2-front"></i></div>
                     <div class="opcao-label">
-                        <div class="nome">@DetectarBandeira(c.Numero) – final @c.Numero.Substring(c.Numero.Length - 4)</div>
+                        <div class="nome">@c.Bandeira – final @c.UltimosQuatroDigitos</div>
                         <div class="sub">@c.Nome</div>
                     </div>
                     <i class="bi bi-check-circle-fill check-icon @(isSelected ? "" : "d-none")"
@@ -294,10 +297,16 @@
         <i class="bi bi-plus-circle"></i> Adicionar novo cartão
     </a>
 
-    @* ── Mercado Pago Card Payment Brick: cobra o cartão informado agora ── *@
-    <div id="mpCartaoWrapper" class="opcao-card" style="display:none; padding:16px;">
-        <div class="section-title" style="padding:0 0 10px;">Dados do cartão (cobrança via Mercado Pago)</div>
-        <div id="cardPaymentBrick_container"></div>
+    @* ── Confirma o cartão selecionado só com o CVV (Mercado Pago Secure Fields) ── *@
+    <div id="mpCvvWrapper" class="opcao-card" style="display:none; padding:16px;">
+        <div class="section-title" style="padding:0 0 4px;">Confirme o CVV do cartão selecionado</div>
+        <div style="font-size: 0.78rem; color: #aaa; margin-bottom: 10px;">
+            Por segurança, o Mercado Pago pede o código de segurança de novo a cada cobrança.
+        </div>
+        <div id="form-cvv" class="mp-cvv-field"></div>
+        <button type="button" id="btnCobrarCartao" class="btn btn-sm mt-3" style="background:#ff6600; color:white; border:none; border-radius: 30px; padding: 8px 20px; font-weight:700;">
+            Cobrar cartão
+        </button>
         <div id="mpStatusMsg" style="margin-top:10px; font-size:0.85rem; font-weight:600;"></div>
     </div>
 
@@ -311,111 +320,96 @@
     <script src="https://sdk.mercadopago.com/js/v2"></script>
     <script>
         const mpPublicKey = @Html.Raw(Json.Serialize(mercadoPagoPublicKey));
-        const valorTotal = @Html.Raw(Json.Serialize(valorTotal));
         let pagamentoAprovado = @Html.Raw(Json.Serialize(pagamentoCartaoStatus == "approved"));
-        let cardBrickRendered = false;
+        let cvvFieldRendered = false;
         let mp = null;
+        let cvvField = null;
+        let paymentMethodIdSelecionado = null;
 
         function atualizarBotaoConfirmar(forma) {
             const btn = document.getElementById('btnConfirmar');
             if (forma === 'C') {
                 btn.disabled = !pagamentoAprovado;
-                btn.textContent = pagamentoAprovado ? 'Confirmar pagamento' : 'Informe os dados do cartão abaixo';
+                btn.textContent = pagamentoAprovado ? 'Confirmar pagamento' : 'Confirme o CVV do cartão acima';
             } else {
                 btn.disabled = false;
                 btn.textContent = 'Confirmar pagamento';
             }
         }
 
-        async function renderCardBrick() {
-            if (cardBrickRendered) return;
-            cardBrickRendered = true;
+        function mostrarStatus(msg, cor) {
+            const el = document.getElementById('mpStatusMsg');
+            el.textContent = msg;
+            el.style.color = cor;
+        }
+
+        function renderCvvField() {
+            if (cvvFieldRendered) return;
 
             if (!mpPublicKey) {
-                document.getElementById('mpStatusMsg').textContent =
-                    'Mercado Pago não configurado (MercadoPago:PublicKey ausente).';
-                document.getElementById('mpStatusMsg').style.color = '#dc2626';
+                mostrarStatus('Mercado Pago não configurado (MercadoPago:PublicKey ausente).', '#dc2626');
                 return;
             }
-
             if (typeof MercadoPago !== 'function') {
-                document.getElementById('mpStatusMsg').textContent =
-                    'Não foi possível carregar o SDK do Mercado Pago. Desative bloqueadores de anúncio/extensões de privacidade para este site e recarregue a página.';
-                document.getElementById('mpStatusMsg').style.color = '#dc2626';
-                cardBrickRendered = false;
+                mostrarStatus('Não foi possível carregar o SDK do Mercado Pago. Desative bloqueadores de anúncio/extensões de privacidade e recarregue a página.', '#dc2626');
                 return;
             }
 
             mp = new MercadoPago(mpPublicKey);
+            cvvField = mp.fields.create('securityCode', { placeholder: 'CVV' }).mount('form-cvv');
+            cvvFieldRendered = true;
+        }
 
-            if (typeof mp.bricksBuilder !== 'function') {
-                document.getElementById('mpStatusMsg').textContent =
-                    'Falha ao inicializar o formulário de pagamento do Mercado Pago. Tente recarregar a página em uma aba anônima (sem extensões).';
-                document.getElementById('mpStatusMsg').style.color = '#dc2626';
-                cardBrickRendered = false;
+        document.getElementById('btnCobrarCartao').addEventListener('click', async function () {
+            const idCartao = document.getElementById('inputCartao').value;
+            if (!idCartao || !paymentMethodIdSelecionado) {
+                mostrarStatus('Selecione um cartão salvo antes de cobrar.', '#dc2626');
                 return;
             }
 
-            const bricksBuilder = mp.bricksBuilder();
+            this.disabled = true;
+            mostrarStatus('Processando pagamento...', '#555');
 
-            await bricksBuilder.create('cardPayment', 'cardPaymentBrick_container', {
-                initialization: {
-                    amount: valorTotal
-                },
-                callbacks: {
-                    onReady: () => { },
-                    onSubmit: (cardFormData) => {
-                        const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
-                        const statusEl = document.getElementById('mpStatusMsg');
-                        statusEl.style.color = '#555';
-                        statusEl.textContent = 'Processando pagamento...';
+            try {
+                const token = await mp.fields.createCardToken({ cardId: idCartao });
+                const antiForgeryToken = document.querySelector('input[name="__RequestVerificationToken"]').value;
 
-                        return fetch('@Url.Action("ProcessarPagamentoCartao", "Carrinho")', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded',
-                                'RequestVerificationToken': token
-                            },
-                            body: new URLSearchParams({
-                                token: cardFormData.token,
-                                paymentMethodId: cardFormData.payment_method_id,
-                                issuerId: cardFormData.issuer_id ?? '',
-                                installments: cardFormData.installments
-                            })
-                        })
-                        .then(r => r.json())
-                        .then(resultado => {
-                            pagamentoAprovado = resultado.sucesso === true;
-                            statusEl.textContent = resultado.sucesso
-                                ? '✅ ' + resultado.mensagem
-                                : '❌ ' + resultado.mensagem;
-                            statusEl.style.color = resultado.sucesso ? '#16a34a' : '#dc2626';
-                            atualizarBotaoConfirmar('C');
-                            if (!resultado.sucesso) {
-                                return Promise.reject(new Error(resultado.mensagem));
-                            }
-                        })
-                        .catch(err => {
-                            statusEl.textContent = '❌ Falha ao processar pagamento. Tente novamente.';
-                            statusEl.style.color = '#dc2626';
-                            pagamentoAprovado = false;
-                            atualizarBotaoConfirmar('C');
-                            return Promise.reject(err);
-                        });
+                const response = await fetch('@Url.Action("ProcessarPagamentoCartao", "Carrinho")', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': antiForgeryToken
                     },
-                    onError: (error) => {
-                        console.error(error);
-                        document.getElementById('mpStatusMsg').textContent = '❌ Erro ao carregar formulário de cartão.';
-                        document.getElementById('mpStatusMsg').style.color = '#dc2626';
-                    }
-                }
-            });
-        }
+                    body: new URLSearchParams({
+                        token: token.id,
+                        paymentMethodId: paymentMethodIdSelecionado,
+                        issuerId: '',
+                        installments: 1
+                    })
+                });
+                const resultado = await response.json();
 
-        function selecionarForma(forma, idCartao) {
+                pagamentoAprovado = resultado.sucesso === true;
+                mostrarStatus(
+                    (resultado.sucesso ? '✅ ' : '❌ ') + resultado.mensagem,
+                    resultado.sucesso ? '#16a34a' : '#dc2626'
+                );
+                atualizarBotaoConfirmar('C');
+            } catch (err) {
+                console.error(err);
+                mostrarStatus('Não foi possível validar o CVV. Confira e tente novamente.', '#dc2626');
+                pagamentoAprovado = false;
+                atualizarBotaoConfirmar('C');
+            } finally {
+                document.getElementById('btnCobrarCartao').disabled = false;
+            }
+        });
+
+        function selecionarForma(forma, idCartao, paymentMethodId) {
             // Atualiza inputs ocultos
             document.getElementById('inputForma').value = forma;
             document.getElementById('inputCartao').value = idCartao ?? '';
+            paymentMethodIdSelecionado = paymentMethodId;
 
             // Remove todas as marcações visuais
             document.querySelectorAll('.opcao-item, .cartao-card-item').forEach(el => {
@@ -426,7 +420,6 @@
             });
 
             if (forma === 'C' && idCartao) {
-                // Marca o item do cartão selecionado
                 const checkEl = document.getElementById('check-C-' + idCartao);
                 if (checkEl) {
                     checkEl.classList.remove('d-none');
@@ -440,10 +433,11 @@
                 }
             }
 
-            const mpWrapper = document.getElementById('mpCartaoWrapper');
+            const mpWrapper = document.getElementById('mpCvvWrapper');
             if (forma === 'C') {
                 mpWrapper.style.display = 'block';
-                renderCardBrick();
+                pagamentoAprovado = false;
+                renderCvvField();
             } else {
                 mpWrapper.style.display = 'none';
             }
@@ -452,9 +446,13 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const formaInicial = document.getElementById('inputForma').value;
-            if (formaInicial === 'C') {
-                document.getElementById('mpCartaoWrapper').style.display = 'block';
-                renderCardBrick();
+            const idCartaoInicial = document.getElementById('inputCartao').value;
+            const paymentMethodIdInicial = @Html.Raw(Json.Serialize(paymentMethodIdSelecionadoInicial));
+
+            if (formaInicial === 'C' && idCartaoInicial && paymentMethodIdInicial) {
+                paymentMethodIdSelecionado = paymentMethodIdInicial;
+                document.getElementById('mpCvvWrapper').style.display = 'block';
+                renderCvvField();
             }
             atualizarBotaoConfirmar(formaInicial);
         });

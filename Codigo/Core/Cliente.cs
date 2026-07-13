@@ -17,6 +17,12 @@ public partial class Cliente
 
     public DateTime DataNascimento { get; set; }
 
+    /// <summary>
+    /// Id do "Customer" do Mercado Pago associado a este cliente (cofre de cartões salvos).
+    /// Criado sob demanda no primeiro cartão salvo.
+    /// </summary>
+    public string? MercadoPagoCustomerId { get; set; }
+
     public virtual ICollection<Avaliacao> Avaliacaos { get; set; } = new List<Avaliacao>();
 
     public virtual ICollection<Carrinho> Carrinhos { get; set; } = new List<Carrinho>();

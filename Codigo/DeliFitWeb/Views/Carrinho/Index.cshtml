@@ -3,18 +3,6 @@
 @{
     ViewData["Title"] = "Carrinho";
 
-    string DetectarBandeira(string numero)
-    {
-        if (string.IsNullOrEmpty(numero)) return "Cartão";
-        return numero[0] switch
-        {
-            '4' => "Visa",
-            '5' => "Mastercard",
-            '3' => "Amex",
-            '6' => "Elo",
-            _ => "Cartão"
-        };
-    }
     var itens = Model ?? new List<DeliFitWeb.Models.CarrinhoSessaoItem>();
     var subtotal = itens.Sum(i => i.Subtotal);
     decimal valorFrete = 0m;
@@ -594,7 +582,7 @@ else
                     @if (formaPagamento == "C" && cartaoSelecionado != null)
                     {
                         <div class="pagamento-sub">
-                            @DetectarBandeira(cartaoSelecionado.Numero) – final @cartaoSelecionado.Numero.Substring(cartaoSelecionado.Numero.Length - 4)
+                            @cartaoSelecionado.Bandeira – final @cartaoSelecionado.UltimosQuatroDigitos
                         </div>
                     }
                 </div>

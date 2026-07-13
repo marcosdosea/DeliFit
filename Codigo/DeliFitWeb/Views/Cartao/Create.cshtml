@@ -1,8 +1,9 @@
-﻿@model DeliFitWeb.Models.CartaoViewModel
+@model DeliFitWeb.Models.CartaoViewModel
 
 @{
     ViewData["Title"] = "Cadastrar Cartão";
     var idClienteContexto = Context.Request.Query["idCliente"];
+    string mercadoPagoPublicKey = ViewBag.MercadoPagoPublicKey as string ?? "";
 }
 
 <div class="container-fluid p-0 bg-white">
@@ -25,16 +26,27 @@
                     </div>
                 </div>
 
-                <form asp-action="Create">
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger rounded-3">@TempData["Error"]</div>
+                }
+
+                <form asp-action="Create" id="formCartao">
+                    @Html.AntiForgeryToken()
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger shadow-sm border-0 small"></div>
 
                     <input asp-for="IdCliente" type="hidden" value="@(Model?.IdCliente ?? uint.Parse(idClienteContexto))" />
+                    <input type="hidden" asp-for="Token" id="Token" />
 
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-header bg-white border-0 pt-4 ps-4">
                             <h5 class="fw-bold mb-0 text-orange">
                                 <i class="bi bi-credit-card me-2"></i>Dados do Cartão
                             </h5>
+                            <p class="text-muted small mb-0 mt-1">
+                                Número, validade e CVV são enviados direto para o Mercado Pago pelo navegador —
+                                nunca passam por este servidor.
+                            </p>
                         </div>
 
                         <div class="card-body p-4">
@@ -55,38 +67,22 @@
 
                             <div class="row g-3 mb-3">
                                 <div class="col-md-6">
-                                    <label asp-for="Numero" class="form-label fw-semibold"></label>
-                                    <input asp-for="Numero" class="form-control" placeholder="Número do cartão" />
-                                    <span asp-validation-for="Numero" class="text-danger small"></span>
+                                    <label class="form-label fw-semibold">Número do cartão</label>
+                                    <div id="form-cardNumber" class="form-control mp-secure-field"></div>
                                 </div>
 
                                 <div class="col-md-3">
-                                    <label class="form-label fw-semibold">Validade</label>
-                                    <div class="d-flex gap-2">
-                                        <select name="ValidadeMes" class="form-select">
-                                            <option value="">Mês</option>
-                                            @for (int m = 1; m <= 12; m++)
-                                            {
-                                                <option value="@m">@m.ToString("D2")</option>
-                                            }
-                                        </select>
-                                        <select name="ValidadeAno" class="form-select">
-                                            <option value="">Ano</option>
-                                            @for (int a = DateTime.Now.Year; a <= DateTime.Now.Year + 15; a++)
-                                            {
-                                                <option value="@a">@a</option>
-                                            }
-                                        </select>
-                                    </div>
-                                    <span asp-validation-for="ValidadeMes" class="text-danger small"></span>
+                                    <label class="form-label fw-semibold">Validade (MM/AA)</label>
+                                    <div id="form-expirationDate" class="form-control mp-secure-field"></div>
                                 </div>
 
                                 <div class="col-md-3">
-                                    <label asp-for="Cvv" class="form-label fw-semibold"></label>
-                                    <input asp-for="Cvv" class="form-control" placeholder="CVV" />
-                                    <span asp-validation-for="Cvv" class="text-danger small"></span>
+                                    <label class="form-label fw-semibold">CVV</label>
+                                    <div id="form-securityCode" class="form-control mp-secure-field"></div>
                                 </div>
                             </div>
+
+                            <div id="mpStatusMsg" class="small fw-semibold mt-2"></div>
 
                         </div>
                     </div>
@@ -98,7 +94,7 @@
                             Cancelar
                         </a>
 
-                        <button type="submit" class="btn btn-orange px-5 py-2 fw-bold shadow-sm">
+                        <button type="button" id="btnSalvarCartao" class="btn btn-orange px-5 py-2 fw-bold shadow-sm">
                             <i class="bi bi-check-circle me-2"></i>Salvar Cartão
                         </button>
                     </div>
@@ -121,16 +117,15 @@
             color: #495057;
         }
 
-        .form-control, .form-select {
+        .form-control, .mp-secure-field {
             border: 1px solid #dee2e6;
             padding: 0.6rem 0.75rem;
             transition: border-color 0.2s, box-shadow 0.2s;
         }
 
-            .form-control:focus, .form-select:focus {
-                border-color: #ff6600;
-                box-shadow: 0 0 0 0.25rem rgba(255, 102, 0, 0.15);
-            }
+        .mp-secure-field {
+            height: calc(1.5em + 1.2rem + 2px);
+        }
 
         .btn-orange {
             background-color: #ff6600;
@@ -150,17 +145,58 @@
         }
     </style>
 
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <script>
+        const mpPublicKey = @Html.Raw(Json.Serialize(mercadoPagoPublicKey));
+        const statusEl = document.getElementById('mpStatusMsg');
+        const btnSalvar = document.getElementById('btnSalvarCartao');
+
+        function mostrarStatus(msg, cor) {
+            statusEl.textContent = msg;
+            statusEl.style.color = cor;
+        }
+
+        if (!mpPublicKey) {
+            mostrarStatus('Mercado Pago não configurado (MercadoPago:PublicKey ausente).', '#dc2626');
+            btnSalvar.disabled = true;
+        } else if (typeof MercadoPago !== 'function') {
+            mostrarStatus('Não foi possível carregar o SDK do Mercado Pago. Desative bloqueadores de anúncio/extensões de privacidade e recarregue a página.', '#dc2626');
+            btnSalvar.disabled = true;
+        } else {
+            const mp = new MercadoPago(mpPublicKey);
+            const fields = mp.fields;
+
+            fields.create('cardNumber', { placeholder: 'Número do cartão' }).mount('form-cardNumber');
+            fields.create('expirationDate', { placeholder: 'MM/AA' }).mount('form-expirationDate');
+            fields.create('securityCode', { placeholder: 'CVV' }).mount('form-securityCode');
+
+            btnSalvar.addEventListener('click', async function () {
+                btnSalvar.disabled = true;
+                mostrarStatus('Validando cartão...', '#555');
+
+                const cardholderName = document.getElementById('Nome').value;
+                const identificationNumber = document.getElementById('Cpf').value;
+
+                try {
+                    const token = await fields.createCardToken({
+                        cardholderName: cardholderName,
+                        identificationType: 'CPF',
+                        identificationNumber: identificationNumber
+                    });
+
+                    document.getElementById('Token').value = token.id;
+                    mostrarStatus('Cartão validado, salvando...', '#16a34a');
+                    document.getElementById('formCartao').submit();
+                } catch (err) {
+                    console.error(err);
+                    mostrarStatus('Não foi possível validar o cartão. Confira o número, validade e CVV.', '#dc2626');
+                    btnSalvar.disabled = false;
+                }
+            });
+        }
+    </script>
+
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
-    <script>
-        // Remove espaços/traços digitados (comum ao copiar números de cartão/CPF formatados)
-        // antes de validar, já que os campos exigem uma quantidade exata de dígitos.
-        document.querySelectorAll('#Numero, #Cpf, #Cvv').forEach(function (input) {
-            input.addEventListener('input', function () {
-                this.value = this.value.replace(/\D/g, '');
-            });
-        });
-    </script>
 }
