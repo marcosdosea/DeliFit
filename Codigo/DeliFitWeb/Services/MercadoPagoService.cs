@@ -101,7 +101,7 @@ public class MercadoPagoService : IMercadoPagoService
             {
                 Email = cliente.Email,
                 FirstName = nomes.ElementAtOrDefault(0) ?? cliente.Nome,
-                LastName = nomes.ElementAtOrDefault(1) ?? "",
+                LastName = nomes.ElementAtOrDefault(1),
                 Identification = new IdentificationRequest { Type = "CPF", Number = cliente.Cpf }
             });
             customerId = customer.Id;
