@@ -26,6 +26,38 @@ public class MercadoPagoService : IMercadoPagoService
         MercadoPagoConfig.AccessToken = accessToken;
     }
 
+    /// <summary>
+    /// Monta uma mensagem detalhada a partir do erro da API: o Mercado Pago costuma colocar o
+    /// motivo específico em ApiError.Cause/Errors, não na mensagem genérica de topo.
+    /// </summary>
+    private static string FormatApiError(MercadoPagoApiException ex)
+    {
+        var partes = new List<string>();
+
+        if (!string.IsNullOrWhiteSpace(ex.ApiError?.Message))
+            partes.Add(ex.ApiError.Message);
+
+        var causas = (ex.ApiError?.Cause ?? Enumerable.Empty<ApiErrorCause>())
+            .Concat(ex.ApiError?.Errors ?? Enumerable.Empty<ApiErrorCause>());
+
+        foreach (var causa in causas)
+        {
+            var texto = causa.Description ?? causa.Message;
+            if (!string.IsNullOrWhiteSpace(texto))
+                partes.Add(causa.Code != null ? $"{causa.Code}: {texto}" : texto);
+            else if (!string.IsNullOrWhiteSpace(causa.Code))
+                partes.Add(causa.Code);
+
+            if (causa.Details is { Count: > 0 })
+                partes.Add(string.Join(", ", causa.Details));
+        }
+
+        if (partes.Count == 0)
+            partes.Add(ex.Message);
+
+        return string.Join(" | ", partes.Distinct());
+    }
+
     public async Task<PagamentoCartaoResultado> ProcessarPagamentoCartaoAsync(
         string cardToken,
         decimal valor,
@@ -37,6 +69,18 @@ public class MercadoPagoService : IMercadoPagoService
         string descricao,
         string? customerId = null)
     {
+        // Sem payment_method_id o Mercado Pago não consegue resolver o pagamento e recusa com
+        // "not_result_by_params" — melhor falhar aqui com uma mensagem clara do que mandar vazio.
+        if (string.IsNullOrWhiteSpace(paymentMethodId))
+        {
+            return new PagamentoCartaoResultado
+            {
+                Sucesso = false,
+                Status = "rejected",
+                MensagemErro = "Não foi possível identificar a bandeira deste cartão salvo. Exclua-o e cadastre-o novamente."
+            };
+        }
+
         var request = new PaymentCreateRequest
         {
             TransactionAmount = valor,
@@ -80,13 +124,14 @@ public class MercadoPagoService : IMercadoPagoService
         }
         catch (MercadoPagoApiException ex)
         {
-            _logger.LogWarning(ex, "Pagamento Mercado Pago recusado pela API. Cause: {Cause}", ex.ApiError?.Message);
+            var detalhe = FormatApiError(ex);
+            _logger.LogWarning(ex, "Pagamento Mercado Pago recusado pela API. Cause: {Cause}", detalhe);
 
             return new PagamentoCartaoResultado
             {
                 Sucesso = false,
                 Status = "rejected",
-                MensagemErro = ex.ApiError?.Message ?? "Pagamento recusado pelo Mercado Pago."
+                MensagemErro = detalhe
             };
         }
     }
@@ -113,7 +158,8 @@ public class MercadoPagoService : IMercadoPagoService
         }
         catch (MercadoPagoApiException createEx)
         {
-            _logger.LogWarning(createEx, "Falha ao criar Customer no Mercado Pago para {Email}: {Cause}", cliente.Email, createEx.ApiError?.Message);
+            var detalheCreate = FormatApiError(createEx);
+            _logger.LogWarning(createEx, "Falha ao criar Customer no Mercado Pago para {Email}: {Cause}", cliente.Email, detalheCreate);
 
             // E-mail já cadastrado como Customer em uma execução/teste anterior: tenta reaproveitar o existente.
             try
@@ -125,13 +171,13 @@ public class MercadoPagoService : IMercadoPagoService
                 var existente = busca.Results?.FirstOrDefault();
                 if (existente == null)
                     throw new InvalidOperationException(
-                        $"Mercado Pago recusou a criação do cliente: {createEx.ApiError?.Message ?? createEx.Message}");
+                        $"Mercado Pago recusou a criação do cliente: {detalheCreate}");
                 customerId = existente.Id;
             }
             catch (MercadoPagoApiException searchEx)
             {
                 throw new InvalidOperationException(
-                    $"Mercado Pago recusou a criação ({createEx.ApiError?.Message ?? createEx.Message}) e a busca ({searchEx.ApiError?.Message ?? searchEx.Message}) do cliente.");
+                    $"Mercado Pago recusou a criação ({detalheCreate}) e a busca ({FormatApiError(searchEx)}) do cliente.");
             }
         }
 
@@ -148,6 +194,18 @@ public class MercadoPagoService : IMercadoPagoService
         {
             var card = await client.CreateCardAsync(customerId, new CustomerCardCreateRequest { Token = token });
 
+            // Sem payment_method_id o cartão fica salvo mas nunca poderá ser cobrado (a API de
+            // pagamentos recusa com "not_result_by_params"). Trata como falha para não gerar lixo.
+            if (string.IsNullOrWhiteSpace(card.PaymentMethod?.Id))
+            {
+                _logger.LogWarning("Cartão salvo no Mercado Pago sem payment_method_id (card {CardId}).", card.Id);
+                return new CartaoSalvoResultado
+                {
+                    Sucesso = false,
+                    MensagemErro = "O Mercado Pago não conseguiu identificar a bandeira deste cartão. Confira o número digitado e tente novamente."
+                };
+            }
+
             return new CartaoSalvoResultado
             {
                 Sucesso = true,
@@ -161,12 +219,13 @@ public class MercadoPagoService : IMercadoPagoService
         }
         catch (MercadoPagoApiException ex)
         {
-            _logger.LogWarning(ex, "Falha ao salvar cartão no Mercado Pago. Cause: {Cause}", ex.ApiError?.Message);
+            var detalhe = FormatApiError(ex);
+            _logger.LogWarning(ex, "Falha ao salvar cartão no Mercado Pago. Cause: {Cause}", detalhe);
 
             return new CartaoSalvoResultado
             {
                 Sucesso = false,
-                MensagemErro = ex.ApiError?.Message ?? "Não foi possível salvar o cartão."
+                MensagemErro = detalhe
             };
         }
     }
