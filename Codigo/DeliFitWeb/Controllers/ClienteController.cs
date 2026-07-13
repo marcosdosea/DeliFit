@@ -73,6 +73,12 @@ public class ClienteController : Controller
     public ActionResult Details(uint id)
     {
         Cliente? cliente = _clienteService.Get(id);
+        if (cliente == null)
+        {
+            TempData["Error"] = "Cliente não encontrado.";
+            return RedirectToAction(nameof(Index));
+        }
+
         ClienteViewModel clienteModel = _mapper.Map<ClienteViewModel>(cliente);
         return View(clienteModel);
     }
@@ -101,6 +107,12 @@ public class ClienteController : Controller
     public ActionResult Edit(uint id)
     {
         Cliente? cliente = _clienteService.Get(id);
+        if (cliente == null)
+        {
+            TempData["Error"] = "Cliente não encontrado.";
+            return RedirectToAction(nameof(Index));
+        }
+
         ClienteViewModel clienteModel = _mapper.Map<ClienteViewModel>(cliente);
         return View(clienteModel);
     }
@@ -137,6 +149,12 @@ public class ClienteController : Controller
     public ActionResult Delete(uint id)
     {
         Cliente? cliente = _clienteService.Get(id);
+        if (cliente == null)
+        {
+            TempData["Error"] = "Cliente não encontrado.";
+            return RedirectToAction(nameof(Index));
+        }
+
         ClienteViewModel clienteModel = _mapper.Map<ClienteViewModel>(cliente);
         return View(clienteModel);
     }
