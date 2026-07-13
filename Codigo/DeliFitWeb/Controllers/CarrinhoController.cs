@@ -258,6 +258,11 @@ public class CarrinhoController : Controller
             return Json(new { sucesso = false, mensagem = "Carrinho vazio." });
         }
 
+        // Uma string vazia (em vez de ausente) faz o Mercado Pago tentar buscar um emissor
+        // inexistente e recusar com "not_result_by_params" — trata como "sem emissor".
+        if (string.IsNullOrWhiteSpace(issuerId))
+            issuerId = null;
+
         var resultado = await _mercadoPagoService.ProcessarPagamentoCartaoAsync(
             token,
             valorTotal,
