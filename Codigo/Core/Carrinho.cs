@@ -20,6 +20,16 @@ public partial class Carrinho
 
     public uint? IdCartao { get; set; }
 
+    /// <summary>
+    /// Id do pagamento retornado pelo Mercado Pago (preenchido apenas quando FormaDePagamento = 'C').
+    /// </summary>
+    public string? MercadoPagoPaymentId { get; set; }
+
+    /// <summary>
+    /// Status do pagamento retornado pelo Mercado Pago: approved, pending, in_process, rejected, refunded, cancelled.
+    /// </summary>
+    public string? StatusPagamentoCartao { get; set; }
+
     public virtual Cartao? IdCartaoNavigation { get; set; }
 
     public virtual Cliente IdClienteNavigation { get; set; } = null!;

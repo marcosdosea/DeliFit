@@ -2,6 +2,7 @@
 using Core;
 using Core.Service;
 using Core.Identity.Data;
+using DeliFitWeb.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -15,6 +16,16 @@ public class Program
 {
     public static async Task Main(string[] args)
     {
+        var envDir = new DirectoryInfo(Directory.GetCurrentDirectory());
+        while (envDir != null && !File.Exists(Path.Combine(envDir.FullName, ".env")))
+        {
+            envDir = envDir.Parent;
+        }
+        if (envDir != null)
+        {
+            DotNetEnv.Env.Load(Path.Combine(envDir.FullName, ".env"));
+        }
+
         var builder = WebApplication.CreateBuilder(args);
         // Add services to the container.
         builder.Services.AddControllersWithViews();
@@ -57,6 +68,8 @@ public class Program
 
         builder.Services.AddTransient<IEmailSender, EmailSender>();
         //builder.Services.AddTransient<IEmailSender, FakeEmailSender>();
+
+        builder.Services.AddScoped<IMercadoPagoService, MercadoPagoService>();
 
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
