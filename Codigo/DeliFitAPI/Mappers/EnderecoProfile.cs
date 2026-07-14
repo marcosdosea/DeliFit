@@ -2,13 +2,12 @@
 using Core;
 using DeliFitAPI.Models;
 
-namespace DeliFitAPI.Mappers
+namespace DeliFitAPI.Mappers;
+
+public class EnderecoProfile : Profile
 {
-    public class EnderecoProfile : Profile
+    public EnderecoProfile()
     {
-        public EnderecoProfile()
-        {
-            CreateMap<EnderecoViewModel, Endereco>().ReverseMap();
-        }
+        CreateMap<EnderecoViewModel, Endereco>().ReverseMap();
     }
 }

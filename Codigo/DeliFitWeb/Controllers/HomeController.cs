@@ -1,70 +1,69 @@
-using Core.Identity.Data;
+Ôªøusing Core.Identity.Data;
 using DeliFitWeb.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace DeliFitWeb.Controllers
+namespace DeliFitWeb.Controllers;
+
+public class HomeController : Controller
 {
-    public class HomeController : Controller
+    public const string SessionKeyUserName = "UserName";
+    public const string SessionKeyUserRoles = "UserRoles";
+
+
+    private readonly ILogger<HomeController> _logger;
+    private readonly UserManager<UsuarioIdentity> _userManager;
+    public HomeController(ILogger<HomeController> logger, UserManager<UsuarioIdentity> userManager)
     {
-        public const string SessionKeyUserName = "UserName";
-        public const string SessionKeyUserRoles = "UserRoles";
+        _logger = logger;
+        _userManager = userManager;
+    }
 
 
-        private readonly ILogger<HomeController> _logger;
-        private readonly UserManager<UsuarioIdentity> _userManager;
-        public HomeController(ILogger<HomeController> logger, UserManager<UsuarioIdentity> userManager)
+    // C#
+    public async Task<IActionResult> Index()
+    {
+        // Obter usu√°rio/roles via UserManager
+        var usuario = await _userManager.GetUserAsync(User);
+        var userName = usuario?.UserName ?? User.Identity?.Name ?? "Convidado";
+        var roles = usuario is not null ? await _userManager.GetRolesAsync(usuario) : new List<string>();
+        var rolesString = string.Join(", ", roles);
+        var perfil = roles.FirstOrDefault() ?? "Convidado";
+
+
+        // armazenar na sess√£o
+        if (string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyUserName)))
         {
-            _logger = logger;
-            _userManager = userManager;
+            HttpContext.Session.SetString(SessionKeyUserName, userName);
+        }
+
+        // armazenar o(s) perfil(is) do usu√°rio na sess√£o
+        if (string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyUserRoles)))
+        {
+            HttpContext.Session.SetString(SessionKeyUserRoles, rolesString);
         }
 
 
-        // C#
-        public async Task<IActionResult> Index()
-        {
-            // Obter usu·rio/roles via UserManager
-            var usuario = await _userManager.GetUserAsync(User);
-            var userName = usuario?.UserName ?? User.Identity?.Name ?? "Convidado";
-            var roles = usuario is not null ? await _userManager.GetRolesAsync(usuario) : new List<string>();
-            var rolesString = string.Join(", ", roles);
-            var perfil = roles.FirstOrDefault() ?? "Convidado";
+        ViewData["nomeUsuario"] = userName;
 
+        ViewData["idadeUsuario"] = 30;
 
-            // armazenar na sess„o
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyUserName)))
-            {
-                HttpContext.Session.SetString(SessionKeyUserName, userName);
-            }
+        ViewBag.DataAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
 
-            // armazenar o(s) perfil(is) do usu·rio na sess„o
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString(SessionKeyUserRoles)))
-            {
-                HttpContext.Session.SetString(SessionKeyUserRoles, rolesString);
-            }
+        ViewBag.PerfilUsuario = perfil;
 
+        return View();
+    }
 
-            ViewData["nomeUsuario"] = userName;
+    public IActionResult Privacy()
+    {
+        return View();
+    }
 
-            ViewData["idadeUsuario"] = 30;
-
-            ViewBag.DataAcesso = DateTime.Now.ToString("dd/MM/yyyy HH:mm");
-
-            ViewBag.PerfilUsuario = perfil;
-
-            return View();
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+    public IActionResult Error()
+    {
+        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
 }

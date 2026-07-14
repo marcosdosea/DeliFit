@@ -1,14 +1,13 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Core.DTO;
 using DeliFitWeb.Models;
 
-namespace DeliFitWeb.Mappers
+namespace DeliFitWeb.Mappers;
+
+public class CategoriaProfile : Profile
 {
-    public class CategoriaProfile : Profile
+    public CategoriaProfile()
     {
-        public CategoriaProfile()
-        {
-            CreateMap<CategoriaDTO, CategoriaViewModel>().ReverseMap();
-        }
+        CreateMap<CategoriaDTO, CategoriaViewModel>().ReverseMap();
     }
 }

@@ -1,17 +1,16 @@
-﻿namespace Core.Service
+﻿namespace Core.Service;
+
+public interface ICarrinhoService
 {
-    public interface ICarrinhoService
-    {
-        public uint Create(Carrinho Carrinho);
+    public uint Create(Carrinho Carrinho);
 
-        public Carrinho? Get(uint id);
+    public Carrinho? Get(uint id);
 
-        public void Edit(Carrinho Carrinho);
+    public void Edit(Carrinho Carrinho);
 
-        public void Delete(uint id);
+    public void Delete(uint id);
 
-        public void ValidarCarrinho(Carrinho Carrinho);
+    public void ValidarCarrinho(Carrinho Carrinho);
 
-        public IEnumerable<Carrinho> GetAll();
-    }
+    public IEnumerable<Carrinho> GetAll();
 }

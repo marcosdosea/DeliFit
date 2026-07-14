@@ -10,272 +10,271 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace DeliFitWebTests.Controllers
+namespace DeliFitWebTests.Controllers;
+
+[TestClass()]
+public class ClienteControllerTests
 {
-    [TestClass()]
-    public class ClienteControllerTests
+    private static ClienteController? controller;
+
+    [TestInitialize]
+    public void Initialize()
     {
-        private static ClienteController? controller;
+        // Arrange
+        var mockService = new Mock<IClienteService>();
+        var mockUserManager = new Mock<UserManager<UsuarioIdentity>>(
+            new Mock<IUserStore<UsuarioIdentity>>().Object,
+            null, null, null, null, null, null, null, null);
+        var mockRestauranteService = new Mock<IRestauranteService>();
+        var mockItemService = new Mock<IItemService>();
+        var mockCategoriaService = new Mock<ICategoriaService>();
+        var mockCarrinhoService = new Mock<ICarrinhoService>();
+        var mockPedidoService = new Mock<IPedidoService>();
+        var mockAvaliacaoService = new Mock<IAvaliacaoService>();
 
-        [TestInitialize]
-        public void Initialize()
-        {
-            // Arrange
-            var mockService = new Mock<IClienteService>();
-            var mockUserManager = new Mock<UserManager<UsuarioIdentity>>(
-                new Mock<IUserStore<UsuarioIdentity>>().Object,
-                null, null, null, null, null, null, null, null);
-            var mockRestauranteService = new Mock<IRestauranteService>();
-            var mockItemService = new Mock<IItemService>();
-            var mockCategoriaService = new Mock<ICategoriaService>();
-            var mockCarrinhoService = new Mock<ICarrinhoService>();
-            var mockPedidoService = new Mock<IPedidoService>();
-            var mockAvaliacaoService = new Mock<IAvaliacaoService>();
+        IMapper mapper = new MapperConfiguration(cfg =>
+            cfg.AddProfile(new ClienteProfile())).CreateMapper();
 
-            IMapper mapper = new MapperConfiguration(cfg =>
-                cfg.AddProfile(new ClienteProfile())).CreateMapper();
+        // Configura comportamento do mock do IClienteService para os testes funcionarem
+        mockService
+            .Setup(service => service.GetAll())
+            .Returns(GetTestCliente());
 
-            // Configura comportamento do mock do IClienteService para os testes funcionarem
-            mockService
-                .Setup(service => service.GetAll())
-                .Returns(GetTestCliente());
+        mockService
+            .Setup(service => service.Get(It.Is<uint>(id => id == 1)))
+            .Returns(GetTargetCliente());
 
-            mockService
-                .Setup(service => service.Get(It.Is<uint>(id => id == 1)))
-                .Returns(GetTargetCliente());
+        mockService
+            .Setup(service => service.Get(It.Is<uint>(id => id != 1)))
+            .Returns((Cliente?)null);
 
-            mockService
-                .Setup(service => service.Get(It.Is<uint>(id => id != 1)))
-                .Returns((Cliente?)null);
-
-            mockService
-                .Setup(service => service.GetByEmail(It.IsAny<string>()))
-                .Returns((string email) =>
-                {
-                    // tenta encontrar um ClienteDTO com email correspondente (n�o existe em dados de teste)
-                    return null;
-                });
-
-            controller = new ClienteController(
-                mockService.Object,
-                mapper,
-                mockUserManager.Object,
-                mockRestauranteService.Object,
-                mockItemService.Object,
-                mockCategoriaService.Object,
-                mockCarrinhoService.Object,
-                mockPedidoService.Object,
-                mockAvaliacaoService.Object
-            );
-        }
-
-        [TestMethod()]
-        [TestCategory("Unit")]
-        [Description("Testando o index")]
-        public void IndexTest_Valido()
-        {
-            // Act
-            var result = controller?.Index();
-
-            // Assert
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
-            ViewResult viewResult = (ViewResult)result;
-            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(List<ClienteViewModel>));
-
-            List<ClienteViewModel>? lista = (List<ClienteViewModel>)viewResult.ViewData.Model;
-            Assert.HasCount(3, lista);
-        }
-
-        [TestMethod()]
-        public void DetailsTest_Valido()
-        {
-            // Act
-            var result = controller?.Details(1);
-
-            // Assert
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
-            ViewResult viewResult = (ViewResult)result;
-            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(ClienteViewModel));
-            ClienteViewModel clienteModel = (ClienteViewModel)viewResult.ViewData.Model;
-            Assert.AreEqual("Machado de Assis", clienteModel.Nome);
-            Assert.AreEqual("79988888888", clienteModel.Telefone);
-        }
-
-        [TestMethod()]
-        public void CreateTest_Get_Valido()
-        {
-            // Act
-            var result = controller?.Create();
-            // Assert
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
-        }
-
-        // [TestMethod()] - CreateAsync n�o existe mais no controller
-        // public void CreateTest_Valid()
-        // {
-        //     // Act
-        //     var novoClienteViewModel = GetNewCliente();
-        //     var result = Unwrap(controller?.CreateAsync(novoClienteViewModel));
-        //
-        //     // Assert
-        //     Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
-        //     RedirectToActionResult redirectToActionResult = (RedirectToActionResult)result;
-        //     Assert.IsNull(redirectToActionResult.ControllerName);
-        //     Assert.AreEqual("Index", redirectToActionResult.ActionName);
-        // }
-
-        // [TestMethod()] - CreateAsync n�o existe mais no controller
-        // public void CreateTest_Post_Invalid()
-        // {
-        //     // Arrange
-        //     controller?.ModelState.AddModelError("Nome", "Nome � obrigat�rio.");
-        //
-        //     // Act
-        //     var result = Unwrap(controller?.CreateAsync(GetNewCliente()));
-        //     // Assert
-        //     Assert.AreEqual(1, controller?.ModelState.ErrorCount);
-        //     // When model state is invalid the controller should re-display the Create view
-        //     Assert.IsInstanceOfType(result, typeof(ViewResult));
-        //     ViewResult viewResult = (ViewResult)result;
-        //     Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(ClienteViewModel));
-        //     ClienteViewModel clienteModel = (ClienteViewModel)viewResult.ViewData.Model;
-        //     Assert.AreEqual(4u, clienteModel.Id);
-        //     Assert.AreEqual("Ian Sommerville", clienteModel.Nome);
-        // }
-
-        [TestMethod()]
-        public void EditTest_Get_Valid()
-        {
-            // Act
-            var result = controller?.Edit(1);
-
-            // Assert
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
-            ViewResult viewResult = (ViewResult)result;
-            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(ClienteViewModel));
-            ClienteViewModel clienteModel = (ClienteViewModel)viewResult.ViewData.Model;
-            Assert.AreEqual("Machado de Assis", clienteModel.Nome);
-            Assert.AreEqual("79988888888", clienteModel.Telefone);
-        }
-
-        [TestMethod()]
-        public void EditTest_Post_Valid()
-        {
-            // Act
-            var result = controller?.Edit(GetTargetClienteModel());
-
-            // Assert
-            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
-            RedirectToActionResult redirectToActionResult = (RedirectToActionResult)result;
-            Assert.IsNull(redirectToActionResult.ControllerName);
-            Assert.AreEqual("Index", redirectToActionResult.ActionName);
-        }
-
-        [TestMethod()]
-        public void DeleteTest_Post_Valid()
-        {
-            // Act
-            var result = controller?.Delete(1);
-
-            // Assert
-            Assert.IsInstanceOfType(result, typeof(ViewResult));
-            ViewResult viewResult = (ViewResult)result;
-            Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(ClienteViewModel));
-            ClienteViewModel clienteModel = (ClienteViewModel)viewResult.ViewData.Model;
-            Assert.AreEqual("Machado de Assis", clienteModel.Nome);
-            Assert.AreEqual("79988888888", clienteModel.Telefone);
-        }
-
-        [TestMethod()]
-        public void DeleteTest_Get_Valid()
-        {
-            // Act
-            var result = Unwrap(controller?.Delete(GetTargetClienteModel()));
-
-            // Assert
-            Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
-            RedirectToActionResult redirectToActionResult = (RedirectToActionResult)result;
-            Assert.IsNull(redirectToActionResult.ControllerName);
-            Assert.AreEqual("Index", redirectToActionResult.ActionName);
-        }
-
-        private ClienteViewModel GetNewCliente()
-        {
-            return new ClienteViewModel
+        mockService
+            .Setup(service => service.GetByEmail(It.IsAny<string>()))
+            .Returns((string email) =>
             {
-                Id = 4,
-                Nome = "Ian Sommerville",
-                Telefone = "79966666666"
-            };
+                // tenta encontrar um ClienteDTO com email correspondente (n�o existe em dados de teste)
+                return null;
+            });
 
-        }
-        private static Cliente GetTargetCliente()
+        controller = new ClienteController(
+            mockService.Object,
+            mapper,
+            mockUserManager.Object,
+            mockRestauranteService.Object,
+            mockItemService.Object,
+            mockCategoriaService.Object,
+            mockCarrinhoService.Object,
+            mockPedidoService.Object,
+            mockAvaliacaoService.Object
+        );
+    }
+
+    [TestMethod()]
+    [TestCategory("Unit")]
+    [Description("Testando o index")]
+    public void IndexTest_Valido()
+    {
+        // Act
+        var result = controller?.Index();
+
+        // Assert
+        Assert.IsInstanceOfType(result, typeof(ViewResult));
+        ViewResult viewResult = (ViewResult)result;
+        Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(List<ClienteViewModel>));
+
+        List<ClienteViewModel>? lista = (List<ClienteViewModel>)viewResult.ViewData.Model;
+        Assert.HasCount(3, lista);
+    }
+
+    [TestMethod()]
+    public void DetailsTest_Valido()
+    {
+        // Act
+        var result = controller?.Details(1);
+
+        // Assert
+        Assert.IsInstanceOfType(result, typeof(ViewResult));
+        ViewResult viewResult = (ViewResult)result;
+        Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(ClienteViewModel));
+        ClienteViewModel clienteModel = (ClienteViewModel)viewResult.ViewData.Model;
+        Assert.AreEqual("Machado de Assis", clienteModel.Nome);
+        Assert.AreEqual("79988888888", clienteModel.Telefone);
+    }
+
+    [TestMethod()]
+    public void CreateTest_Get_Valido()
+    {
+        // Act
+        var result = controller?.Create();
+        // Assert
+        Assert.IsInstanceOfType(result, typeof(ViewResult));
+    }
+
+    // [TestMethod()] - CreateAsync n�o existe mais no controller
+    // public void CreateTest_Valid()
+    // {
+    //     // Act
+    //     var novoClienteViewModel = GetNewCliente();
+    //     var result = Unwrap(controller?.CreateAsync(novoClienteViewModel));
+    //
+    //     // Assert
+    //     Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+    //     RedirectToActionResult redirectToActionResult = (RedirectToActionResult)result;
+    //     Assert.IsNull(redirectToActionResult.ControllerName);
+    //     Assert.AreEqual("Index", redirectToActionResult.ActionName);
+    // }
+
+    // [TestMethod()] - CreateAsync n�o existe mais no controller
+    // public void CreateTest_Post_Invalid()
+    // {
+    //     // Arrange
+    //     controller?.ModelState.AddModelError("Nome", "Nome � obrigat�rio.");
+    //
+    //     // Act
+    //     var result = Unwrap(controller?.CreateAsync(GetNewCliente()));
+    //     // Assert
+    //     Assert.AreEqual(1, controller?.ModelState.ErrorCount);
+    //     // When model state is invalid the controller should re-display the Create view
+    //     Assert.IsInstanceOfType(result, typeof(ViewResult));
+    //     ViewResult viewResult = (ViewResult)result;
+    //     Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(ClienteViewModel));
+    //     ClienteViewModel clienteModel = (ClienteViewModel)viewResult.ViewData.Model;
+    //     Assert.AreEqual(4u, clienteModel.Id);
+    //     Assert.AreEqual("Ian Sommerville", clienteModel.Nome);
+    // }
+
+    [TestMethod()]
+    public void EditTest_Get_Valid()
+    {
+        // Act
+        var result = controller?.Edit(1);
+
+        // Assert
+        Assert.IsInstanceOfType(result, typeof(ViewResult));
+        ViewResult viewResult = (ViewResult)result;
+        Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(ClienteViewModel));
+        ClienteViewModel clienteModel = (ClienteViewModel)viewResult.ViewData.Model;
+        Assert.AreEqual("Machado de Assis", clienteModel.Nome);
+        Assert.AreEqual("79988888888", clienteModel.Telefone);
+    }
+
+    [TestMethod()]
+    public void EditTest_Post_Valid()
+    {
+        // Act
+        var result = controller?.Edit(GetTargetClienteModel());
+
+        // Assert
+        Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+        RedirectToActionResult redirectToActionResult = (RedirectToActionResult)result;
+        Assert.IsNull(redirectToActionResult.ControllerName);
+        Assert.AreEqual("Index", redirectToActionResult.ActionName);
+    }
+
+    [TestMethod()]
+    public void DeleteTest_Post_Valid()
+    {
+        // Act
+        var result = controller?.Delete(1);
+
+        // Assert
+        Assert.IsInstanceOfType(result, typeof(ViewResult));
+        ViewResult viewResult = (ViewResult)result;
+        Assert.IsInstanceOfType(viewResult.ViewData.Model, typeof(ClienteViewModel));
+        ClienteViewModel clienteModel = (ClienteViewModel)viewResult.ViewData.Model;
+        Assert.AreEqual("Machado de Assis", clienteModel.Nome);
+        Assert.AreEqual("79988888888", clienteModel.Telefone);
+    }
+
+    [TestMethod()]
+    public void DeleteTest_Get_Valid()
+    {
+        // Act
+        var result = Unwrap(controller?.Delete(GetTargetClienteModel()));
+
+        // Assert
+        Assert.IsInstanceOfType(result, typeof(RedirectToActionResult));
+        RedirectToActionResult redirectToActionResult = (RedirectToActionResult)result;
+        Assert.IsNull(redirectToActionResult.ControllerName);
+        Assert.AreEqual("Index", redirectToActionResult.ActionName);
+    }
+
+    private ClienteViewModel GetNewCliente()
+    {
+        return new ClienteViewModel
         {
-            return new Cliente
+            Id = 4,
+            Nome = "Ian Sommerville",
+            Telefone = "79966666666"
+        };
+
+    }
+    private static Cliente GetTargetCliente()
+    {
+        return new Cliente
+        {
+            Id = 1,
+            Nome = "Machado de Assis",
+            Telefone = "79988888888"
+        };
+    }
+
+    private ClienteViewModel GetTargetClienteModel()
+    {
+        return new ClienteViewModel
+        {
+            Id = 2,
+            Nome = "Machado de Assis",
+            Telefone = "79988888888"
+        };
+    }
+
+    private IEnumerable<ClienteDTO> GetTestCliente()
+    {
+        return new List<ClienteDTO>
+        {
+            new ClienteDTO
             {
                 Id = 1,
-                Nome = "Machado de Assis",
-                Telefone = "79988888888"
-            };
-        }
-
-        private ClienteViewModel GetTargetClienteModel()
-        {
-            return new ClienteViewModel
+                Nome = "Graciliano Ramos",
+                Telefone = "79999999999"
+            },
+            new ClienteDTO
             {
                 Id = 2,
                 Nome = "Machado de Assis",
                 Telefone = "79988888888"
-            };
-        }
-
-        private IEnumerable<ClienteDTO> GetTestCliente()
-        {
-            return new List<ClienteDTO>
+            },
+            new ClienteDTO
             {
-                new ClienteDTO
-                {
-                    Id = 1,
-                    Nome = "Graciliano Ramos",
-                    Telefone = "79999999999"
-                },
-                new ClienteDTO
-                {
-                    Id = 2,
-                    Nome = "Machado de Assis",
-                    Telefone = "79988888888"
-                },
-                new ClienteDTO
-                {
-                    Id = 3,
-                    Nome = "Marcos D�sea",
-                    Telefone = "79977777777"
-                },
-            };
-        }
+                Id = 3,
+                Nome = "Marcos D�sea",
+                Telefone = "79977777777"
+            },
+        };
+    }
 
 
-        private static object? Unwrap(object? maybeTask)
+    private static object? Unwrap(object? maybeTask)
+    {
+        if (maybeTask is null) return null;
+        if (maybeTask is Task task)
         {
-            if (maybeTask is null) return null;
-            if (maybeTask is Task task)
+            // Aguarda t�rmino
+            task.GetAwaiter().GetResult();
+
+            var taskType = task.GetType();
+            if (taskType.IsGenericType)
             {
-                // Aguarda t�rmino
-                task.GetAwaiter().GetResult();
-
-                var taskType = task.GetType();
-                if (taskType.IsGenericType)
-                {
-                    // Obt�m propriedade Result via reflex�o para Task<T>
-                    var prop = taskType.GetProperty("Result");
-                    return prop?.GetValue(task);
-                }
-
-                // Task sem resultado
-                return null;
+                // Obt�m propriedade Result via reflex�o para Task<T>
+                var prop = taskType.GetProperty("Result");
+                return prop?.GetValue(task);
             }
 
-            return maybeTask;
+            // Task sem resultado
+            return null;
         }
+
+        return maybeTask;
     }
 }

@@ -1,14 +1,13 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Core.DTO;
 using DeliFitWeb.Models;
 
-namespace DeliFitWeb.Mappers
+namespace DeliFitWeb.Mappers;
+
+public class FaturamentoProfile : Profile
 {
-    public class FaturamentoProfile : Profile
+    public FaturamentoProfile()
     {
-        public FaturamentoProfile()
-        {
-            CreateMap<FaturamentoDTO, FaturamentoViewModel>().ReverseMap();
-        }
+        CreateMap<FaturamentoDTO, FaturamentoViewModel>().ReverseMap();
     }
 }

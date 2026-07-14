@@ -2,13 +2,12 @@
 using Core;
 using DeliFitWeb.Models;
 
-namespace DeliFitWeb.Mappers
+namespace DeliFitWeb.Mappers;
+
+public class PedidoProfile : Profile
 {
-    public class PedidoProfile : Profile
+    public PedidoProfile()
     {
-        public PedidoProfile()
-        {
-            CreateMap<Pedido, PedidoViewModel>().ReverseMap();
-        }
+        CreateMap<Pedido, PedidoViewModel>().ReverseMap();
     }
 }

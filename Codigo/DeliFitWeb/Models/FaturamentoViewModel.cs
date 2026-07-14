@@ -1,19 +1,18 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace DeliFitWeb.Models
+namespace DeliFitWeb.Models;
+
+public class FaturamentoViewModel
 {
-    public class FaturamentoViewModel
-    {
-        [Key]
-        public uint IdRestaurante { get; set; }
+    [Key]
+    public uint IdRestaurante { get; set; }
 
-        [Display(Name = "Data")]
-        public DateTime Data { get; set; }
+    [Display(Name = "Data")]
+    public DateTime Data { get; set; }
 
-        [Display(Name = "Faturamento Total")]
-        public decimal TotalFaturamento { get; set; }
+    [Display(Name = "Faturamento Total")]
+    public decimal TotalFaturamento { get; set; }
 
-        [Display(Name = "Total de Pedidos")]
-        public int TotalPedidos { get; set; }
-    }
+    [Display(Name = "Total de Pedidos")]
+    public int TotalPedidos { get; set; }
 }

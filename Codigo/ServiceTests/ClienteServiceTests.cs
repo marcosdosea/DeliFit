@@ -3,141 +3,140 @@ using Core.Service;
 using Microsoft.EntityFrameworkCore;
 using Service;
 
-namespace ServiceTests
+namespace ServiceTests;
+
+[TestClass()]
+public class ClienteServiceTests
 {
-    [TestClass()]
-    public class ClienteServiceTests
+    private DeliFitContext _context;
+    private IClienteService _clienteService;
+
+    [TestInitialize]
+    public void Initialize()
     {
-        private DeliFitContext _context;
-        private IClienteService _clienteService;
+        // Arrange
+        var builder = new DbContextOptionsBuilder<DeliFitContext>();
+        builder.UseInMemoryDatabase("DeliFit");
+        var options = builder.Options;
 
-        [TestInitialize]
-        public void Initialize()
+        _context = new DeliFitContext(options);
+        _context.Database.EnsureDeleted();
+        _context.Database.EnsureCreated();
+
+        var clientes = new List<Cliente>
         {
-            // Arrange
-            var builder = new DbContextOptionsBuilder<DeliFitContext>();
-            builder.UseInMemoryDatabase("DeliFit");
-            var options = builder.Options;
-
-            _context = new DeliFitContext(options);
-            _context.Database.EnsureDeleted();
-            _context.Database.EnsureCreated();
-
-            var clientes = new List<Cliente>
+            new()
             {
-                new()
-                {
-                    Id = 1,
-                    Nome = "Machado de Assis",
-                    Telefone = "79999999999",
-                    Email = "machado@exemplo.com",
-                    Cpf = "11111111111"
-                },
-                new()
-                {
-                    Id = 2,
-                    Nome = "Ian S. Sommerville",
-                    Telefone = "79988888888",
-                    Email = "ian@exemplo.com",
-                    Cpf = "22222222222"
-                },
-                new()
-                {
-                    Id = 3,
-                    Nome = "Gleford Myers",
-                    Telefone = "79977777777",
-                    Email = "gleford@exemplo.com",
-                    Cpf = "33333333333"
-                }
-            };
-
-            _context.AddRange(clientes);
-            _context.SaveChanges();
-
-            _clienteService = new ClienteService(_context);
-        }
-
-        [TestMethod()]
-        public void CreateTest()
-        {
-            // Act
-            _clienteService.Create(new Cliente
+                Id = 1,
+                Nome = "Machado de Assis",
+                Telefone = "79999999999",
+                Email = "machado@exemplo.com",
+                Cpf = "11111111111"
+            },
+            new()
             {
-                Id = 4,
-                Nome = "Graciliano Ramos",
-                Telefone = "79966666666",
-                Email = "graciliano@exemplo.com",
-                Cpf = "44444444444"
-            });
+                Id = 2,
+                Nome = "Ian S. Sommerville",
+                Telefone = "79988888888",
+                Email = "ian@exemplo.com",
+                Cpf = "22222222222"
+            },
+            new()
+            {
+                Id = 3,
+                Nome = "Gleford Myers",
+                Telefone = "79977777777",
+                Email = "gleford@exemplo.com",
+                Cpf = "33333333333"
+            }
+        };
 
-            // Assert
-            Assert.AreEqual(4, _clienteService.GetAll().Count());
+        _context.AddRange(clientes);
+        _context.SaveChanges();
 
-            var cliente = _clienteService.Get(4);
-            Assert.IsNotNull(cliente);
-            Assert.AreEqual("Graciliano Ramos", cliente.Nome);
-            Assert.AreEqual("79966666666", cliente.Telefone);
-            Assert.AreEqual("graciliano@exemplo.com", cliente.Email);
-        }
+        _clienteService = new ClienteService(_context);
+    }
 
-        [TestMethod()]
-        public void DeleteTest()
+    [TestMethod()]
+    public void CreateTest()
+    {
+        // Act
+        _clienteService.Create(new Cliente
         {
-            // Act
-            _clienteService.Delete(2);
+            Id = 4,
+            Nome = "Graciliano Ramos",
+            Telefone = "79966666666",
+            Email = "graciliano@exemplo.com",
+            Cpf = "44444444444"
+        });
 
-            // Assert
-            Assert.AreEqual(2, _clienteService.GetAll().Count());
-            var cliente = _clienteService.Get(2);
-            Assert.IsNull(cliente);
-        }
+        // Assert
+        Assert.AreEqual(4, _clienteService.GetAll().Count());
 
-        [TestMethod()]
-        public void EditTest()
-        {
-            // Act
-            var cliente = _clienteService.Get(3);
-            Assert.IsNotNull(cliente);
+        var cliente = _clienteService.Get(4);
+        Assert.IsNotNull(cliente);
+        Assert.AreEqual("Graciliano Ramos", cliente.Nome);
+        Assert.AreEqual("79966666666", cliente.Telefone);
+        Assert.AreEqual("graciliano@exemplo.com", cliente.Email);
+    }
 
-            cliente.Nome = "Paulo Coelho";
-            cliente.Telefone = "79955555555";
-            cliente.Email = "paulo@exemplo.com";
+    [TestMethod()]
+    public void DeleteTest()
+    {
+        // Act
+        _clienteService.Delete(2);
 
-            _clienteService.Edit(cliente);
+        // Assert
+        Assert.AreEqual(2, _clienteService.GetAll().Count());
+        var cliente = _clienteService.Get(2);
+        Assert.IsNull(cliente);
+    }
 
-            // Assert
-            cliente = _clienteService.Get(3);
-            Assert.IsNotNull(cliente);
-            Assert.AreEqual("Paulo Coelho", cliente.Nome);
-            Assert.AreEqual("79955555555", cliente.Telefone);
-            Assert.AreEqual("paulo@exemplo.com", cliente.Email);
-        }
+    [TestMethod()]
+    public void EditTest()
+    {
+        // Act
+        var cliente = _clienteService.Get(3);
+        Assert.IsNotNull(cliente);
 
-        [TestMethod()]
-        public void GetTest()
-        {
-            var cliente = _clienteService.Get(1);
+        cliente.Nome = "Paulo Coelho";
+        cliente.Telefone = "79955555555";
+        cliente.Email = "paulo@exemplo.com";
 
-            Assert.IsNotNull(cliente);
-            Assert.AreEqual("Machado de Assis", cliente.Nome);
-            Assert.AreEqual("79999999999", cliente.Telefone);
-            Assert.AreEqual("machado@exemplo.com", cliente.Email);
-        }
+        _clienteService.Edit(cliente);
 
-        [TestMethod()]
-        public void GetAllTest()
-        {
-            // Act
-            var listaCliente = _clienteService.GetAll();
+        // Assert
+        cliente = _clienteService.Get(3);
+        Assert.IsNotNull(cliente);
+        Assert.AreEqual("Paulo Coelho", cliente.Nome);
+        Assert.AreEqual("79955555555", cliente.Telefone);
+        Assert.AreEqual("paulo@exemplo.com", cliente.Email);
+    }
 
-            // Assert
-            Assert.IsNotNull(listaCliente);
-            Assert.AreEqual(3, listaCliente.Count());
+    [TestMethod()]
+    public void GetTest()
+    {
+        var cliente = _clienteService.Get(1);
 
-            var primeiro = listaCliente.First();
-            Assert.AreEqual((uint)1, primeiro.Id);
-            Assert.AreEqual("Machado de Assis", primeiro.Nome);
-            Assert.AreEqual("machado@exemplo.com", primeiro.Email);
-        }
+        Assert.IsNotNull(cliente);
+        Assert.AreEqual("Machado de Assis", cliente.Nome);
+        Assert.AreEqual("79999999999", cliente.Telefone);
+        Assert.AreEqual("machado@exemplo.com", cliente.Email);
+    }
+
+    [TestMethod()]
+    public void GetAllTest()
+    {
+        // Act
+        var listaCliente = _clienteService.GetAll();
+
+        // Assert
+        Assert.IsNotNull(listaCliente);
+        Assert.AreEqual(3, listaCliente.Count());
+
+        var primeiro = listaCliente.First();
+        Assert.AreEqual((uint)1, primeiro.Id);
+        Assert.AreEqual("Machado de Assis", primeiro.Nome);
+        Assert.AreEqual("machado@exemplo.com", primeiro.Email);
     }
 }

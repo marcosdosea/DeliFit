@@ -7,221 +7,220 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace DeliFitWeb.Controllers
+namespace DeliFitWeb.Controllers;
+
+public class EnderecoController : Controller
 {
-    public class EnderecoController : Controller
+    private readonly IEnderecoService _enderecoService;
+    private readonly IMapper _mapper;
+    private readonly IClienteService _clienteService;
+
+    public EnderecoController(IEnderecoService enderecoService, IMapper mapper, IClienteService clienteService)
     {
-        private readonly IEnderecoService _enderecoService;
-        private readonly IMapper _mapper;
-        private readonly IClienteService _clienteService;
+        _enderecoService = enderecoService;
+        _mapper = mapper;
+        _clienteService = clienteService;
+    }
 
-        public EnderecoController(IEnderecoService enderecoService, IMapper mapper, IClienteService clienteService)
+    // GET: EnderecoController
+    [Authorize(Roles = "Cliente,Admin")]
+    public ActionResult Index(uint? idCliente)
+    {
+        uint clienteIdFiltro;
+
+        // Se foi passado um ID, usa ele (Admin vendo endereços de qualquer cliente)
+        if (idCliente.HasValue)
         {
-            _enderecoService = enderecoService;
-            _mapper = mapper;
-            _clienteService = clienteService;
+            clienteIdFiltro = idCliente.Value;
+        }
+        else if (User.IsInRole("Cliente"))
+        {
+            // Se não foi passado ID, busca da sessão (cliente vendo seus próprios endereços)
+            var clienteIdSessao = GetClienteIdLogado();
+            if (!clienteIdSessao.HasValue)
+            {
+                TempData["Error"] = "Não foi possível identificar o cliente. Faça login novamente.";
+                return RedirectToAction("Index", "Home");
+            }
+            clienteIdFiltro = clienteIdSessao.Value;
+        }
+        else
+        {
+            return BadRequest("ID do cliente não fornecido.");
         }
 
-        // GET: EnderecoController
-        [Authorize(Roles = "Cliente,Admin")]
-        public ActionResult Index(uint? idCliente)
-        {
-            uint clienteIdFiltro;
+        var listaEnderecos = _enderecoService.GetAll().Where(e => e.IdCliente == clienteIdFiltro);
+        var listaEnderecosViewModel = _mapper.Map<List<EnderecoViewModel>>(listaEnderecos);
 
-            // Se foi passado um ID, usa ele (Admin vendo endereços de qualquer cliente)
-            if (idCliente.HasValue)
+        ViewBag.IdCliente = clienteIdFiltro;
+
+        return View(listaEnderecosViewModel);
+    }
+
+    // GET: EnderecoController/Details/5
+    public ActionResult Details(uint id)
+    {
+        Endereco? endereco = _enderecoService.Get(id);
+        EnderecoViewModel enderecoModel = _mapper.Map<EnderecoViewModel>(endereco);
+        return View(enderecoModel);
+    }
+
+    // GET: EnderecoController/Create
+    [Authorize(Roles = "Cliente")]
+    public ActionResult Create(uint? idCliente)
+    {
+        var model = new EnderecoViewModel();
+
+        if (idCliente.HasValue)
+        {
+            model.IdCliente = idCliente.Value;
+        }
+        else
+        {
+            // Busca da sessão (cliente criando seu próprio endereço)
+            var clienteIdSessao = GetClienteIdLogado();
+            if (clienteIdSessao.HasValue)
             {
-                clienteIdFiltro = idCliente.Value;
-            }
-            else if (User.IsInRole("Cliente"))
-            {
-                // Se não foi passado ID, busca da sessão (cliente vendo seus próprios endereços)
-                var clienteIdSessao = GetClienteIdLogado();
-                if (!clienteIdSessao.HasValue)
-                {
-                    TempData["Error"] = "Não foi possível identificar o cliente. Faça login novamente.";
-                    return RedirectToAction("Index", "Home");
-                }
-                clienteIdFiltro = clienteIdSessao.Value;
+                model.IdCliente = clienteIdSessao.Value;
             }
             else
             {
-                return BadRequest("ID do cliente não fornecido.");
+                TempData["Error"] = "Não foi possível identificar o cliente. Faça login novamente.";
+                return RedirectToAction("Index", "Home");
             }
-
-            var listaEnderecos = _enderecoService.GetAll().Where(e => e.IdCliente == clienteIdFiltro);
-            var listaEnderecosViewModel = _mapper.Map<List<EnderecoViewModel>>(listaEnderecos);
-
-            ViewBag.IdCliente = clienteIdFiltro;
-
-            return View(listaEnderecosViewModel);
         }
 
-        // GET: EnderecoController/Details/5
-        public ActionResult Details(uint id)
-        {
-            Endereco? endereco = _enderecoService.Get(id);
-            EnderecoViewModel enderecoModel = _mapper.Map<EnderecoViewModel>(endereco);
-            return View(enderecoModel);
-        }
+        return View(model);
+    }
 
-        // GET: EnderecoController/Create
-        [Authorize(Roles = "Cliente")]
-        public ActionResult Create(uint? idCliente)
+    // POST: EnderecoController/Create
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Cliente")]
+    public ActionResult Create(EnderecoViewModel enderecoModel)
+    {
+        // Se o IdCliente não foi enviado, tenta buscar da sessão
+        if (enderecoModel.IdCliente == 0)
         {
-            var model = new EnderecoViewModel();
-
-            if (idCliente.HasValue)
+            var clienteId = GetClienteIdLogado();
+            if (clienteId.HasValue)
             {
-                model.IdCliente = idCliente.Value;
+                enderecoModel.IdCliente = clienteId.Value;
             }
             else
             {
-                // Busca da sessão (cliente criando seu próprio endereço)
-                var clienteIdSessao = GetClienteIdLogado();
-                if (clienteIdSessao.HasValue)
-                {
-                    model.IdCliente = clienteIdSessao.Value;
-                }
-                else
-                {
-                    TempData["Error"] = "Não foi possível identificar o cliente. Faça login novamente.";
-                    return RedirectToAction("Index", "Home");
-                }
+                ModelState.AddModelError("", "Não foi possível identificar o cliente. Faça login novamente.");
+                return View(enderecoModel);
             }
-
-            return View(model);
         }
 
-        // POST: EnderecoController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Cliente")]
-        public ActionResult Create(EnderecoViewModel enderecoModel)
+        if (ModelState.IsValid)
         {
-            // Se o IdCliente não foi enviado, tenta buscar da sessão
-            if (enderecoModel.IdCliente == 0)
-            {
-                var clienteId = GetClienteIdLogado();
-                if (clienteId.HasValue)
-                {
-                    enderecoModel.IdCliente = clienteId.Value;
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Não foi possível identificar o cliente. Faça login novamente.");
-                    return View(enderecoModel);
-                }
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    var endereco = _mapper.Map<Endereco>(enderecoModel);
-                    _enderecoService.Create(endereco);
-                    TempData["Success"] = "Endereço criado com sucesso!";
-
-                    return RedirectToAction(nameof(Index),
-                        new { idCliente = enderecoModel.IdCliente });
-                }
-                catch (Exception ex)
-                {
-                    ModelState.AddModelError("", $"Erro ao criar endereço: {ex.Message}");
-                }
-            }
-
-            return View(enderecoModel);
-        }
-
-        // GET: EnderecoController/Edit/5
-        public ActionResult Edit(uint id)
-        {
-            Endereco? endereco = _enderecoService.Get(id);
-            EnderecoViewModel enderecoModel = _mapper.Map<EnderecoViewModel>(endereco);
-
-            return View(enderecoModel);
-        }
-
-        // POST: EnderecoController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(uint id, EnderecoViewModel enderecoModel)
-        {
-            if (ModelState.IsValid)
+            try
             {
                 var endereco = _mapper.Map<Endereco>(enderecoModel);
-                _enderecoService.Edit(endereco);
+                _enderecoService.Create(endereco);
+                TempData["Success"] = "Endereço criado com sucesso!";
 
                 return RedirectToAction(nameof(Index),
                     new { idCliente = enderecoModel.IdCliente });
             }
-
-            return View(enderecoModel);
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Erro ao criar endereço: {ex.Message}");
+            }
         }
 
+        return View(enderecoModel);
+    }
 
-        // GET: EnderecoController/Delete/5
-        public ActionResult Delete(uint id)
+    // GET: EnderecoController/Edit/5
+    public ActionResult Edit(uint id)
+    {
+        Endereco? endereco = _enderecoService.Get(id);
+        EnderecoViewModel enderecoModel = _mapper.Map<EnderecoViewModel>(endereco);
+
+        return View(enderecoModel);
+    }
+
+    // POST: EnderecoController/Edit/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public ActionResult Edit(uint id, EnderecoViewModel enderecoModel)
+    {
+        if (ModelState.IsValid)
         {
-            Endereco? endereco = _enderecoService.Get(id);
-            if (endereco == null)
-            {
-                TempData["Error"] = "Endereço não encontrado.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            EnderecoViewModel enderecoModel = _mapper.Map<EnderecoViewModel>(endereco);
-
-            return View(enderecoModel);
-        }
-
-        // POST: EnderecoController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(uint id, EnderecoViewModel enderecoModel)
-        {
-            try
-            {
-                _enderecoService.Delete(id);
-            }
-            catch (ServiceException ex)
-            {
-                TempData["Error"] = ex.Message;
-            }
-            catch (DbUpdateException)
-            {
-                TempData["Error"] = "Não é possível excluir este endereço pois ele está vinculado a um pedido.";
-            }
+            var endereco = _mapper.Map<Endereco>(enderecoModel);
+            _enderecoService.Edit(endereco);
 
             return RedirectToAction(nameof(Index),
                 new { idCliente = enderecoModel.IdCliente });
         }
 
-        // Método auxiliar para obter o ID do cliente logado
-        private uint? GetClienteIdLogado()
+        return View(enderecoModel);
+    }
+
+
+    // GET: EnderecoController/Delete/5
+    public ActionResult Delete(uint id)
+    {
+        Endereco? endereco = _enderecoService.Get(id);
+        if (endereco == null)
         {
-            // Tenta buscar da sessão
-            var clienteId = HttpContext.Session.GetClienteId();
+            TempData["Error"] = "Endereço não encontrado.";
+            return RedirectToAction(nameof(Index));
+        }
 
-            if (!clienteId.HasValue)
+        EnderecoViewModel enderecoModel = _mapper.Map<EnderecoViewModel>(endereco);
+
+        return View(enderecoModel);
+    }
+
+    // POST: EnderecoController/Delete/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public ActionResult Delete(uint id, EnderecoViewModel enderecoModel)
+    {
+        try
+        {
+            _enderecoService.Delete(id);
+        }
+        catch (ServiceException ex)
+        {
+            TempData["Error"] = ex.Message;
+        }
+        catch (DbUpdateException)
+        {
+            TempData["Error"] = "Não é possível excluir este endereço pois ele está vinculado a um pedido.";
+        }
+
+        return RedirectToAction(nameof(Index),
+            new { idCliente = enderecoModel.IdCliente });
+    }
+
+    // Método auxiliar para obter o ID do cliente logado
+    private uint? GetClienteIdLogado()
+    {
+        // Tenta buscar da sessão
+        var clienteId = HttpContext.Session.GetClienteId();
+
+        if (!clienteId.HasValue)
+        {
+            // Se não estiver na sessão, busca pelo email
+            var userEmail = User.Identity?.Name;
+            if (!string.IsNullOrEmpty(userEmail))
             {
-                // Se não estiver na sessão, busca pelo email
-                var userEmail = User.Identity?.Name;
-                if (!string.IsNullOrEmpty(userEmail))
-                {
-                    var cliente = _clienteService.GetByEmail(userEmail);
+                var cliente = _clienteService.GetByEmail(userEmail);
 
-                    if (cliente != null)
-                    {
-                        // Armazena na sessão para próximas requisições
-                        HttpContext.Session.SetClienteId(cliente.Id);
-                        clienteId = cliente.Id;
-                    }
+                if (cliente != null)
+                {
+                    // Armazena na sessão para próximas requisições
+                    HttpContext.Session.SetClienteId(cliente.Id);
+                    clienteId = cliente.Id;
                 }
             }
-
-            return clienteId;
         }
+
+        return clienteId;
     }
 }

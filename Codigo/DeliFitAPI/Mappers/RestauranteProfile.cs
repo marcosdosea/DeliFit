@@ -1,18 +1,17 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Core;
 using Core.DTO;
 using DeliFitAPI.Models;
 
-namespace DeliFitAPI.Mappers
+namespace DeliFitAPI.Mappers;
+
+public class RestauranteProfile : Profile
 {
-    public class RestauranteProfile : Profile
+    public RestauranteProfile()
     {
-        public RestauranteProfile()
-        {
-            CreateMap<RestauranteViewModel, Restaurante>().ReverseMap();
+        CreateMap<RestauranteViewModel, Restaurante>().ReverseMap();
 
-            CreateMap<RestauranteViewModel, RestauranteDTO>().ReverseMap();
-        }
-
+        CreateMap<RestauranteViewModel, RestauranteDTO>().ReverseMap();
     }
+
 }

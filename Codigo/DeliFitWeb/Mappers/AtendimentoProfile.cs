@@ -1,14 +1,13 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Core;
 using DeliFitWeb.Models;
 
-namespace DeliFitWeb.Mappers
+namespace DeliFitWeb.Mappers;
+
+public class AtendimentoProfile : Profile
 {
-    public class AtendimentoProfile : Profile
+    public AtendimentoProfile()
     {
-        public AtendimentoProfile()
-        {
-            CreateMap<AtendimentoViewModel, Atendimento>().ReverseMap();
-        }
+        CreateMap<AtendimentoViewModel, Atendimento>().ReverseMap();
     }
 }

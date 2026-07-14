@@ -1,15 +1,14 @@
-﻿namespace Core.Service
+﻿namespace Core.Service;
+
+public interface ICartaoService
 {
-    public interface ICartaoService
-    {
-        public uint Create(Cartao Cartao);
+    public uint Create(Cartao Cartao);
 
-        public Cartao? Get(uint id);
+    public Cartao? Get(uint id);
 
-        public void Delete(uint id);
+    public void Delete(uint id);
 
-        public IEnumerable<Cartao> GetAll();
+    public IEnumerable<Cartao> GetAll();
 
-        IEnumerable<Cartao> GetByCliente(uint idCliente);
-    }
+    IEnumerable<Cartao> GetByCliente(uint idCliente);
 }

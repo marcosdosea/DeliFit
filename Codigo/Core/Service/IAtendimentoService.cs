@@ -1,15 +1,14 @@
-﻿namespace Core.Service
+﻿namespace Core.Service;
+
+public interface IAtendimentoService
 {
-    public interface IAtendimentoService
-    {
-        uint Create(Atendimento atendimento);
+    uint Create(Atendimento atendimento);
 
-        void Edit(Atendimento atendimento);
+    void Edit(Atendimento atendimento);
 
-        void Delete(uint id);
+    void Delete(uint id);
 
-        Atendimento? Get(uint id);
+    Atendimento? Get(uint id);
 
-        IEnumerable<Atendimento> GetAll(uint idRestaurante);
-    }
+    IEnumerable<Atendimento> GetAll(uint idRestaurante);
 }

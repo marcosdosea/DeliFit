@@ -2,13 +2,12 @@
 using Core;
 using DeliFitWeb.Models;
 
-namespace DeliFitWeb.Mappers
+namespace DeliFitWeb.Mappers;
+
+public class PagamentoProfile : Profile
 {
-    public class PagamentoProfile : Profile
+    public PagamentoProfile()
     {
-        public PagamentoProfile()
-        {
-            CreateMap<Pagamento, PagamentoViewModel>().ReverseMap();
-        }
+        CreateMap<Pagamento, PagamentoViewModel>().ReverseMap();
     }
 }
