@@ -1,15 +1,16 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Core;
 using Core.DTO;
-using Core.Service;
 using Core.Identity.Data;
+using Core.Service;
+using DeliFitWeb.Controllers;
 using DeliFitWeb.Mappers;
 using DeliFitWeb.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace DeliFitWeb.Controllers.Tests
+namespace DeliFitWebTests.Controllers
 {
     [TestClass()]
     public class ClienteControllerTests
@@ -17,55 +18,56 @@ namespace DeliFitWeb.Controllers.Tests
         private static ClienteController? controller;
 
         [TestInitialize]
-            public void Initialize()
-            {
-                // Arrange
-                var mockService = new Mock<IClienteService>();
-                var mockUserManager = new Mock<UserManager<UsuarioIdentity>>(
-                    new Mock<IUserStore<UsuarioIdentity>>().Object,
-                    null, null, null, null, null, null, null, null);
-                var mockRestauranteService = new Mock<IRestauranteService>();
-                var mockItemService = new Mock<IItemService>();
-                var mockCategoriaService = new Mock<ICategoriaService>();
-                var mockCarrinhoService = new Mock<ICarrinhoService>();
-                var mockPedidoService = new Mock<IPedidoService>();
-                var mockAvaliacaoService = new Mock<IAvaliacaoService>();
+        public void Initialize()
+        {
+            // Arrange
+            var mockService = new Mock<IClienteService>();
+            var mockUserManager = new Mock<UserManager<UsuarioIdentity>>(
+                new Mock<IUserStore<UsuarioIdentity>>().Object,
+                null, null, null, null, null, null, null, null);
+            var mockRestauranteService = new Mock<IRestauranteService>();
+            var mockItemService = new Mock<IItemService>();
+            var mockCategoriaService = new Mock<ICategoriaService>();
+            var mockCarrinhoService = new Mock<ICarrinhoService>();
+            var mockPedidoService = new Mock<IPedidoService>();
+            var mockAvaliacaoService = new Mock<IAvaliacaoService>();
 
-                IMapper mapper = new MapperConfiguration(cfg =>
-                    cfg.AddProfile(new ClienteProfile())).CreateMapper();
+            IMapper mapper = new MapperConfiguration(cfg =>
+                cfg.AddProfile(new ClienteProfile())).CreateMapper();
 
-                // Configura comportamento do mock do IClienteService para os testes funcionarem
-                mockService
-                    .Setup(service => service.GetAll())
-                    .Returns(GetTestCliente());
+            // Configura comportamento do mock do IClienteService para os testes funcionarem
+            mockService
+                .Setup(service => service.GetAll())
+                .Returns(GetTestCliente());
 
-                mockService
-                    .Setup(service => service.Get(It.Is<uint>(id => id == 1)))
-                    .Returns(GetTargetCliente());
+            mockService
+                .Setup(service => service.Get(It.Is<uint>(id => id == 1)))
+                .Returns(GetTargetCliente());
 
-                mockService
-                    .Setup(service => service.Get(It.Is<uint>(id => id != 1)))
-                    .Returns((Cliente?)null);
+            mockService
+                .Setup(service => service.Get(It.Is<uint>(id => id != 1)))
+                .Returns((Cliente?)null);
 
-                mockService
-                    .Setup(service => service.GetByEmail(It.IsAny<string>()))
-                    .Returns((string email) => {
-                        // tenta encontrar um ClienteDTO com email correspondente (n�o existe em dados de teste)
-                        return null;
-                    });
+            mockService
+                .Setup(service => service.GetByEmail(It.IsAny<string>()))
+                .Returns((string email) =>
+                {
+                    // tenta encontrar um ClienteDTO com email correspondente (n�o existe em dados de teste)
+                    return null;
+                });
 
-                controller = new ClienteController(
-                    mockService.Object,
-                    mapper,
-                    mockUserManager.Object,
-                    mockRestauranteService.Object,
-                    mockItemService.Object,
-                    mockCategoriaService.Object,
-                    mockCarrinhoService.Object,
-                    mockPedidoService.Object,
-                    mockAvaliacaoService.Object
-                );
-            }
+            controller = new ClienteController(
+                mockService.Object,
+                mapper,
+                mockUserManager.Object,
+                mockRestauranteService.Object,
+                mockItemService.Object,
+                mockCategoriaService.Object,
+                mockCarrinhoService.Object,
+                mockPedidoService.Object,
+                mockAvaliacaoService.Object
+            );
+        }
 
         [TestMethod()]
         [TestCategory("Unit")]

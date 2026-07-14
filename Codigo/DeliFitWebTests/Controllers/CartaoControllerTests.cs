@@ -1,6 +1,7 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Core;
 using Core.Service;
+using DeliFitWeb.Controllers;
 using DeliFitWeb.Mappers;
 using DeliFitWeb.Models;
 using DeliFitWeb.Services;
@@ -11,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Moq;
 using System.Security.Claims;
 
-namespace DeliFitWeb.Controllers.Tests
+namespace DeliFitWebTests.Controllers
 {
     [TestClass]
     public class CartaoControllerTests

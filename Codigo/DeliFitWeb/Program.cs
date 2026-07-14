@@ -1,13 +1,12 @@
-﻿using BibliotecaWeb.Helpers;
-using Core;
-using Core.Service;
+﻿using Core;
 using Core.Identity.Data;
+using Core.Service;
+using DeliFitWeb.Helpers;
 using DeliFitWeb.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Service;
 
 namespace DeliFitWeb;
@@ -42,7 +41,7 @@ public class Program
             options.UseMySQL(builder.Configuration.GetConnectionString("IdentityConnection")));
 
         builder.Services.AddDefaultIdentity<UsuarioIdentity>(options =>
-        { 
+        {
             options.SignIn.RequireConfirmedAccount = false;
             options.SignIn.RequireConfirmedEmail = false;
             options.SignIn.RequireConfirmedPhoneNumber = false;
@@ -95,7 +94,7 @@ public class Program
                     // ReturnUrlParameter requires 
                     options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
                     options.SlidingExpiration = true;
-        });
+                });
 
 
         builder.Services.AddDistributedMemoryCache();
@@ -118,7 +117,7 @@ public class Program
             app.UseHsts();
         }
 
-        
+
 
 
         app.UseHttpsRedirection();
@@ -141,7 +140,7 @@ public class Program
 
         using (var scope = app.Services.CreateScope())
         {
-            
+
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<UsuarioIdentity>>();
 

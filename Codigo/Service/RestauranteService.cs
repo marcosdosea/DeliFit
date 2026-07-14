@@ -1,7 +1,6 @@
 ﻿using Core;
 using Core.DTO;
 using Core.Service;
-using Microsoft.EntityFrameworkCore;
 
 namespace Service
 {

@@ -1,8 +1,6 @@
-using Core;
+﻿using Core;
 using Core.DTO;
 using Core.Service;
-using Microsoft.EntityFrameworkCore;
-using MySqlX.XDevAPI;
 
 namespace Service;
 

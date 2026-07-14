@@ -63,7 +63,7 @@ namespace Service
                 .AsNoTracking()
                 .Where(p => p.IdRestaurante == idRestaurante);
         }
-        
+
 
         /// <summary>
         /// Obter dados de todos os pagamentos com base em um status específico

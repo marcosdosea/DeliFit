@@ -1,10 +1,9 @@
-using Core;
+﻿using Core;
 using Core.Service;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Service;
 
-namespace Service.Tests
+namespace ServiceTests
 {
     [TestClass()]
     public class PedidoServiceTests

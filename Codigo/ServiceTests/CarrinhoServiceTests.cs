@@ -1,8 +1,9 @@
 ﻿using Core;
 using Core.Service;
 using Microsoft.EntityFrameworkCore;
+using Service;
 
-namespace Service.Tests
+namespace ServiceTests
 {
     [TestClass()]
     public class CarrinhoServiceTests
@@ -80,7 +81,7 @@ namespace Service.Tests
             Assert.IsNotNull(cliente);
             Assert.AreEqual("P", cliente.FormaDePagamento);
             Assert.AreEqual("Atecubanos", cliente.Observacao);
-            
+
         }
 
         [TestMethod()]
@@ -95,8 +96,8 @@ namespace Service.Tests
             Assert.IsNull(cliente);
         }
 
-       
-       
+
+
 
         [TestMethod()]
         public void GetTest()
@@ -106,7 +107,7 @@ namespace Service.Tests
             Assert.IsNotNull(carrinho);
             Assert.AreEqual("Carne ao ponto", carrinho.Observacao);
             Assert.AreEqual("D", carrinho.FormaDePagamento);
-          
+
         }
 
         [TestMethod()]

@@ -1,12 +1,11 @@
 ﻿using AutoMapper;
 using Core;
 using Core.Service;
+using DeliFitWeb.Helpers;
 using DeliFitWeb.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Service;
-using DeliFitWeb.Helpers;
-using Microsoft.AspNetCore.Authorization;
 
 namespace DeliFitWeb.Controllers
 {

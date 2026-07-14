@@ -2,7 +2,7 @@
 using Core;
 using DeliFitAPI.Models;
 
-namespace DeliFitWeb.Mappers
+namespace DeliFitAPI.Mappers
 {
     public class EnderecoProfile : Profile
     {

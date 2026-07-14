@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Core;
-using Core.DTO;
 using DeliFitWeb.Models;
 
 namespace DeliFitWeb.Mappers

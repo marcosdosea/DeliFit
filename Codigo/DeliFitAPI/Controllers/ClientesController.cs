@@ -36,7 +36,7 @@ namespace DeliFitAPI.Controllers
         public ActionResult Get()
         {
             var listaClientes = _clienteService.GetAll();
-            if(listaClientes == null || !listaClientes.Any())
+            if (listaClientes == null || !listaClientes.Any())
                 return NotFound();
 
             return Ok(listaClientes);
@@ -47,7 +47,7 @@ namespace DeliFitAPI.Controllers
         public ActionResult Get(uint id)
         {
             Cliente cliente = _clienteService.Get(id);
-            if(cliente == null)
+            if (cliente == null)
                 return NotFound();
             return Ok(cliente);
         }
@@ -76,7 +76,7 @@ namespace DeliFitAPI.Controllers
             }
 
             var cliente = _mapper.Map<Cliente>(clienteModel);
-            if(cliente == null)
+            if (cliente == null)
             {
                 return NotFound();
             }

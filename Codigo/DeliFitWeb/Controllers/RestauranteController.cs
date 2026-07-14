@@ -1,18 +1,15 @@
 ﻿using AutoMapper;
 using Core;
+using Core.Identity.Data;
 using Core.Service;
+using DeliFitWeb.Helpers;
 using DeliFitWeb.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Net.Http;
-using System.Net.Http.Json;
-using Core.Identity.Data;
 using System.Security.Cryptography;
-using System.Linq;
-using DeliFitWeb.Helpers;
 
 namespace DeliFitWeb.Controllers
 {
@@ -535,7 +532,7 @@ namespace DeliFitWeb.Controllers
             return Json(new { sucesso = false, mensagem = "CNPJ não encontrado." });
         }
 
-       
+
 
         [Authorize(Roles = "GerenteRestaurante")]
         public IActionResult Home()

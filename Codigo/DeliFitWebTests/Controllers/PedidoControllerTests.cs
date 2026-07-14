@@ -1,18 +1,17 @@
-using AutoMapper;
+﻿using AutoMapper;
 using Core;
 using Core.Service;
 using DeliFitWeb.Controllers;
+using DeliFitWeb.Mappers;
 using DeliFitWeb.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using DeliFitWeb.Mappers;
 using System.Security.Claims;
 using System.Text.Json;
 
-namespace DeliFitWeb.Controllers.Tests
+namespace DeliFitWebTests.Controllers
 {
     [TestClass()]
     public class PedidoControllerTests

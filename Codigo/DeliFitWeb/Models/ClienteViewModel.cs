@@ -1,4 +1,4 @@
-using System.ComponentModel.DataAnnotations;
+Ôªøusing System.ComponentModel.DataAnnotations;
 using Util;
 
 namespace DeliFitWeb.Models
@@ -14,30 +14,30 @@ namespace DeliFitWeb.Models
         public string Nome { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Campo requerido")]
-        [RegularExpression(@"^(?:\(?\d{2}\)?\s?\d{4,5}-?\d{4}|\d{11})$", ErrorMessage = "O telefone deve conter exatamente 11 dÌgitos.")]
-        [TelefoneCelular(ErrorMessage = "Telefone inv·lido")]
+        [RegularExpression(@"^(?:\(?\d{2}\)?\s?\d{4,5}-?\d{4}|\d{11})$", ErrorMessage = "O telefone deve conter exatamente 11 d√≠gitos.")]
+        [TelefoneCelular(ErrorMessage = "Telefone inv√°lido")]
         public string Telefone { get; set; } = string.Empty;
 
 
         [Required(ErrorMessage = "Campo requerido")]
         [StringLength(11, MinimumLength = 11, ErrorMessage = "O cpf deve conter 11 caracteres.")]
-        [CPF(ErrorMessage = "CPF inv·lido")]
+        [CPF(ErrorMessage = "CPF inv√°lido")]
         public string Cpf { get; set; } = string.Empty;
 
         [Display(Name = "Email")]
-        [Required(ErrorMessage = "O campo Email È obrigatÛrio.")]
-        [StringLength(50, ErrorMessage = "O email deve ter no m·ximo 50 caracteres.")]
-        [EmailAddress(ErrorMessage = "O email informado n„o È v·lido.")]
+        [Required(ErrorMessage = "O campo Email √© obrigat√≥rio.")]
+        [StringLength(50, ErrorMessage = "O email deve ter no m√°ximo 50 caracteres.")]
+        [EmailAddress(ErrorMessage = "O email informado n√£o √© v√°lido.")]
         public string Email { get; set; } = string.Empty;
 
         [Display(Name = "Ano Nascimento")]
         [Required(ErrorMessage = "Campo requerido")]
-        [DataType(DataType.Date, ErrorMessage = "Data v·lida requirida")]
+        [DataType(DataType.Date, ErrorMessage = "Data v√°lida requirida")]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime DataNascimento { get; set; } 
+        public DateTime DataNascimento { get; set; }
 
 
-        
+
 
     }
 }

@@ -1,10 +1,11 @@
-
+﻿
 using Core;
-using Core.Service;
 using Core.DTO;
+using Core.Service;
 using Microsoft.EntityFrameworkCore;
+using Service;
 
-namespace Service.Tests
+namespace ServiceTests
 {
     [TestClass]
     public class RestauranteServiceTests
@@ -46,9 +47,23 @@ namespace Service.Tests
         public void CreateTest()
         {
             // Act
-            restauranteService?.Create(new Restaurante() { Id = 4, NomeRestaurante = "Restaurante 4", Cidade = "Cidade 4", Bairro = "Bairro", Cep = "12345-789",
-                Cnpj = "12345678910124", CpfProprietario = "12345678904", Email = "teste4@gmail.com", Estado = "Estado", Numero = "123", Rua = "Rua",
-                TelefoneProprietario = "79999419916", TelefoneRestaurante = "79999419916", NomeProprietario = "NomeTeste4"});
+            restauranteService?.Create(new Restaurante()
+            {
+                Id = 4,
+                NomeRestaurante = "Restaurante 4",
+                Cidade = "Cidade 4",
+                Bairro = "Bairro",
+                Cep = "12345-789",
+                Cnpj = "12345678910124",
+                CpfProprietario = "12345678904",
+                Email = "teste4@gmail.com",
+                Estado = "Estado",
+                Numero = "123",
+                Rua = "Rua",
+                TelefoneProprietario = "79999419916",
+                TelefoneRestaurante = "79999419916",
+                NomeProprietario = "NomeTeste4"
+            });
             // Assert
             Assert.AreEqual(4, restauranteService?.GetAll().Count());
             var restaurante = restauranteService?.Get(4);

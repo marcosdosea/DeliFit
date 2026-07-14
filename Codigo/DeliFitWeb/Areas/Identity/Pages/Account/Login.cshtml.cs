@@ -1,23 +1,16 @@
-// Licensed to the .NET Foundation under one or more agreements.
+﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
 using Core.Identity.Data;
+using Core.Service;
+using DeliFitWeb.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
-using DeliFitWeb.Helpers;
-using Core.Service;
+using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace DeliFitWeb.Areas.Identity.Pages.Account
 {
@@ -29,8 +22,8 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
         private readonly IClienteService _clienteService;
         private readonly IRestauranteService _restauranteService;
 
-        public LoginModel(SignInManager<UsuarioIdentity> signInManager, 
-                         ILogger<LoginModel> logger, 
+        public LoginModel(SignInManager<UsuarioIdentity> signInManager,
+                         ILogger<LoginModel> logger,
                          UserManager<UsuarioIdentity> userManager,
                          IClienteService clienteService,
                          IRestauranteService restauranteService)
@@ -140,7 +133,7 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
                     if (roles.Contains("Admin"))
                     {
                         HttpContext.Session.SetUserRole("Admin");
-                        return LocalRedirect("~/Restaurante/HomeAdmin"); 
+                        return LocalRedirect("~/Restaurante/HomeAdmin");
                     }
                     if (roles.Contains("GerenteRestaurante"))
                     {
@@ -153,7 +146,7 @@ namespace DeliFitWeb.Areas.Identity.Pages.Account
                             HttpContext.Session.SetRestauranteId(restaurante.Id);
                         }
 
-                        return LocalRedirect("~/Restaurante/Home"); 
+                        return LocalRedirect("~/Restaurante/Home");
                     }
                     if (roles.Contains("Cliente"))
                     {

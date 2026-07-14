@@ -1,9 +1,8 @@
-using MailKit.Net.Smtp;
-using MailKit.Security;
+﻿using MailKit.Security;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using MimeKit;
 
-namespace BibliotecaWeb.Helpers
+namespace DeliFitWeb.Helpers
 {
     public class EmailSender : IEmailSender
     {
