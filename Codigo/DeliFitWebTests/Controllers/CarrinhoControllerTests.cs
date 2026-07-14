@@ -3,8 +3,10 @@ using Core;
 using Core.Service;
 using DeliFitWeb.Controllers;
 using DeliFitWeb.Models;
+using DeliFitWeb.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Moq;
 
 namespace DeliFitWebTests.Controllers;
@@ -20,6 +22,8 @@ public class CarrinhoControllerTests
     private Mock<IPedidoService>? mockPedidoService;
     private Mock<IEnderecoService>? mockEnderecoService;
     private Mock<IRestauranteService>? mockRestauranteService;
+    private Mock<IMercadoPagoService>? mockMercadoPagoService;
+    private Mock<IConfiguration>? mockConfiguration;
     private Mock<IMapper>? mockMapper;
 
     [TestInitialize]
@@ -32,6 +36,8 @@ public class CarrinhoControllerTests
         mockPedidoService = new Mock<IPedidoService>();
         mockEnderecoService = new Mock<IEnderecoService>();
         mockRestauranteService = new Mock<IRestauranteService>();
+        mockMercadoPagoService = new Mock<IMercadoPagoService>();
+        mockConfiguration = new Mock<IConfiguration>();
         mockMapper = new Mock<IMapper>();
 
         // Setup básico dos mocks
@@ -50,6 +56,8 @@ public class CarrinhoControllerTests
             mockPedidoService.Object,
             mockEnderecoService.Object,
             mockRestauranteService.Object,
+            mockMercadoPagoService.Object,
+            mockConfiguration.Object,
             mockMapper.Object);
 
         // Mock HttpContext com Session
@@ -284,8 +292,10 @@ public class CarrinhoControllerTests
             {
                 Id = 1,
                 Nome = "Cartão Pessoal",
-                Numero = "1234567890123456",
-                Cvv = "123",
+                MercadoPagoCardId = "card-1",
+                MercadoPagoPaymentMethodId = "master",
+                Bandeira = "Mastercard",
+                UltimosQuatroDigitos = "3456",
                 IdCliente = 1,
                 Validade = DateTime.Now.AddYears(5),
                 Cpf = "12345678901"
@@ -294,8 +304,10 @@ public class CarrinhoControllerTests
             {
                 Id = 2,
                 Nome = "Cartão Trabalho",
-                Numero = "6543210987654321",
-                Cvv = "456",
+                MercadoPagoCardId = "card-2",
+                MercadoPagoPaymentMethodId = "visa",
+                Bandeira = "Visa",
+                UltimosQuatroDigitos = "4321",
                 IdCliente = 1,
                 Validade = DateTime.Now.AddYears(3),
                 Cpf = "98765432109"

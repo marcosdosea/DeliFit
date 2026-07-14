@@ -13,27 +13,29 @@ namespace DeliFitWebTests.Controllers;
 public class AtendimentoControllerTests
 {
     private AtendimentoController controller = null!;
-    private Mock<IAtendimentoService> mockService = null!;
+    private Mock<IAtendimentoService> mockAtendimentoService = null!;
+    private Mock<IRestauranteService> mockRestauranteService = null!;
 
     [TestInitialize]
     public void Initialize()
     {
-        mockService = new Mock<IAtendimentoService>();
+        mockAtendimentoService = new Mock<IAtendimentoService>();
+        mockRestauranteService = new Mock<IRestauranteService>();
 
         IMapper mapper = new MapperConfiguration(cfg =>
             cfg.AddProfile(new AtendimentoProfile())).CreateMapper();
 
-        mockService.Setup(s => s.GetAll(1))
+        mockAtendimentoService.Setup(s => s.GetAll(1))
             .Returns(GetTestAtendimento());
 
-        mockService.Setup(s => s.Get(It.IsAny<uint>()))
+        mockAtendimentoService.Setup(s => s.Get(It.IsAny<uint>()))
             .Returns(GetTargetAtendimento());
 
-        mockService.Setup(s => s.Create(It.IsAny<Atendimento>()));
-        mockService.Setup(s => s.Edit(It.IsAny<Atendimento>()));
-        mockService.Setup(s => s.Delete(It.IsAny<uint>()));
+        mockAtendimentoService.Setup(s => s.Create(It.IsAny<Atendimento>()));
+        mockAtendimentoService.Setup(s => s.Edit(It.IsAny<Atendimento>()));
+        mockAtendimentoService.Setup(s => s.Delete(It.IsAny<uint>()));
 
-        controller = new AtendimentoController(mockService.Object, mapper);
+        controller = new AtendimentoController(mockAtendimentoService.Object, mockRestauranteService.Object, mapper);
     }
 
     [TestMethod]
@@ -112,7 +114,7 @@ public class AtendimentoControllerTests
     [TestMethod]
     public void CreateTest_Post_ServiceException_RetornaView()
     {
-        mockService.Setup(s => s.Create(It.IsAny<Atendimento>()))
+        mockAtendimentoService.Setup(s => s.Create(It.IsAny<Atendimento>()))
             .Throws(new ServiceException("Já existe um horário configurado para este dia da semana neste restaurante."));
 
         var result = controller.Create(GetNewAtendimento());
@@ -124,7 +126,7 @@ public class AtendimentoControllerTests
     [TestMethod]
     public void EditTest_Post_ServiceException_RetornaView()
     {
-        mockService.Setup(s => s.Edit(It.IsAny<Atendimento>()))
+        mockAtendimentoService.Setup(s => s.Edit(It.IsAny<Atendimento>()))
             .Throws(new ServiceException("O horário de início deve ser anterior ao horário de fim."));
 
         var result = controller.Edit(GetTargetAtendimentoViewModel());

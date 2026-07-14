@@ -85,7 +85,7 @@ public class AtendimentoServiceTests
             IdRestaurante = 1
         };
 
-        Assert.ThrowsException<ServiceException>(() => atendimentoService.Create(duplicado));
+        Assert.ThrowsExactly<ServiceException>(() => atendimentoService.Create(duplicado));
     }
 
     [TestMethod]
@@ -99,7 +99,7 @@ public class AtendimentoServiceTests
             IdRestaurante = 1
         };
 
-        Assert.ThrowsException<ServiceException>(() => atendimentoService.Create(invalido));
+        Assert.ThrowsExactly<ServiceException>(() => atendimentoService.Create(invalido));
     }
 
     [TestMethod]
@@ -113,7 +113,7 @@ public class AtendimentoServiceTests
             IdRestaurante = 1
         };
 
-        Assert.ThrowsException<ServiceException>(() => atendimentoService.Create(invalido));
+        Assert.ThrowsExactly<ServiceException>(() => atendimentoService.Create(invalido));
     }
 
     [TestMethod]
@@ -146,7 +146,7 @@ public class AtendimentoServiceTests
         var atendimento = atendimentoService.Get(3);
         atendimento.DiaSemana = "1";
 
-        Assert.ThrowsException<ServiceException>(() => atendimentoService.Edit(atendimento));
+        Assert.ThrowsExactly<ServiceException>(() => atendimentoService.Edit(atendimento));
     }
 
     [TestMethod]
@@ -156,7 +156,7 @@ public class AtendimentoServiceTests
         atendimento.HorarioInicio = new DateTime(2024, 6, 10, 20, 0, 0);
         atendimento.HorarioFim = new DateTime(2024, 6, 10, 8, 0, 0);
 
-        Assert.ThrowsException<ServiceException>(() => atendimentoService.Edit(atendimento));
+        Assert.ThrowsExactly<ServiceException>(() => atendimentoService.Edit(atendimento));
     }
 
     [TestMethod]

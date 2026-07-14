@@ -223,7 +223,7 @@ public class ClienteControllerTests
     {
         return new ClienteViewModel
         {
-            Id = 2,
+            Id = 1,
             Nome = "Machado de Assis",
             Telefone = "79988888888"
         };
