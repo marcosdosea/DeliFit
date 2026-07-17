@@ -1,14 +1,14 @@
 @model DeliFitWeb.Models.EnderecoViewModel
 
 @{
-    ViewData["Title"] = "Excluir EndereÁo";
+    ViewData["Title"] = "Excluir Endere√ßo";
 }
 
 <div class="container mt-5">
     <div class="container" style="max-width: 800px;">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h2 class="fw-bold text-dark">Excluir EndereÁo</h2>
+                <h2 class="fw-bold text-dark">Excluir Endere√ßo</h2>
             </div>
         </div>
 
@@ -24,7 +24,7 @@
             <div class="col-lg-8">
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-header bg-white py-3">
-                        <h5 class="mb-0 fw-bold text-secondary"><i class="bi bi-geo-alt-fill me-2"></i>Dados de LocalizaÁ„o</h5>
+                        <h5 class="mb-0 fw-bold text-secondary"><i class="bi bi-geo-alt-fill me-2"></i>Dados de Localiza√ß√£o</h5>
                     </div>
                     <div class="card-body">
                         <div class="row g-3">
@@ -66,7 +66,7 @@
                             Cancelar
                         </a>
                         <button type="button" class="btn btn-danger shadow-sm px-4 fw-bold" data-bs-toggle="modal" data-bs-target="#modalConfirmacaoFinal">
-                            <i class="bi bi-trash3 me-2"></i>Excluir EndereÁo
+                            <i class="bi bi-trash3 me-2"></i>Excluir Endere√ßo
                         </button>
                     </div>
                 </div>
@@ -80,7 +80,7 @@
         <div class="modal-content border-0 shadow-lg">
             <div class="modal-header bg-danger text-white border-0">
                 <h5 class="modal-title fw-bold">
-                    <i class="bi bi-shield-exclamation me-2"></i>ConfirmaÁ„o Final
+                    <i class="bi bi-shield-exclamation me-2"></i>Confirma√ß√£o Final
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -91,8 +91,8 @@
                 </div>
                 <h5 class="fw-bold text-dark mb-3">Tem certeza absoluta?</h5>
                 <p class="text-muted mb-0">
-                    O endereÁo <strong>"@Model.Rua, @Model.Numero"</strong> ser· apagado.<br>
-                    <span class="text-danger fw-bold small">ESTA OPERA«√O N√O PODE SER DESFEITA.</span>
+                    O endere√ßo <strong>"@Model.Rua, @Model.Numero"</strong> ser√° apagado.<br>
+                    <span class="text-danger fw-bold small">ESTA OPERA√á√ÉO N√ÉO PODE SER DESFEITA.</span>
                 </p>
             </div>
 

@@ -1,7 +1,7 @@
     @model DeliFitWeb.Models.EnderecoViewModel
 
     @{
-        ViewData["Title"] = "Detalhes do Endereço";
+        ViewData["Title"] = "Detalhes do EndereÃ§o";
     }
 
     <div class="container-fluid p-0 bg-white">
@@ -11,8 +11,8 @@
 
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div>
-                            <h2 class="fw-bold m-0">Detalhes do Endereço</h2>
-                            <p class="text-muted small">Visualizando informações cadastradas para entrega.</p>
+                            <h2 class="fw-bold m-0">Detalhes do EndereÃ§o</h2>
+                            <p class="text-muted small">Visualizando informaÃ§Ãµes cadastradas para entrega.</p>
                         </div>
                     </div>
 
@@ -27,7 +27,7 @@
                     <div class="card border-0 shadow-sm mb-4">
                         <div class="card-header bg-white border-0 pt-4 ps-4">
                             <h5 class="fw-bold mb-0 text-orange" style="color: #ff6600;">
-                                <i class="bi bi-geo-alt me-2"></i>Dados de Localização
+                                <i class="bi bi-geo-alt me-2"></i>Dados de LocalizaÃ§Ã£o
                             </h5>
                         </div>
 
@@ -42,7 +42,7 @@
                                     <input class="form-control border-0 bg-white p-3" value="@Model.Rua" disabled />
                                 </div>
                                 <div class="col-md-3">
-                                    <label class="form-label small fw-bold text-muted text-uppercase">Número</label>
+                                    <label class="form-label small fw-bold text-muted text-uppercase">NÃºmero</label>
                                     <input class="form-control border-0 bg-white p-3" value="@Model.Numero" disabled />
                                 </div>
                             </div>
@@ -64,7 +64,7 @@
 
                             <div class="row g-3">
                                 <div class="col-md-12">
-                                    <label class="form-label small fw-bold text-muted text-uppercase">Complemento / Referência</label>
+                                    <label class="form-label small fw-bold text-muted text-uppercase">Complemento / ReferÃªncia</label>
                                     <textarea class="form-control border-0 bg-white p-3" rows="2" disabled>@(string.IsNullOrWhiteSpace(Model.Label) ? "Nenhum complemento informado." : Model.Label)</textarea>
                                 </div>
                             </div>
@@ -76,7 +76,7 @@
                             Fechar
                         </a>
                         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-orange px-5 py-2 fw-bold shadow-sm" style="background-color: #ff6600; color: white; border: none; border-radius: 8px;">
-                            <i class="bi bi-pencil-square me-2"></i>Editar Endereço
+                            <i class="bi bi-pencil-square me-2"></i>Editar EndereÃ§o
                         </a>
                     </div>
 
@@ -87,13 +87,13 @@
 
     @section Scripts {
         <style>
-            /* Estilos Padronizados para Visualização */
+            /* Estilos Padronizados para VisualizaÃ§Ã£o */
             .form-control:disabled {
-                background-color: #ffffff !important; /* Mantém fundo branco mesmo desativado */
-                opacity: 1; /* Remove o efeito de transparência padrão */
+                background-color: #ffffff !important; /* MantÃ©m fundo branco mesmo desativado */
+                opacity: 1; /* Remove o efeito de transparÃªncia padrÃ£o */
                 cursor: default;
                 color: #212529;
-                border-bottom: 1px solid #f0f0f0 !important; /* Leve linha inferior para separação */
+                border-bottom: 1px solid #f0f0f0 !important; /* Leve linha inferior para separaÃ§Ã£o */
             }
 
             .card {

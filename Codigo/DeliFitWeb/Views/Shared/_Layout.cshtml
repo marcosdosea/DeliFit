@@ -115,7 +115,7 @@
 				font-size: 0.9rem;
 			}
 
-			/* Estilo para bot�o de logout no menu inferior do cliente */
+			/* Estilo para botão de logout no menu inferior do cliente */
 			.navbar-dark .nav-link button {
 				background: transparent;
 				border: none;
@@ -177,7 +177,7 @@
 						<li class="nav-item">
 							<a class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "HomeAdmin" ? "active" : "")"
 							   asp-controller="Restaurante" asp-action="HomeAdmin">
-								<i class="bi bi-house-door"></i> In�cio
+								<i class="bi bi-house-door"></i> Início
 							</a>
 						</li>
 
@@ -189,7 +189,7 @@
 
 						<li class="nav-item">
 							<a class="nav-link" asp-controller="Restaurante" asp-action="ListarSolicitacoes">
-								<i class="bi bi-clock-history"></i> Listar Solicita��es
+								<i class="bi bi-clock-history"></i> Listar Solicitações
 							</a>
 						</li>
 
@@ -218,13 +218,13 @@
 						<li class="nav-item">
 							<a class="nav-link"
 							   asp-controller="Restaurante" asp-action="Home">
-								<i class="bi bi-house-door"></i> In�cio
+								<i class="bi bi-house-door"></i> Início
 							</a>
 						</li>
 
 						<li class="nav-item">
 							<a class="nav-link" asp-controller="Item" asp-action="Index">
-								<i class="bi bi-journal-text"></i> Card�pio
+								<i class="bi bi-journal-text"></i> Cardápio
 							</a>
 						</li>
 
@@ -251,7 +251,7 @@
 						<li class="nav-item">
 							<a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Restaurante" && ViewContext.RouteData.Values["action"]?.ToString() == "GestorAvaliacoes" ? "active" : "")"
 							   asp-controller="Restaurante" asp-action="GestorAvaliacoes">
-								<i class="bi bi-star"></i> Avalia��es
+								<i class="bi bi-star"></i> Avaliações
 							</a>
 						</li>
 
@@ -358,8 +358,8 @@
 	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 	<script src="~/js/site.js" asp-append-version="true"></script>
 
-	<!-- Valida��o de telefone -->
-	<!-- M�scara de telefone: formata visualmente como (99) 99999-9999 e envia apenas d�gitos -->
+	<!-- Validação de telefone -->
+	<!-- Máscara de telefone: formata visualmente como (99) 99999-9999 e envia apenas dígitos -->
 	<script>
 		(function($){
 		function formatPhone(value){

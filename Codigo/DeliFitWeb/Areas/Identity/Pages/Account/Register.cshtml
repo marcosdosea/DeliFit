@@ -14,7 +14,7 @@
                 <div class="card shadow-lg border-0 rounded-4">
                     <div class="card-body p-5">
 
-                        <!-- Logo e TÌtulo -->
+                        <!-- Logo e T√≠tulo -->
                         <div class="text-center mb-4">
                             <h1 class="display-5 fw-bold mb-2" style="color: #ff6600;">
                                 <i class="bi bi-person-plus-fill"></i> Criar Conta
@@ -26,12 +26,12 @@
                                 }
                                 else
                                 {
-                                    <span>Cadastro de Usu·rio</span>
+                                    <span>Cadastro de Usu√°rio</span>
                                 }
                             </p>
                         </div>
 
-                        <!-- Formul·rio de Cadastro -->
+                        <!-- Formul√°rio de Cadastro -->
                         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
                             <div asp-validation-summary="ModelOnly" class="alert alert-danger rounded-3" role="alert"></div>
 
@@ -113,7 +113,7 @@
 
                             <div class="text-center">
                                 <p class="text-muted mb-0">
-                                    J· tem uma conta? 
+                                    J√° tem uma conta? 
                                     <a asp-page="./Login" 
                                        asp-route-returnUrl="@Model.ReturnUrl" 
                                        class="text-decoration-none fw-semibold"
@@ -130,7 +130,7 @@
                 <!-- Link para voltar -->
                 <div class="text-center mt-3">
                     <a href="/" class="text-muted text-decoration-none">
-                        <i class="bi bi-arrow-left"></i> Voltar para p·gina inicial
+                        <i class="bi bi-arrow-left"></i> Voltar para p√°gina inicial
                     </a>
                 </div>
 
@@ -144,28 +144,28 @@
 
     <script>
         $(document).ready(function() {
-            // Apenas permite n˙meros no CPF (sem m·scara)
+            // Apenas permite n√∫meros no CPF (sem m√°scara)
             $('#cpfInput').on('input', function() {
                 var value = $(this).val().replace(/\D/g, '');
                 $(this).val(value);
             });
 
-            // M·scara de Telefone com controle de cursor
+            // M√°scara de Telefone com controle de cursor
             $('#telefoneInput').on('input', function(e) {
                 var input = this;
                 var cursorPosition = input.selectionStart;
                 var oldValue = $(input).val();
                 var oldLength = oldValue.length;
 
-                // Remove tudo que n„o È dÌgito
+                // Remove tudo que n√£o √© d√≠gito
                 var value = oldValue.replace(/\D/g, '');
 
-                // Limita a 11 dÌgitos
+                // Limita a 11 d√≠gitos
                 if (value.length > 11) {
                     value = value.substring(0, 11);
                 }
 
-                // Aplica m·scara (99) 99999-9999 progressivamente
+                // Aplica m√°scara (99) 99999-9999 progressivamente
                 var maskedValue = '';
                 if (value.length > 0) {
                     if (value.length <= 2) {
@@ -180,11 +180,11 @@
                 // Aplica o valor mascarado
                 $(input).val(maskedValue);
 
-                // Ajusta a posiÁ„o do cursor
+                // Ajusta a posi√ß√£o do cursor
                 var newLength = maskedValue.length;
                 var newPosition = cursorPosition + (newLength - oldLength);
 
-                // Garante que o cursor n„o ultrapasse o tamanho do input
+                // Garante que o cursor n√£o ultrapasse o tamanho do input
                 if (newPosition > newLength) {
                     newPosition = newLength;
                 }
@@ -192,11 +192,11 @@
                     newPosition = 0;
                 }
 
-                // Restaura a posiÁ„o do cursor
+                // Restaura a posi√ß√£o do cursor
                 input.setSelectionRange(newPosition, newPosition);
             });
 
-            // Aplicar m·scara ao colar no telefone
+            // Aplicar m√°scara ao colar no telefone
             $('#telefoneInput').on('paste', function(e) {
                 var input = this;
                 setTimeout(function() {
@@ -204,9 +204,9 @@
                 }, 10);
             });
 
-            // Previne que caracteres n„o numÈricos sejam digitados
+            // Previne que caracteres n√£o num√©ricos sejam digitados
             $('#cpfInput, #telefoneInput').on('keypress', function(e) {
-                // Permite apenas n˙meros, backspace, delete, tab, enter e teclas de navegaÁ„o
+                // Permite apenas n√∫meros, backspace, delete, tab, enter e teclas de navega√ß√£o
                 var key = e.which || e.keyCode;
                 var char = String.fromCharCode(key);
 
@@ -222,7 +222,7 @@
                     return;
                 }
 
-                // Garante que È um n˙mero
+                // Garante que √© um n√∫mero
                 if (!/^\d$/.test(char)) {
                     e.preventDefault();
                 }

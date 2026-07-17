@@ -1,14 +1,14 @@
 @model DeliFitWeb.Models.CartaoViewModel
 
 @{
-    ViewData["Title"] = "Excluir Cart�o";
+    ViewData["Title"] = "Excluir Cartão";
 }
 
 <div class="container mt-5">
     <div class="container" style="max-width: 800px;">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h2 class="fw-bold text-dark">Excluir Cart�o</h2>
+                <h2 class="fw-bold text-dark">Excluir Cartão</h2>
             </div>
         </div>
 
@@ -25,14 +25,14 @@
                 <div class="card border-0 shadow-sm mb-4">
                     <div class="card-header bg-white py-3">
                         <h5 class="mb-0 fw-bold text-secondary">
-                            <i class="bi bi-credit-card-2-front-fill me-2"></i>Dados do Cart�o
+                            <i class="bi bi-credit-card-2-front-fill me-2"></i>Dados do Cartão
                         </h5>
                     </div>
 
                     <div class="card-body">
                         <div class="row g-3">
                             <div class="col-md-8">
-                                <label class="small text-uppercase fw-bold text-muted">Nome no Cart�o</label>
+                                <label class="small text-uppercase fw-bold text-muted">Nome no Cartão</label>
                                 <p class="fs-4 fw-bold text-danger border-bottom pb-1">@Model.Nome</p>
                             </div>
 
@@ -47,7 +47,7 @@
                             <div class="col-12 mt-2">
                                 <div class="p-3 bg-light rounded border">
                                     <h6 class="small fw-bold text-uppercase text-muted mb-3">
-                                        <i class="bi bi-shield-lock me-1"></i> Informa��es Sens�veis
+                                        <i class="bi bi-shield-lock me-1"></i> Informações Sensíveis
                                     </h6>
 
                                     <div class="row g-3">
@@ -76,7 +76,7 @@
                                 class="btn btn-danger shadow-sm px-4 fw-bold"
                                 data-bs-toggle="modal"
                                 data-bs-target="#modalConfirmacaoFinal">
-                            <i class="bi bi-trash3 me-2"></i>Excluir Cart�o
+                            <i class="bi bi-trash3 me-2"></i>Excluir Cartão
                         </button>
                     </div>
                 </div>
@@ -90,7 +90,7 @@
         <div class="modal-content border-0 shadow-lg">
             <div class="modal-header bg-danger text-white border-0">
                 <h5 class="modal-title fw-bold">
-                    <i class="bi bi-shield-exclamation me-2"></i>Confirma��o Final
+                    <i class="bi bi-shield-exclamation me-2"></i>Confirmação Final
                 </h5>
                 <button type="button" class="btn-close btn-close-white"
                         data-bs-dismiss="modal"></button>
@@ -104,9 +104,9 @@
                 <h5 class="fw-bold text-dark mb-3">Tem certeza absoluta?</h5>
 
                 <p class="text-muted mb-0">
-                    O cart�o <strong>"@Model.Nome"</strong> ser� removido.<br>
+                    O cartão <strong>"@Model.Nome"</strong> será removido.<br>
                     <span class="text-danger fw-bold small">
-                        ESTA OPERA��O N�O PODE SER DESFEITA.
+                        ESTA OPERAÇÃO NÃO PODE SER DESFEITA.
                     </span>
                 </p>
             </div>

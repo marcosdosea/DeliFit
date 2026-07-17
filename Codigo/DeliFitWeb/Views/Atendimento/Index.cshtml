@@ -1,7 +1,7 @@
 @model IEnumerable<DeliFitWeb.Models.AtendimentoViewModel>
 
 @{
-    ViewData["Title"] = "Hor�rios de Atendimento";
+    ViewData["Title"] = "Horários de Atendimento";
     uint idRestaurante = ViewBag.IdRestaurante != null ? (uint)ViewBag.IdRestaurante : 0u;
 }
 
@@ -21,13 +21,13 @@
 
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
-                        <h2 class="fw-bold m-0">Hor�rios Configurados</h2>
+                        <h2 class="fw-bold m-0">Horários Configurados</h2>
                     </div>
 
                     <a asp-action="Create"
                        asp-route-idRestaurante="@idRestaurante"
                        class="btn btn-orange text-white px-4 py-2 shadow-sm fw-bold">
-                        <i class="bi bi-plus-lg me-2"></i>Novo Hor�rio
+                        <i class="bi bi-plus-lg me-2"></i>Novo Horário
                     </a>
                 </div>
 
@@ -48,7 +48,7 @@
                                         <th class="ps-4 py-3 text-muted small fw-bold text-uppercase">Dia da Semana</th>
                                         <th class="py-3 text-muted small fw-bold text-uppercase">Abertura</th>
                                         <th class="py-3 text-muted small fw-bold text-uppercase">Fechamento</th>
-                                        <th class="text-center py-3 text-muted small fw-bold text-uppercase">A��es</th>
+                                        <th class="text-center py-3 text-muted small fw-bold text-uppercase">Ações</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -87,7 +87,7 @@
                                         <tr>
                                             <td colspan="4" class="text-center py-5">
                                                 <i class="bi bi-clock-history text-muted opacity-25" style="font-size: 3rem;"></i><br />
-                                                <span class="text-muted mt-2 d-block">Nenhum hor�rio cadastrado.</span>
+                                                <span class="text-muted mt-2 d-block">Nenhum horário cadastrado.</span>
                                             </td>
                                         </tr>
                                     }
@@ -104,7 +104,7 @@
 
 @section Scripts {
     <style>
-        /* Estilos Institucionais (Copiados do Index de Endere�os) */
+        /* Estilos Institucionais (Copiados do Index de Endereços) */
         .text-orange {
             color: #ff6600 !important;
         }
@@ -113,7 +113,7 @@
             background-color: #fff3e6;
         }
 
-        /* Bot�o S�lido */
+        /* Botão Sólido */
         .btn-orange {
             background-color: #ff6600;
             border: none;
@@ -125,7 +125,7 @@
                 transform: translateY(-1px);
             }
 
-        /* Bot�o Outline */
+        /* Botão Outline */
         .btn-orange-outline {
             border: 1px solid #ff6600;
             color: #ff6600;
@@ -152,7 +152,7 @@
                 color: white;
             }
 
-        /* �cone Avatar */
+        /* Ícone Avatar */
         .avatar-sm {
             width: 32px;
             height: 32px;

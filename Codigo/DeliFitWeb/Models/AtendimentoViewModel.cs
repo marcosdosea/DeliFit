@@ -14,11 +14,11 @@ public class AtendimentoViewModel
     public string DiaSemana { get; set; } = null!;
 
     [Required]
-    [Display(Name = "Hor�rio In�cio")]
+    [Display(Name = "Horário Início")]
     public DateTime? HorarioInicio { get; set; }
 
     [Required]
-    [Display(Name = "Hor�rio Fim")]
+    [Display(Name = "Horário Fim")]
     public DateTime? HorarioFim { get; set; }
 
     public string NomeDiaSemana => DiaSemana switch

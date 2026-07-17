@@ -24,7 +24,7 @@
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-header bg-white py-3">
-                    <h5 class="mb-0 fw-bold text-secondary"><i class="bi bi-person-badge me-2"></i>Informações do Proprietário</h5>
+                    <h5 class="mb-0 fw-bold text-secondary"><i class="bi bi-person-badge me-2"></i>InformaÃ§Ãµes do ProprietÃ¡rio</h5>
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
@@ -55,7 +55,7 @@
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-8">
-                            <label class="small text-uppercase fw-bold text-muted">Razão Social / Nome</label>
+                            <label class="small text-uppercase fw-bold text-muted">RazÃ£o Social / Nome</label>
                             <p class="fs-4 fw-bold text-danger">@Model.NomeRestaurante</p>
                         </div>
                         <div class="col-md-4 text-md-end">
@@ -65,10 +65,10 @@
 
                         <div class="col-12 mt-3">
                             <div class="p-3 bg-light rounded border">
-                                <h6 class="small fw-bold text-uppercase text-muted mb-3"><i class="bi bi-geo-alt-fill me-1"></i> Localização</h6>
+                                <h6 class="small fw-bold text-uppercase text-muted mb-3"><i class="bi bi-geo-alt-fill me-1"></i> LocalizaÃ§Ã£o</h6>
                                 <div class="row g-2">
                                     <div class="col-md-8">
-                                        <span class="d-block small text-muted">Endereço</span>
+                                        <span class="d-block small text-muted">EndereÃ§o</span>
                                         <span>@Model.Rua, @Model.Numero - @Model.Bairro</span>
                                     </div>
                                     <div class="col-md-4">
@@ -97,10 +97,10 @@
                 <div class="mb-4">
                     <i class="bi bi-exclamation-circle text-danger display-1"></i>
                 </div>
-                <h3 class="fw-bold text-dark">Você tem certeza?</h3>
+                <h3 class="fw-bold text-dark">VocÃª tem certeza?</h3>
                 <p class="text-muted mb-4">
-                    Você está prestes a excluir <strong>@Model.NomeRestaurante</strong>.
-                    <br><span class="text-danger fw-bold small">ESTA OPERAÇÃO NÃO PODE SER DESFEITA.</span>
+                    VocÃª estÃ¡ prestes a excluir <strong>@Model.NomeRestaurante</strong>.
+                    <br><span class="text-danger fw-bold small">ESTA OPERAÃ‡ÃƒO NÃƒO PODE SER DESFEITA.</span>
                 </p>
 
                 <div class="d-grid gap-2">
@@ -109,7 +109,7 @@
                         @Html.AntiForgeryToken()
                         <button type="submit" class="btn btn-danger btn-lg w-100 fw-bold mb-2">Sim, excluir permanentemente</button>
                     </form>
-                    <button type="button" class="btn btn-outline-secondary w-100" data-bs-dismiss="modal">Não, cancelar</button>
+                    <button type="button" class="btn btn-outline-secondary w-100" data-bs-dismiss="modal">NÃ£o, cancelar</button>
                 </div>
             </div>
         </div>

@@ -15,10 +15,10 @@
 
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <div>
-                            <h2 class="fw-bold text-danger m-0">Confirmar Exclus�o</h2>
-                            <p class="text-muted">Revise os detalhes do prato antes de remov�-lo definitivamente.</p>
+                            <h2 class="fw-bold text-danger m-0">Confirmar Exclusão</h2>
+                            <p class="text-muted">Revise os detalhes do prato antes de removê-lo definitivamente.</p>
                         </div>
-                        <span class="badge bg-white text-danger border border-danger p-2 px-3 shadow-sm">A��o Irrevers�vel</span>
+                        <span class="badge bg-white text-danger border border-danger p-2 px-3 shadow-sm">Ação Irreversível</span>
                     </div>
 
                     <div class="card border-0 shadow-sm mb-4">
@@ -31,7 +31,7 @@
 
                                     <div class="d-flex gap-4">
                                         <div>
-                                            <label class="small fw-bold text-muted d-block">PRE�O</label>
+                                            <label class="small fw-bold text-muted d-block">PREÇO</label>
                                             <span class="fs-4 fw-bold text-success">R$ @Model.Preco.ToString("N2")</span>
                                         </div>
                                         <div>
@@ -45,7 +45,7 @@
                                     <div class="row g-2">
                                         <div class="col-6">
                                             <div class="p-2 bg-light rounded text-center">
-                                                <small class="d-block text-muted small">Prote�na</small>
+                                                <small class="d-block text-muted small">Proteína</small>
                                                 <span class="fw-bold">@(Model.Proteina?.ToString("N1") ?? "0")g</span>
                                             </div>
                                         </div>
@@ -75,7 +75,7 @@
 
                     <form asp-action="Delete" id="deleteForm">
                         <input type="hidden" asp-for="Id" />
-                        @* Importante para o redirecionamento ap�s exclus�o *@
+                        @* Importante para o redirecionamento após exclusão *@
                         <input type="hidden" asp-for="IdRestaurante" />
 
                         <div class="card border-0 shadow-sm mb-4 bg-danger-subtle border-start border-danger border-5">
@@ -83,7 +83,7 @@
                                 <div class="form-check p-0 ms-2">
                                     <input class="form-check-input ms-0 me-3 shadow-none custom-checkbox" type="checkbox" id="confirmDelete" required style="width: 25px; height: 25px; cursor: pointer;">
                                     <label class="form-check-label fw-bold text-danger-emphasis pt-1" for="confirmDelete" style="cursor: pointer;">
-                                        Eu entendo que excluir "@Model.Nome" apagar� permanentemente todos os seus dados nutricionais e de card�pio.
+                                        Eu entendo que excluir "@Model.Nome" apagará permanentemente todos os seus dados nutricionais e de cardápio.
                                     </label>
                                 </div>
                             </div>
@@ -94,7 +94,7 @@
                                 <i class="bi bi-x-lg me-2"></i>Cancelar e Sair
                             </a>
                             <button type="submit" id="deleteButton" class="btn btn-danger px-5 fw-bold shadow-sm" disabled>
-                                <i class="bi bi-trash3-fill me-2"></i>Confirmar Exclus�o
+                                <i class="bi bi-trash3-fill me-2"></i>Confirmar Exclusão
                             </button>
                         </div>
                     </form>
@@ -105,7 +105,7 @@
 </div>
 
 <style>
-    /* Estiliza��o customizada para a confirma��o */
+    /* Estilização customizada para a confirmação */
     .bg-danger-subtle {
         background-color: #fdf2f2 !important;
     }
@@ -125,7 +125,7 @@
         cursor: not-allowed;
     }
 
-    /* Feedback visual ao habilitar o bot�o */
+    /* Feedback visual ao habilitar o botão */
     #deleteButton:not(:disabled) {
         animation: pulse 1.5s infinite;
     }
@@ -152,14 +152,14 @@
             const btn = document.getElementById('deleteButton');
             const form = document.getElementById('deleteForm');
 
-            // Habilita o bot�o conforme o checkbox
+            // Habilita o botão conforme o checkbox
             checkbox.addEventListener('change', function() {
                 btn.disabled = !this.checked;
             });
 
-            // Confirma��o via JS antes do submit final
+            // Confirmação via JS antes do submit final
             form.addEventListener('submit', function(e) {
-                if (!confirm('Esta a��o � definitiva. Deseja prosseguir com a remo��o?')) {
+                if (!confirm('Esta ação é definitiva. Deseja prosseguir com a remoção?')) {
                     e.preventDefault();
                 } else {
                     btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Removendo...';

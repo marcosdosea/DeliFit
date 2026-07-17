@@ -52,7 +52,7 @@ public class ClienteControllerTests
             .Setup(service => service.GetByEmail(It.IsAny<string>()))
             .Returns((string email) =>
             {
-                // tenta encontrar um ClienteDTO com email correspondente (n�o existe em dados de teste)
+                // tenta encontrar um ClienteDTO com email correspondente (não existe em dados de teste)
                 return null;
             });
 
@@ -110,7 +110,7 @@ public class ClienteControllerTests
         Assert.IsInstanceOfType(result, typeof(ViewResult));
     }
 
-    // [TestMethod()] - CreateAsync n�o existe mais no controller
+    // [TestMethod()] - CreateAsync não existe mais no controller
     // public void CreateTest_Valid()
     // {
     //     // Act
@@ -124,11 +124,11 @@ public class ClienteControllerTests
     //     Assert.AreEqual("Index", redirectToActionResult.ActionName);
     // }
 
-    // [TestMethod()] - CreateAsync n�o existe mais no controller
+    // [TestMethod()] - CreateAsync não existe mais no controller
     // public void CreateTest_Post_Invalid()
     // {
     //     // Arrange
-    //     controller?.ModelState.AddModelError("Nome", "Nome � obrigat�rio.");
+    //     controller?.ModelState.AddModelError("Nome", "Nome é obrigatório.");
     //
     //     // Act
     //     var result = Unwrap(controller?.CreateAsync(GetNewCliente()));
@@ -248,7 +248,7 @@ public class ClienteControllerTests
             new ClienteDTO
             {
                 Id = 3,
-                Nome = "Marcos D�sea",
+                Nome = "Marcos Dósea",
                 Telefone = "79977777777"
             },
         };
@@ -260,13 +260,13 @@ public class ClienteControllerTests
         if (maybeTask is null) return null;
         if (maybeTask is Task task)
         {
-            // Aguarda t�rmino
+            // Aguarda término
             task.GetAwaiter().GetResult();
 
             var taskType = task.GetType();
             if (taskType.IsGenericType)
             {
-                // Obt�m propriedade Result via reflex�o para Task<T>
+                // Obtém propriedade Result via reflexão para Task<T>
                 var prop = taskType.GetProperty("Result");
                 return prop?.GetValue(task);
             }
