@@ -1,4 +1,4 @@
-@model IEnumerable<DeliFitWeb.Models.CartaoViewModel>
+﻿@model IEnumerable<DeliFitWeb.Models.CartaoViewModel>
 
 @{
     ViewData["Title"] = "Pagamentos";
@@ -126,7 +126,7 @@
         }
 
         .bg-orange-subtle {
-            background-color: #fff3e6;
+            background-color: var(--df-orange-tint);
         }
 
         .btn-orange {
@@ -172,11 +172,11 @@
         }
 
         .table tbody tr:hover {
-            background-color: #fffaf5;
+            background-color: var(--df-orange-tint-soft);
         }
 
         .table thead th {
-            border-bottom: 2px solid #f8f9fa;
+            border-bottom: 2px solid var(--df-border-strong);
         }
     </style>
 }

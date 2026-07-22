@@ -110,7 +110,7 @@
         }
 
         .pedido-status.status-E {
-            background: #fff3e6;
+            background: var(--df-orange-tint);
             color: #ff6600;
         }
 
@@ -144,7 +144,7 @@
 
     .pedido-data {
         font-size: 0.75rem;
-        color: #aaa;
+        color: var(--df-muted);
     }
 
     .pedido-btns {
@@ -190,7 +190,7 @@
     }
 
         .btn-repetir:hover {
-            background: #fff3e6;
+            background: var(--df-orange-tint);
             color: #ff6600;
             text-decoration: none;
         }
@@ -198,7 +198,7 @@
     .empty-state {
         text-align: center;
         padding: 60px 20px;
-        color: #bbb;
+        color: var(--df-muted);
     }
 
         .empty-state i {
@@ -213,7 +213,7 @@
         left: 0;
         right: 0;
         background: white;
-        border-top: 1px solid #f0f0f0;
+        border-top: 1px solid var(--df-border);
         display: flex;
         z-index: 500;
         box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
@@ -228,7 +228,7 @@
         padding: 8px 0 10px;
         gap: 3px;
         text-decoration: none;
-        color: #aaa;
+        color: var(--df-muted);
         font-size: 0.65rem;
         font-weight: 600;
         transition: color 0.15s;
@@ -301,7 +301,7 @@ else
                          alt="Restaurante"
                          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
                     <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;">
-                        <i class="bi bi-shop" style="color:#ccc;font-size:1.4rem;"></i>
+                        <i class="bi bi-shop" style="color:var(--df-faint);font-size:1.4rem;"></i>
                     </div>
                 </div>
                 <div class="pedido-info">

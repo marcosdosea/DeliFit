@@ -1,3 +1,44 @@
+﻿/* ==========================================================================
+   DeliFit — Design System
+   Tokens + base + component overrides shared by every page.
+   ========================================================================== */
+
+:root {
+  /* Brand */
+  --df-orange: #ff6600;
+  --df-orange-dark: #e05a00;
+  --df-orange-darker: #b84a00;
+  --df-orange-tint: #ffe4cc;     /* solid tint for hover/active surfaces */
+  --df-orange-tint-soft: #fff1e2; /* very light surface wash, used sparingly */
+  --df-orange-ring: rgba(255, 102, 0, 0.28);
+
+  /* Neutrals (cool grey scale, replaces washed-out #aaa/#ccc/#eee) */
+  --df-ink: #17181a;        /* headings, high-emphasis text */
+  --df-body: #3a3d42;       /* body copy */
+  --df-muted: #6b7178;      /* secondary text — AA on white */
+  --df-faint: #9298a0;      /* decorative icons / tertiary text, large only */
+  --df-border: #e2e4e8;
+  --df-border-strong: #cfd3d9;
+  --df-surface: #ffffff;
+  --df-bg: #f4f5f7;
+
+  /* Semantic (kept close to Bootstrap so 3rd-party widgets still match) */
+  --df-success: #1c9a5b;
+  --df-success-tint: #d9f2e4;
+  --df-danger: #dc3545;
+  --df-danger-tint: #fbe1e3;
+
+  --df-radius-sm: 8px;
+  --df-radius: 12px;
+  --df-radius-lg: 18px;
+
+  --df-shadow-sm: 0 1px 2px rgba(20, 20, 25, 0.06), 0 1px 1px rgba(20, 20, 25, 0.04);
+  --df-shadow-md: 0 6px 16px rgba(20, 20, 25, 0.08);
+  --df-shadow-lg: 0 16px 40px rgba(20, 20, 25, 0.12);
+
+  --df-font: "Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
 html {
   font-size: 14px;
 }
@@ -8,10 +49,6 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
 html {
   position: relative;
   min-height: 100%;
@@ -19,4 +56,180 @@ html {
 
 body {
   margin-bottom: 60px;
+  font-family: var(--df-font);
+  color: var(--df-body);
+  background-color: var(--df-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--df-ink);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+a {
+  color: var(--df-orange-dark);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--df-orange-darker);
+}
+
+.text-muted {
+  color: var(--df-muted) !important;
+}
+
+/* ---- Focus ring (accessible + on-brand) --------------------------------- */
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus,
+.form-control:focus, .form-select:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.2rem var(--df-orange-ring);
+  border-color: var(--df-orange);
+}
+
+/* ---- Buttons -------------------------------------------------------------
+   Bootstrap's .btn-primary is still Bootstrap-blue by default in this repo;
+   route it through the brand orange with real contrast (no pastel fills). */
+.btn {
+  font-weight: 600;
+  border-radius: var(--df-radius-sm);
+  letter-spacing: 0.01em;
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: var(--df-orange);
+  border-color: var(--df-orange);
+}
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--df-orange-dark);
+  border-color: var(--df-orange-dark);
+  color: #fff;
+}
+.btn-primary:disabled,
+.btn-primary.disabled {
+  background-color: var(--df-orange);
+  border-color: var(--df-orange);
+  opacity: 0.5;
+}
+
+.btn-outline-primary {
+  color: var(--df-orange-dark);
+  border-color: var(--df-orange);
+}
+.btn-outline-primary:hover,
+.btn-outline-primary:focus {
+  background-color: var(--df-orange);
+  border-color: var(--df-orange);
+  color: #fff;
+}
+
+.btn-success { background-color: var(--df-success); border-color: var(--df-success); }
+.btn-success:hover { background-color: #157a48; border-color: #157a48; }
+.btn-outline-success { color: #157a48; border-color: var(--df-success); }
+.btn-outline-success:hover { background-color: var(--df-success); border-color: var(--df-success); }
+
+/* ---- Nav pills (sidebar) -------------------------------------------------- */
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+  color: #fff;
+  background-color: var(--df-orange);
+  border-color: var(--df-orange-dark);
+}
+
+/* ---- Cards, dividers ------------------------------------------------------ */
+.card {
+  border-color: var(--df-border);
+  box-shadow: var(--df-shadow-sm);
+}
+
+.border-top { border-top: 1px solid var(--df-border); }
+.border-bottom { border-bottom: 1px solid var(--df-border); }
+
+.box-shadow {
+  box-shadow: var(--df-shadow-sm);
+}
+
+/* ---- Alerts: solid left accent instead of flat pastel block -------------- */
+.alert {
+  border: 1px solid transparent;
+  border-left-width: 4px;
+  border-radius: var(--df-radius-sm);
+}
+.alert-success {
+  color: #0f5c37;
+  background-color: var(--df-success-tint);
+  border-left-color: var(--df-success);
+}
+.alert-danger {
+  color: #7d1420;
+  background-color: var(--df-danger-tint);
+  border-left-color: var(--df-danger);
+}
+
+/* ---- Badges: enough contrast to read as status, not decoration ----------- */
+.badge.bg-success-light { background-color: var(--df-success-tint) !important; color: #0f5c37 !important; }
+.badge.bg-secondary-light { background-color: #e9eaec !important; color: #52565c !important; }
+
+/* ---- Tables ---------------------------------------------------------------
+   Kills the near-invisible #f8f9fa header rule used across CRUD views. */
+.table thead th {
+  color: var(--df-muted);
+  border-bottom: 2px solid var(--df-border-strong) !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+.table tbody tr:hover {
+  background-color: var(--df-orange-tint-soft);
+}
+
+/* ---- Forms ----------------------------------------------------------------- */
+.form-control, .form-select {
+  border-color: var(--df-border-strong);
+}
+.form-label {
+  color: var(--df-ink);
+}
+
+/* ---- DataTables (used across most CRUD list views) ------------------------ */
+.dataTables_filter input {
+  border-radius: 20px;
+  padding: 6px 14px;
+  border: 1px solid var(--df-border-strong);
+}
+.dataTables_filter input:focus {
+  border-color: var(--df-orange);
+  box-shadow: 0 0 0 0.15rem var(--df-orange-ring);
+  outline: none;
+}
+.dataTables_info { color: var(--df-muted); }
+.dataTables_paginate .page-link {
+  color: var(--df-orange-dark);
+  border-color: var(--df-border-strong);
+}
+.dataTables_paginate .page-link:hover {
+  background-color: var(--df-orange-tint);
+  border-color: var(--df-orange);
+}
+.dataTables_paginate .page-item.active .page-link {
+  background-color: var(--df-orange);
+  border-color: var(--df-orange);
+  color: #fff;
+}
+
+button.accept-policy {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px;
+  color: var(--df-muted);
 }

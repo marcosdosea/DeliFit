@@ -1,4 +1,4 @@
-@model IEnumerable<DeliFitWeb.Models.ItemViewModel>
+﻿@model IEnumerable<DeliFitWeb.Models.ItemViewModel>
 
 @{
     ViewData["Title"] = "Gestor de Cardápio";
@@ -83,12 +83,12 @@
 <style>
     /* Ajustes para suavizar a lista e evitar que fique torto */
     .list-group-item {
-        border-color: #f0f0f0;
+        border-color: var(--df-border);
         transition: all 0.2s ease;
     }
 
         .list-group-item:hover {
-            background-color: #fffaf5;
+            background-color: var(--df-orange-tint-soft);
             border-left: 4px solid #ff6600 !important;
         }
 </style>

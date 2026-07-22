@@ -75,7 +75,7 @@
     .section-label {
         font-size: 0.78rem;
         font-weight: 700;
-        color: #aaa;
+        color: var(--df-muted);
         text-transform: uppercase;
         letter-spacing: 0.5px;
         margin-bottom: 10px;
@@ -194,7 +194,7 @@
 
         .item-info .detalhe {
             font-size: 0.75rem;
-            color: #aaa;
+            color: var(--df-muted);
             margin-top: 2px;
         }
 
@@ -243,7 +243,7 @@
     .btn-remove {
         background: none;
         border: none;
-        color: #ccc;
+        color: var(--df-faint);
         font-size: 1.1rem;
         cursor: pointer;
         padding: 4px;
@@ -266,7 +266,7 @@
             font-size: 1rem;
             font-weight: 800;
             color: #1a1a1a;
-            border-top: 1.5px solid #f0f0f0;
+            border-top: 1.5px solid var(--df-border);
             margin-top: 4px;
             padding-top: 12px;
         }
@@ -288,7 +288,7 @@
         width: 38px;
         height: 38px;
         border-radius: 12px;
-        background: #fff3e6;
+        background: var(--df-orange-tint);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -304,7 +304,7 @@
 
     .pagamento-sub {
         font-size: 0.75rem;
-        color: #aaa;
+        color: var(--df-muted);
     }
 
     .btn-selecionar {
@@ -348,14 +348,14 @@
             }
 
             .btn-fazer-pedido button:disabled {
-                background: #ccc;
+                background: var(--df-faint);
                 cursor: not-allowed;
             }
 
     .empty-cart {
         text-align: center;
         padding: 60px 20px;
-        color: #aaa;
+        color: var(--df-muted);
     }
 
         .empty-cart i {
@@ -417,7 +417,7 @@ else
                      alt="@nomeRest"
                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
                 <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;">
-                    <i class="bi bi-shop" style="color:#ccc;font-size:1.5rem;"></i>
+                    <i class="bi bi-shop" style="color:var(--df-faint);font-size:1.5rem;"></i>
                 </div>
             </div>
             <div>
@@ -484,7 +484,7 @@ else
                 <div class="item-thumb">
                     <img src="@Url.Action("Foto", "Item", new { id = it.IdItem })"
                          alt="@it.NomeItem"
-                         onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\'bi bi-egg-fried\' style=\'color:#ddd;font-size:1.4rem;\'></i>';" />
+                         onerror="this.style.display='none';this.parentElement.innerHTML='<i class=\'bi bi-egg-fried\' style=\'color:var(--df-faint);font-size:1.4rem;\'></i>';" />
                 </div>
                 <div class="item-info">
                     <div class="nome">@it.NomeItem</div>

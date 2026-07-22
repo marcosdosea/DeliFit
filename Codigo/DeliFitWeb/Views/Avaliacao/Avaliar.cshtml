@@ -94,7 +94,7 @@
 
     .rest-sub {
         font-size: 0.78rem;
-        color: #aaa;
+        color: var(--df-muted);
         text-align: center;
     }
 
@@ -105,7 +105,7 @@
         color: #1a1a1a;
         margin-bottom: 12px;
         padding-bottom: 8px;
-        border-bottom: 1.5px solid #f0f0f0;
+        border-bottom: 1.5px solid var(--df-border);
     }
 
     .item-row {
@@ -154,7 +154,7 @@
 
     .item-qtd {
         font-size: 0.75rem;
-        color: #aaa;
+        color: var(--df-muted);
     }
 
     .item-preco {
@@ -185,7 +185,7 @@
         background: none;
         border: none;
         font-size: 2.6rem;
-        color: #ddd;
+        color: var(--df-faint);
         cursor: pointer;
         padding: 0;
         line-height: 1;
@@ -205,7 +205,7 @@
         display: flex;
         justify-content: space-between;
         font-size: 0.75rem;
-        color: #bbb;
+        color: var(--df-muted);
         padding: 0 4px;
         margin-bottom: 4px;
     }
@@ -213,7 +213,7 @@
     .stars-hint-center {
         text-align: center;
         font-size: 0.82rem;
-        color: #aaa;
+        color: var(--df-muted);
         min-height: 20px;
         margin-bottom: 4px;
     }
@@ -255,7 +255,7 @@
     .char-count {
         text-align: right;
         font-size: 0.75rem;
-        color: #bbb;
+        color: var(--df-muted);
         margin-top: 4px;
     }
 
@@ -316,7 +316,7 @@
                      alt="@nomeRestaurante"
                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
                 <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;">
-                    <i class="bi bi-shop" style="color:#ccc;font-size:2rem;"></i>
+                    <i class="bi bi-shop" style="color:var(--df-faint);font-size:2rem;"></i>
                 </div>
             </div>
             <div class="rest-nome">@nomeRestaurante</div>
@@ -335,7 +335,7 @@
                              alt=""
                              onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
                         <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;">
-                            <i class="bi bi-egg-fried" style="color:#ddd;font-size:0.9rem;"></i>
+                            <i class="bi bi-egg-fried" style="color:var(--df-faint);font-size:0.9rem;"></i>
                         </div>
                     </div>
                     <div class="item-info">
@@ -370,7 +370,7 @@
     @* ── Comentário ── *@
     <div class="section-card">
         <label class="form-label-custom" for="descricaoInput">
-            Comentário <span style="color:#bbb;font-weight:400;">(opcional)</span>
+            Comentário <span style="color:var(--df-muted);font-weight:400;">(opcional)</span>
         </label>
         <textarea id="descricaoInput"
                   asp-for="Descricao"

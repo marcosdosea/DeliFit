@@ -1,4 +1,4 @@
-@model IEnumerable<DeliFitWeb.Models.ClienteViewModel>
+﻿@model IEnumerable<DeliFitWeb.Models.ClienteViewModel>
 
 @{
     ViewData["Title"] = "Gestão de Clientes";
@@ -110,7 +110,7 @@
         }
 
         .bg-light-orange {
-            background-color: #fff3e6;
+            background-color: var(--df-orange-tint);
         }
 
         .btn-orange {
@@ -143,11 +143,11 @@
         .table thead th {
             font-size: 0.85rem;
             color: #6c757d;
-            border-bottom: 2px solid #f8f9fa;
+            border-bottom: 2px solid var(--df-border-strong);
         }
 
         .table tbody tr:hover {
-            background-color: #fffaf5;
+            background-color: var(--df-orange-tint-soft);
         }
 
         /* Search */
@@ -186,7 +186,7 @@
         }
 
             .dataTables_paginate .page-link:hover {
-                background-color: #fff3e6;
+                background-color: var(--df-orange-tint);
                 border-color: #ff6600;
             }
 
@@ -204,12 +204,12 @@
 
             /* Hover alinhado com seu layout */
             table.dataTable tbody tr:hover {
-                background-color: #fffaf5;
+                background-color: var(--df-orange-tint-soft);
             }
 
             /* Cabeçalho */
             table.dataTable thead th {
-                border-bottom: 2px solid #f8f9fa;
+                border-bottom: 2px solid var(--df-border-strong);
                 color: #6c757d;
                 font-size: 0.85rem;
             }

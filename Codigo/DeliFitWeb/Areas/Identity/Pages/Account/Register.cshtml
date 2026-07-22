@@ -16,7 +16,7 @@
 
                         <!-- Logo e Título -->
                         <div class="text-center mb-4">
-                            <h1 class="display-5 fw-bold mb-2" style="color: #ff6600;">
+                            <h1 class="display-5 fw-bold mb-2" style="color: var(--df-orange);">
                                 <i class="bi bi-person-plus-fill"></i> Criar Conta
                             </h1>
                             <p class="text-muted">
@@ -104,20 +104,19 @@
 
                             <input asp-for="Input.RoleDesejada" type="hidden" />
 
-                            <button id="registerSubmit" 
-                                    type="submit" 
-                                    class="btn btn-lg w-100 text-white fw-bold rounded-3 mb-3 mt-3"
-                                    style="background-color: #ff6600; border: none;">
+                            <button id="registerSubmit"
+                                    type="submit"
+                                    class="btn btn-primary btn-lg w-100 fw-bold rounded-3 mb-3 mt-3">
                                 <i class="bi bi-check-circle"></i> Criar Minha Conta
                             </button>
 
                             <div class="text-center">
                                 <p class="text-muted mb-0">
-                                    Já tem uma conta? 
-                                    <a asp-page="./Login" 
-                                       asp-route-returnUrl="@Model.ReturnUrl" 
+                                    Já tem uma conta?
+                                    <a asp-page="./Login"
+                                       asp-route-returnUrl="@Model.ReturnUrl"
                                        class="text-decoration-none fw-semibold"
-                                       style="color: #ff6600;">
+                                       style="color: var(--df-orange-dark);">
                                         Entrar
                                     </a>
                                 </p>
@@ -231,28 +230,17 @@
     </script>
 
     <style>
-        .form-control:focus {
-            border-color: #ff6600;
-            box-shadow: 0 0 0 0.25rem rgba(255, 102, 0, 0.25);
-        }
-
-        .btn:hover {
-            background-color: #e65c00 !important;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--df-shadow-md);
         }
 
         .card {
-            transition: all 0.3s ease;
-        }
-
-        label {
-            color: #495057;
+            transition: box-shadow 0.3s ease;
         }
 
         label i {
-            color: #ff6600;
+            color: var(--df-orange);
             margin-right: 5px;
         }
     </style>

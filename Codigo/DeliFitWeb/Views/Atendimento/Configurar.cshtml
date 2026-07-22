@@ -1,4 +1,4 @@
-@model DeliFitWeb.Models.ConfigurarAtendimentoViewModel
+﻿@model DeliFitWeb.Models.ConfigurarAtendimentoViewModel
 
 @{
     ViewData["Title"] = "Configurar Atendimento";
@@ -115,7 +115,7 @@
 @section Scripts {
     <style>
         .text-orange { color: #ff6600 !important; }
-        .bg-orange-subtle { background-color: #fff3e6; }
+        .bg-orange-subtle { background-color: var(--df-orange-tint); }
 
         .btn-orange {
             background-color: #ff6600;
@@ -139,8 +139,8 @@
         }
         .form-check-input:checked { background-color: #ff6600; border-color: #ff6600; }
 
-        .table tbody tr:hover { background-color: #fffaf5; }
-        .table thead th { border-bottom: 2px solid #f8f9fa; }
+        .table tbody tr:hover { background-color: var(--df-orange-tint-soft); }
+        .table thead th { border-bottom: 2px solid var(--df-border-strong); }
     </style>
 
     <script>

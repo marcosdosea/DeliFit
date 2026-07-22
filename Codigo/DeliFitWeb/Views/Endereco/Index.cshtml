@@ -1,4 +1,4 @@
-@model IEnumerable<DeliFitWeb.Models.EnderecoViewModel>
+﻿@model IEnumerable<DeliFitWeb.Models.EnderecoViewModel>
 
 @{
     ViewData["Title"] = "Endereços";
@@ -116,7 +116,7 @@
         }
 
         .bg-orange-subtle {
-            background-color: #fff3e6;
+            background-color: var(--df-orange-tint);
         }
 
         /* Botão Sólido */
@@ -170,11 +170,11 @@
         }
 
         .table tbody tr:hover {
-            background-color: #fffaf5; /* Leve tom laranja no hover */
+            background-color: var(--df-orange-tint-soft); /* Leve tom laranja no hover */
         }
 
         .table thead th {
-            border-bottom: 2px solid #f8f9fa;
+            border-bottom: 2px solid var(--df-border-strong);
         }
     </style>
 }

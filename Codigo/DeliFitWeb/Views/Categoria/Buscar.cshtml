@@ -69,13 +69,13 @@
             left: 13px;
             top: 50%;
             transform: translateY(-50%);
-            color: #bbb;
+            color: var(--df-muted);
             font-size: 0.9rem;
         }
 
     .resultados-label {
         font-size: 0.8rem;
-        color: #aaa;
+        color: var(--df-muted);
         padding: 14px 16px 6px;
         font-weight: 600;
         text-transform: uppercase;
@@ -162,7 +162,7 @@
 
     .rest-meta {
         font-size: 0.72rem;
-        color: #aaa;
+        color: var(--df-muted);
         display: flex;
         gap: 6px;
         flex-wrap: wrap;
@@ -171,7 +171,7 @@
     .empty-state {
         text-align: center;
         padding: 60px 20px;
-        color: #bbb;
+        color: var(--df-muted);
     }
 
         .empty-state i {
@@ -229,7 +229,7 @@ else
                     <img src="@Url.Action("Foto", "Restaurante", new { id = r.Id })"
                          alt="@r.NomeRestaurante"
                          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
-                    <div style="display:none; width:100%; height:100%; align-items:center; justify-content:center; font-size:2rem; color:#ccc; position:absolute;">
+                    <div style="display:none; width:100%; height:100%; align-items:center; justify-content:center; font-size:2rem; color:var(--df-faint); position:absolute;">
                         <i class="bi bi-shop"></i>
                     </div>
                     <span class="rest-badge @(r.Validado ? "open" : "close")">

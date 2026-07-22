@@ -1,4 +1,4 @@
-@model IEnumerable<DeliFitWeb.Models.AtendimentoViewModel>
+﻿@model IEnumerable<DeliFitWeb.Models.AtendimentoViewModel>
 
 @{
     ViewData["Title"] = "Horários de Atendimento";
@@ -110,7 +110,7 @@
         }
 
         .bg-orange-subtle {
-            background-color: #fff3e6;
+            background-color: var(--df-orange-tint);
         }
 
         /* Botão Sólido */
@@ -160,11 +160,11 @@
 
         /* Tabela */
         .table tbody tr:hover {
-            background-color: #fffaf5; /* Leve tom laranja no hover */
+            background-color: var(--df-orange-tint-soft); /* Leve tom laranja no hover */
         }
 
         .table thead th {
-            border-bottom: 2px solid #f8f9fa;
+            border-bottom: 2px solid var(--df-border-strong);
         }
     </style>
 }

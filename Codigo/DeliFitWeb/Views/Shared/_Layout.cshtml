@@ -8,19 +8,23 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>@ViewData["Title"] - DeliFit</title>
 
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+
 	<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+	<link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
 	<style>
 			:root {
-				--delifit-orange: #ff6600;
-				--delifit-dark-orange: #e65c00;
+				--delifit-orange: var(--df-orange);
+				--delifit-dark-orange: var(--df-orange-dark);
 				--sidebar-width: 260px;
 			}
 
 			body {
 				overflow-x: hidden;
-				background-color: #f8f9fa;
 			}
 
 			.sidebar {
@@ -29,17 +33,17 @@
 				position: fixed;
 				left: 0;
 				top: 0;
-				background-color: #ffffff;
-				border-right: 1px solid #dee2e6;
+				background-color: var(--df-surface);
+				border-right: 1px solid var(--df-border);
 				padding: 20px 0;
 				z-index: 1000;
-				box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+				box-shadow: var(--df-shadow-sm);
 				display: flex;
 				flex-direction: column;
 			}
 
 			.navbar-brand {
-				font-weight: bold;
+				font-weight: 800;
 				font-size: 1.5rem;
 				color: var(--delifit-orange) !important;
 				text-align: center;
@@ -50,7 +54,7 @@
 
 			.login-area {
 				padding: 0 20px 20px 20px;
-				border-bottom: 1px solid #eee;
+				border-bottom: 1px solid var(--df-border);
 				margin-bottom: 15px;
 			}
 
@@ -58,24 +62,30 @@
 					display: block;
 					padding: 6px 0;
 					font-size: 0.9rem;
+					color: var(--df-body);
 				}
 
 			.nav-pills .nav-link {
-				color: #495057;
+				color: var(--df-body);
+				font-weight: 600;
 				border-radius: 0 25px 25px 0;
 				margin-right: 15px;
 				padding: 12px 25px;
-				transition: all 0.3s;
+				border-left: 3px solid transparent;
+				transition: all 0.2s;
 			}
 
 				.nav-pills .nav-link:hover {
-					background-color: #fff3e6;
-					color: var(--delifit-orange);
+					background-color: var(--df-orange-tint);
+					color: var(--delifit-dark-orange);
 				}
 
 				.nav-pills .nav-link.active {
 					background-color: var(--delifit-orange) !important;
-					color: white !important;
+					color: #fff !important;
+					border-left-color: var(--delifit-dark-orange);
+					font-weight: 700;
+					box-shadow: var(--df-shadow-sm);
 				}
 
 			.nav-link i {
@@ -89,25 +99,6 @@
 				display: flex;
 				flex-direction: column;
 			}
-
-			a {
-				color: var(--delifit-orange);
-				text-decoration: none;
-			}
-
-				a:hover {
-					color: var(--delifit-dark-orange);
-				}
-
-			.btn-primary {
-				background-color: var(--delifit-orange);
-				border-color: var(--delifit-dark-orange);
-			}
-
-				.btn-primary:hover {
-					background-color: var(--delifit-dark-orange);
-					border-color: #cc5200;
-				}
 
 			footer {
 				margin-top: auto;
@@ -276,7 +267,7 @@
 						left: 0;
 						right: 0;
 						background: white;
-						border-top: 1px solid #f0f0f0;
+						border-top: 1px solid var(--df-border);
 						display: flex;
 						z-index: 1050;
 						box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
@@ -291,7 +282,7 @@
 						padding: 8px 0 10px;
 						gap: 3px;
 						text-decoration: none;
-						color: #aaa;
+						color: var(--df-muted);
 						font-size: 0.65rem;
 						font-weight: 600;
 						transition: color 0.15s;

@@ -6,11 +6,11 @@
 <div class="d-flex align-items-center justify-content-center min-vh-100">
     <div class="container text-center">
 
-        <h1 class="display-4 fw-bold mb-3" style="color: #ff6600;">
+        <h1 class="display-4 fw-bold mb-3" style="color: var(--df-orange);">
             <i class="bi bi-fire"></i> Bem-vindo ao DeliFit
         </h1>
 
-        <p class="lead mb-5">
+        <p class="lead mb-5" style="color: var(--df-body);">
             Alimentação saudável com controle de macros e calorias
         </p>
 
@@ -35,7 +35,7 @@
             <div class="col-md-4">
                 <div class="card h-100 shadow-lg border-0 rounded-4">
                     <div class="card-body d-flex flex-column p-4">
-                        <h3 class="card-title mb-3" style="color: #ff6600;">
+                        <h3 class="card-title mb-3" style="color: var(--df-orange);">
                             <i class="bi bi-person-circle" style="font-size: 3rem;"></i>
                         </h3>
                         <h4 class="fw-bold mb-3">Sou Cliente</h4>
@@ -44,8 +44,7 @@
                         </p>
                         <div class="mt-auto d-grid gap-2">
                             <a href="/Identity/Account/Register?role=Cliente"
-                               class="btn btn-lg"
-                               style="border: 2px solid #ff6600; color: #ff6600;">
+                               class="btn btn-outline-primary btn-lg fw-bold">
                                 <i class="bi bi-person-plus"></i> Criar Conta
                             </a>
                         </div>
@@ -56,7 +55,7 @@
             <div class="col-md-4">
                 <div class="card h-100 shadow-lg border-0 rounded-4">
                     <div class="card-body d-flex flex-column p-4">
-                        <h3 class="card-title mb-3" style="color: #ff6600;">
+                        <h3 class="card-title mb-3" style="color: var(--df-success);">
                             <i class="bi bi-shop" style="font-size: 3rem;"></i>
                         </h3>
                         <h4 class="fw-bold mb-3">Sou Restaurante</h4>
@@ -65,8 +64,7 @@
                         </p>
                         <div class="mt-auto d-grid gap-2">
                             <a href="/Restaurante/SolicitarAdesao"
-                               class="btn btn-lg"
-                               style="border: 2px solid #28a745; color: #28a745;">
+                               class="btn btn-outline-success btn-lg fw-bold">
                                 <i class="bi bi-clipboard-check"></i> Solicitar Adesão
                             </a>
                         </div>
@@ -79,11 +77,11 @@
         <!-- Botão de Login Unificado -->
         <div class="mt-5">
             <a href="/Identity/Account/Login"
-               class="btn btn-lg btn-primary px-5 py-3 text-white fw-bold rounded-pill shadow"
-               style="background-color: #ff6600; border: none; font-size: 1.2rem;">
+               class="btn btn-primary btn-lg px-5 py-3 fw-bold rounded-pill shadow"
+               style="font-size: 1.2rem;">
                 <i class="bi bi-box-arrow-in-right"></i> Entrar no Sistema
             </a>
-            <p class="text-muted mt-3 small">
+            <p class="mt-3 small" style="color: var(--df-muted);">
                 Acesso unificado para clientes, restaurantes e administradores
             </p>
         </div>

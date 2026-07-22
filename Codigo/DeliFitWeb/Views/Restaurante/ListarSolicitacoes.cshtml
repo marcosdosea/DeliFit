@@ -1,4 +1,4 @@
-@model IEnumerable<DeliFitWeb.Models.RestauranteViewModel>
+﻿@model IEnumerable<DeliFitWeb.Models.RestauranteViewModel>
 
 @{
     ViewData["Title"] = "Solicitacoes";
@@ -126,15 +126,15 @@
         }
 
         .bg-light-orange {
-            background-color: #fff3e6;
+            background-color: var(--df-orange-tint);
         }
 
         .bg-success-light {
-            background-color: #e6f4ea;
+            background-color: var(--df-success-tint);
         }
 
         .bg-secondary-light {
-            background-color: #f1f3f4;
+            background-color: #e9eaec;
         }
 
         .avatar-sm {
@@ -171,11 +171,11 @@
         .table thead th {
             font-size: 0.85rem;
             color: #6c757d;
-            border-bottom: 2px solid #f8f9fa;
+            border-bottom: 2px solid var(--df-border-strong);
         }
 
         .table tbody tr:hover {
-            background-color: #fffaf5;
+            background-color: var(--df-orange-tint-soft);
         }
         /* ===== DataTables DeliFit ===== */
 
@@ -215,7 +215,7 @@
         }
 
             .dataTables_paginate .page-link:hover {
-                background-color: #fff3e6;
+                background-color: var(--df-orange-tint);
                 border-color: #ff6600;
             }
 
@@ -233,12 +233,12 @@
 
             /* Hover alinhado com seu layout */
             table.dataTable tbody tr:hover {
-                background-color: #fffaf5;
+                background-color: var(--df-orange-tint-soft);
             }
 
             /* Cabeçalho */
             table.dataTable thead th {
-                border-bottom: 2px solid #f8f9fa;
+                border-bottom: 2px solid var(--df-border-strong);
                 color: #6c757d;
                 font-size: 0.85rem;
             }

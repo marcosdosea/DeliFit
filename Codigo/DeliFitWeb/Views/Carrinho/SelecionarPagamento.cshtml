@@ -1,4 +1,4 @@
-@{
+﻿@{
     ViewData["Title"] = "Selecionar Forma de Pagamento";
 
     var cartoes = ViewBag.Cartoes as List<Core.Cartao> ?? new List<Core.Cartao>();
@@ -59,7 +59,7 @@
     .section-title {
         font-size: 0.8rem;
         font-weight: 700;
-        color: #aaa;
+        color: var(--df-muted);
         text-transform: uppercase;
         letter-spacing: 0.5px;
         padding: 18px 16px 8px;
@@ -95,7 +95,7 @@
         }
 
         .opcao-item.selected {
-            background: #fff3e6;
+            background: var(--df-orange-tint);
         }
 
     .opcao-icon {
@@ -136,7 +136,7 @@
 
         .opcao-label .sub {
             font-size: 0.78rem;
-            color: #aaa;
+            color: var(--df-muted);
             margin-top: 2px;
         }
 
@@ -165,7 +165,7 @@
         }
 
         .cartao-card-item.selected {
-            background: #fff3e6;
+            background: var(--df-orange-tint);
         }
 
     .cartao-avatar {
@@ -271,7 +271,7 @@
     @if (!cartoes.Any())
     {
         <div style="margin: 0 16px 10px; padding: 14px; background:white; border-radius:14px;
-            font-size:0.85rem; color:#aaa; text-align:center;">
+            font-size:0.85rem; color:var(--df-muted); text-align:center;">
             Nenhum cartão cadastrado
         </div>
     }
@@ -303,7 +303,7 @@
     @* ── Confirma o cartão selecionado só com o CVV (Mercado Pago Secure Fields) ── *@
     <div id="mpCvvWrapper" class="opcao-card" style="display:none; padding:16px;">
         <div class="section-title" style="padding:0 0 4px;">Confirme o CVV do cartão selecionado</div>
-        <div style="font-size: 0.78rem; color: #aaa; margin-bottom: 10px;">
+        <div style="font-size: 0.78rem; color: var(--df-muted); margin-bottom: 10px;">
             Por segurança, o Mercado Pago pede o código de segurança de novo a cada cobrança.
         </div>
         <div id="form-cvv" class="mp-cvv-field"></div>

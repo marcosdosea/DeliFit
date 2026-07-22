@@ -1,4 +1,4 @@
-@{
+﻿@{
     ViewData["Title"] = "Dashboard Admin";
     int totalRestaurantes = ViewBag.TotalRestaurantes ?? 0;
     int totalPendentes = ViewBag.TotalPendentes ?? 0;
@@ -43,7 +43,7 @@
         border-radius: 12px;
         padding: 20px 24px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        border: 1px solid #f0f0f0;
+        border: 1px solid var(--df-border);
         display: flex;
         align-items: center;
         gap: 16px;
@@ -60,7 +60,7 @@
         flex-shrink: 0;
     }
 
-    .stat-icon.orange { background: #fff3e6; color: #ff6600; }
+    .stat-icon.orange { background: var(--df-orange-tint); color: #ff6600; }
     .stat-icon.yellow { background: #fff8e1; color: #f59e0b; }
     .stat-icon.blue   { background: #e8f4fd; color: #2196f3; }
 
@@ -98,7 +98,7 @@
         border-radius: 12px;
         padding: 24px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        border: 1px solid #f0f0f0;
+        border: 1px solid var(--df-border);
         text-decoration: none;
         color: #1a1a1a;
         display: flex;
