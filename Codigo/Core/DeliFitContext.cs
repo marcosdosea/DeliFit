@@ -127,6 +127,8 @@ public partial class DeliFitContext : DbContext
 
             entity.HasIndex(e => e.IdCliente, "fk_Carrinho_Cliente1_idx");
 
+            entity.HasIndex(e => e.IdEndereco, "fk_Carrinho_Endereco1_idx");
+
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.FormaDePagamento)
                 .HasComment("P para PIX,C para CARTÃO, D para DINHEIRO ")
@@ -134,6 +136,7 @@ public partial class DeliFitContext : DbContext
                 .HasColumnName("formaDePagamento");
             entity.Property(e => e.IdCartao).HasColumnName("idCartao");
             entity.Property(e => e.IdCliente).HasColumnName("idCliente");
+            entity.Property(e => e.IdEndereco).HasColumnName("idEndereco");
             entity.Property(e => e.Observacao)
                 .HasMaxLength(100)
                 .HasColumnName("observacao");
@@ -156,6 +159,11 @@ public partial class DeliFitContext : DbContext
                 .HasForeignKey(d => d.IdCliente)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("fk_Carrinho_Cliente1");
+
+            entity.HasOne(d => d.IdEnderecoNavigation).WithMany(p => p.Carrinhos)
+                .HasForeignKey(d => d.IdEndereco)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("fk_Carrinho_Endereco1");
         });
 
         modelBuilder.Entity<Cartao>(entity =>

@@ -39,6 +39,7 @@ public class RestauranteControllersTests
         var mockClienteService = new Mock<IClienteService>();
         var mockCarrinhoService = new Mock<ICarrinhoService>();
         var mockAvaliacaoService = new Mock<IAvaliacaoService>();
+        var mockEnderecoService = new Mock<IEnderecoService>();
 
         mockUserManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
             .ReturnsAsync((UsuarioIdentity?)null);
@@ -70,6 +71,7 @@ public class RestauranteControllersTests
             mockClienteService.Object,
             mockCarrinhoService.Object,
             mockAvaliacaoService.Object,
+            mockEnderecoService.Object,
             mapper,
             mockUserManager.Object,
             mockRoleManager.Object,

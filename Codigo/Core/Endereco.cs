@@ -21,4 +21,6 @@ public partial class Endereco
     public string Label { get; set; } = null!;
 
     public virtual Cliente IdClienteNavigation { get; set; } = null!;
+
+    public virtual ICollection<Carrinho> Carrinhos { get; set; } = new List<Carrinho>();
 }

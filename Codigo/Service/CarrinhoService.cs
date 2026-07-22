@@ -60,6 +60,7 @@ public class CarrinhoService : ICarrinhoService
         existente.FormaDePagamento = carrinho.FormaDePagamento;
         existente.IdCliente = carrinho.IdCliente;
         existente.IdCartao = carrinho.IdCartao;
+        existente.IdEndereco = carrinho.IdEndereco;
         existente.ValorFrete = carrinho.ValorFrete;
 
         _context.SaveChanges();

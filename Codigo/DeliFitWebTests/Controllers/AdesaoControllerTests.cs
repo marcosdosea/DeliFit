@@ -40,6 +40,7 @@ public class AdesaoControllerTests
         var mockClienteService = new Mock<IClienteService>();
         var mockCarrinhoService = new Mock<ICarrinhoService>();
         var mockAvaliacaoService = new Mock<IAvaliacaoService>();
+        var mockEnderecoService = new Mock<IEnderecoService>();
 
         // Configura UserManager para simular criação de usuário com sucesso
         mockUserManager.Setup(x => x.FindByEmailAsync(It.IsAny<string>()))
@@ -70,6 +71,7 @@ public class AdesaoControllerTests
             mockClienteService.Object,
             mockCarrinhoService.Object,
             mockAvaliacaoService.Object,
+            mockEnderecoService.Object,
             mapper,
             mockUserManager.Object,
             mockRoleManager.Object,

@@ -405,6 +405,7 @@ public class CarrinhoController : Controller
                     FormaDePagamento = formaPagamento,
                     ValorFrete = 0,
                     IdCartao = idCartao,
+                    IdEndereco = (uint)idEnderecoSessao.Value,
                     Observacao = null,
                     MercadoPagoPaymentId = mercadoPagoPaymentId,
                     StatusPagamentoCartao = mercadoPagoStatus

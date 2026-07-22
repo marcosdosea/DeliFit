@@ -17,6 +17,7 @@ public class PedidoController : Controller
     private readonly ICarrinhoService _carrinhoService;
     private readonly IRestauranteService _restauranteService;
     private readonly IAvaliacaoService _avaliacaoService;
+    private readonly IEnderecoService _enderecoService;
 
     public PedidoController(
         IPedidoService pedidoService,
@@ -24,7 +25,8 @@ public class PedidoController : Controller
         IClienteService clienteService,
         ICarrinhoService carrinhoService,
         IRestauranteService restauranteService,
-        IAvaliacaoService avaliacaoService)
+        IAvaliacaoService avaliacaoService,
+        IEnderecoService enderecoService)
     {
         _pedidoService = pedidoService;
         _mapper = mapper;
@@ -32,6 +34,7 @@ public class PedidoController : Controller
         _carrinhoService = carrinhoService;
         _restauranteService = restauranteService;
         _avaliacaoService = avaliacaoService;
+        _enderecoService = enderecoService;
     }
 
     // GET: PedidoController
@@ -88,9 +91,17 @@ public class PedidoController : Controller
             {
                 ViewBag.NomeCliente = cliente.Nome ?? "";
                 ViewBag.TelefoneCliente = cliente.Telefone ?? "";
-                ViewBag.EnderecoCliente = cliente.Enderecos?.FirstOrDefault()?.Rua ?? "Não informado";
-                ViewBag.NumeroCliente = cliente.Enderecos?.FirstOrDefault()?.Numero ?? "";
-                ViewBag.BairroCliente = cliente.Enderecos?.FirstOrDefault()?.Bairro ?? "";
+
+                // Endereço selecionado pelo cliente no checkout deste pedido. Carrinhos
+                // criados antes desse campo existir não têm IdEndereco: nesse caso caímos
+                // no primeiro endereço cadastrado do cliente, como fallback best-effort.
+                var endereco = carrinho.IdEndereco.HasValue
+                    ? _enderecoService.Get(carrinho.IdEndereco.Value)
+                    : cliente.Enderecos?.FirstOrDefault();
+
+                ViewBag.EnderecoCliente = endereco?.Rua ?? "Não informado";
+                ViewBag.NumeroCliente = endereco?.Numero ?? "";
+                ViewBag.BairroCliente = endereco?.Bairro ?? "";
             }
         }
 

@@ -21,6 +21,7 @@ public class RestauranteController : Controller
     private readonly IClienteService _clienteService;
     private readonly ICarrinhoService _carrinhoService;
     private readonly IAvaliacaoService _avaliacaoService;
+    private readonly IEnderecoService _enderecoService;
     private readonly IMapper _mapper;
     private readonly UserManager<UsuarioIdentity>? _userManager;
     private readonly RoleManager<IdentityRole>? _roleManager;
@@ -32,6 +33,7 @@ public class RestauranteController : Controller
                                  IClienteService clienteService,
                                  ICarrinhoService carrinhoService,
                                  IAvaliacaoService avaliacaoService,
+                                 IEnderecoService enderecoService,
                                  IMapper mapper,
                                  UserManager<UsuarioIdentity> userManager,
                                  RoleManager<IdentityRole> roleManager,
@@ -43,6 +45,7 @@ public class RestauranteController : Controller
         _clienteService = clienteService;
         _carrinhoService = carrinhoService;
         _avaliacaoService = avaliacaoService;
+        _enderecoService = enderecoService;
         _mapper = mapper;
         _userManager = userManager;
         _roleManager = roleManager;
@@ -610,7 +613,13 @@ public class RestauranteController : Controller
             {
                 var carrinho = _carrinhoService.Get(p.IdCarrinho);
                 var cliente = carrinho != null ? _clienteService.Get(carrinho.IdCliente) : null;
-                var endereco = cliente?.Enderecos?.FirstOrDefault();
+
+                // Endereço selecionado pelo cliente no checkout deste pedido. Carrinhos
+                // criados antes desse campo existir não têm IdEndereco: nesse caso caímos
+                // no primeiro endereço cadastrado do cliente, como fallback best-effort.
+                var endereco = carrinho?.IdEndereco.HasValue == true
+                    ? _enderecoService.Get(carrinho.IdEndereco.Value)
+                    : cliente?.Enderecos?.FirstOrDefault();
 
                 return new
                 {

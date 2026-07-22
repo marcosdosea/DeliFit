@@ -27,9 +27,17 @@ public partial class Carrinho
     /// </summary>
     public string? StatusPagamentoCartao { get; set; }
 
+    /// <summary>
+    /// Endereço de entrega selecionado pelo cliente no checkout deste carrinho.
+    /// Nulo para carrinhos criados antes desse campo existir.
+    /// </summary>
+    public uint? IdEndereco { get; set; }
+
     public virtual Cartao? IdCartaoNavigation { get; set; }
 
     public virtual Cliente IdClienteNavigation { get; set; } = null!;
+
+    public virtual Endereco? IdEnderecoNavigation { get; set; }
 
     public virtual ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
 }

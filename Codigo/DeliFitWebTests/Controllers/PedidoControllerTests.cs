@@ -22,6 +22,7 @@ public class PedidoControllerTests
     private Mock<ICarrinhoService>? mockCarrinhoService;
     private Mock<IRestauranteService>? mockRestauranteService;
     private Mock<IAvaliacaoService>? mockAvaliacaoService;
+    private Mock<IEnderecoService>? mockEnderecoService;
 
     [TestInitialize]
     public void Initialize()
@@ -31,6 +32,7 @@ public class PedidoControllerTests
         mockCarrinhoService = new Mock<ICarrinhoService>();
         mockRestauranteService = new Mock<IRestauranteService>();
         mockAvaliacaoService = new Mock<IAvaliacaoService>();
+        mockEnderecoService = new Mock<IEnderecoService>();
 
         IMapper mapper = new MapperConfiguration(cfg => cfg.AddProfile(new PedidoProfile())).CreateMapper();
 
@@ -46,7 +48,8 @@ public class PedidoControllerTests
             mockClienteService.Object,
             mockCarrinhoService.Object,
             mockRestauranteService.Object,
-            mockAvaliacaoService.Object);
+            mockAvaliacaoService.Object,
+            mockEnderecoService.Object);
 
         var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
         {
