@@ -51,7 +51,10 @@ public class ClienteService : IClienteService
     }
 
     /// <summary>
-    /// Remover dados de um cliente da base de dados
+    /// Desativa um cliente na base de dados (soft delete). Clientes podem ter carrinhos,
+    /// pedidos e avaliações vinculados, cuja remoção não é permitida (integridade
+    /// referencial), então a exclusão apenas marca o cliente como inativo: ele some das
+    /// listagens e não consegue mais logar, mas seu histórico de pedidos é preservado.
     /// </summary>
     /// <param name="id">id do cliente</param>
     public void Delete(uint id)
@@ -59,7 +62,7 @@ public class ClienteService : IClienteService
         var Cliente = _context.Clientes.FirstOrDefault(a => a.Id == id);
         if (Cliente != null)
         {
-            _context.Clientes.Remove(Cliente);
+            Cliente.Ativo = false;
             _context.SaveChanges();
         }
         else
@@ -69,12 +72,13 @@ public class ClienteService : IClienteService
     }
 
     /// <summary>
-    /// Obter dados de todos os clientes da base de dados
+    /// Obter dados de todos os clientes ativos da base de dados
     /// </summary>
     /// <returns>dados dos clientes</returns>
     public IEnumerable<ClienteDTO> GetAll()
     {
         return _context.Clientes
+            .Where(r => r.Ativo)
             .Select(r => new ClienteDTO
             {
                 Id = r.Id,

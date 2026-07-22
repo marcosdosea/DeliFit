@@ -86,10 +86,12 @@ public class ClienteServiceTests
         // Act
         _clienteService.Delete(2);
 
-        // Assert
+        // Assert: soft delete - o cliente some das listagens (Ativo = false), mas o
+        // registro continua no banco para preservar o histórico de pedidos/carrinhos.
         Assert.AreEqual(2, _clienteService.GetAll().Count());
         var cliente = _clienteService.Get(2);
-        Assert.IsNull(cliente);
+        Assert.IsNotNull(cliente);
+        Assert.IsFalse(cliente.Ativo);
     }
 
     [TestMethod()]

@@ -178,12 +178,13 @@ public class ClienteController : Controller
         }
         catch (DbUpdateException)
         {
-            TempData["Error"] = "Não é possível excluir este cliente pois existem pedidos, avaliações ou carrinhos vinculados a ele.";
+            TempData["Error"] = "Não foi possível desativar este cliente.";
             return RedirectToAction(nameof(Details), new { id = clienteModel.Id });
         }
 
-        // Só remove o login (Identity) depois que o registro do cliente foi
-        // excluído com sucesso, para não deixar a conta órfã se a exclusão falhar.
+        // Remove o login (Identity) depois que o cliente foi desativado com sucesso,
+        // para não deixar a conta órfã se a desativação falhar. O registro do cliente
+        // em si permanece no banco (soft delete) para preservar o histórico de pedidos.
         if (!string.IsNullOrEmpty(cliente.Email))
         {
             var user = await _userManager.FindByEmailAsync(cliente.Email);
@@ -191,6 +192,7 @@ public class ClienteController : Controller
                 await _userManager.DeleteAsync(user);
         }
 
+        TempData["Success"] = "Cliente desativado com sucesso.";
         return RedirectToAction(nameof(Index));
     }
 

@@ -220,6 +220,9 @@ public partial class DeliFitContext : DbContext
             entity.Property(e => e.Nome)
                 .HasMaxLength(50)
                 .HasColumnName("nome");
+            entity.Property(e => e.Ativo)
+                .HasDefaultValue(true)
+                .HasColumnName("ativo");
             entity.Property(e => e.Telefone)
                 .HasMaxLength(11)
                 .IsFixedLength()

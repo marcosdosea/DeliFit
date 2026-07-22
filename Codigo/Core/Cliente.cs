@@ -20,6 +20,13 @@ public partial class Cliente
     /// </summary>
     public string? MercadoPagoCustomerId { get; set; }
 
+    /// <summary>
+    /// Indica se o cliente está ativo. Clientes com carrinhos/pedidos vinculados não podem
+    /// ser removidos do banco (violaria integridade referencial), então "excluir" desativa
+    /// o cliente em vez de apagar o registro, preservando o histórico de pedidos.
+    /// </summary>
+    public bool Ativo { get; set; } = true;
+
     public virtual ICollection<Avaliacao> Avaliacaos { get; set; } = new List<Avaliacao>();
 
     public virtual ICollection<Carrinho> Carrinhos { get; set; } = new List<Carrinho>();
