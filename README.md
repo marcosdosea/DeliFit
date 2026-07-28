@@ -6,7 +6,8 @@
 2. [A Solução ✨](#2-a-solução-)
 3. [Público Alvo 🎯](#3-público-alvo-)
 4. [Links Úteis 🔗](#4-links-úteis-)
-5. [Equipe 👥](#5-equipe-)
+5. [Apresentação DeliFit 🔗](#5-apresentação-delifit)
+6. [Equipe 👥](#6-equipe-)
 
 ---
 
@@ -47,6 +48,14 @@ Com uma arquitetura baseada em ASP.NET Core (Razor Pages) para o site, uma API p
 
 <p align="left">
 
+  <!-- BOTÃO MANUAL -->
+  <a href="https://docs.google.com/document/d/1Qa0bneFQeJBHj3UhxvQjyjkPkY6xPnqJrcEWvyWrSSk/edit?usp=sharing" target="_blank">
+    <img src="https://img.shields.io/badge/📘%20Manual%20do%20Usuário-Acessar-blue?style=for-the-badge">
+  </a>
+  <br>
+  https://docs.google.com/document/d/1Qa0bneFQeJBHj3UhxvQjyjkPkY6xPnqJrcEWvyWrSSk/edit?usp=sharing
+  <br><br>
+
   <!-- BOTÃO REPOSITÓRIO -->
   <a href="https://github.com/marcosdosea/DeliFit" target="_blank">
     <img src="https://img.shields.io/badge/💻%20Repositório%20GitHub-Acessar-green?style=for-the-badge">
@@ -60,7 +69,24 @@ Para rodar o projeto localmente, execute o script `AnaliseProjeto/delifit_comple
 
 ---
 
-## 5. Equipe 👥
+## 5. Apresentação DeliFit
+
+<p align="left">
+  <a href="https://www.youtube.com/shorts/SUQoP0Y45mY" target="_blank">
+    <img src="https://img.youtube.com/vi/SUQoP0Y45mY/maxresdefault.jpg"
+         alt="Vídeo de Apresentação"
+         width="400"
+         style="border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+  </a>
+  <br><br>
+  <a href="https://www.youtube.com/shorts/SUQoP0Y45mY" target="_blank">
+    <img src="https://img.shields.io/badge/▶%20Assistir%20Vídeo-FF0000?style=for-the-badge&logo=youtube&logoColor=white">
+  </a>
+</p>
+
+---
+
+## 6. Equipe 👥
 
 <table>
   <tr>
